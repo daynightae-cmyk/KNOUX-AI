@@ -1,0 +1,3 @@
+# Merge into your own Supabase config.toml, do NOT overwrite existing config.
+[functions.report-summary]
+verify_jwt = true

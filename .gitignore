@@ -1,0 +1,12 @@
+/.gradle/
+/.kotlin/
+/.idea/
+/.avd/
+/INBOX/
+/local.properties
+**/build/
+!/qa-evidence/build/
+/qa-evidence/build/emulator*.log
+/qa-evidence/build/preview-recovery*.log
+/qa-evidence/ui/first-candidate/
+*.iml

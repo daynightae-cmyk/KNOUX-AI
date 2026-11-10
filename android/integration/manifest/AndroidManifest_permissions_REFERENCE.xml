@@ -1,0 +1,12 @@
+<!-- REFERENCE FRAGMENT, NOT a complete valid standalone AndroidManifest.xml.
+     Do not apply Phase 1. Add only for a feature with owner-approved permission UX. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <!-- Explicitly scoped Android 13+ media access; Android 14 partial-access UX needs careful handling. -->
+  <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+  <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+  <!-- Optional user-granted Usage Access; do not request without meaningful user-facing use. -->
+  <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+  <!-- No MANAGE_EXTERNAL_STORAGE / QUERY_ALL_PACKAGES / background location / accessibility by default. -->
+  <uses-permission android:name="android.permission.INTERNET" />
+</manifest>

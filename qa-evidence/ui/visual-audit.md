@@ -1,0 +1,22 @@
+# Phase 1 visual QA
+
+Ten source PNGs were individually opened and inspected. Ten final runtime frames were captured from `com.knoux.ai/.MainActivity` on `emulator-5554`, AVD `kx_preview`, Android 8.0 / API 26, x86_64. The capture script verified the foreground activity and matching Compose screen tag through Android UI Automator before every screenshot. Build: debug, English, portrait, 420 dpi, logical 1080 × 2340 (~411 × 891 dp). The API 26 emulator produced physical 1080 × 1920 screencaps with 97 px bars at both sides; the original display settings were restored. Decorative motion was frozen for reference capture only.
+
+The [reference matrix](../../docs/visual/reference-matrix.md) records source geometry. Comparison strips exclude the reference handset and mock system bars; they remove x=0–96/983–1079 and about 52 px top/104 px bottom from the Android frame. Both interiors are scaled to 540 px wide without vertical stretching. The [RGB deltas](comparison-metrics.txt) are descriptive pixel differences, not a visual acceptance score.
+
+| # | Screen | Evidence | Observed match and remaining differences |
+|---|---|---|---|
+| 01 | Home | [Android](01-home-runtime.png) · [Comparison](comparison-01.png) | K orb, feature strip, scan button, three KPI cells and six tiles are present. Revised violet Home tab, spacing and icon colors. The K, plasma and wave field are simpler; card footers stack metric/value copy more often. |
+| 02 | Privacy Sweep | [Android](02-privacy-runtime.png) · [Comparison](comparison-02.png) | Shield, privacy score capsule, four mini-metrics, select-all and Review actions. Mini-count unit copy is compact; badges and header icon treatment differ. Notification Listeners needs a short scroll. |
+| 03 | Duplicate Files | [Android](03-duplicates-runtime.png) · [Comparison](comparison-03.png) | Layered picture/doc hero, paired totals, confidence ring, grouped rows and both actions. Counts now precede sizes. Row spacing is taller and the last card extends below the top viewport. |
+| 04 | Deep Scan | [Android](04-deep-scan-runtime.png) · [Comparison](comparison-04.png) | Radar, both 72% rings and module progress bars. “No live scan” wording added; Continue is disabled until Pause. Last module needs a short scroll. |
+| 05 | Reports & Insights | [Android](05-reports-runtime.png) · [Comparison](comparison-05.png) | Four Canvas charts, two headline metrics and selected Reports tab. Lines are angular, the +6% indicator is inline, and recommendations are compact. |
+| 06 | App Residue | [Android](06-residue-runtime.png) · [Comparison](comparison-06.png) | Stacked layers, grouped metrics and linked checkbox totals. Select-all has a larger touch target and the last row requires scrolling. The messaging glyph is a generic chat shape. |
+| 07 | App Manager | [Android](07-app-manager-runtime.png) · [Comparison](comparison-07.png) | Grid hero, health summary, all five category pills and the size/last-used columns. Last-used copy wraps in the narrower right column. |
+| 08 | Storage Analyzer | [Android](08-storage-runtime.png) · [Comparison](comparison-08.png) | Cylinders, capacity bar, five categories, 50% ring and 2×3 grid. More space before the fixed action bar; the largest-category detail is condensed. |
+| 09 | Battery Saver | [Android](09-battery-runtime.png) · [Comparison](comparison-09.png) | Battery hero, estimated gain, health ring and recommendation actions. Pills are solid cyan instead of dark outlined cyan; impact label treatment differs and the last card is partly below the scroll viewport. |
+| 10 | AI Optimization | [Android](10-ai-optimization-runtime.png) · [Comparison](comparison-10.png) | AI chip, paired scores, compact indicators and linked selection. Left action wraps at this width; Thermal Guard requires a short scroll. |
+
+All ten are implemented, run on the emulator, captured and visually compared. The second pass fixed tab captions, selected-tab styling, button clipping, Home card spacing, icon colors and stale-frame detection. The first candidate batch is retained separately and is not the reviewed capture set.
+
+The remaining cross-screen differences are the flatter Canvas artwork, softer glass edges, smaller line icons and rings, some condensed copy, and touch-friendly row spacing. The fixed Design preview chip and Android system bars are intentional. Approval of visual fidelity is pending owner review. No score here substitutes for that review.

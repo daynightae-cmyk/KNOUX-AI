@@ -1,0 +1,7 @@
+# The imported kit has a byte-level manifest; preserve its original line endings.
+* -text
+/app/**/*.kt text eol=lf
+/app/**/*.kts text eol=lf
+*.png binary
+*.jpg binary
+*.ttf binary

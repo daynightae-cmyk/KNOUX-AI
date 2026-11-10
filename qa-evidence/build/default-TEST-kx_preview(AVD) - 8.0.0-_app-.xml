@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.knoux.ai.PreviewNavigationTest" tests="5" failures="0" errors="0" skipped="0" time="70.051" timestamp="2026-11-10T18:13:37" hostname="localhost">
+  <properties>
+    <property name="device" value="kx_preview(AVD) - 8.0.0" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="arabicSwitchMirrorsTabOrderAndPreservesNavigation" classname="com.knoux.ai.PreviewNavigationTest" time="9.742" />
+  <testcase name="scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation" classname="com.knoux.ai.PreviewNavigationTest" time="4.157" />
+  <testcase name="everyRemainingPrimaryActionOpensAReversiblePreview" classname="com.knoux.ai.PreviewNavigationTest" time="32.448" />
+  <testcase name="tabsReachAllTenScreensAndDetailBackReturnsToTheIndex" classname="com.knoux.ai.PreviewNavigationTest" time="12.72" />
+  <testcase name="residueSelectionUpdatesTotalAndConfirmationDoesNotClean" classname="com.knoux.ai.PreviewNavigationTest" time="8.348" />
+</testsuite>
