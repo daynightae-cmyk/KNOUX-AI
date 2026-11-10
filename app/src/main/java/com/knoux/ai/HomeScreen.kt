@@ -117,7 +117,7 @@ internal fun CategoryCard(entry: Entry, index: Int, modifier: Modifier = Modifie
         .clip(RoundedCornerShape(14.dp)).clickable(role = Role.Button, onClick = onClick)) {
         Column(Modifier.fillMaxWidth().padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                IconBadge(entry.icon, accent, diameter = 34)
+                IconBadge(entry.icon, accent, diameter = if (home) 40 else 34)
                 Column(Modifier.weight(1f)) {
                     Label(entry.title.localized(), 12, weight = FontWeight.Bold)
                     if (!home) Label(entry.value, 13, Pink, FontWeight.Bold)

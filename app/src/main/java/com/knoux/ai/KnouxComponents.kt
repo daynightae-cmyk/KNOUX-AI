@@ -80,10 +80,10 @@ internal fun Modifier.glass(radius: Int, active: Boolean = false, ghost: Boolean
         }
         drawRoundRect(Brush.linearGradient(edge, Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad)
         val flash = if (active) Color(0xffa652fa) else Color(0xff7752f5)
-        drawRoundRect(Brush.radialGradient(listOf(flash.copy(alpha = if (active) .62f else .23f), Color.Transparent), Offset(size.width * .30f, 0f), size.width.coerceAtLeast(1f) * .59f), cornerRadius = rad)
+        drawRoundRect(Brush.radialGradient(listOf(flash.copy(alpha = if (active) .62f else .32f), Color.Transparent), Offset(size.width * .30f, 0f), size.width.coerceAtLeast(1f) * .59f), cornerRadius = rad)
         drawRoundRect(Brush.radialGradient(listOf((if (active && !tab) Cyan else Violet).copy(alpha = if (active) .55f else .25f), Color.Transparent), Offset(size.width * .56f, size.height * 1.07f), size.width.coerceAtLeast(1f) * .40f), cornerRadius = rad)
         val stroke = if (active) listOf(Chalk, Color(0xffa97aff), if (tab) Violet else Color(0xff7cedff)) else
-            listOf(Color(0xff8874b1), Color(0xff4b436c), Color(0xff986bd3), Color(0xff454465))
+            listOf(Color(0xffa893d1), Color(0xff5b5280), Color(0xffab7ce0), Color(0xff55547a))
         drawRoundRect(Brush.linearGradient(stroke, Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad, style = Stroke((if (active) 1.3.dp else .7.dp).toPx()))
     }
 
@@ -103,10 +103,10 @@ internal fun GlassPanel(modifier: Modifier = Modifier, radius: Int = 14, content
 
 @Composable
 internal fun IconBadge(mark: Mark, tint: Color, modifier: Modifier = Modifier, diameter: Int = 36) {
+    val shape = RoundedCornerShape((diameter * .30f).dp)
     Box(modifier.size(diameter.dp).background(
-        Brush.radialGradient(listOf(tint.copy(alpha = .40f), tint.copy(alpha = .14f), Color.Transparent)),
-        RoundedCornerShape((diameter / 2).dp)
-    ), contentAlignment = Alignment.Center) { Glyph(mark, Modifier.size((diameter * .65).dp), tint, true) }
+        Brush.radialGradient(listOf(tint.copy(alpha = .46f), tint.copy(alpha = .16f), Color.Transparent)), shape
+    ).border(.6.dp, tint.copy(alpha = .38f), shape), contentAlignment = Alignment.Center) { Glyph(mark, Modifier.size((diameter * .72).dp), tint, true) }
 }
 
 @Composable
@@ -178,14 +178,14 @@ internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, s
     Box(modifier.size(diameter.dp), contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {
             val width = size.width
-            val band = width * .104f
+            val band = width * .125f
             val inset = width * .087f
             val start = Offset(inset, inset)
             val arcSize = Size(width - inset * 2, width - inset * 2)
             val sweep = if (split) 342f else 348f * value / 100f
             val tone = Brush.sweepGradient(listOf(Color(0xff9b35ff), Color(0xff5535f1), Cyan, if (split) Gold else Cyan, Cyan, Pink, Color(0xff9b35ff)))
             drawCircle(Color(0xff383360), radius = width / 2 - inset, style = Stroke(band))
-            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .13f, style = Stroke(band * 1.8f, cap = StrokeCap.Round))
+            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .20f, style = Stroke(band * 1.8f, cap = StrokeCap.Round))
             drawArc(tone, -84f, sweep, false, start, arcSize, style = Stroke(band, cap = StrokeCap.Round))
         }
         Column(Modifier.padding(horizontal = (diameter * .15f).dp), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -196,13 +196,18 @@ internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, s
 }
 
 @Composable
-internal fun NeonPill(label: String, tint: Color = Cyan) {
+internal fun NeonPill(label: String, tint: Color = Cyan, solid: Boolean = true) {
     val shape = RoundedCornerShape(16.dp)
-    val aqua = tint == Cyan
-    Box(Modifier.background(
-        Brush.verticalGradient(if (aqua) listOf(Color(0xff70f6ff), Color(0xff07bddd)) else listOf(Color(0xff6235a9), Color(0xff341958))), shape)
+    val aqua = tint == Cyan && solid
+    val outlined = tint == Cyan && !solid
+    val fill = when {
+        aqua -> listOf(Color(0xff70f6ff), Color(0xff07bddd))
+        outlined -> listOf(Color(0xff103246), Color(0xff0a1c2c))
+        else -> listOf(Color(0xff6235a9), Color(0xff341958))
+    }
+    Box(Modifier.background(Brush.verticalGradient(fill), shape)
         .border(.6.dp, tint.copy(alpha = .64f), shape).padding(horizontal = 8.dp, vertical = 4.dp)) {
-        Label(label, 10, if (aqua) Color(0xff07182b) else Chalk, FontWeight.Bold, align = TextAlign.Center)
+        Label(label, 10, if (aqua) Color(0xff07182b) else if (outlined) Cyan else Chalk, FontWeight.Bold, align = TextAlign.Center)
     }
 }
 

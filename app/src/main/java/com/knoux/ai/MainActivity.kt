@@ -88,8 +88,10 @@ class MainActivity : ComponentActivity() {
             val motion = lifecycle.isAtLeast(Lifecycle.State.RESUMED) && !reduced && visit?.still != true &&
                 ValueAnimator.areAnimatorsEnabled() && power?.isPowerSaveMode != true
             val splashReduced = reduced || !ValueAnimator.areAnimatorsEnabled() || power?.isPowerSaveMode == true
-            KnouxTheme(arabic, motion) {
-                var showSplash by remember { mutableStateOf(startSplash) }
+            var showSplash by remember { mutableStateOf(startSplash) }
+            // The splash fully covers Home: pause decorative work underneath it so the
+            // brand animation owns the frame budget on slower devices.
+            KnouxTheme(arabic, motion && !showSplash) {
                 Box(Modifier.fillMaxSize()) {
                     KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
                     if (showSplash) {
@@ -239,10 +241,10 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Glyph(Mark.K, Modifier.size(31.dp))
+                    Glyph(Mark.K, Modifier.size(33.dp))
                     if (LocalDensity.current.fontScale <= 1.45f) {
-                        Label("knoux", if (LocalRoomy.current) 15 else 21, weight = FontWeight.ExtraBold)
-                        Label(" ai", if (LocalRoomy.current) 15 else 21, Pink, FontWeight.ExtraBold)
+                        Label("knoux", if (LocalRoomy.current) 15 else 23, weight = FontWeight.ExtraBold)
+                        Label(" ai", if (LocalRoomy.current) 15 else 23, Pink, FontWeight.ExtraBold)
                     }
                 }
             }

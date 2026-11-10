@@ -219,7 +219,7 @@ private fun FeatureRow(page: Page, entry: Entry, index: Int, selectable: Boolean
     GlassPanel(Modifier.fillMaxWidth().heightIn(min = 48.dp).testTag("row-$index").clip(RoundedCornerShape(12.dp)).then(actionModifier), 12) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 7.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            IconBadge(entry.icon, color, diameter = 34)
+            IconBadge(entry.icon, color, diameter = 36)
             Column(Modifier.weight(1f)) {
                 Label(entry.title.localized(), 12, weight = FontWeight.Bold)
                 Label(entry.detail.localized(), 10, Mist)
@@ -242,7 +242,7 @@ private fun FeatureRow(page: Page, entry: Entry, index: Int, selectable: Boolean
             }
             when {
                 selectable -> SelectionIndicator(selected)
-                entry.action != null && !roomy -> NeonPill(entry.action.localized())
+                entry.action != null && !roomy -> NeonPill(entry.action.localized(), solid = page != Page.BATTERY)
                 else -> Glyph(Mark.NEXT, arrow)
             }
         }

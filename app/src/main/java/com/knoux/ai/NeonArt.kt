@@ -82,20 +82,23 @@ private val symbol = mapOf(
     Mark.MEMORY to "M2 5H22V18H2Z M6 8H8V14H6Z M11 8H13V14H11Z M16 8H18V14H16Z M6 18V21 M12 18V21 M18 18V21"
 ).mapValues { (_, svg) -> path(svg) }
 
+// Brand K traced from the owner logo (design/brand/knoux-logo-owner.png),
+// normalized from the 1000-unit splash space into this 24-unit glyph box.
 private val kPlanes = listOf(
-    path("M10 2H16L13 10L6 16Z"),
-    path("M3 22L17.5 7H23L7.5 22Z"),
-    path("M12.3 16L16.3 12.4L22 22H16.2Z")
+    path("M8.97 0.66H15.87L11.18 8.96L3.9 13.53L8.22 1.42Q8.22 0.66 8.97 0.66Z"),
+    path("M0.99 19.41Q4.28 19.67 7.57 19.41C11.99 14.61 18.45 9.76 23.03 5.45C13.6 8.04 4.44 14.88 0.99 19.41Z"),
+    path("M11.72 11.49H16.08L21.41 19.46H14.52Z")
 )
 
 private fun DrawScope.knouxK(bright: Boolean = false) {
     val colors = listOf(listOf(Color(0xfff3a1ff), Color(0xff9134ee)), listOf(Color(0xffd773ff), Color(0xff673cfa), Cyan), listOf(Color(0xff4856ff), Cyan))
+    val axes = listOf(Offset(12f, .7f) to Offset(7f, 13.5f), Offset(23f, 5.5f) to Offset(2f, 19.4f), Offset(12f, 11.5f) to Offset(21f, 19.5f))
     kPlanes.forEachIndexed { index, p ->
         if (bright) {
             drawPath(p, Violet.copy(alpha = .19f), style = Stroke(3f, join = StrokeJoin.Round))
             drawPath(p, Pink.copy(alpha = .4f), style = Stroke(1.2f, join = StrokeJoin.Round))
         }
-        drawPath(p, Brush.linearGradient(colors[index], Offset(6f, 4f), Offset(18f, 22f)))
+        drawPath(p, Brush.linearGradient(colors[index], axes[index].first, axes[index].second))
         if (bright) drawPath(p, Chalk.copy(alpha = .65f), style = Stroke(.28f, join = StrokeJoin.Round))
     }
 }
@@ -108,10 +111,10 @@ internal fun Glyph(mark: Mark, modifier: Modifier = Modifier, color: Color = Cha
             scale(unit, unit, Offset.Zero) {
                 if (mark == Mark.K) knouxK(glow) else symbol[mark]?.let {
                     if (glow) {
-                        drawPath(it, color.copy(alpha = .13f), style = Stroke(5.8f, cap = StrokeCap.Round, join = StrokeJoin.Round))
-                        drawPath(it, color.copy(alpha = .29f), style = Stroke(3.2f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+                        drawPath(it, color.copy(alpha = .20f), style = Stroke(6.5f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+                        drawPath(it, color.copy(alpha = .40f), style = Stroke(3.6f, cap = StrokeCap.Round, join = StrokeJoin.Round))
                     }
-                    drawPath(it, color, style = Stroke(1.55f, cap = StrokeCap.Round, join = StrokeJoin.Round))
+                    drawPath(it, color, style = Stroke(1.75f, cap = StrokeCap.Round, join = StrokeJoin.Round))
                 }
             }
         }
@@ -176,14 +179,14 @@ private fun DrawScope.particleWave(h: Float) {
         for (i in 0..48) {
             val u = i / 48f
             val side = abs(u - .5f) * 2
-            val y = h * (.83f - .43f * side.pow(1.5f) + .12f * sin(u * 12.566f + line * .12f) - .013f * line * side)
+            val y = h * (.68f - .22f * side.pow(1.4f) + .10f * sin(u * 12.566f + line * .12f) - .013f * line * side)
             if (i == 0) p.moveTo(0f, y) else p.lineTo(w * u, y)
         }
         if (line == 5) {
-            drawPath(p, glow, alpha = .25f, style = Stroke(h * .089f))
-            drawPath(p, glow, alpha = .36f, style = Stroke(h * .040f))
+            drawPath(p, glow, alpha = .40f, style = Stroke(h * .089f))
+            drawPath(p, glow, alpha = .55f, style = Stroke(h * .040f))
         }
-        drawPath(p, glow, alpha = if (line == 5) .90f else .16f, style = Stroke(if (line == 5) h * .009f else h * .004f))
+        drawPath(p, glow, alpha = if (line == 5) .95f else .26f, style = Stroke(if (line == 5) h * .010f else h * .004f))
     }
     for (row in 0..8) for (i in 0..67) {
         val u = i / 67f
@@ -289,10 +292,13 @@ private fun DrawScope.orbitalArt(mark: Mark) {
 
 private fun DrawScope.sphere(home: Boolean) {
     val r = if (home) 55f else 49f
+    drawCircle(Brush.radialGradient(listOf(Pink.copy(alpha = .20f), Color(0xff2549d7).copy(alpha = .12f), Clear), Offset.Zero, r + 24), r + 24, Offset.Zero)
     drawCircle(Brush.radialGradient(listOf(Color(0xff080727), Color(0xff181158), Color(0xff2549d7), Color(0xff8759fa), Clear), Offset.Zero, r + 11), r + 11, Offset.Zero)
+    drawCircle(Brush.radialGradient(listOf(Color(0xff2b3fd6).copy(alpha = .55f), Color(0xff181158).copy(alpha = .25f), Clear), Offset(-r * .18f, -r * .22f), r * 1.05f), r * 1.05f, Offset(-r * .18f, -r * .22f))
     val rim = Brush.sweepGradient(listOf(Cyan, Color(0xff3079fa), Pink, Color(0xff8561ff), Chalk, Cyan), Offset.Zero)
-    drawCircle(rim, r, Offset.Zero, style = Stroke(1.8f))
-    drawCircle(rim, r + 1, Offset.Zero, alpha = .22f, style = Stroke(6f))
+    drawCircle(rim, r, Offset.Zero, style = Stroke(2.4f))
+    drawCircle(rim, r + 1, Offset.Zero, alpha = .35f, style = Stroke(7f))
+    drawArc(Chalk.copy(alpha = .75f), -150f, 70f, false, Offset(-r, -r), Size(r * 2, r * 2), style = Stroke(1.6f, cap = StrokeCap.Round))
     if (home) {
         for (band in 0..10) {
             val p = Path()
@@ -302,10 +308,12 @@ private fun DrawScope.sphere(home: Boolean) {
                 val xx = cos(t).toFloat() * (r - 4 - band * .55f + jitter)
                 val yy = sin(t).toFloat() * (r - 4 - band * .55f + jitter)
                 if (i == 0) p.moveTo(xx, yy) else p.lineTo(xx, yy)
-                if (i % 2 == 0) drawCircle(if (band % 3 == 0) Cyan.copy(alpha = .5f) else Pink.copy(alpha = .36f), .38f, Offset(xx * (.84f - band * .02f), yy * .91f))
+                if (i % 2 == 0) drawCircle(if (band % 3 == 0) Cyan.copy(alpha = .6f) else Pink.copy(alpha = .46f), .38f, Offset(xx * (.84f - band * .02f), yy * .91f))
             }
-            drawPath(p, rim, alpha = if (band == 1) .86f else .21f, style = Stroke(if (band == 1) .82f else .44f))
+            drawPath(p, rim, alpha = if (band == 1) .92f else .34f, style = Stroke(if (band == 1) .82f else .44f))
         }
+        drawOval(Brush.radialGradient(listOf(Chalk.copy(alpha = .22f), Clear), Offset(-r * .38f, -r * .46f), r * .62f),
+            Offset(-r * .72f, -r * .78f), Size(r * .8f, r * .5f))
         translate(-27f,-27f) { scale(2.25f,2.25f,Offset.Zero) { knouxK(true) } }
     } else {
         for (i in 1..4) drawCircle(Cyan.copy(alpha = .37f), r * i / 4f, Offset.Zero, style = Stroke(.65f))
