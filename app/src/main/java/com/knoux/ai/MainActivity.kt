@@ -75,6 +75,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(SystemBarStyle.dark(android.graphics.Color.TRANSPARENT), SystemBarStyle.dark(android.graphics.Color.TRANSPARENT))
         if (savedInstanceState == null) debugVisit(intent)
+        val previewRoute = if (BuildConfig.DEBUG) intent?.getStringExtra("knoux.preview.route") else null
+        val freezeSplash = if (BuildConfig.DEBUG) intent?.getLongExtra("knoux.preview.splash.time", -1L)?.takeIf { it >= 0L } else null
+        val startSplash = (savedInstanceState == null && !SplashGate.consumed && previewRoute == null) || freezeSplash != null
         setContent {
             val preferences: PreviewPreferences = viewModel()
             val arabic by preferences.arabic.collectAsStateWithLifecycle()
@@ -84,8 +87,15 @@ class MainActivity : ComponentActivity() {
             val power = LocalContext.current.getSystemService(PowerManager::class.java)
             val motion = lifecycle.isAtLeast(Lifecycle.State.RESUMED) && !reduced && visit?.still != true &&
                 ValueAnimator.areAnimatorsEnabled() && power?.isPowerSaveMode != true
+            val splashReduced = reduced || !ValueAnimator.areAnimatorsEnabled() || power?.isPowerSaveMode == true
             KnouxTheme(arabic, motion) {
-                KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                var showSplash by remember { mutableStateOf(startSplash) }
+                Box(Modifier.fillMaxSize()) {
+                    KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                    if (showSplash) {
+                        KnouxSplashRoute(splashReduced, freezeSplash) { showSplash = false }
+                    }
+                }
             }
         }
     }

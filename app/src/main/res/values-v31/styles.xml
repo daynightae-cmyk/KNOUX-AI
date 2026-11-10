@@ -1,0 +1,12 @@
+<resources>
+    <!-- Android 12+ system splash: dark brand background + K icon for startup compatibility.
+         The full cinematic signature runs afterwards as a native Compose screen. -->
+    <style name="Theme.Knoux" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#08061C</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorAccent">#31E3FF</item>
+        <item name="android:windowSplashScreenBackground">#08061C</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_knoux</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">#08061C</item>
+    </style>
+</resources>
