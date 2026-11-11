@@ -15,15 +15,31 @@ the ten captured screens.
 | Item | Value |
 |------|-------|
 | Starting commit | `7f4ce6402e2a3c45b85fe3c01564edb50f8dbcd7` |
+| Final commit | `99e351fcff62e3c9f63ebc637e21615330621c4a` |
 | Branch | `main` |
 | Remote | none configured (local repository only) |
 | Working tree at start | 12 changed/untracked paths |
-| Working tree at finish | clean |
+| Working tree at finish | 4 untracked paths, all belonging to another agent's work and left untouched (§1 note) |
 
 No commit was rewritten, no branch was force-pushed, no file was deleted, and
 no `reset` / `clean` was used against the repository history. Prior evidence
 packages (`qa-evidence/design-closure-final`, `qa-evidence/service-worlds-20261111`)
 and the other agents' untracked sources were left in place, untouched.
+
+Those four paths remain **deliberately untracked** because they are another
+agent's work, not this mission's:
+
+```
+app/src/main/java/com/knoux/ai/ServiceWorlds.kt
+app/src/androidTest/java/com/knoux/ai/ServiceWorldsTest.kt
+qa-evidence/design-closure-final/
+qa-evidence/service-worlds-20261111/
+```
+
+They were already untracked before this mission started, and they are required
+by the build and by `ServiceWorldsTest`, so the **working tree** — not the
+commit — is what builds and passes. They are reported here rather than
+silently committed or deleted.
 
 ## 2. Per-screen status
 
