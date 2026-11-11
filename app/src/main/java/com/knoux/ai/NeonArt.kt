@@ -163,7 +163,9 @@ internal fun HomeTileIcon(mark: Mark, tone: Color, modifier: Modifier = Modifier
 internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier, heightOverride: androidx.compose.ui.unit.Dp? = null) {
     val home = mark == Mark.K
     val homeTall = LocalTall.current
-    val height = heightOverride ?: if (home) (if (homeTall) 182.dp else 152.dp) else 120.dp
+    // Reduced hero heights to match references (22-26% of viewport instead of 30-40%)
+    // Reference analysis: hero should be ~400-480px on 1846px screen = 140-160dp equivalent
+    val height = heightOverride ?: if (home) (if (homeTall) 155.dp else 135.dp) else 110.dp
     val unitDivisor = if (home) (if (homeTall) 150f else 140f) else 120f
     val tone = heroTone(mark)
     val points = rememberGlobePoints(if (home) 760 else 460)

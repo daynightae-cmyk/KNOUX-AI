@@ -200,10 +200,10 @@ internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = tr
     val first = if (split < 0) "" else title.substring(0, split + 1)
     val last = title.substring(split + 1)
     val fontSize = when {
-        inline -> 23
-        page == Page.HOME -> 38
-        page == Page.DUPLICATES || page == Page.RESIDUE -> 26
-        else -> 30
+        inline -> 22
+        page == Page.HOME -> 32
+        page == Page.DUPLICATES || page == Page.RESIDUE -> 24
+        else -> 28
     }
     val font = if (LocalArabic.current) FontFamily.Default else DisplayFace
     val styledTitle = buildAnnotatedString {
@@ -216,16 +216,16 @@ internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = tr
             fontSize = fontSize.sp, lineHeight = (fontSize * 1.05f).sp, fontFamily = font,
             fontWeight = FontWeight.ExtraBold, fontStyle = FontStyle.Italic, textAlign = alignment
         ))
-        Label(subtitle.localized(), if (page == Page.HOME) 14 else 12, Mist,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 2.dp), align = alignment)
+        Label(subtitle.localized(), if (page == Page.HOME) 13 else 11, Mist,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 1.dp), align = alignment)
     }
     if (inline) {
-        Row(Modifier.fillMaxWidth().padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().padding(start = 8.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(.61f), content = { headings() })
             NeonHero(page.hero, animate, Modifier.weight(.39f))
         }
     } else {
-        NeonHero(page.hero, animate)
+        NeonHero(page.hero, animate, Modifier.padding(top = 4.dp, bottom = 6.dp))
         headings()
     }
 }

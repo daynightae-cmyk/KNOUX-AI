@@ -285,7 +285,7 @@ private fun KnouxAppScaffold(
             CompositionLocalProvider(LocalRoomy provides roomy, LocalTall provides (maxHeight >= 800.dp && !roomy)) {
                 Column(Modifier.fillMaxSize()) {
                     KnouxTopBar(page, { headerSheet = HeaderSheet.MENU }, back, { headerSheet = HeaderSheet.PRO },
-                        { headerSheet = HeaderSheet.SETTINGS })
+                        { headerSheet = HeaderSheet.SETTINGS }, { headerSheet = HeaderSheet.DISCLOSURE })
                     NavHost(navController = nav, startDestination = Page.HOME.id, modifier = Modifier.weight(1f),
                         enterTransition = {
                             if (!navMotion) EnterTransition.None
@@ -389,21 +389,21 @@ internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> 
 }
 
 @Composable
-private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () -> Unit, settings: () -> Unit) {
-    Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 3.dp).glass(20, tab = false)
-        .heightIn(min = 56.dp).padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () -> Unit, settings: () -> Unit, disclose: () -> Unit) {
+    Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
+        .height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         if (page == Page.HOME) IconControl(Mark.MENU, ("Menu" ar "القائمة").localized(), "menu", menu)
         else IconControl(Mark.BACK, ("Back" ar "رجوع").localized(), "back", back)
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Glyph(Mark.K, Modifier.size(31.dp))
+                    Glyph(Mark.K, Modifier.size(28.dp))
                     if (LocalDensity.current.fontScale <= 1.45f) {
                         val wordmark = when {
-                            LocalRoomy.current -> 14
-                            LocalArabic.current -> 18
-                            else -> 21
+                            LocalRoomy.current -> 13
+                            LocalArabic.current -> 17
+                            else -> 20
                         }
                         Label("knoux", wordmark, weight = FontWeight.ExtraBold)
                         Label(" ai", wordmark, Pink, FontWeight.ExtraBold)
@@ -411,16 +411,17 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                 }
             }
         }
+        PreviewModeDisclosure(disclose)
         if (!LocalRoomy.current) {
             Box(Modifier.heightIn(min = 48.dp).testTag("pro")
                 .clickable(role = Role.Button, onClick = pro).semantics { contentDescription = "KNOUX AI Pro" },
                 contentAlignment = Alignment.Center) {
-                Row(Modifier.clip(RoundedCornerShape(18.dp))
-                    .border(1.dp, Gold.copy(alpha = .85f), RoundedCornerShape(18.dp))
+                Row(Modifier.clip(RoundedCornerShape(20.dp))
+                    .border(1.dp, Gold.copy(alpha = .85f), RoundedCornerShape(20.dp))
                     .padding(horizontal = 10.dp, vertical = 5.dp),
                     verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Glyph(Mark.CROWN, Modifier.size(14.dp), Gold)
-                    Label("Pro", 11, Gold, FontWeight.Bold)
+                    Glyph(Mark.CROWN, Modifier.size(13.dp), Gold)
+                    Label("Pro", 10, Gold, FontWeight.Bold)
                 }
             }
         }

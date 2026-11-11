@@ -38,21 +38,21 @@ internal fun HomeScreen(open: (Page) -> Unit) {
 internal fun HubCard(
     title: Copy, copy: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit
 ) {
-    GlassPanel(Modifier.fillMaxWidth().heightIn(min = 122.dp).clip(RoundedCornerShape(20.dp))
-        .testTag(tag).clickable(role = Role.Button, onClick = onClick), radius = 20, tint = tint) {
-        Column(Modifier.fillMaxWidth().padding(11.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-            Label(title.localized(), 15, weight = FontWeight.ExtraBold)
-            Label(copy.localized(), 10, Mist, maxLines = 3)
+    GlassPanel(Modifier.fillMaxWidth().heightIn(min = 112.dp).clip(RoundedCornerShape(18.dp))
+        .testTag(tag).clickable(role = Role.Button, onClick = onClick), radius = 18, tint = tint) {
+        Column(Modifier.fillMaxWidth().padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Label(title.localized(), 14, weight = FontWeight.ExtraBold)
+            Label(copy.localized(), 10, Mist, maxLines = 2)
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween) {
-                Box(Modifier.size(30.dp).clip(RoundedCornerShape(15.dp))
+                Box(Modifier.size(28.dp).clip(RoundedCornerShape(14.dp))
                     .background(Brush.horizontalGradient(listOf(tint.copy(alpha = .30f), tint.copy(alpha = .12f))),
-                        RoundedCornerShape(15.dp))
-                    .border(1.dp, tint.copy(alpha = .55f), RoundedCornerShape(15.dp))
+                        RoundedCornerShape(14.dp))
+                    .border(1.dp, tint.copy(alpha = .55f), RoundedCornerShape(14.dp))
                     .clickable(role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
-                    Glyph(Mark.NEXT, Modifier.size(13.dp), tint, true)
+                    Glyph(Mark.NEXT, Modifier.size(12.dp), tint, true)
                 }
-                MasterIcon(mark, tint, 46)
+                MasterIcon(mark, tint, 44)
             }
         }
     }
