@@ -71,7 +71,8 @@ try {
         Start-Sleep -Milliseconds 700
         $resumed = & $adb -s $Serial shell dumpsys activity activities | Select-String 'mResumedActivity'
         if ("$resumed" -notmatch [regex]::Escape("$app/.MainActivity")) { throw "KNOUX AI not foregrounded for $route" }
-        & (Join-Path $PSScriptRoot 'Capture-Preview.ps1') -Serial $Serial -Name $name -Sdk $Sdk -Destination $Destination
+        $captureScript = Join-Path (Split-Path $MyInvocation.MyCommand.Path -Parent) 'Capture-Preview.ps1'
+        & $captureScript -Serial $Serial -Name $name -Sdk $Sdk -Destination $Destination
     }
 } finally {
     & $adb -s $Serial shell wm size $previous

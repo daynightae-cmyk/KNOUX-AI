@@ -1,0 +1,24 @@
+UI hierarchy verified: screen-home
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          59E6F569B172598CB6C513BC32F7C35562BA7A8ED7C77172D512B0D79EC9DEAC       D:\KNOUX-AI\qa-evidence\knoux-ai…
+UI hierarchy verified: screen-clean-center
+SHA256          6DEAC831F8B504D410A801B0F53B6167DA4749856F00C1D1883739053996F1AF       D:\KNOUX-AI\qa-evidence\knoux-ai…
+UI hierarchy verified: screen-installed-apps-review
+SHA256          36C47A966757298461DD0EFFCCA8F91B243FF7058352EE971220F63BAA5FBFC4       D:\KNOUX-AI\qa-evidence\knoux-ai…
+UI hierarchy verified: screen-storage-breakdown
+SHA256          165437ED14FE25F8A0B0A5B40CA91CADC47C97238E53A0FFCA539C8B9BD04673       D:\KNOUX-AI\qa-evidence\knoux-ai…
+UI hierarchy verified: screen-privacy
+SHA256          BFB793C1359065332ABE68E60C4A33FADE9DE36D255DA8ED55CA896791EDAE94       D:\KNOUX-AI\qa-evidence\knoux-ai…
+UI hierarchy verified: screen-ai-recommendations
+SHA256          5BAEB77008CB0C18104201837F294DB99E6096CA111FAB3FC5146D182CDCAA21       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 7
+Complete
+

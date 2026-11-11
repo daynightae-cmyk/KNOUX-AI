@@ -1,0 +1,61 @@
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 1754
+TotalTime: 1754
+WaitTime: 1764
+Complete
+/data/local/tmp/knoux-phase1-63b1c2a697114b71b1956fc459d8b7f4.mp4: 1 file pulled, 0 skipped. 5.4 MB/s (488128 bytes in 0.086s)
+--------- beginning of main
+11-11 08:44:31.898 13179 13179 D KnouxSplash: Smile click started
+Cold-launch SoundPool starts: 1
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          F8824267CE70ACD26BA280F2EC8112D9478B5950B276ABD6C1FBF5AD1551C31D       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 3228
+TotalTime: 3228
+WaitTime: 3421
+Complete
+SHA256          94143D0573D9EC730134BE62FA3EC0357E7257B529CB74437651A30F8C26595F       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 3047
+TotalTime: 3047
+WaitTime: 3176
+Complete
+SHA256          DBE14319C76A4F319ACDB938D0F29C5FA89BB86248DDD484AC0B881526DE5BD5       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2696
+TotalTime: 2696
+WaitTime: 2713
+Complete
+SHA256          6143C6466BFA9DB0DBF97CB6CA42555E87533E984768392F6E830541FB1E098B       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2850
+TotalTime: 2850
+WaitTime: 2950
+Complete
+SHA256          10403467376CAF93F52D53C4A72E3BA29C036FC21BD1DC366D25E0CA1B571031       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 4975
+TotalTime: 4975
+WaitTime: 5094
+Complete
+
