@@ -33,15 +33,15 @@ private val homeTiles = listOf(
     HomeTile(Entry("Clean" ar "تنظيف", "Remove junk & temporary files" ar "الملفات المؤقتة وغير الضرورية",
         "2.4 GB", Mark.TRASH, note = "removable" ar "قابلة للإزالة"), Page.CLEAN_CENTER),
     HomeTile(Entry("Duplicate Files" ar "الملفات المكررة", "Find and review duplicate items" ar "اكتشف العناصر المكررة وراجعها",
-        "1,248", Mark.OVERLAY, note = "duplicates" ar "نسخة مكررة"), Page.DUPLICATES),
+        "1,248", Mark.OVERLAY, note = "duplicates" ar "نسخة مكررة"), Page.DUPLICATE_REVIEW),
     HomeTile(Entry("Storage" ar "التخزين", "Analyze usage & free up space" ar "حلل استخدام مساحة التخزين",
-        "128 GB", Mark.DISK, note = "/ 256 GB" ar "من 256 GB", progress = 50), Page.STORAGE),
+        "128 GB", Mark.DISK, note = "/ 256 GB" ar "من 256 GB", progress = 50), Page.STORAGE_BREAKDOWN),
     HomeTile(Entry("Privacy" ar "الخصوصية", "Detect trackers & protect your data" ar "مراجعة أدوات التتبع ومخاطر الخصوصية",
-        "7", Mark.SHIELD, note = "trackers found" ar "أدوات تتبع"), Page.PRIVACY),
+        "7", Mark.SHIELD, note = "trackers found" ar "أدوات تتبع"), Page.PRIVACY_INSPECTOR),
     HomeTile(Entry("Battery" ar "البطارية", "Reduce drain & extend battery life" ar "تقليل الاستهلاك وإطالة عمر البطارية",
-        "6h 42m", Mark.BATTERY, note = "estimated gain" ar "زيادة تقديرية"), Page.BATTERY),
+        "6h 42m", Mark.BATTERY, note = "estimated gain" ar "زيادة تقديرية"), Page.BATTERY_DIAGNOSTICS),
     HomeTile(Entry(Page.OPTIMIZE.title, "Boost performance & keep your device fast" ar "تحسين الأداء وسرعة الجهاز",
-        "94", Mark.CHIP, note = "Score" ar "درجة التحسين"), Page.OPTIMIZE)
+        "94", Mark.CHIP, note = "Score" ar "درجة التحسين"), Page.AI_RECOMMENDATIONS)
 )
 
 @Composable
@@ -70,7 +70,7 @@ internal fun HomeScreen(open: (Page) -> Unit) {
                 }
             }
             AccentButton(Action("Start Deep Scan" ar "ابدأ الفحص العميق", Mark.SEARCH),
-                Modifier.fillMaxWidth(if (roomy) 1f else .74f), tag = "start-scan") { open(Page.SCAN) }
+                Modifier.fillMaxWidth(if (roomy) 1f else .74f), tag = "start-scan") { open(Page.SCAN_SUMMARY) }
             HomeMetrics()
             homeTiles.chunked(if (roomy) 1 else 2).forEachIndexed { row, tiles ->
                 Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(7.dp)) {

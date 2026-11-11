@@ -4,7 +4,7 @@ param(
     [string]$Sdk = 'D:\Android\sdk',
     [switch]$Scrolled,
     [switch]$Interior,
-    [string]$Destination = (Join-Path $PSScriptRoot '..\qa-evidence\ui')
+    [string]$Destination = 'D:\KNOUX-AI\qa-evidence\ui'
 )
 $ErrorActionPreference = 'Stop'
 $adb = Join-Path $Sdk 'platform-tools\adb.exe'
@@ -71,8 +71,8 @@ try {
         Start-Sleep -Milliseconds 700
         $resumed = & $adb -s $Serial shell dumpsys activity activities | Select-String 'mResumedActivity'
         if ("$resumed" -notmatch [regex]::Escape("$app/.MainActivity")) { throw "KNOUX AI not foregrounded for $route" }
-        $captureScript = Join-Path (Split-Path $MyInvocation.MyCommand.Path -Parent) 'Capture-Preview.ps1'
-        & $captureScript -Serial $Serial -Name $name -Sdk $Sdk -Destination $Destination
+        $scriptDir = if ($PSScriptRoot) { $PSScriptRoot } elseif ($MyInvocation.MyCommand.Path) { Split-Path $MyInvocation.MyCommand.Path -Parent } else { 'D:\KNOUX-AI\scripts' }
+        & (Join-Path $scriptDir 'Capture-Preview.ps1') -Serial $Serial -Name $name -Sdk $Sdk -Destination $Destination
     }
 } finally {
     & $adb -s $Serial shell wm size $previous

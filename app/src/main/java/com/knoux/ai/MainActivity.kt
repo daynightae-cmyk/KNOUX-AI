@@ -11,10 +11,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -107,10 +110,26 @@ class MainActivity : ComponentActivity() {
             val splashReduced = reduced || !ValueAnimator.areAnimatorsEnabled() || power?.isPowerSaveMode == true
             var showSplash by remember { mutableStateOf(startSplash) }
             var dashboardPrepared by remember { mutableStateOf(!startSplash || splashReduced) }
+            // Track dashboard reveal animation progress (0 = hidden, 1 = fully revealed)
+            val dashReveal = remember { Animatable(if (startSplash && !splashReduced) 0f else 1f) }
+            LaunchedEffect(showSplash) {
+                if (!showSplash && dashReveal.value < 1f) {
+                    dashReveal.animateTo(1f, tween(520, easing = androidx.compose.animation.core.FastOutSlowInEasing))
+                }
+            }
             KnouxTheme(arabic, motion && !showSplash) {
                 Box(Modifier.fillMaxSize()) {
                     if (dashboardPrepared || !showSplash) {
-                        KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                        // Fluid reveal: scale up from 0.95 + fade in as splash exits
+                        val scale = if (splashReduced) 1f else 0.95f + 0.05f * dashReveal.value
+                        val alpha = if (splashReduced) 1f else dashReveal.value
+                        Box(Modifier.fillMaxSize().graphicsLayer {
+                            scaleX = scale; scaleY = scale
+                            this.alpha = alpha
+                            transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0.52f)
+                        }) {
+                            KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                        }
                     }
                     if (showSplash) {
                         val chime = rememberSplashChime(!splashReduced && freezeSplash == null)
@@ -167,7 +186,14 @@ private fun KnouxAppScaffold(
     val selected = page.reviewTab ?: when (page) {
         Page.HOME, Page.CLEAN, Page.TOOLS, Page.REPORTS -> page
         else -> Page.from(nav.previousBackStackEntry?.destination?.route)
-            ?.takeIf { it == Page.CLEAN || it == Page.TOOLS } ?: Page.HOME
+            ?.let { prev ->
+                when (prev) {
+                    Page.CLEAN -> Page.CLEAN
+                    Page.TOOLS -> Page.TOOLS
+                    Page.HOME -> Page.HOME
+                    else -> null
+                }
+            } ?: Page.HOME
     }
     var headerSheet by remember { mutableStateOf<HeaderSheet?>(null) }
     val back: () -> Unit = { if (!nav.popBackStack()) nav.switchTab(Page.HOME) }
@@ -199,14 +225,22 @@ private fun KnouxAppScaffold(
                     NavHost(navController = nav, startDestination = Page.HOME.id, modifier = Modifier.weight(1f),
                         enterTransition = {
                             if (!navMotion) EnterTransition.None
-                            else fadeIn(tween(210)) + slideInHorizontally(tween(280)) { it / 18 }
+                            else fadeIn(tween(230)) + scaleIn(tween(290), initialScale = 0.96f) +
+                                slideInHorizontally(tween(280)) { it / 20 }
                         },
-                        exitTransition = { if (!navMotion) ExitTransition.None else fadeOut(tween(150)) },
+                        exitTransition = {
+                            if (!navMotion) ExitTransition.None
+                            else fadeOut(tween(160)) + scaleOut(tween(180), targetScale = 0.97f)
+                        },
                         popEnterTransition = {
                             if (!navMotion) EnterTransition.None
-                            else fadeIn(tween(210)) + slideInHorizontally(tween(280)) { -it / 18 }
+                            else fadeIn(tween(230)) + scaleIn(tween(290), initialScale = 0.97f) +
+                                slideInHorizontally(tween(280)) { -it / 20 }
                         },
-                        popExitTransition = { if (!navMotion) ExitTransition.None else fadeOut(tween(150)) }
+                        popExitTransition = {
+                            if (!navMotion) ExitTransition.None
+                            else fadeOut(tween(160)) + scaleOut(tween(180), targetScale = 0.95f)
+                        }
                     ) {
                         Page.entries.forEach { target ->
                             composable(target.id) {
