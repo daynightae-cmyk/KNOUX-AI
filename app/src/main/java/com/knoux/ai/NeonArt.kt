@@ -26,6 +26,7 @@ internal val Mint = Color(0xff4df7c0)
 private val Clear = Color.Transparent
 
 private fun path(data: String) = PathParser().parsePathString(data).toPath()
+internal fun glyphPath(mark: Mark): Path? = symbol[mark]
 private val symbol = mapOf(
     Mark.MENU to "M3 6H21 M3 12H21 M3 18H21",
     Mark.BACK to "M20 12H4 L11 5 M4 12L11 19",
@@ -134,119 +135,132 @@ private fun glassFill(start: Offset = Offset(-25f, -38f), end: Offset = Offset(3
 
 @Composable
 internal fun HomeTileIcon(mark: Mark, tone: Color) {
-    Box(Modifier.size(40.dp), contentAlignment = Alignment.TopCenter) {
+    Box(Modifier.size(42.dp), contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {
-            val platform = Offset(size.width / 2f, size.height * .78f)
-            drawCircle(Brush.radialGradient(listOf(tone.copy(alpha = .34f), Clear), platform, size.width * .56f),
-                size.width * .56f, platform)
-            val oval = Size(size.width * .86f, size.height * .23f)
-            val start = platform - Offset(oval.width / 2f, oval.height / 2f)
-            drawOval(Brush.verticalGradient(listOf(Clear, tone.copy(alpha = .82f)), start.y, start.y + oval.height),
-                start, oval, style = Stroke(1.4.dp.toPx()))
+            val platform = Offset(size.width / 2f, size.height * .84f)
+            // Soft light pool only - no hard ring, so the icon keeps a clean base.
+            drawOval(Brush.radialGradient(listOf(tone.copy(alpha = .30f), Color.Transparent),
+                platform, size.width * .40f), Offset(size.width * .26f, platform.y - size.height * .10f),
+                Size(size.width * .48f, size.height * .20f))
+            val rim = Size(size.width * .72f, size.height * .15f)
+            drawOval(Brush.horizontalGradient(listOf(Color.Transparent, tone.copy(alpha = .8f), Color.Transparent)),
+                platform - Offset(rim.width / 2f, rim.height / 2f), rim, style = Stroke(.9.dp.toPx()))
         }
-        Glyph(mark, Modifier.size(32.dp), tone, true)
+        VolumetricGlyph(mark, tone, 30.dp)
     }
 }
 
+/**
+ * The hero composition shared by every screen: a deep atmosphere, layered light
+ * ribbons, a luminous pedestal, segmented orbital arcs and the screen-specific
+ * artwork sitting on top of it. The Home hero replaces the artwork with the
+ * volumetric K globe.
+ */
 @Composable
 internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier) {
     val home = mark == Mark.K
     val homeTall = LocalTall.current
-    val height = if (home) (if (homeTall) 150 else 140) else 100
-    val unitDivisor = if (home) (if (homeTall) 142f else 132f) else 128f
-    Box(modifier.fillMaxWidth().height(height.dp), contentAlignment = Alignment.Center) {
-        Canvas(Modifier.matchParentSize().graphicsLayer()) {
-            val x = size.width / 2
+    val height = if (home) (if (homeTall) 162.dp else 150.dp) else 112.dp
+    val unitDivisor = if (home) (if (homeTall) 150f else 140f) else 134f
+    val tone = heroTone(mark)
+    val points = rememberGlobePoints(if (home) 520 else 0)
+    val phase = if (motion) {
+        val transition = rememberInfiniteTransition(label = "hero drift")
+        transition.animateFloat(0f, 360f,
+            infiniteRepeatable(tween(42000, easing = LinearEasing)), label = "hero phase")
+    } else null
+    Box(modifier.fillMaxWidth().height(height), contentAlignment = Alignment.Center) {
+        // Layer 1 - static scene: atmosphere, ribbons, pedestal, arcs, artwork.
+        Canvas(Modifier.matchParentSize()) {
+            atmosphere(size.width, size.height, tone)
+            ribbonField(size.width, size.height, 0f, if (home) 1f else .72f)
+            val x = size.width / 2f
             val h = size.height
-            val cy = h * .46f
+            val cy = h * .44f
             val unit = h / unitDivisor
-            val wash = Brush.radialGradient(listOf(Color(0xff3310a7), Color(0xff111043), Clear), Offset(x, cy), h * .83f)
-            drawOval(wash, Offset(0f, -h * .09f), Size(size.width, h * 1.18f))
-            particleWave(h)
             translate(x, cy) {
-                scale(unit, unit, Offset.Zero) { orbitalArt(mark) }
-            }
-        }
-        if (motion) {
-            val transition = rememberInfiniteTransition(label = "neon orbit")
-            val angle = transition.animateFloat(0f, 360f, infiniteRepeatable(tween(12000, easing = LinearEasing)), label = "orbit angle")
-            Canvas(Modifier.matchParentSize()) {
-                val unit = size.height / unitDivisor
-                val center = Offset(size.width / 2, size.height * .46f)
-                val rad = unit * 64
-                drawArc(Cyan.copy(alpha = .46f), angle.value, 15f, false, center - Offset(rad, rad), Size(rad * 2, rad * 2), style = Stroke(unit * 1.6f, cap = StrokeCap.Round))
-                if (mark == Mark.RADAR) {
-                    val r = unit * 49
-                    val sweep = angle.value % 360f
-                    rotate(sweep, center) {
-                        drawArc(Brush.sweepGradient(listOf(Pink.copy(alpha = .48f), Clear, Clear), center), 0f, 45f, true, center - Offset(r, r), Size(r * 2, r * 2))
-                        drawLine(Pink.copy(alpha = .9f), center, center + Offset(r, 0f), unit * 1.15f)
-                    }
+                scale(unit, unit, Offset.Zero) {
+                    val radius = if (home) 58f else 52f
+                    val pedestalY = if (home) 64f else 56f
+                    bloom(Offset.Zero, radius * 1.70f, tone, .50f)
+                    lightPedestal(radius * .92f, pedestalY, if (home) Light.magenta else tone)
+                    heroArcs(radius * 1.00f, 0f)
+                    if (!home) orbitalArt(mark)
                 }
             }
         }
+        if (home) {
+            // Layer 2 - the particle globe spins as a cached layer.
+            Canvas(Modifier.matchParentSize().graphicsLayer {
+                val radians = (phase?.value ?: 0f) * PI.toFloat() / 180f
+                rotationZ = sin(radians) * 5f
+            }) {
+                val x = size.width / 2f
+                val h = size.height
+                val cy = h * .44f
+                val unit = h / unitDivisor
+                translate(x, cy) { scale(unit, unit, Offset.Zero) { drawGlobe(58f * .94f, points) } }
+            }
+            // Layer 3 - the brand mark, crisp and in front of the globe.
+            Canvas(Modifier.matchParentSize()) {
+                val x = size.width / 2f
+                val h = size.height
+                val cy = h * .44f
+                val unit = h / unitDivisor
+                translate(x, cy) { scale(unit, unit, Offset.Zero) { glowingK(58f * 1.02f) } }
+            }
+        }
+        if (phase != null) Canvas(Modifier.matchParentSize()) {
+            val unit = size.height / unitDivisor
+            val radius = unit * if (home) 68f else 62f
+            val center = Offset(size.width / 2f, size.height * .44f)
+            drawArc(Light.cyan.copy(alpha = .68f), phase.value - 100f, 11f, false,
+                center - Offset(radius, radius), Size(radius * 2f, radius * 2f),
+                style = Stroke(unit * 1.2f, cap = StrokeCap.Round))
+        }
     }
 }
 
-private fun DrawScope.particleWave(h: Float) {
-    val w = size.width
-    val glow = Brush.horizontalGradient(
-        0f to Violet.copy(alpha = .16f), .18f to Color(0xffcb43ff), .38f to Violet.copy(alpha = .34f),
-        .50f to Clear, .65f to Color(0xff6258ff).copy(alpha = .38f), .83f to Color(0xff428bff),
-        1f to Cyan.copy(alpha = .16f)
-    )
-    for (line in 0..14) {
-        val p = Path()
-        for (i in 0..48) {
-            val u = i / 48f
-            val side = abs(u - .5f) * 2
-            val y = h * (.68f - .22f * side.pow(1.4f) + .10f * sin(u * 12.566f + line * .12f) - .013f * line * side)
-            if (i == 0) p.moveTo(0f, y) else p.lineTo(w * u, y)
+/** Brand K drawn in front of the globe with its own bloom. */
+private fun DrawScope.glowingK(size: Float) {
+    val s = size / 24f
+    translate(-size / 2f, -size / 2f) {
+        scale(s, s, Offset.Zero) {
+            // Shadow separation so the mark stays crisp against the particle shell.
+            for (p in kPlanes) drawPath(p, Color(0xff06021a).copy(alpha = .60f), style = Stroke(2.3f, join = StrokeJoin.Round))
+            for ((w, a) in listOf(6f to .10f, 3.8f to .15f, 1.6f to .30f)) {
+                kPlanes.forEach { p -> drawPath(p, Light.magenta.copy(alpha = a), style = Stroke(w, join = StrokeJoin.Round)) }
+            }
+            knouxK()
+            kPlanes.forEach { drawPath(it, Light.ice.copy(alpha = .55f), style = Stroke(.23f, join = StrokeJoin.Round)) }
         }
-        if (line == 5) {
-            drawPath(p, glow, alpha = .40f, style = Stroke(h * .089f))
-            drawPath(p, glow, alpha = .55f, style = Stroke(h * .040f))
-        }
-        drawPath(p, glow, alpha = if (line == 5) .95f else .26f, style = Stroke(if (line == 5) h * .010f else h * .004f))
     }
-    for (row in 0..8) for (i in 0..67) {
-        val u = i / 67f
-        val edge = abs(u - .5f) * 2
-        if (edge < .34f) continue
-        val y = h * (.60f + .17f * sin(u * 6.3f + row * .22f) + row * .024f)
-        val color = if (u > .5f) Cyan else Violet
-        drawCircle(color.copy(alpha = edge * (.15f + (i % 3) * .1f)), h * (.0025f + row % 3 * .0008f), Offset(w * u, y))
-    }
+}
+
+internal fun heroTone(mark: Mark): Color = when (mark) {
+    Mark.K, Mark.LAYERS, Mark.ROCKET -> Light.violet
+    Mark.SHIELD, Mark.BROOM, Mark.TRASH -> Light.magenta
+    Mark.RADAR, Mark.DISK -> Light.cyan
+    Mark.BATTERY, Mark.PICTURES -> Light.azure
+    Mark.CHIP, Mark.GRID -> Light.pink
+    else -> Light.violet
 }
 
 private fun DrawScope.orbitalArt(mark: Mark) {
-    val home = mark == Mark.K
-    val floor = if (home) 62f else 54f
-    val orbit = if (home) 67f else 61f
-    drawCircle(Brush.radialGradient(listOf(Color(0xff5b2bc4).copy(alpha = .70f), Color(0xff1a53d6).copy(alpha = .34f), Clear), Offset.Zero, 92f), 92f, Offset.Zero)
-    val rim = Brush.sweepGradient(listOf(Cyan, Color(0xff2a3aa0), Violet, Pink, Color(0xff5a4bff), Cyan), Offset.Zero)
-    for (r in listOf(orbit, orbit + 7, orbit + 13)) drawCircle(rim, r, Offset.Zero, alpha = if (r == orbit) .70f else .30f, style = Stroke(.65f))
-    for (i in 0..66) {
-        val radians = (i * 5.35f * PI / 180).toFloat()
+    val orbit = 61f
+    // Inner halo keeps the artwork luminous without flattening the composition.
+    drawCircle(Brush.radialGradient(listOf(Light.violet.copy(alpha = .42f), Color(0xff1a53d6).copy(alpha = .18f), Clear), Offset.Zero, 86f), 86f, Offset.Zero)
+    // Fine measurement ring behind the artwork.
+    for (i in 0..54) {
+        val radians = (i * 6.66f * PI / 180).toFloat()
         val v = Offset(cos(radians), sin(radians))
-        if (i % 9 < 7) drawLine(if (i % 3 == 0) Cyan.copy(alpha = .56f) else Violet.copy(alpha = .35f), v * (orbit - 5), v * (orbit - if (i % 5 == 0) .5f else 3f), .7f)
+        if (i % 8 < 6) drawLine(if (i % 3 == 0) Light.cyan.copy(alpha = .40f) else Light.violet.copy(alpha = .24f),
+            v * (orbit - 3), v * (orbit - if (i % 5 == 0) .5f else 2.4f), .62f)
     }
-    listOf(-88f to 64f, 154f to 32f, 4f to 25f).forEachIndexed { i, (start, extent) ->
-        val accent = if (i == 2) Cyan else Pink
-        val box = Size(orbit * 2, orbit * 2)
-        drawArc(accent.copy(alpha = .12f), start, extent, false, Offset(-orbit, -orbit), box, style = Stroke(13f))
-        drawArc(rim, start, extent, false, Offset(-orbit, -orbit), box, style = Stroke(6.2f))
-        drawArc(Chalk.copy(alpha = .76f), start, extent, false, Offset(-orbit, -orbit), box, style = Stroke(1.3f))
-    }
-    val platform = Brush.horizontalGradient(listOf(Violet, Pink, Color(0xff6142ff), Cyan, Pink), -80f, 80f)
-    for (i in 0..4) {
-        val r = 54f + i * 10
-        val hh = 10f + i * 3
-        drawOval(platform, Offset(-r, floor - hh / 2), Size(2 * r, hh), alpha = if (i == 1) .97f else .30f / (i + 1), style = Stroke(if (i == 1) 3.2f else .95f))
-    }
-    drawOval(platform, Offset(-65f, floor - 6), Size(130f, 12f), alpha = .12f, style = Stroke(9f))
     when (mark) {
-        Mark.K, Mark.RADAR -> sphere(mark == Mark.K)
+        Mark.RADAR -> sphere(false)
+        Mark.TRASH -> translate(-46f, -46f) { volumetricMark(Mark.TRASH, Light.pink, 46f) }
+        Mark.GROUP -> translate(-43f, -43f) { volumetricMark(Mark.GROUP, Light.azure, 43f) }
         Mark.SHIELD -> {
             neonPath(path("M0 -48Q20 -34 49 -31L46 0Q39 30 0 49Q-39 30 -46 0L-49 -31Q-20 -34 0 -48Z"), Cyan, glassFill())
             neonPath(path("M0 -38Q20 -27 40 -25L37 0Q29 28 0 40Q-30 26 -37 0L-40 -25Q-20 -28 0 -38Z"), Pink, Brush.linearGradient(listOf(Color(0xff3534c9), Color(0xff110b44), Color(0xff8122b8)), Offset(-25f,-32f), Offset(35f,34f)), .55f)

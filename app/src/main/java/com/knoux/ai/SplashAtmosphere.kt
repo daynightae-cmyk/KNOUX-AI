@@ -19,10 +19,35 @@ private val ribbonLight = Brush.horizontalGradient(
     0f to Color(0xff6829ff), .28f to Color(0xfff03fff), .52f to Color(0xff9272ff),
     .78f to Color(0xff1edbff), 1f to Color(0xff176dff), endX = 1000f
 )
+private data class SplashRibbon(val crest: Path, val silk: Path, val light: Brush)
+
 private val ribbons = listOf(
-    Path().apply { moveTo(-40f, 357f); cubicTo(99f, 193f, 286f, 250f, 495f, 5f) },
-    Path().apply { moveTo(578f, 380f); cubicTo(742f, 287f, 844f, 147f, 1034f, 106f) },
-    Path().apply { moveTo(-34f, 1560f); cubicTo(355f, 1300f, 434f, 1645f, 1034f, 1260f) }
+    SplashRibbon(
+        Path().apply { moveTo(-40f, 360f); cubicTo(102f, 212f, 323f, 272f, 495f, 18f) },
+        Path().apply {
+            moveTo(-40f, 360f); cubicTo(102f, 212f, 323f, 272f, 495f, 18f)
+            cubicTo(348f, 184f, 201f, 107f, -40f, 280f); close()
+        },
+        Brush.horizontalGradient(0f to Color(0xff6927ff), .64f to Color(0xfff034ff),
+            1f to Color.Transparent, startX = 0f, endX = 500f)
+    ),
+    SplashRibbon(
+        Path().apply { moveTo(573f, 365f); cubicTo(738f, 286f, 861f, 153f, 1034f, 106f) },
+        Path().apply {
+            moveTo(573f, 365f); cubicTo(738f, 286f, 861f, 153f, 1034f, 106f)
+            lineTo(1034f, 151f); cubicTo(838f, 182f, 756f, 292f, 573f, 365f); close()
+        },
+        Brush.horizontalGradient(0f to Color.Transparent, .74f to Color(0xff22d9ff),
+            1f to Color(0xff408aff), startX = 570f, endX = 1030f)
+    ),
+    SplashRibbon(
+        Path().apply { moveTo(-34f, 1560f); cubicTo(300f, 1312f, 476f, 1635f, 1034f, 1260f) },
+        Path().apply {
+            moveTo(-34f, 1560f); cubicTo(300f, 1312f, 476f, 1635f, 1034f, 1260f)
+            cubicTo(512f, 1656f, 251f, 1504f, -34f, 1671f); close()
+        },
+        ribbonLight
+    )
 )
 private val ribbonDust = Path().apply {
     for (row in 0..10) {
@@ -47,10 +72,11 @@ internal fun DrawScope.drawSplashRibbons(opacity: Float, drift: Float) {
         translate(0f, drift) {
             drawPath(ribbonDust, ribbonLight, alpha = .49f * opacity)
             for (ribbon in ribbons) {
-                drawPath(ribbon, ribbonLight, alpha = .10f * opacity, style = Stroke(56f))
-                drawPath(ribbon, ribbonLight, alpha = .18f * opacity, style = Stroke(24f))
-                drawPath(ribbon, ribbonLight, alpha = .34f * opacity, style = Stroke(7f))
-                drawPath(ribbon, ribbonLight, alpha = .80f * opacity, style = Stroke(1.9f))
+                drawPath(ribbon.silk, ribbon.light, alpha = .24f * opacity)
+                drawPath(ribbon.crest, ribbon.light, alpha = .07f * opacity, style = Stroke(72f))
+                drawPath(ribbon.crest, ribbon.light, alpha = .12f * opacity, style = Stroke(38f))
+                drawPath(ribbon.crest, ribbon.light, alpha = .23f * opacity, style = Stroke(12f))
+                drawPath(ribbon.crest, ribbon.light, alpha = .92f * opacity, style = Stroke(2.4f))
             }
         }
     }

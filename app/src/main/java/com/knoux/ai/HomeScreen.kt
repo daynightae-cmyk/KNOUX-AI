@@ -1,5 +1,7 @@
 package com.knoux.ai
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -10,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -80,7 +83,7 @@ private fun HomeMetrics() {
     val icons = listOf(Mark.DISK, Mark.SHIELD, Mark.BATTERY)
     @Composable fun Metric(i: Int, modifier: Modifier) {
         Column(modifier.padding(vertical = 2.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Glyph(icons[i], Modifier.size(19.dp), if (i == 1) Cyan else Pink, true)
+            VolumetricGlyph(icons[i], if (i == 1) Light.cyan else Light.magenta, 20.dp)
             Label(labels[i].first, 12, weight = FontWeight.Bold, align = TextAlign.Center)
             Label(labels[i].second, 9, Mist, align = TextAlign.Center)
         }
@@ -135,11 +138,17 @@ internal fun CategoryCard(entry: Entry, index: Int, modifier: Modifier = Modifie
             }
             if (home) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Column(Modifier.weight(1f)) {
-                        Label(entry.value, 13, accent, FontWeight.Bold)
+                    Row(Modifier
+                        .background(Brush.horizontalGradient(
+                            listOf(accent.copy(alpha = .34f), accent.copy(alpha = .14f)), 0f, 260f),
+                            RoundedCornerShape(9.dp))
+                        .border(.7.dp, accent.copy(alpha = .55f), RoundedCornerShape(9.dp))
+                        .padding(horizontal = 7.dp, vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Label(entry.value, 12, accent, FontWeight.Bold)
                         entry.note?.let { Label(it.localized(), 9, Mist) }
                     }
-                    entry.progress?.let { Label("$it%", 10, Mist, FontWeight.Bold) }
+                    entry.progress?.let { Label("$it%", 10, Mist, FontWeight.Bold, Modifier.weight(1f), TextAlign.End) }
                 }
                 entry.progress?.let { GradientBar(it / 100f, thickness = 4) }
             }

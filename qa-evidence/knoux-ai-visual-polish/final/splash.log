@@ -1,0 +1,33 @@
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 1916
+TotalTime: 1916
+WaitTime: 1934
+Complete
+/data/local/tmp/knoux-phase1-007d1a9fd18942be8a1d5068a8c58191.mp4: 1 file pulled, 0 skipped. 27.1 MB/s (608925 bytes in 0.021s)
+--------- beginning of main
+11-11 08:48:00.647 13694 13694 D KnouxSplash: Smile click started
+Cold-launch SoundPool starts: 1
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          ADEF1D769A99994971DF6BF58AD8E3CCCF32E5F41C0373740F9E3D027C6AA4B5       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 4411
+TotalTime: 4411
+WaitTime: 4987
+Complete
+SHA256          22A1A2A552084ECE73B39566974A9733CD05573D550F82AB4214CEA02B181979       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 5470
+TotalTime: 5470
+WaitTime: 5503
+Complete

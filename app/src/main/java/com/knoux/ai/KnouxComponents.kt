@@ -1,9 +1,12 @@
 package com.knoux.ai
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,7 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,6 +29,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
@@ -39,6 +46,8 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.cos
+import kotlin.math.sin
 
 internal val LocalArabic = compositionLocalOf { false }
 internal val LocalPreviewMotion = compositionLocalOf { false }
@@ -69,48 +78,69 @@ internal fun Label(
     Text(text, modifier, color = tint, fontSize = size.sp, lineHeight = (size * 1.18f).sp, fontWeight = weight, textAlign = align)
 }
 
+/**
+ * Premium glass material.
+ *
+ * The surface is built from layers rather than one flat tint: a deep base
+ * gradient, a distinct lit top edge, an inner reflection sweep, a directional
+ * border that is bright on the light side and quiet on the other, a soft cast
+ * shadow underneath and one localised light concentration near the content.
+ */
 internal fun Modifier.glass(
     radius: Int, active: Boolean = false, ghost: Boolean = false, tab: Boolean = false, tint: Color? = null
 ): Modifier =
     drawBehind {
         val rad = CornerRadius(radius.dp.toPx())
+        val width = size.width.coerceAtLeast(1f)
+        val height = size.height.coerceAtLeast(1f)
         val edge = when {
-            tab -> listOf(Color(0xff3a1778), Color(0xff5a25d4), Color(0xff2c1268))
+            tab -> listOf(Color(0xff2a1259), Color(0xff47209c), Color(0xff1d0c46))
             active -> vivid
-            ghost -> listOf(Color(0xff362a72), Color(0xff1d1a4a), Color(0xff3d2e6c))
+            ghost -> listOf(Color(0xff241a52), Color(0xff14123a), Color(0xff241a4e))
             else -> panel
         }
-        drawRoundRect(Brush.linearGradient(edge, Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad)
-        // Glass sheen along the top edge: gives every card a polished, lit surface.
-        drawRoundRect(Brush.verticalGradient(listOf(Chalk.copy(alpha = if (active) .22f else .14f), Color.Transparent),
-            startY = 0f, endY = size.height * .62f), cornerRadius = rad)
-        val flash = tint ?: if (active) Color(0xffd16bff) else Color(0xffa073ff)
-        val flashAlpha = if (active) .70f else .42f
-        val width = size.width.coerceAtLeast(1f)
+        // Cast shadow: the panel sits above the background instead of floating flat.
+        drawRoundRect(Color.Black.copy(alpha = if (active) .34f else .26f),
+            topLeft = Offset(0f, height * .035f), size = size, cornerRadius = rad)
+        // Deep base with a vertical depth gradient.
+        drawRoundRect(Brush.verticalGradient(listOf(edge[0], edge[1], edge[2], edge[1]),
+            startY = 0f, endY = height), cornerRadius = rad)
+        // Directional sheen across the upper half.
+        drawRoundRect(Brush.linearGradient(listOf(Color.White.copy(alpha = if (active) .16f else .10f), Color.Transparent),
+            start = Offset(0f, 0f), end = Offset(width * .9f, height * .8f)), cornerRadius = rad)
+        // Distinct top-edge highlight: the polished lip of the glass.
+        drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = if (active) .21f else .13f),
+            Color.Transparent), startY = 0f, endY = height * .36f), cornerRadius = rad)
+        // Localised light concentration where the content starts.
+        val flash = tint ?: if (active) Color(0xffd16bff) else Color(0xff9a6bff)
+        val flashAlpha = if (active) .58f else .24f
         drawRoundRect(Brush.radialGradient(listOf(flash.copy(alpha = flashAlpha), Color.Transparent),
-            Offset(width * .12f, 0f), width * .57f), cornerRadius = rad)
-        val bounce = if (active && !tab) Cyan else tint ?: Violet
-        drawRoundRect(Brush.radialGradient(listOf(bounce.copy(alpha = if (active) .55f else .26f), Color.Transparent),
-            Offset(width * .96f, size.height), width * .42f), cornerRadius = rad)
+            Offset(width * .10f, -height * .06f), width * .62f), cornerRadius = rad)
+        // Cool bounce light from the opposite side.
+        val bounce = if (active && !tab) Light.cyan else tint ?: Light.violet
+        drawRoundRect(Brush.radialGradient(listOf(bounce.copy(alpha = if (active) .42f else .18f), Color.Transparent),
+            Offset(width * .97f, height * 1.02f), width * .46f), cornerRadius = rad)
+        // Border: bright where the light hits, quiet on the shadow side.
         val stroke = when {
-            active -> listOf(Chalk, Color(0xffd9b4ff), if (tab) Pink else Color(0xff8ff5ff))
-            tint != null -> listOf(tint.copy(alpha = .98f), Color(0xff6b6ea4), tint.copy(alpha = .62f))
-            else -> listOf(Color(0xffc4b4ff), Color(0xff8f7fb4), Color(0xffc47ff2), Color(0xff8685a4))
+            active -> listOf(Color.White.copy(alpha = .95f), Color(0xffd9b4ff), if (tab) Light.magenta else Light.cyan)
+            tint != null -> listOf(tint.copy(alpha = .92f), Color(0xff4b4a74), tint.copy(alpha = .48f))
+            else -> listOf(Color(0xffd6c8ff), Color(0xff6a5c92), Color(0xffc47ff2), Color(0xff5b5a7c))
         }
-        val rimLight = Brush.horizontalGradient(
-            0f to Color.Transparent, .18f to Pink.copy(alpha = .80f), .45f to Color.Transparent,
-            .81f to Cyan.copy(alpha = .85f), 1f to Color.Transparent
-        )
-        drawRoundRect(rimLight, cornerRadius = rad,
-            alpha = if (active) 1f else .80f, style = Stroke((if (active) 3.dp else 2.dp).toPx()))
-        drawRoundRect(Brush.linearGradient(stroke, Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad, style = Stroke((if (active) 1.8.dp else 1.dp).toPx()))
+        drawRoundRect(Brush.linearGradient(stroke, Offset.Zero, Offset(width, height)), cornerRadius = rad,
+            style = Stroke((if (active) 1.7.dp else 1.dp).toPx()))
+        // Hairline rim light along the top-left, the signature of the material.
+        drawRoundRect(Brush.horizontalGradient(listOf(Light.magenta.copy(alpha = .55f), Color.Transparent,
+            Light.cyan.copy(alpha = .50f), Color.Transparent), startX = 0f, endX = width),
+            cornerRadius = rad, alpha = if (active) .95f else .62f, style = Stroke((if (active) 2.4.dp else 1.6.dp).toPx()))
     }
 
-private fun Modifier.buttonBloom(): Modifier = drawBehind {
-    for (dp in listOf(14, 9, 5)) {
+private fun Modifier.buttonBloom(primary: Boolean): Modifier = drawBehind {
+    if (!primary) return@drawBehind
+    for (dp in listOf(16, 10, 6)) {
         val delta = dp.dp.toPx()
-        drawRoundRect(Brush.horizontalGradient(listOf(Violet.copy(alpha = .11f), Color(0xff5231f7).copy(alpha = .12f), Cyan.copy(alpha = .12f))),
-            topLeft = Offset(-delta, -delta * .55f), size = Size(size.width + delta * 2, size.height + delta * 1.10f),
+        drawRoundRect(Brush.horizontalGradient(listOf(Light.magenta.copy(alpha = .13f),
+            Color(0xff5a2bf0).copy(alpha = .15f), Light.cyan.copy(alpha = .12f))),
+            topLeft = Offset(-delta, -delta * .60f), size = Size(size.width + delta * 2, size.height + delta * 1.20f),
             cornerRadius = CornerRadius(size.height / 2 + delta))
     }
 }
@@ -122,12 +152,26 @@ internal fun GlassPanel(
     Box(modifier.glass(radius, tint = tint), contentAlignment = Alignment.CenterStart) { content() }
 }
 
+/**
+ * Icon container: a lit rounded shell with an internal light source, a bright
+ * upper edge and the volumetric glyph inside it.
+ */
 @Composable
 internal fun IconBadge(mark: Mark, tint: Color, modifier: Modifier = Modifier, diameter: Int = 36) {
     val shape = RoundedCornerShape((diameter * .30f).dp)
-    Box(modifier.size(diameter.dp).background(
-        Brush.radialGradient(listOf(tint.copy(alpha = .58f), tint.copy(alpha = .20f), Color.Transparent)), shape
-    ).border(.7.dp, tint.copy(alpha = .52f), shape), contentAlignment = Alignment.Center) { Glyph(mark, Modifier.size((diameter * .72).dp), tint, true) }
+    val box = modifier.size(diameter.dp)
+    Box(box.background(
+        Brush.verticalGradient(listOf(tint.copy(alpha = .42f), Color(0xff140d33).copy(alpha = .82f))),
+        shape
+    ).border(.8.dp, Brush.horizontalGradient(listOf(Color.White.copy(alpha = .55f), tint.copy(alpha = .70f), Color.Transparent)), shape),
+        contentAlignment = Alignment.Center) {
+        Canvas(Modifier.matchParentSize()) {
+            bloom(Offset(size.width * .30f, size.height * .18f), size.width * .72f, tint, .85f)
+            drawCircle(Brush.radialGradient(listOf(Color.White.copy(alpha = .18f), Color.Transparent),
+                Offset(size.width * .26f, size.height * .16f), size.width * .42f), size.width * .42f, Offset(size.width * .26f, size.height * .16f))
+        }
+        VolumetricGlyph(mark, tint, (diameter * .70f).dp)
+    }
 }
 
 @Composable
@@ -175,10 +219,20 @@ internal fun AccentButton(
     tag: String = "", onClick: () -> Unit
 ) {
     val round = RoundedCornerShape(28.dp)
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val scale = if (pressed) .975f else 1f
+    val shimmer = if (primary && enabled && LocalPreviewMotion.current) {
+        val transition = rememberInfiniteTransition(label = "cta shimmer")
+        transition.animateFloat(0f, 1f, infiniteRepeatable(tween(5200, easing = LinearEasing)), label = "shimmer")
+    } else null
     Row(modifier.heightIn(min = 48.dp).then(if (tag.isNotEmpty()) Modifier.testTag(tag) else Modifier)
-        .then(if (primary && enabled) Modifier.buttonBloom() else Modifier)
-        .clip(round).glass(28, primary && enabled, ghost = true).clickable(enabled = enabled, role = Role.Button, onClick = onClick)
-        .padding(horizontal = 12.dp, vertical = 7.dp),
+        .graphicsLayer { scaleX = scale; scaleY = scale }
+        .then(if (primary && enabled) Modifier.buttonBloom(true) else Modifier)
+        .clip(round)
+        .then(if (primary && enabled) Modifier.primarySurface(shimmer) else Modifier.glass(28, false, ghost = true))
+        .clickable(interactionSource = interaction, indication = null, enabled = enabled, role = Role.Button, onClick = onClick)
+        .padding(horizontal = 14.dp, vertical = 7.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically
     ) {
         val tone = if (enabled) Chalk else Mist.copy(alpha = .63f)
@@ -192,6 +246,31 @@ internal fun AccentButton(
             }
         }
     }
+}
+
+/** The lit surface used by primary calls to action. */
+private fun Modifier.primarySurface(shimmer: State<Float>?): Modifier = drawBehind {
+    val width = size.width.coerceAtLeast(1f)
+    val height = size.height.coerceAtLeast(1f)
+    val rad = CornerRadius(height / 2f)
+    val travel = shimmer?.value?.let { it * width * 1.6f - width * .3f } ?: width * .35f
+    // Body: magenta into violet into cyan, the brand CTA gradient.
+    drawRoundRect(Brush.horizontalGradient(listOf(Color(0xffe04bff), Color(0xff9b2bff),
+        Color(0xff3a49f0), Color(0xff00c8ff)), 0f, width), cornerRadius = rad)
+    // Travelling specular band keeps the button alive without extra glow.
+    if (shimmer != null) {
+        drawRoundRect(Brush.linearGradient(listOf(Color.Transparent, Color.White.copy(alpha = .22f), Color.Transparent),
+            start = Offset(travel - width * .22f, 0f), end = Offset(travel + width * .22f, height)), cornerRadius = rad)
+    }
+    // Polished top lip.
+    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .38f), Color.Transparent),
+        startY = 0f, endY = height * .55f), cornerRadius = rad)
+    // Inner shadow at the bottom edge for physical depth.
+    drawRoundRect(Brush.verticalGradient(listOf(Color.Transparent, Color(0xff2a0a5e).copy(alpha = .35f)),
+        startY = height * .45f, endY = height), cornerRadius = rad)
+    // Clean bright edge.
+    drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .70f), Color.Transparent,
+        Light.cyan.copy(alpha = .55f)), 0f, width), cornerRadius = rad, style = Stroke(1.2.dp.toPx()))
 }
 
 @Composable
@@ -222,13 +301,29 @@ internal fun ProgressDonut(
             val start = Offset(inset, inset)
             val arcSize = Size(width - inset * 2, width - inset * 2)
             val sweep = if (split) 342f else 348f * value / 100f
-            val tone = Brush.sweepGradient(listOf(Color(0xffb52bff), Color(0xff5f2ef7), Cyan, if (split) Gold else Cyan, Cyan, Pink, Color(0xffb52bff)))
+            val tone = Brush.sweepGradient(listOf(Color(0xffb52bff), Color(0xff5f2ef7), Light.cyan, if (split) Gold else Light.cyan, Light.cyan, Light.magenta, Color(0xffb52bff)))
+            // Dark cavity with an inner light that reads as depth, not a flat ring.
+            drawCircle(Brush.radialGradient(listOf(Color(0xff171037), Color(0xff09071f)), center, width * .5f),
+                width * .5f - inset * .35f, center)
             drawCircle(Color(0xff2e2858), radius = width / 2 - inset, style = Stroke(band))
-            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .24f, style = Stroke(band * 1.8f, cap = StrokeCap.Round))
+            drawCircle(Color.White.copy(alpha = .16f), radius = width / 2 - inset - band * .48f, style = Stroke(band * .16f))
+            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .26f, style = Stroke(band * 1.9f, cap = StrokeCap.Round))
             drawArc(tone, -84f, sweep, false, start, arcSize, style = Stroke(band, cap = StrokeCap.Round))
+            // Bright inner filament on the lit part of the ring.
+            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .75f, style = Stroke(band * .22f, cap = StrokeCap.Round))
+            // Start and end caps read as machined terminals.
+            val capAngle = Math.toRadians((-84f + sweep).toDouble())
+            drawCircle(Color.White.copy(alpha = .85f), band * .30f,
+                Offset(size.width / 2f + (width / 2 - inset) * cos(capAngle).toFloat(),
+                    size.height / 2f + (width / 2 - inset) * sin(capAngle).toFloat()))
         }
         Column(Modifier.padding(horizontal = (diameter * .15f).dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Label(displayValue, if (diameter < 50) 13 else 21, weight = FontWeight.ExtraBold, align = TextAlign.Center)
+            val valueSize = when {
+                diameter < 50 -> 13
+                displayValue.length > 5 -> 15
+                else -> 21
+            }
+            Label(displayValue, valueSize, weight = FontWeight.ExtraBold, align = TextAlign.Center)
             if (label.isNotEmpty()) Label(label, 9, Mist, align = TextAlign.Center)
         }
     }

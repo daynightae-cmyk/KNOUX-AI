@@ -113,29 +113,18 @@ private val bladeBrush = Brush.linearGradient(listOf(Color(0xfffb69ff), Color(0x
 private val lowerBrush = Brush.linearGradient(listOf(Color(0xff174ffd), Color(0xff00ecff)), Offset(500f, 425f), Offset(645f, 548f))
 
 // ---- Neon smile geometry (traced luminous curve beneath the wordmark) ----
-private val smilePoints = listOf(
-    Offset(60f, 776f), Offset(95f, 780f),
-    Offset(135.1f, 783.1f), Offset(170.7f, 790.2f), Offset(206.2f, 799.1f), Offset(241.8f, 809.8f),
-    Offset(277.3f, 819.6f), Offset(312.9f, 828.4f), Offset(348.4f, 837.3f), Offset(384f, 842.7f),
-    Offset(419.6f, 848f), Offset(455.1f, 850.7f), Offset(490.7f, 851.6f), Offset(526.2f, 849.8f),
-    Offset(561.8f, 845.3f), Offset(597.3f, 844.4f), Offset(632.9f, 837.3f), Offset(668.4f, 828.4f),
-    Offset(704f, 817.8f), Offset(739.6f, 806.2f), Offset(775.1f, 795.6f), Offset(810.7f, 786.7f),
-    Offset(842.7f, 778.7f), Offset(880f, 772f), Offset(940f, 760f)
-)
+private val smileTip = Offset(936f, 772f)
 private val smilePath: Path by lazy {
     Path().apply {
-        moveTo(smilePoints.first().x, smilePoints.first().y)
-        for (i in 1 until smilePoints.size - 1) {
-            val mid = (smilePoints[i] + smilePoints[i + 1]) * 0.5f
-            quadraticTo(smilePoints[i].x, smilePoints[i].y, mid.x, mid.y)
-        }
-        lineTo(smilePoints.last().x, smilePoints.last().y)
+        moveTo(72f, 757f)
+        cubicTo(285f, 915f, 705f, 930f, smileTip.x, smileTip.y)
     }
 }
 private val smileMeasure: PathMeasure by lazy { PathMeasure().apply { setPath(smilePath, false) } }
+private val smileGlowPoints by lazy { List(27) { smileMeasure.getPosition(smileMeasure.length * it / 26f) } }
 private val smileBrush = Brush.horizontalGradient(
-    0f to Color(0xff8b5cf6).copy(alpha = 0f), 0.08f to Color(0xff8b5cf6), 0.35f to Color(0xffa855f7),
-    0.62f to Color(0xff3b82f6), 0.92f to Color(0xff22d3ee), 1f to Color(0xff22d3ee).copy(alpha = 0f),
+    0f to Color.Transparent, 0.11f to Color(0xfff02bff), 0.37f to Color(0xffa749fb),
+    0.62f to Color(0xff4a73ff), 0.93f to Color(0xff00e4ff), 1f to Color.Transparent,
     startX = 60f, endX = 940f
 )
 private val smileCore = Brush.horizontalGradient(
@@ -143,7 +132,14 @@ private val smileCore = Brush.horizontalGradient(
     0.90f to Color(0xffcffafe), 1f to Color(0xffcffafe).copy(alpha = 0f), startX = 60f, endX = 940f
 )
 private val smileStops = listOf(
-    0f to Color(0xff8b5cf6), 0.35f to Color(0xffa855f7), 0.62f to Color(0xff3b82f6), 1f to Color(0xff22d3ee)
+    0f to Color(0xfff02bff), 0.37f to Color(0xffa749fb), 0.62f to Color(0xff4a73ff), 1f to Color(0xff00e4ff)
+)
+private val kTrail = Path().apply {
+    moveTo(227f, 283f)
+    cubicTo(338f, 195f, 472f, 195f, 558f, 240f)
+}
+private val kTrailLight = Brush.horizontalGradient(
+    listOf(Color.Transparent, Color(0xffa32dff), Color(0xfff58bff)), 227f, 558f
 )
 private fun smileColor(t: Float): Color {
     for (i in 1 until smileStops.size) {
@@ -196,8 +192,9 @@ private fun DrawScope.drawPenTip(point: Offset, direction: Offset, tint: Color, 
 }
 
 private fun DrawScope.strokeGlow(path: Path, brush: Brush, tint: Color) {
-    drawPath(path, tint.copy(alpha = .10f), style = Stroke(14f, join = StrokeJoin.Round))
-    drawPath(path, tint.copy(alpha = .30f), style = Stroke(6f, join = StrokeJoin.Round))
+    drawPath(path, tint.copy(alpha = .055f), style = Stroke(22f, join = StrokeJoin.Round))
+    drawPath(path, tint.copy(alpha = .12f), style = Stroke(11f, join = StrokeJoin.Round))
+    drawPath(path, tint.copy(alpha = .33f), style = Stroke(4.8f, join = StrokeJoin.Round))
     drawPath(path, brush)
     drawPath(path, tint.copy(alpha = .85f), style = Stroke(1.6f, join = StrokeJoin.Round))
     drawPath(path, Chalk.copy(alpha = .52f), style = Stroke(.7f, join = StrokeJoin.Round))
@@ -208,6 +205,11 @@ private fun DrawScope.drawKnouxMark(c: SplashMotionController) {
     val p1 = c.eased(K1_START, K1_END, PenEasing)
     val p2 = c.eased(K2_START, K2_END, PenEasing)
     val p3 = c.eased(K3_START, K3_END, PenEasing)
+    val trail = if (c.reduced) .48f else c.eased(K1_END, K2_END) * .72f
+    if (trail > 0f) {
+        drawPath(kTrail, kTrailLight, alpha = trail * .17f, style = Stroke(12f))
+        drawPath(kTrail, kTrailLight, alpha = trail, style = Stroke(1.65f))
+    }
     if (p1 > 0f) clipSweep(Offset(500f, 235f), Offset(-0.35f, 0.94f), 250f, p1, Pink) { strokeGlow(kUpper, upperBrush, Pink) }
     // Lower cyan is composited beneath the blade; it reveals last to complete the silhouette.
     if (p3 > 0f) clipSweep(Offset(560f, 412f), Offset(0.30f, 0.95f), 175f, p3, Cyan) { strokeGlow(kLower, lowerBrush, Cyan) }
@@ -235,14 +237,14 @@ private fun DrawScope.drawNeonSmile(c: SplashMotionController, segment: Path) {
     val bloom = if (c.reduced) 1f else c.scene(end, BLOOM_END)
     // Smooth bloom: overlapping soft radial stamps follow the curve (no hard stroke bands).
     val haze = p * (0.45f + 0.55f * bloom)
-    val last = smilePoints.size - 1f
-    for (i in smilePoints.indices) {
+    val last = smileGlowPoints.size - 1f
+    for (i in smileGlowPoints.indices) {
         val t = i / last
         if (t > p) break
         val edge = ((p - t) * 10f).coerceIn(0f, 1f)
         val col = smileColor(t)
-        val a = haze * edge
-        val pt = smilePoints[i]
+        val a = haze * edge * (minOf(t, 1f - t) * 8f).coerceIn(0f, 1f)
+        val pt = smileGlowPoints[i]
         drawCircle(Brush.radialGradient(listOf(col.copy(alpha = 0.16f * a), Color.Transparent), pt, 46f), 46f, pt)
         drawCircle(Brush.radialGradient(listOf(col.copy(alpha = 0.20f * a), Color.Transparent), pt, 24f), 24f, pt)
     }
@@ -260,7 +262,7 @@ private fun DrawScope.drawNeonSmile(c: SplashMotionController, segment: Path) {
         drawPenTip(tip, direction, smileColor(p), strength)
     }
     if (p >= 1f) {
-        drawSplashFlare(smilePoints.last(), if (c.reduced) .72f else 1f - .62f * bloom)
+        drawSplashFlare(smileTip, if (c.reduced) .72f else 1f - .53f * bloom)
     }
 }
 

@@ -29,6 +29,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -288,14 +291,31 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
         tabs.forEach { (tab, icon) ->
             val active = tab == selected
             Column(Modifier.weight(1f).heightIn(min = 48.dp).testTag("tab-${tab.id}").clip(RoundedCornerShape(20.dp))
-                .then(if (active) Modifier.glass(20, true, tab = true) else Modifier)
+                .then(if (active) Modifier.tabSelection() else Modifier)
                 .selectable(active, role = Role.Tab, onClick = { open(tab) }).padding(vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Glyph(icon, Modifier.size(20.dp), Chalk, active)
+                Glyph(icon, Modifier.size(20.dp), if (active) Chalk else Mist, active)
                 Label(tabTitle(tab).localized(), 11, if (active) Chalk else Mist, if (active) FontWeight.Bold else FontWeight.Normal, align = TextAlign.Center)
             }
         }
     }
+}
+
+/** Selected tab: a filled, lit pill with a soft bloom under it. */
+private fun Modifier.tabSelection(): Modifier = drawBehind {
+    val rad = CornerRadius(size.height * .42f)
+    for (dp in listOf(9, 5)) {
+        val delta = dp.dp.toPx()
+        drawRoundRect(Brush.horizontalGradient(listOf(Light.violet.copy(alpha = .16f), Light.cyan.copy(alpha = .12f))),
+            topLeft = Offset(-delta * .5f, -delta * .35f), size = Size(size.width + delta, size.height + delta * .7f),
+            cornerRadius = CornerRadius(size.height * .42f + delta * .5f))
+    }
+    drawRoundRect(Brush.linearGradient(listOf(Color(0xff7a2be8), Color(0xff4d23c4), Color(0xff1f3fb8)),
+        Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad)
+    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .28f), Color.Transparent)),
+        cornerRadius = rad)
+    drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .55f), Light.cyan.copy(alpha = .45f), Color.Transparent)),
+        cornerRadius = rad, style = Stroke(1.1.dp.toPx()))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
