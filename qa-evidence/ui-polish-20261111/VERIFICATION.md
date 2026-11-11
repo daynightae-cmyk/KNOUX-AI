@@ -72,8 +72,8 @@ Reference-vs-runtime sheets for all 20 screens plus splash are in [comparisons/]
 
 ## Evidence and disk
 
-- New evidence set: 95,777,111 bytes total, including the APK, 20 comparison sheets, 20+3 captures, logs, and the recording.
-- D: free space at handoff: 4,761,968,640 bytes. No cleanup was performed; earlier build outputs and prior evidence folders were left in place.
-- The two prior evidence folders (`knoux-ai-visual-polish`, `knoux-ai-refinement-20261111`) and the imported references remain untouched and untracked by this pass.
+- New evidence set: 95,783,110 bytes total, including the APK, 20 comparison sheets, 20+3 captures, logs, and the recording.
+- D: free space measured after the delivery commit: 4,668,301,312 bytes (it moves while the emulator and Gradle run). No cleanup was performed; earlier build outputs and prior evidence folders were left in place.
+- The two prior evidence folders (`knoux-ai-visual-polish`, `knoux-ai-refinement-20261111`) and the imported references were left untouched by this pass.
 
 Phase 1 stops here for owner visual approval.
