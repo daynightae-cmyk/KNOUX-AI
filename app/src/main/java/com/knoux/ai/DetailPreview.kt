@@ -2,6 +2,7 @@ package com.knoux.ai
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -18,7 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -45,11 +49,16 @@ internal fun DetailPreview(page: Page) {
     var currentItem by rememberSaveable(page) { mutableIntStateOf(0) }
     val selected = design.rows.indices.filter { mask and (1 shl it) != 0 }.toSet()
     val total = PreviewFixtures.selectedMb(design.rows, selected)
+    val selectionCount = "${selected.size} of ${design.rows.size} selected" ar
+        "${selected.size} من ${design.rows.size} محدد"
     fun toggle(index: Int) { mask = mask xor (1 shl index) }
     fun open(index: Int) { currentItem = index; dialog = DetailDialog.ITEM }
+    val proceedAction = if (page == Page.CLEAN_CENTER)
+        Action("Clean Selected (${formatMb(total)})" ar "تنظيف المحدد (${formatMb(total)})", design.proceed.icon)
+    else design.proceed
     val actions: @Composable () -> Unit = {
         AdaptiveActions(
-            design.review, design.proceed,
+            design.review, proceedAction,
             secondEnabled = design.selected == null || selected.isNotEmpty(),
             onFirst = {
                 if (page == Page.DUPLICATE_REVIEW) mask = (1 shl design.rows.size) - 1
@@ -119,8 +128,16 @@ internal fun DetailPreview(page: Page) {
                             else -> design.rows.indices.toList()
                         }
                         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Label("${design.listHeading.localized()} (${ordered.size})", 16,
+                            Label(if (page == Page.CLEAN_CENTER) design.listHeading.localized()
+                                else "${design.listHeading.localized()} (${ordered.size})", 16,
                                 weight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                            if (page == Page.CLEAN_CENTER) {
+                                Column(horizontalAlignment = Alignment.End) {
+                                    Label(selectionCount.localized(), 10, Mist,
+                                        modifier = Modifier.testTag("detail-selection-total"))
+                                    Label(formatMb(total), 13, Pink, FontWeight.Bold)
+                                }
+                            }
                             if (page == Page.PRIVACY_INSPECTOR) {
                                 DetailChip(if (reverse) "Risk ↑" ar "المخاطر ↑" else "Risk ↓" ar "المخاطر ↓", reverse) { reverse = !reverse }
                             }
@@ -138,9 +155,13 @@ internal fun DetailPreview(page: Page) {
                     }
                 }
                 when (page) {
-                    Page.CLEAN_CENTER -> InsightPanel("AI Recommendation" ar "توصية الذكاء الاصطناعي",
-                        "The sample selection would recover ${formatMb(total)}." ar
-                            "المساحة المقدّرة للاختيار في المثال ${formatMb(total)}.", Mark.CHIP)
+                    Page.CLEAN_CENTER -> {
+                        InsightPanel("AI Recommendation" ar "توصية الذكاء الاصطناعي",
+                            "Clean ${formatMb(total)} of junk in this sample. Safe preview — nothing is deleted; estimated performance boost up to 28%." ar
+                                "نظّف ${formatMb(total)} من الملفات غير الضرورية في المثال. معاينة آمنة — لا حذف فعلي؛ تحسن أداء تقديري حتى ٢٨٪.",
+                            Mark.CHIP, pill = "Recommended" ar "موصى به")
+                        EstimatedGainPanel(total)
+                    }
                     Page.PRIVACY_INSPECTOR -> InsightPanel("Risk Insights" ar "ملخص المخاطر",
                         "High: 2 · Medium: 2 · Low: 1" ar "مرتفعة: ٢ · متوسطة: ٢ · منخفضة: ١", Mark.SHIELD)
                     Page.SCAN_SUMMARY -> InsightPanel("Suggested Next Actions" ar "الإجراءات التالية",
@@ -151,13 +172,12 @@ internal fun DetailPreview(page: Page) {
                     Page.AI_RECOMMENDATIONS -> RecommendationNotes()
                     else -> Unit
                 }
-                if (design.selected != null) {
+                if (design.selected != null && page != Page.CLEAN_CENTER) {
                     GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
                         Row(Modifier.fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalAlignment = Alignment.CenterVertically) {
                             Glyph(Mark.CHECK, Modifier.size(24.dp), Cyan, true)
-                            Label(("${selected.size} of ${design.rows.size} selected" ar
-                                "${selected.size} من ${design.rows.size} محدد").localized(), 13, weight = FontWeight.Bold,
+                            Label(selectionCount.localized(), 13, weight = FontWeight.Bold,
                                 modifier = Modifier.testTag("detail-selection-total"))
                             if (design.rows.any { it.mb > 0 }) Label(formatMb(total), 16, Pink, FontWeight.Bold)
                         }
@@ -214,7 +234,8 @@ private fun formatMb(mb: Int) = if (mb >= 1000) String.format(Locale.ROOT, "%.2f
 
 @Composable
 private fun DetailOverview(page: Page, design: DetailDesign) {
-    GlassPanel(Modifier.fillMaxWidth(), radius = 17) {
+    val inlineMetrics = page == Page.CLEAN_CENTER && !LocalRoomy.current
+    GlassPanel(Modifier.fillMaxWidth(), radius = 17, tint = Cyan.takeIf { page == Page.CLEAN_CENTER }) {
         Column(Modifier.fillMaxWidth().padding(9.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             if (page != Page.DUPLICATE_REVIEW) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -225,12 +246,15 @@ private fun DetailOverview(page: Page, design: DetailDesign) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                         Label(design.heading.localized(), 17, weight = FontWeight.ExtraBold)
                         Label(design.summary.localized(), 12, Mist)
+                        if (inlineMetrics) MiniMetricStrip(design.metrics, vertical = true)
                         if (page == Page.STORAGE_BREAKDOWN) GradientBar(.5f, thickness = 9)
                         if (page == Page.AI_RECOMMENDATIONS) Label("94   →   98  ↑ +4", 22, Cyan, FontWeight.ExtraBold)
                     }
                 }
             }
-            if (design.metrics.isNotEmpty()) MiniMetricStrip(design.metrics, vertical = design.metrics.size >= 4)
+            if (!inlineMetrics && design.metrics.isNotEmpty()) {
+                MiniMetricStrip(design.metrics, vertical = design.metrics.size >= 4)
+            }
         }
     }
 }
@@ -259,8 +283,9 @@ private val privacyAppIcons = listOf(R.drawable.sample_instagram, R.drawable.sam
 
 @Composable
 private fun DetailRow(page: Page, entry: Entry, index: Int, checked: Boolean?, toggle: () -> Unit, open: () -> Unit) {
-    val tone = if (index % 2 == 0) Pink else Cyan
-    val destination = if (checked == true) Cyan else tone
+    val clean = page == Page.CLEAN_CENTER
+    val tone = if (clean) (if (index % 2 == 0) Cyan else Pink) else (if (index % 2 == 0) Pink else Cyan)
+    val destination = if (checked == true) (if (clean) Light.violet else Cyan) else tone
     val animated by animateColorAsState(destination, animationSpec = tween(if (LocalPreviewMotion.current) 180 else 0),
         label = "selected rim")
     val itemTitle = entry.title.localized()
@@ -294,7 +319,7 @@ private fun DetailRow(page: Page, entry: Entry, index: Int, checked: Boolean?, t
                 if (checked != null) Box(Modifier.size(48.dp).testTag("detail-select-$index")
                     .semantics { contentDescription = itemTitle }
                     .toggleable(checked, role = Role.Checkbox, onValueChange = { toggle() }),
-                    contentAlignment = Alignment.Center) { SelectionIndicator(checked) }
+                    contentAlignment = Alignment.Center) { SelectionIndicator(checked, if (clean) Light.violet else Cyan) }
             }
             if (page == Page.RESIDUE_REVIEW) {
                 Row(Modifier.fillMaxWidth().padding(start = 9.dp, end = 9.dp, bottom = 4.dp),
@@ -353,14 +378,42 @@ private fun DuplicateSampleGroup(entry: Entry, index: Int, selected: Boolean, gr
 }
 
 @Composable
-private fun InsightPanel(title: Copy, text: Copy, mark: Mark) {
+private fun InsightPanel(title: Copy, text: Copy, mark: Mark, pill: Copy? = null) {
     GlassPanel(Modifier.fillMaxWidth(), tint = Violet) {
         Row(Modifier.fillMaxWidth().padding(9.dp), horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
             IconBadge(mark, Pink, diameter = 38)
-            Column {
-                Label(title.localized(), 15, weight = FontWeight.Bold)
+            Column(Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Label(title.localized(), 15, weight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                    pill?.let { NeonPill(it.localized(), Cyan, solid = false) }
+                }
                 Label(text.localized(), 12, Mist)
+            }
+        }
+    }
+}
+
+@Composable
+private fun EstimatedGainPanel(total: Int) {
+    GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
+        Row(Modifier.fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.spacedBy(9.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            IconBadge(Mark.DISK, Cyan, diameter = 40)
+            Column(Modifier.weight(1f)) {
+                Label(("Estimated Storage Gain" ar "المساحة المقدّرة المستعادة").localized(), 11, Mist)
+                Label(formatMb(total), 22, Pink, FontWeight.ExtraBold)
+            }
+            Separator(Modifier.width(1.dp).height(46.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                listOf(Mark.ROCKET to ("Faster Performance" ar "أداء أسرع"),
+                    Mark.BATTERY to ("Longer Battery Life" ar "بطارية أطول"),
+                    Mark.LAYERS to ("More Usable Space" ar "مساحة أكبر")).forEach { (mark, text) ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Glyph(mark, Modifier.size(15.dp), Cyan, true)
+                        Label(text.localized(), 10)
+                    }
+                }
             }
         }
     }
@@ -408,35 +461,202 @@ private fun DetailTimeline(report: Boolean) {
     }
 }
 
+private val storageColors = listOf(Pink, Cyan, Mint, Gold, Color(0xff35e0d6), Violet)
+private val storageShort = listOf("Apps" ar "تطبيقات", "Media" ar "وسائط", "Downloads" ar "تنزيلات",
+    "Documents" ar "مستندات", "WhatsApp" ar "واتساب", "System" ar "النظام")
+private val storageShares = listOf(38, 29, 5, 7, 3, 17)
+private val storageGrowth = listOf("+6.8 GB", "+4.2 GB", "+0.9 GB", "+1.1 GB", "+0.6 GB", "+2.4 GB")
+private val storageBreakdownTitle = listOf("Apps Breakdown" ar "تفصيل التطبيقات", "Media Breakdown" ar "تفصيل الوسائط",
+    "Downloads Breakdown" ar "تفصيل التنزيلات", "Documents Breakdown" ar "تفصيل المستندات",
+    "WhatsApp Breakdown" ar "تفصيل واتساب", "System Breakdown" ar "تفصيل النظام")
+private val storageBreakdown = listOf(
+    listOf(Triple("Games" ar "ألعاب", "28.4 GB", "(59%)"), Triple("Streaming Apps" ar "تطبيقات البث", "7.6 GB", "(16%)"),
+        Triple("Social Apps" ar "تطبيقات التواصل", "4.8 GB", "(10%)"), Triple("Other Apps" ar "تطبيقات أخرى", "7.8 GB", "(16%)")),
+    listOf(Triple("Camera" ar "الكاميرا", "18.2 GB", "(49%)"), Triple("Videos" ar "فيديوهات", "12.4 GB", "(34%)"),
+        Triple("Screenshots" ar "لقطات الشاشة", "4.1 GB", "(11%)"), Triple("Edited" ar "معدّلة", "2.1 GB", "(6%)")),
+    listOf(Triple("Installers" ar "حزم تثبيت", "2.9 GB", "(47%)"), Triple("Archives" ar "أرشيفات", "1.8 GB", "(29%)"),
+        Triple("Media" ar "وسائط", "1.0 GB", "(16%)"), Triple("Other" ar "أخرى", "0.5 GB", "(8%)")),
+    listOf(Triple("PDFs" ar "ملفات PDF", "3.6 GB", "(43%)"), Triple("Office" ar "أوفيس", "2.7 GB", "(32%)"),
+        Triple("eBooks" ar "كتب", "1.2 GB", "(14%)"), Triple("Other" ar "أخرى", "0.9 GB", "(11%)")),
+    listOf(Triple("Video" ar "فيديو", "1.9 GB", "(46%)"), Triple("Photos" ar "صور", "1.2 GB", "(29%)"),
+        Triple("Audio" ar "صوت", "0.6 GB", "(15%)"), Triple("Documents" ar "مستندات", "0.4 GB", "(10%)")),
+    listOf(Triple("Android OS" ar "نظام Android", "12.8 GB", "(58%)"), Triple("Cache" ar "ذاكرة مؤقتة", "5.2 GB", "(23%)"),
+        Triple("Updates" ar "تحديثات", "2.9 GB", "(13%)"), Triple("Other" ar "أخرى", "1.3 GB", "(6%)"))
+)
+private data class LargeFile(val icon: Mark, val name: String, val path: String, val size: String)
+private val storageLargest = listOf(
+    listOf(LargeFile(Mark.GAME, "Asphalt9_Data.obb", "/Android/obb/com.gameloft…", "4.2 GB"),
+        LargeFile(Mark.BOX, "Game_Update_v12.4.apk", "/Downloads/", "2.8 GB"),
+        LargeFile(Mark.DISK, "Game_Resources.zip", "/Android/data/", "1.9 GB")),
+    listOf(LargeFile(Mark.VIDEO, "4K_Trip_Final.mp4", "/DCIM/Camera/", "1.8 GB"),
+        LargeFile(Mark.VIDEO, "Concert_2025.mov", "/DCIM/Camera/", "1.2 GB"),
+        LargeFile(Mark.PICTURES, "RAW_Burst_014.dng", "/Pictures/", "0.9 GB")),
+    listOf(LargeFile(Mark.BOX, "Ubuntu_24.04.iso", "/Download/", "2.1 GB"),
+        LargeFile(Mark.BOX, "Game_Installer.apk", "/Download/", "1.4 GB"),
+        LargeFile(Mark.FILE, "Dataset_Full.zip", "/Download/", "0.8 GB")),
+    listOf(LargeFile(Mark.FILE, "Annual_Report_2025.pdf", "/Documents/", "0.6 GB"),
+        LargeFile(Mark.FILE, "Design_Assets.pptx", "/Documents/", "0.4 GB"),
+        LargeFile(Mark.FILE, "Archive_Scan.pdf", "/Documents/", "0.3 GB")),
+    listOf(LargeFile(Mark.VIDEO, "VID-20250814-WA0012.mp4", "/WhatsApp/Media/", "0.7 GB"),
+        LargeFile(Mark.PICTURES, "IMG-20250901-WA0031.jpg", "/WhatsApp/Media/", "0.4 GB"),
+        LargeFile(Mark.MUSIC, "AUD-20250722-WA0007.opus", "/WhatsApp/Media/", "0.2 GB")),
+    listOf(LargeFile(Mark.GEAR, "system_cache_dump.bin", "/Android/data/", "1.6 GB"),
+        LargeFile(Mark.DISK, "ota_update_package.zip", "/Android/ota/", "1.2 GB"),
+        LargeFile(Mark.FILE, "logcat_archive.txt", "/Android/logs/", "0.5 GB"))
+)
+private val storageSuggestions = listOf(
+    Triple(Mark.TRASH, "Clear app cache" ar "مسح ذاكرة التطبيقات", "Free up to 8.6 GB" ar "تحرير حتى 8.6 GB"),
+    Triple(Mark.BOX, "Remove unused apps" ar "إزالة تطبيقات غير مستخدمة", "5 apps · Free up to 6.1 GB" ar "٥ تطبيقات · حتى 6.1 GB"),
+    Triple(Mark.DOWNLOAD, "Delete old downloads" ar "حذف تنزيلات قديمة", "23 files · Free up to 2.8 GB" ar "٢٣ ملف · حتى 2.8 GB")
+)
+
+@Composable
+private fun CategoryDonut() {
+    Box(Modifier.size(96.dp), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.matchParentSize()) {
+            val band = size.width * .14f
+            val inset = size.width * .09f
+            val start = Offset(inset, inset)
+            val arc = Size(size.width - inset * 2, size.height - inset * 2)
+            val total = storageShares.sum().toFloat()
+            var angle = -90f
+            storageShares.forEachIndexed { i, share ->
+                val sweep = 360f * share / total
+                drawArc(storageColors[i], angle + 1f, sweep - 2f, false, start, arc, style = Stroke(band))
+                angle += sweep
+            }
+        }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Label("128 GB", 17, weight = FontWeight.ExtraBold)
+            Label(("Used Space" ar "المساحة المستخدمة").localized(), 9, Mist, align = TextAlign.Center)
+            Label("(50%)", 9, Mist)
+        }
+    }
+}
+
 @Composable
 private fun StorageDetail(rows: List<Entry>, category: Int, select: (Int) -> Unit, open: () -> Unit) {
     val entry = rows[category]
-    val shares = listOf(38, 29, 5, 7, 3, 17)
+    var checks by rememberSaveable { mutableIntStateOf(0b111) }
+    val mirror = if (LocalArabic.current) 180f else 0f
     GlassPanel(Modifier.fillMaxWidth(), tint = Violet) {
-        Row(Modifier.fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp),
+        Row(Modifier.fillMaxWidth().padding(10.dp), horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            ProgressDonut(50, ("Used Space" ar "المساحة المستخدمة").localized(), 86, split = true, displayValue = "128 GB")
+            CategoryDonut()
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Label(("Category Detail" ar "تفاصيل الفئة").localized(), 13, weight = FontWeight.Bold)
-                Label(entry.title.localized(), 16, Pink, FontWeight.ExtraBold, Modifier.testTag("storage-category-detail"))
-                Label(entry.detail.localized(), 11, Mist)
-                Label("${entry.value}  ·  ${shares[category]}%", 14, Cyan, FontWeight.Bold)
+                rows.forEachIndexed { i, row ->
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Canvas(Modifier.size(8.dp)) { drawCircle(storageColors[i]) }
+                        Label(storageShort[i].localized(), 11, modifier = Modifier.weight(1f))
+                        Label(row.value, 11, weight = FontWeight.Bold)
+                        Label("${storageShares[i]}%", 10, Mist)
+                    }
+                }
+            }
+        }
+    }
+    GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
+        Column(Modifier.fillMaxWidth().padding(9.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                Label(("Category Detail:" ar "تفاصيل الفئة:").localized(), 14, weight = FontWeight.Bold)
+                Label(entry.title.localized(), 14, Pink, FontWeight.Bold, Modifier.testTag("storage-category-detail"))
+            }
+            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp)).glass(12)
+                .clickable(role = Role.Button, onClick = open).padding(7.dp),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                IconBadge(entry.icon, Violet, diameter = 34)
+                Column(Modifier.weight(1f)) {
+                    Label(entry.title.localized(), 13, weight = FontWeight.Bold)
+                    Label(entry.detail.localized(), 10, Mist)
+                }
+                Glyph(Mark.NEXT, Modifier.size(14.dp).rotate(mirror))
+            }
+            MiniMetricStrip(listOf(
+                Metric(entry.value, "Used Space" ar "مساحة مستخدمة", Mark.DISK),
+                Metric("${storageShares[category]}%", "of total storage" ar "من إجمالي التخزين", Mark.BARS),
+                Metric(storageGrowth[category], "vs last week" ar "مقارنة بالأسبوع الماضي", Mark.BARS)))
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Label(storageBreakdownTitle[category].localized(), 13, weight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                Label(entry.value, 13, Pink, FontWeight.Bold)
+            }
+            storageBreakdown[category].forEach { (name, value, share) ->
+                Row(Modifier.fillMaxWidth().heightIn(min = 34.dp), verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    Glyph(Mark.FOLDER, Modifier.size(17.dp), Violet, true)
+                    Label(name.localized(), 12, modifier = Modifier.weight(1f))
+                    Label(value, 12, weight = FontWeight.Bold)
+                    Label(share, 10, Mist)
+                    Glyph(Mark.NEXT, Modifier.size(12.dp).rotate(mirror), Mist)
+                }
             }
         }
     }
     Label(("All Categories" ar "كل الفئات").localized(), 16, weight = FontWeight.Bold)
-    DetailChips(rows.map { it.title }, category, select)
-    GlassPanel(Modifier.fillMaxWidth().heightIn(min = 48.dp).clickable(role = Role.Button, onClick = open), tint = Cyan) {
-        Row(Modifier.fillMaxWidth().padding(8.dp), horizontalArrangement = Arrangement.spacedBy(7.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-            IconBadge(entry.icon, Cyan)
-            Label(entry.title.localized(), 14, weight = FontWeight.Bold, modifier = Modifier.weight(1f))
-            Label(entry.value, 15, Pink, FontWeight.Bold)
+    val perRow = if (LocalRoomy.current) 6 else 3
+    rows.chunked(perRow).forEachIndexed { r, group ->
+        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            group.forEachIndexed { c, row ->
+                val i = r * perRow + c
+                GlassPanel(Modifier.weight(1f).fillMaxHeight().testTag("storage-tile-$i")
+                    .clip(RoundedCornerShape(12.dp)).clickable(role = Role.Button) { select(i) },
+                    radius = 12, tint = if (i == category) Pink else null) {
+                    Column(Modifier.fillMaxWidth().padding(vertical = 7.dp, horizontal = 3.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Glyph(row.icon, Modifier.size(22.dp), storageColors[i], true)
+                        Label(storageShort[i].localized(), 11, weight = FontWeight.Bold, align = TextAlign.Center)
+                        Label(row.value, 11, weight = FontWeight.Bold)
+                        Label("${storageShares[i]}%", 10, Mist)
+                    }
+                }
+            }
         }
     }
-    InsightPanel("Cleanup Suggestions" ar "اقتراحات التنظيف",
-        "Review cache, unused apps, and old downloads in the sample." ar
-            "راجع الذاكرة المؤقتة والتطبيقات غير المستخدمة والتنزيلات القديمة في المثال.", Mark.BROOM)
+    GlassPanel(Modifier.fillMaxWidth(), tint = Violet) {
+        Column(Modifier.fillMaxWidth().padding(9.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                Glyph(Mark.CROWN, Modifier.size(19.dp), Gold, true)
+                Label(("Largest Files" ar "أكبر الملفات").localized(), 14, weight = FontWeight.Bold)
+                Label("(${storageShort[category].localized()})", 12, Pink, FontWeight.Bold)
+            }
+            storageLargest[category].forEach { file ->
+                Row(Modifier.fillMaxWidth().heightIn(min = 44.dp).clip(RoundedCornerShape(10.dp))
+                    .clickable(role = Role.Button, onClick = open).padding(vertical = 3.dp),
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    IconBadge(file.icon, Pink, diameter = 30)
+                    Column(Modifier.weight(1f)) {
+                        Label(file.name, 12, weight = FontWeight.Bold)
+                        Label(file.path, 9, Mist)
+                    }
+                    Label(file.size, 12, Pink, FontWeight.Bold)
+                    Glyph(Mark.NEXT, Modifier.size(13.dp).rotate(mirror))
+                }
+            }
+            AccentButton(Action("Open Largest Files" ar "معاينة أكبر الملفات", Mark.EYE),
+                Modifier.fillMaxWidth(), primary = false, tag = "open-largest-files") { open() }
+        }
+    }
+    GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
+        Column(Modifier.fillMaxWidth().padding(9.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                Glyph(Mark.BROOM, Modifier.size(19.dp), Gold, true)
+                Label(("Cleanup Suggestions" ar "اقتراحات التنظيف").localized(), 14, weight = FontWeight.Bold)
+            }
+            storageSuggestions.forEachIndexed { i, (icon, title, sub) ->
+                Row(Modifier.fillMaxWidth().heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    IconBadge(icon, Violet, diameter = 30)
+                    Column(Modifier.weight(1f)) {
+                        Label(title.localized(), 12, weight = FontWeight.Bold)
+                        Label(sub.localized(), 10, Mist)
+                    }
+                    Box(Modifier.size(48.dp).testTag("storage-suggestion-$i")
+                        .toggleable(checks and (1 shl i) != 0, role = Role.Checkbox,
+                            onValueChange = { checks = checks xor (1 shl i) }),
+                        contentAlignment = Alignment.Center) { SelectionIndicator(checks and (1 shl i) != 0) }
+                }
+            }
+        }
+    }
 }
 
 @Composable

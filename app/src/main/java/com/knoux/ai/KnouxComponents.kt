@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.LayoutDirection
@@ -73,9 +75,10 @@ internal fun KnouxTheme(arabic: Boolean, motion: Boolean, content: @Composable (
 @Composable
 internal fun Label(
     text: String, size: Int = 12, tint: Color = Chalk, weight: FontWeight = FontWeight.Normal,
-    modifier: Modifier = Modifier, align: TextAlign? = null
+    modifier: Modifier = Modifier, align: TextAlign? = null, maxLines: Int = Int.MAX_VALUE
 ) {
-    Text(text, modifier, color = tint, fontSize = size.sp, lineHeight = (size * 1.18f).sp, fontWeight = weight, textAlign = align)
+    Text(text, modifier, color = tint, fontSize = size.sp, lineHeight = (size * 1.18f).sp, fontWeight = weight,
+        textAlign = align, maxLines = maxLines)
 }
 
 /**
@@ -106,20 +109,20 @@ internal fun Modifier.glass(
         drawRoundRect(Brush.verticalGradient(listOf(edge[0], edge[1], edge[2], edge[1]),
             startY = 0f, endY = height), cornerRadius = rad)
         // Directional sheen across the upper half.
-        drawRoundRect(Brush.linearGradient(listOf(Color.White.copy(alpha = if (active) .16f else .10f), Color.Transparent),
+        drawRoundRect(Brush.linearGradient(listOf(Color.White.copy(alpha = if (active) .20f else .09f), Color.Transparent),
             start = Offset(0f, 0f), end = Offset(width * .9f, height * .8f)), cornerRadius = rad)
         // Distinct top-edge highlight: the polished lip of the glass.
-        drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = if (active) .21f else .13f),
+        drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = if (active) .26f else .12f),
             Color.Transparent), startY = 0f, endY = height * .36f), cornerRadius = rad)
         // Localised light concentration where the content starts.
         val flash = tint ?: if (active) Color(0xffd16bff) else Color(0xff9a6bff)
-        val flashAlpha = if (active) .58f else .24f
+        val flashAlpha = if (active) .60f else .14f
         drawRoundRect(Brush.radialGradient(listOf(flash.copy(alpha = flashAlpha), Color.Transparent),
             Offset(width * .10f, -height * .06f), width * .62f), cornerRadius = rad)
         // Cool bounce light from the opposite side.
         val bounce = if (active && !tab) Light.cyan else tint ?: Light.violet
-        drawRoundRect(Brush.radialGradient(listOf(bounce.copy(alpha = if (active) .42f else .18f), Color.Transparent),
-            Offset(width * .97f, height * 1.02f), width * .46f), cornerRadius = rad)
+        drawRoundRect(Brush.radialGradient(listOf(bounce.copy(alpha = if (active) .52f else .16f), Color.Transparent),
+            Offset(width * .97f, height * 1.02f), width * .38f), cornerRadius = rad)
         // Border: bright where the light hits, quiet on the shadow side.
         val stroke = when {
             active -> listOf(Color.White.copy(alpha = .95f), Color(0xffd9b4ff), if (tab) Light.magenta else Light.cyan)
@@ -128,18 +131,24 @@ internal fun Modifier.glass(
         }
         drawRoundRect(Brush.linearGradient(stroke, Offset.Zero, Offset(width, height)), cornerRadius = rad,
             style = Stroke((if (active) 1.7.dp else 1.dp).toPx()))
-        // Hairline rim light along the top-left, the signature of the material.
-        drawRoundRect(Brush.horizontalGradient(listOf(Light.magenta.copy(alpha = .55f), Color.Transparent,
-            Light.cyan.copy(alpha = .50f), Color.Transparent), startX = 0f, endX = width),
-            cornerRadius = rad, alpha = if (active) .95f else .62f, style = Stroke((if (active) 2.4.dp else 1.6.dp).toPx()))
+        // Pinpoints on the rim keep the faces dark while making the glass catch the light.
+        val rim = Brush.linearGradient(
+            0f to Color.Transparent, .11f to flash.copy(alpha = .89f), .19f to Light.white.copy(alpha = .82f),
+            .30f to Color.Transparent, .69f to Color.Transparent, .82f to bounce.copy(alpha = .94f),
+            .87f to Light.ice.copy(alpha = .73f), 1f to Color.Transparent,
+            start = Offset.Zero, end = Offset(width, height)
+        )
+        val rimAlpha = if (active) .96f else .85f
+        drawRoundRect(rim, cornerRadius = rad, alpha = rimAlpha * .24f, style = Stroke(3.dp.toPx()))
+        drawRoundRect(rim, cornerRadius = rad, alpha = rimAlpha, style = Stroke(.95.dp.toPx()))
     }
 
 private fun Modifier.buttonBloom(primary: Boolean): Modifier = drawBehind {
     if (!primary) return@drawBehind
     for (dp in listOf(16, 10, 6)) {
         val delta = dp.dp.toPx()
-        drawRoundRect(Brush.horizontalGradient(listOf(Light.magenta.copy(alpha = .13f),
-            Color(0xff5a2bf0).copy(alpha = .15f), Light.cyan.copy(alpha = .12f))),
+        drawRoundRect(Brush.horizontalGradient(listOf(Light.magenta.copy(alpha = .18f),
+            Color(0xff5a2bf0).copy(alpha = .21f), Light.cyan.copy(alpha = .17f))),
             topLeft = Offset(-delta, -delta * .60f), size = Size(size.width + delta * 2, size.height + delta * 1.20f),
             cornerRadius = CornerRadius(size.height / 2 + delta))
     }
@@ -161,13 +170,13 @@ internal fun IconBadge(mark: Mark, tint: Color, modifier: Modifier = Modifier, d
     val shape = RoundedCornerShape((diameter * .30f).dp)
     val box = modifier.size(diameter.dp)
     Box(box.background(
-        Brush.verticalGradient(listOf(tint.copy(alpha = .42f), Color(0xff140d33).copy(alpha = .82f))),
+        Brush.verticalGradient(listOf(tint.copy(alpha = .52f), Color(0xff140d33).copy(alpha = .82f))),
         shape
-    ).border(.8.dp, Brush.horizontalGradient(listOf(Color.White.copy(alpha = .55f), tint.copy(alpha = .70f), Color.Transparent)), shape),
+    ).border(.8.dp, Brush.horizontalGradient(listOf(Color.White.copy(alpha = .65f), tint.copy(alpha = .85f), Color.Transparent)), shape),
         contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {
-            bloom(Offset(size.width * .30f, size.height * .18f), size.width * .72f, tint, .85f)
-            drawCircle(Brush.radialGradient(listOf(Color.White.copy(alpha = .18f), Color.Transparent),
+            bloom(Offset(size.width * .30f, size.height * .18f), size.width * .72f, tint, .95f)
+            drawCircle(Brush.radialGradient(listOf(Color.White.copy(alpha = .24f), Color.Transparent),
                 Offset(size.width * .26f, size.height * .16f), size.width * .42f), size.width * .42f, Offset(size.width * .26f, size.height * .16f))
         }
         VolumetricGlyph(mark, tint, (diameter * .70f).dp)
@@ -184,14 +193,14 @@ internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = tr
     val last = title.substring(split + 1)
     val fontSize = when {
         inline -> 23
-        page == Page.HOME -> 35
+        page == Page.HOME -> 38
         page == Page.DUPLICATES || page == Page.RESIDUE -> 26
         else -> 30
     }
     val font = if (LocalArabic.current) FontFamily.Default else DisplayFace
     val styledTitle = buildAnnotatedString {
         withStyle(SpanStyle(color = Chalk)) { append(first) }
-        withStyle(SpanStyle(brush = Brush.verticalGradient(listOf(Pink, Color(0xffd06bff), Color(0xffb44df0))))) { append(last) }
+        withStyle(SpanStyle(brush = Brush.verticalGradient(listOf(Color(0xfff896ff), Color(0xffe06bff), Color(0xffc25bff))))) { append(last) }
     }
     val alignment = if (inline) TextAlign.Start else TextAlign.Center
     val headings: @Composable () -> Unit = {
@@ -237,7 +246,8 @@ internal fun AccentButton(
     ) {
         val tone = if (enabled) Chalk else Mist.copy(alpha = .63f)
         Glyph(action.icon, Modifier.size(20.dp), tone, primary && enabled)
-        Label(action.label.localized(), 13, tone, FontWeight.Bold, align = TextAlign.Center)
+        Label(action.label.localized(), if (action.label.localized().length > 20) 11 else 13, tone, FontWeight.Bold,
+            align = TextAlign.Center, maxLines = 1)
         if (tag == "start-scan" && !LocalRoomy.current) {
             val direction = if (LocalArabic.current) 180f else 0f
             Row(Modifier.rotate(direction), horizontalArrangement = Arrangement.spacedBy((-6).dp)) {
@@ -255,7 +265,7 @@ private fun Modifier.primarySurface(shimmer: State<Float>?): Modifier = drawBehi
     val rad = CornerRadius(height / 2f)
     val travel = shimmer?.value?.let { it * width * 1.6f - width * .3f } ?: width * .35f
     // Body: magenta into violet into cyan, the brand CTA gradient.
-    drawRoundRect(Brush.horizontalGradient(listOf(Color(0xffe04bff), Color(0xff9b2bff),
+    drawRoundRect(Brush.horizontalGradient(listOf(Color(0xffe83dff), Color(0xff9b2bff),
         Color(0xff3a49f0), Color(0xff00c8ff)), 0f, width), cornerRadius = rad)
     // Travelling specular band keeps the button alive without extra glow.
     if (shimmer != null) {
@@ -263,27 +273,27 @@ private fun Modifier.primarySurface(shimmer: State<Float>?): Modifier = drawBehi
             start = Offset(travel - width * .22f, 0f), end = Offset(travel + width * .22f, height)), cornerRadius = rad)
     }
     // Polished top lip.
-    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .38f), Color.Transparent),
+    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .30f), Color.Transparent),
         startY = 0f, endY = height * .55f), cornerRadius = rad)
     // Inner shadow at the bottom edge for physical depth.
     drawRoundRect(Brush.verticalGradient(listOf(Color.Transparent, Color(0xff2a0a5e).copy(alpha = .35f)),
         startY = height * .45f, endY = height), cornerRadius = rad)
     // Clean bright edge.
-    drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .70f), Color.Transparent,
-        Light.cyan.copy(alpha = .55f)), 0f, width), cornerRadius = rad, style = Stroke(1.2.dp.toPx()))
+    drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .80f), Color.Transparent,
+        Light.cyan.copy(alpha = .65f)), 0f, width), cornerRadius = rad, style = Stroke(1.2.dp.toPx()))
 }
 
 @Composable
 internal fun GradientBar(value: Float, modifier: Modifier = Modifier, thickness: Int = 7) {
     Canvas(modifier.fillMaxWidth().height(thickness.dp)) {
         val radius = CornerRadius(size.height / 2f)
-        drawRoundRect(Color(0xff241f4e), cornerRadius = radius)
-        drawRoundRect(Color(0xff7d6bb0), cornerRadius = radius, style = Stroke(.6.dp.toPx()))
+        drawRoundRect(Color(0xff2a2458), cornerRadius = radius)
+        drawRoundRect(Color(0xff8d7bc4), cornerRadius = radius, style = Stroke(.6.dp.toPx()))
         val fill = size.width * value.coerceIn(0f, 1f)
         if (fill > 0f) {
             val colors = listOf(Pink, Color(0xffa63dff), Color(0xff5a63ff), Cyan)
             drawRoundRect(Brush.horizontalGradient(colors, endX = fill), size = Size(fill, size.height), cornerRadius = radius)
-            drawRoundRect(Color.White.copy(alpha = .36f), size = Size(fill, size.height), cornerRadius = radius, style = Stroke(.55.dp.toPx()))
+            drawRoundRect(Color.White.copy(alpha = .44f), size = Size(fill, size.height), cornerRadius = radius, style = Stroke(.55.dp.toPx()))
         }
     }
 }
@@ -305,26 +315,36 @@ internal fun ProgressDonut(
             // Dark cavity with an inner light that reads as depth, not a flat ring.
             drawCircle(Brush.radialGradient(listOf(Color(0xff171037), Color(0xff09071f)), center, width * .5f),
                 width * .5f - inset * .35f, center)
-            drawCircle(Color(0xff2e2858), radius = width / 2 - inset, style = Stroke(band))
-            drawCircle(Color.White.copy(alpha = .16f), radius = width / 2 - inset - band * .48f, style = Stroke(band * .16f))
-            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .26f, style = Stroke(band * 1.9f, cap = StrokeCap.Round))
+            drawCircle(Color(0xff37306a), radius = width / 2 - inset, style = Stroke(band))
+            drawCircle(Color.White.copy(alpha = .22f), radius = width / 2 - inset - band * .48f, style = Stroke(band * .16f))
+            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .36f, style = Stroke(band * 2f, cap = StrokeCap.Round))
             drawArc(tone, -84f, sweep, false, start, arcSize, style = Stroke(band, cap = StrokeCap.Round))
             // Bright inner filament on the lit part of the ring.
-            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .75f, style = Stroke(band * .22f, cap = StrokeCap.Round))
+            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .85f, style = Stroke(band * .22f, cap = StrokeCap.Round))
             // Start and end caps read as machined terminals.
             val capAngle = Math.toRadians((-84f + sweep).toDouble())
-            drawCircle(Color.White.copy(alpha = .85f), band * .30f,
+            drawCircle(Color.White.copy(alpha = .95f), band * .30f,
                 Offset(size.width / 2f + (width / 2 - inset) * cos(capAngle).toFloat(),
                     size.height / 2f + (width / 2 - inset) * sin(capAngle).toFloat()))
         }
-        Column(Modifier.padding(horizontal = (diameter * .15f).dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            val valueSize = when {
-                diameter < 50 -> 13
-                displayValue.length > 5 -> 15
-                else -> 21
+        val inset = (diameter * .15f).dp
+        Column(Modifier.padding(horizontal = inset), horizontalAlignment = Alignment.CenterHorizontally) {
+            val density = LocalDensity.current
+            val measurer = rememberTextMeasurer()
+            val preferred = (if (diameter < 50) 13 else 21).sp
+            val style = LocalTextStyle.current.copy(fontSize = preferred, fontWeight = FontWeight.ExtraBold)
+            val available = with(density) { (diameter.dp - inset * 2 - 2.dp).toPx() }
+            val fitOnOneLine = density.fontScale <= 1.24f
+            val textWidth = measurer.measure(displayValue, style, softWrap = false, maxLines = 1).size.width
+            val valueSize = if (fitOnOneLine && textWidth > available) preferred * (available / textWidth) else preferred
+            Text(displayValue, color = Chalk, style = style.copy(fontSize = valueSize, lineHeight = valueSize * 1.08f),
+                textAlign = TextAlign.Center, softWrap = !fitOnOneLine)
+            if (label.isNotEmpty()) {
+                val labelSize = if (diameter < 64) 7 else 8
+                Text(label, color = Mist, textAlign = TextAlign.Center, maxLines = 1, softWrap = false,
+                    style = LocalTextStyle.current.copy(fontSize = labelSize.sp, lineHeight = (labelSize * 1.26f).sp,
+                        fontWeight = FontWeight.Medium))
             }
-            Label(displayValue, valueSize, weight = FontWeight.ExtraBold, align = TextAlign.Center)
-            if (label.isNotEmpty()) Label(label, 9, Mist, align = TextAlign.Center)
         }
     }
 }
@@ -351,12 +371,13 @@ internal fun Separator(modifier: Modifier = Modifier) {
 }
 
 @Composable
-internal fun SelectionIndicator(checked: Boolean) {
+internal fun SelectionIndicator(checked: Boolean, tint: Color = Cyan) {
     val shape = RoundedCornerShape(5.dp)
-    Box(Modifier.size(17.dp).background(if (checked) Cyan else Color.Transparent, shape).border(1.dp, Cyan, shape), contentAlignment = Alignment.Center) {
+    val check = if (tint == Cyan) Ink else Chalk
+    Box(Modifier.size(17.dp).background(if (checked) tint else Color.Transparent, shape).border(1.dp, tint, shape), contentAlignment = Alignment.Center) {
         if (checked) Canvas(Modifier.size(12.dp)) {
-            drawLine(Ink, Offset(size.width*.18f,size.height*.53f), Offset(size.width*.43f,size.height*.76f), 1.7.dp.toPx(), StrokeCap.Round)
-            drawLine(Ink, Offset(size.width*.43f,size.height*.76f), Offset(size.width*.84f,size.height*.23f), 1.7.dp.toPx(), StrokeCap.Round)
+            drawLine(check, Offset(size.width*.18f,size.height*.53f), Offset(size.width*.43f,size.height*.76f), 1.7.dp.toPx(), StrokeCap.Round)
+            drawLine(check, Offset(size.width*.43f,size.height*.76f), Offset(size.width*.84f,size.height*.23f), 1.7.dp.toPx(), StrokeCap.Round)
         }
     }
 }
@@ -482,7 +503,7 @@ internal fun AdaptiveActions(first: Action, second: Action, firstEnabled: Boolea
         AccentButton(first, Modifier.fillMaxWidth(), false, firstEnabled, "review-action", onFirst)
         AccentButton(second, Modifier.fillMaxWidth(), true, secondEnabled, "primary-action", onSecond)
     } else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        AccentButton(first, Modifier.weight(1f), false, firstEnabled, "review-action", onFirst)
-        AccentButton(second, Modifier.weight(1f), true, secondEnabled, "primary-action", onSecond)
+        AccentButton(first, Modifier.weight(.82f), false, firstEnabled, "review-action", onFirst)
+        AccentButton(second, Modifier.weight(1.18f), true, secondEnabled, "primary-action", onSecond)
     }
 }

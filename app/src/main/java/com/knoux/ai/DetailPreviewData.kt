@@ -28,11 +28,11 @@ internal val detailDesigns = mapOf(
             metric("92%", "Device score" ar "درجة الجهاز", Mark.SPEED)),
         "Select Items to Clean" ar "اختيار العناصر للتنظيف",
         listOf(
-            Entry("Cache Files" ar "ملفات التخزين المؤقت", "App cache and temporary data" ar "بيانات التطبيقات المؤقتة", "1.24 GB", Mark.DISK, mb = 1240),
-            Entry("Temporary Files" ar "الملفات المؤقتة", "System and app temporary files" ar "ملفات النظام والتطبيقات المؤقتة", "982 MB", Mark.FILE, mb = 982),
-            Entry("APK Leftovers" ar "بقايا APK", "Unused installation packages" ar "حزم تثبيت غير مستخدمة", "426 MB", Mark.BOX, mb = 426),
-            Entry("Empty Folders" ar "مجلدات فارغة", "Folders with no useful files" ar "مجلدات من دون ملفات مفيدة", "148 MB", Mark.FOLDER, mb = 148),
-            Entry("Recycle Items" ar "عناصر سلة المهملات", "Files in the sample trash" ar "ملفات في سلة المثال", "70 MB", Mark.TRASH, mb = 70)
+            Entry("Cache Files" ar "ملفات التخزين المؤقت", "App cache and temporary data" ar "بيانات التطبيقات المؤقتة", "1.24 GB", Mark.DISK, mb = 1240, note = "2,913 items" ar "٢٬٩١٣ عنصر"),
+            Entry("Temporary Files" ar "الملفات المؤقتة", "System and app temporary files" ar "ملفات النظام والتطبيقات المؤقتة", "982 MB", Mark.FILE, mb = 982, note = "1,207 items" ar "١٬٢٠٧ عنصر"),
+            Entry("APK Leftovers" ar "بقايا APK", "Unused installation packages" ar "حزم تثبيت غير مستخدمة", "426 MB", Mark.BOX, mb = 426, note = "88 items" ar "٨٨ عنصر"),
+            Entry("Empty Folders" ar "مجلدات فارغة", "Folders with no useful files" ar "مجلدات من دون ملفات مفيدة", "148 MB", Mark.FOLDER, mb = 148, note = "312 items" ar "٣١٢ مجلد"),
+            Entry("Recycle Items" ar "عناصر سلة المهملات", "Files in the sample trash" ar "ملفات في سلة المثال", "70 MB", Mark.TRASH, mb = 70, note = "822 items" ar "٨٢٢ عنصر")
         ), action("Preview Items" ar "معاينة العناصر"), action("Clean Selected" ar "تنظيف المحدد", Mark.BROOM),
         selected = 0b10111, score = 92, scoreLabel = "Junk found" ar "ملفات غير ضرورية"
     ),
