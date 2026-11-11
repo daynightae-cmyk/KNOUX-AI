@@ -386,13 +386,17 @@ internal fun KnouxSplashRoute(
             }
             WordmarkLayout(full, letters)
         }
-        Canvas(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff0a0628), Color(0xff05051e), Color(0xff0c052a))))) {
+        Canvas(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff170a48), Color(0xff050318), Color(0xff120530))))) {
             val bg = if (controller.reduced) 1f else controller.scene(0f, 300f)
             val center = Offset(size.width / 2f, size.height * 0.46f)
-            drawCircle(Brush.radialGradient(listOf(Color(0xff351184).copy(alpha = .62f * bg),
-                Color(0xff13104e).copy(alpha = .42f * bg), Color.Transparent), center, size.minDimension * 0.80f),
+            // Deep violet core, then two off-axis accents so the darkness is lit, not flat.
+            drawCircle(Brush.radialGradient(listOf(Color(0xff4a16b4).copy(alpha = .74f * bg),
+                Color(0xff1a1266).copy(alpha = .50f * bg), Color.Transparent), center, size.minDimension * 0.80f),
                 size.minDimension * 0.80f, center)
-            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = 0.14f * bg), Color.Transparent),
+            drawCircle(Brush.radialGradient(listOf(Color(0xffff3df0).copy(alpha = .20f * bg), Color.Transparent),
+                Offset(size.width * 0.92f, size.height * 0.10f), size.minDimension * 0.46f),
+                size.minDimension * 0.46f, Offset(size.width * 0.92f, size.height * 0.10f))
+            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .20f * bg), Color.Transparent),
                 Offset(size.width * 0.18f, size.height * 0.90f), size.minDimension * 0.52f),
                 size.minDimension * 0.52f, Offset(size.width * 0.18f, size.height * 0.90f))
             val light = controller.eased(120f, 940f)

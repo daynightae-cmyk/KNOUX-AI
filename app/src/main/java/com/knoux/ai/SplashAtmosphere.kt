@@ -73,13 +73,13 @@ private val ribbonDust = Path().apply {
 internal fun DrawScope.drawSplashRibbons(opacity: Float, drift: Float) {
     scale(size.width / 1000f, size.height / 1900f, Offset.Zero) {
         translate(0f, drift) {
-            drawPath(ribbonDust, ribbonLight, alpha = .74f * opacity)
+            drawPath(ribbonDust, ribbonLight, alpha = .82f * opacity)
             for (ribbon in ribbons) {
-                drawPath(ribbon.silk, ribbon.light, alpha = .12f * opacity)
-                drawPath(ribbon.crest, ribbon.light, alpha = .045f * opacity, style = Stroke(92f))
-                drawPath(ribbon.crest, ribbon.light, alpha = .085f * opacity, style = Stroke(52f))
-                drawPath(ribbon.crest, ribbon.light, alpha = .17f * opacity, style = Stroke(22f))
-                drawPath(ribbon.crest, ribbon.light, alpha = .48f * opacity, style = Stroke(7f))
+                drawPath(ribbon.silk, ribbon.light, alpha = .16f * opacity)
+                drawPath(ribbon.crest, ribbon.light, alpha = .06f * opacity, style = Stroke(92f))
+                drawPath(ribbon.crest, ribbon.light, alpha = .12f * opacity, style = Stroke(52f))
+                drawPath(ribbon.crest, ribbon.light, alpha = .24f * opacity, style = Stroke(22f))
+                drawPath(ribbon.crest, ribbon.light, alpha = .62f * opacity, style = Stroke(7f))
                 drawPath(ribbon.crest, ribbon.light, alpha = opacity, style = Stroke(2.6f))
             }
         }

@@ -43,16 +43,16 @@ import kotlin.math.sqrt
 // ---------------------------------------------------------------------------
 
 internal object Light {
-    val deep = Color(0xff05030f)
-    val midnight = Color(0xff0a0620)
-    val indigo = Color(0xff1a0f4d)
-    val violet = Color(0xff843bff)
-    val magenta = Color(0xffe34cff)
-    val pink = Color(0xfff275ff)
-    val cyan = Color(0xff00dcff)
-    val azure = Color(0xff21b9ff)
-    val ice = Color(0xffd9f6ff)
-    val white = Color(0xfff8f6ff)
+    val deep = Color(0xff04020e)
+    val midnight = Color(0xff080422)
+    val indigo = Color(0xff1d0f5c)
+    val violet = Color(0xff9b3dff)
+    val magenta = Color(0xfff43dff)
+    val pink = Color(0xffff7bff)
+    val cyan = Color(0xff00e8ff)
+    val azure = Color(0xff24bfff)
+    val ice = Color(0xffe4faff)
+    val white = Color(0xfffffdff)
 }
 
 /** Directional film lighting used by every hero and material in the app. */
@@ -63,7 +63,7 @@ internal fun lerpColor(a: Color, b: Color, t: Float) = lerp(a, b, t.coerceIn(0f,
 
 /** Soft volumetric bloom that keeps deep shadows in the composition. */
 internal fun DrawScope.bloom(center: Offset, radius: Float, tint: Color, strength: Float = .5f) {
-    drawCircle(Brush.radialGradient(listOf(tint.copy(alpha = .46f * strength), tint.copy(alpha = .16f * strength), Color.Transparent),
+    drawCircle(Brush.radialGradient(listOf(tint.copy(alpha = .56f * strength), tint.copy(alpha = .20f * strength), Color.Transparent),
         center, radius), radius, center)
 }
 
@@ -107,19 +107,19 @@ internal fun DrawScope.ribbonField(width: Float, height: Float, phase: Float, in
         val left = if (index == 0) Light.magenta else Light.violet
         val right = if (index == 2) Light.cyan else Light.azure
         val brush = Brush.horizontalGradient(
-            listOf(left.copy(alpha = .26f * intensity), left.copy(alpha = .15f * intensity),
-                Color.Transparent, right.copy(alpha = .20f * intensity), right.copy(alpha = .27f * intensity)),
+            listOf(left.copy(alpha = .34f * intensity), left.copy(alpha = .20f * intensity),
+                Color.Transparent, right.copy(alpha = .27f * intensity), right.copy(alpha = .36f * intensity)),
             startX = 0f, endX = width
         )
         drawPath(band, brush)
         // Silk highlight along the upper edge of the ribbon.
-        val sheen = Brush.horizontalGradient(.00f to left.copy(alpha = .30f * intensity),
-            .19f to left.copy(alpha = .98f * intensity), .49f to Color.Transparent,
-            .80f to right.copy(alpha = .98f * intensity), 1f to right.copy(alpha = .44f * intensity), endX = width)
+        val sheen = Brush.horizontalGradient(.00f to left.copy(alpha = .38f * intensity),
+            .19f to left.copy(alpha = 1f * intensity), .49f to Color.Transparent,
+            .80f to right.copy(alpha = 1f * intensity), 1f to right.copy(alpha = .56f * intensity), endX = width)
         // Broad atmospheric spill first, then the concentrated silk edge.
-        drawPath(top, sheen, alpha = .10f, style = Stroke(height * .13f, cap = StrokeCap.Round))
-        drawPath(top, sheen, alpha = .22f, style = Stroke(height * .062f, cap = StrokeCap.Round))
-        drawPath(top, sheen, alpha = .46f, style = Stroke(height * .024f, cap = StrokeCap.Round))
+        drawPath(top, sheen, alpha = .14f, style = Stroke(height * .13f, cap = StrokeCap.Round))
+        drawPath(top, sheen, alpha = .30f, style = Stroke(height * .062f, cap = StrokeCap.Round))
+        drawPath(top, sheen, alpha = .60f, style = Stroke(height * .024f, cap = StrokeCap.Round))
         drawPath(top, sheen, style = Stroke(height * .006f, cap = StrokeCap.Round))
     }
     // Fine depth particles that sit behind and around the ribbons.
@@ -133,7 +133,7 @@ internal fun DrawScope.ribbonField(width: Float, height: Float, phase: Float, in
         val r = (.35f + (seed % 100) / 380f)
         val tint = if (u < .5f) Light.magenta else Light.cyan
         val y = height * (.22f + v * .60f) + sin(u * 7f) * height * .02f
-        drawCircle(tint.copy(alpha = (.16f + v * .44f) * intensity), height * r * .018f, Offset(width * u, y))
+        drawCircle(tint.copy(alpha = (.20f + v * .54f) * intensity), height * r * .018f, Offset(width * u, y))
     }
 }
 
@@ -143,9 +143,10 @@ internal fun DrawScope.ribbonField(width: Float, height: Float, phase: Float, in
  * never shows a hard rectangular edge.
  */
 internal fun DrawScope.atmosphere(width: Float, height: Float, tint: Color = Light.violet) {
-    bloom(Offset(width * .5f, height * .40f), height * .82f, tint, .60f)
-    bloom(Offset(width * .02f, height * .96f), height * .60f, Light.magenta, .26f)
-    bloom(Offset(width * .98f, height * .10f), height * .52f, Light.cyan, .24f)
+    bloom(Offset(width * .5f, height * .40f), height * .82f, tint, .74f)
+    bloom(Offset(width * .02f, height * .96f), height * .60f, Light.magenta, .34f)
+    bloom(Offset(width * .98f, height * .10f), height * .52f, Light.cyan, .32f)
+    bloom(Offset(width * .56f, height * .02f), height * .46f, Light.violet, .26f)
 }
 
 // ---------------------------------------------------------------------------
@@ -207,19 +208,19 @@ internal fun DrawScope.drawGlobe(radius: Float, points: List<GlobePoint>) {
     for (p in points) {
         if (p.z < -.35f) continue
         val depth = (p.z + 1f) / 2f
-        drawCircle(p.color.copy(alpha = p.alpha), radius * .019f * p.size * (.60f + .45f * depth),
+        drawCircle(p.color.copy(alpha = (p.alpha * 1.08f).coerceAtMost(1f)), radius * .0205f * p.size * (.60f + .45f * depth),
             Offset(p.x * radius, p.y * radius))
     }
     // Volumetric specular highlight on the upper-left shoulder.
-    drawCircle(Brush.radialGradient(listOf(Color(0xffeaf7ff).copy(alpha = .28f), Color(0xff8fd4ff).copy(alpha = .10f), Color.Transparent),
+    drawCircle(Brush.radialGradient(listOf(Color(0xffeaf7ff).copy(alpha = .36f), Color(0xff8fd4ff).copy(alpha = .14f), Color.Transparent),
         Offset(-radius * .40f, -radius * .46f), radius * .54f), radius * .54f, Offset(-radius * .40f, -radius * .46f))
     // Cyan bounce on the lower right: it keeps the shadow side readable and
     // draws the silhouette instead of leaving a dark void.
-    drawCircle(Brush.radialGradient(listOf(Light.cyan.copy(alpha = .26f), Light.azure.copy(alpha = .10f), Color.Transparent),
+    drawCircle(Brush.radialGradient(listOf(Light.cyan.copy(alpha = .32f), Light.azure.copy(alpha = .13f), Color.Transparent),
         Offset(radius * .30f, radius * .38f), radius * .54f), radius * .54f, Offset(radius * .30f, radius * .38f))
     val rim = Brush.sweepGradient(listOf(Light.cyan, Light.ice, Light.violet, Light.magenta, Light.ice, Light.cyan), Offset.Zero)
-    drawCircle(rim, radius, Offset.Zero, alpha = .26f, style = Stroke(radius * .24f))
-    drawCircle(rim, radius, Offset.Zero, alpha = .75f, style = Stroke(radius * .10f))
+    drawCircle(rim, radius, Offset.Zero, alpha = .32f, style = Stroke(radius * .24f))
+    drawCircle(rim, radius, Offset.Zero, alpha = .88f, style = Stroke(radius * .10f))
     drawCircle(rim, radius, Offset.Zero, style = Stroke(radius * .028f))
     for (strand in 0..1) {
         val thread = Path().apply {
@@ -231,8 +232,8 @@ internal fun DrawScope.drawGlobe(radius: Float, points: List<GlobePoint>) {
                 if (sample == 0) moveTo(x, y) else lineTo(x, y)
             }
         }
-        drawPath(thread, rim, alpha = .30f, style = Stroke(radius * .044f))
-        drawPath(thread, rim, alpha = .82f, style = Stroke(radius * .012f))
+        drawPath(thread, rim, alpha = .36f, style = Stroke(radius * .044f))
+        drawPath(thread, rim, alpha = .92f, style = Stroke(radius * .012f))
     }
 }
 
@@ -247,11 +248,11 @@ internal fun DrawScope.heroArcs(radius: Float, phase: Float) {
     val box = Size(radius * 2, radius * 2)
     val topLeft = Offset(-radius, -radius)
     segments.forEach { (start, extent, tint) ->
-        drawArc(tint.copy(alpha = .20f), start, extent, false, topLeft, box, style = Stroke(radius * .19f))
-        drawArc(Brush.sweepGradient(listOf(tint, tint.copy(alpha = .9f), tint.copy(alpha = .45f)), Offset.Zero),
-            start, extent, false, topLeft, box, style = Stroke(radius * .06f))
-        drawArc(Color.White.copy(alpha = .8f), start, extent, false, topLeft, box,
-            style = Stroke(radius * .014f, cap = StrokeCap.Round))
+        drawArc(tint.copy(alpha = .28f), start, extent, false, topLeft, box, style = Stroke(radius * .19f))
+        drawArc(Brush.sweepGradient(listOf(tint, tint.copy(alpha = .96f), tint.copy(alpha = .55f)), Offset.Zero),
+            start, extent, false, topLeft, box, style = Stroke(radius * .065f))
+        drawArc(Color.White.copy(alpha = .92f), start, extent, false, topLeft, box,
+            style = Stroke(radius * .016f, cap = StrokeCap.Round))
     }
     // Fine measurement ticks drawn as explicit segments: dash path effects are
     // far too expensive to rasterise every frame on a software GPU.
@@ -260,7 +261,7 @@ internal fun DrawScope.heroArcs(radius: Float, phase: Float) {
         val angle = (i * 6f + phase * .05f) * PI.toFloat() / 180f
         val v = Offset(cos(angle), sin(angle))
         val inner = outer - radius * (.055f + (i % 5) * .012f)
-        drawLine(Color(0xffb9c8ff).copy(alpha = if (i % 5 == 0) .66f else .32f), v * inner, v * outer, radius * .013f)
+        drawLine(Color(0xffc9d6ff).copy(alpha = if (i % 5 == 0) .78f else .42f), v * inner, v * outer, radius * .014f)
     }
 }
 
@@ -269,14 +270,14 @@ internal fun DrawScope.lightPedestal(radius: Float, y: Float, tone: Color = Ligh
     val w = radius * 2.15f
     val h = radius * .46f
     // The pool itself: a bright core that falls off into the shadow.
-    drawOval(Brush.radialGradient(listOf(Color.White.copy(alpha = .46f), tone.copy(alpha = .46f), Color.Transparent),
+    drawOval(Brush.radialGradient(listOf(Color.White.copy(alpha = .56f), tone.copy(alpha = .56f), Color.Transparent),
         Offset(0f, y), w * .52f), Offset(-w / 2f, y - h / 2f), Size(w, h))
-    drawOval(Brush.horizontalGradient(listOf(Light.violet.copy(alpha = .70f), tone.copy(alpha = .88f),
-        Light.cyan.copy(alpha = .76f), Light.violet.copy(alpha = .42f)), -w / 2f, w / 2f),
-        Offset(-w / 2f, y - h / 2f), Size(w, h), style = Stroke(h * .12f))
-    drawOval(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .80f), tone.copy(alpha = .36f),
-        Color.White.copy(alpha = .62f)), -w / 2f, w / 2f),
-        Offset(-w / 2f, y - h * .14f), Size(w * .90f, h * .30f), style = Stroke(h * .055f))
+    drawOval(Brush.horizontalGradient(listOf(Light.violet.copy(alpha = .80f), tone.copy(alpha = .96f),
+        Light.cyan.copy(alpha = .86f), Light.violet.copy(alpha = .52f)), -w / 2f, w / 2f),
+        Offset(-w / 2f, y - h / 2f), Size(w, h), style = Stroke(h * .13f))
+    drawOval(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .92f), tone.copy(alpha = .46f),
+        Color.White.copy(alpha = .74f)), -w / 2f, w / 2f),
+        Offset(-w / 2f, y - h * .14f), Size(w * .90f, h * .30f), style = Stroke(h * .06f))
     // Faint reflection under the pool.
     drawOval(Brush.verticalGradient(listOf(Color.Transparent, tone.copy(alpha = .14f)), y, y + h * 2.2f),
         Offset(-w * .38f, y), Size(w * .76f, h * 2.2f))
@@ -334,14 +335,14 @@ private fun DrawScope.volumetricGroup(tone: Color) {
 
 private fun DrawScope.litBody(path: Path, tone: Color, top: Color = Light.white, radius: Float = 24f) {
     // Outer bloom first so it sits behind the body instead of eating the shape.
-    drawPath(path, tone.copy(alpha = .40f), style = Stroke(3.6f, join = StrokeJoin.Round))
-    drawPath(path, tone.copy(alpha = .55f), style = Stroke(1.7f, join = StrokeJoin.Round))
+    drawPath(path, tone.copy(alpha = .50f), style = Stroke(3.6f, join = StrokeJoin.Round))
+    drawPath(path, tone.copy(alpha = .68f), style = Stroke(1.7f, join = StrokeJoin.Round))
     val middle = Offset(12f, 12f)
-    val body = Brush.linearGradient(listOf(lerpColor(top, tone, .62f).copy(alpha = .96f), tone.copy(alpha = .98f), tone.copy(alpha = .70f)),
+    val body = Brush.linearGradient(listOf(lerpColor(top, tone, .58f).copy(alpha = .98f), tone.copy(alpha = 1f), tone.copy(alpha = .76f)),
         middle - Offset(radius * .45f, radius * .48f), middle + Offset(radius * .45f, radius * .48f))
     drawPath(path, body)
     // Fine edge light only - a thin bright contour keeps the glyph readable.
-    drawPath(path, Color.White.copy(alpha = .50f), style = Stroke(.46f, join = StrokeJoin.Round))
+    drawPath(path, Color.White.copy(alpha = .62f), style = Stroke(.48f, join = StrokeJoin.Round))
 }
 
 private fun DrawScope.volumetricTrash(tone: Color) {

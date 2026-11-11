@@ -8,8 +8,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -29,6 +39,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -164,26 +175,38 @@ private fun KnouxAppScaffold(
         if (next in tabs.map { it.first }) nav.switchTab(next)
         else nav.navigate(next.id) { launchSingleTop = true }
     }
-    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff130a3d), Color(0xff090420), Color(0xff030109))))
+    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff190c52), Color(0xff090426), Color(0xff020008))))
         .drawBehind {
             val top = Offset(size.width * .78f, size.height * .01f)
-            drawCircle(Brush.radialGradient(listOf(Color(0xff5a22c8).copy(alpha = .32f),
-                Color(0xff2c1570).copy(alpha = .16f), Color.Transparent), top, size.width * .95f), size.width * .95f, top)
+            drawCircle(Brush.radialGradient(listOf(Color(0xff6d24ff).copy(alpha = .42f),
+                Color(0xff2c1570).copy(alpha = .22f), Color.Transparent), top, size.width * .95f), size.width * .95f, top)
+            val high = Offset(size.width * .14f, size.height * .13f)
+            drawCircle(Brush.radialGradient(listOf(Light.magenta.copy(alpha = .16f), Color.Transparent), high, size.width * .48f),
+                size.width * .48f, high)
             val low = Offset(size.width * .10f, size.height * .88f)
-            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .09f), Color.Transparent), low, size.width * .70f),
+            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .16f), Color.Transparent), low, size.width * .70f),
                 size.width * .70f, low)
         }.safeDrawingPadding()
         .semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         contentAlignment = Alignment.TopCenter) {
         BoxWithConstraints(Modifier.widthIn(max = 540.dp).fillMaxSize()) {
             val roomy = maxWidth < 350.dp || LocalDensity.current.fontScale > 1.24f
+            val navMotion = LocalPreviewMotion.current
             CompositionLocalProvider(LocalRoomy provides roomy, LocalTall provides (maxHeight >= 800.dp && !roomy)) {
                 Column(Modifier.fillMaxSize()) {
                     KnouxTopBar(page, { headerSheet = HeaderSheet.MENU }, back, { headerSheet = HeaderSheet.PRO },
                         { headerSheet = HeaderSheet.SETTINGS }, { headerSheet = HeaderSheet.DISCLOSURE })
                     NavHost(navController = nav, startDestination = Page.HOME.id, modifier = Modifier.weight(1f),
-                        enterTransition = { androidx.compose.animation.EnterTransition.None },
-                        exitTransition = { androidx.compose.animation.ExitTransition.None }
+                        enterTransition = {
+                            if (!navMotion) EnterTransition.None
+                            else fadeIn(tween(210)) + slideInHorizontally(tween(280)) { it / 18 }
+                        },
+                        exitTransition = { if (!navMotion) ExitTransition.None else fadeOut(tween(150)) },
+                        popEnterTransition = {
+                            if (!navMotion) EnterTransition.None
+                            else fadeIn(tween(210)) + slideInHorizontally(tween(280)) { -it / 18 }
+                        },
+                        popExitTransition = { if (!navMotion) ExitTransition.None else fadeOut(tween(150)) }
                     ) {
                         Page.entries.forEach { target ->
                             composable(target.id) {
@@ -216,7 +239,7 @@ private fun KnouxAppScaffold(
                         when (shown) {
                             HeaderSheet.DISCLOSURE -> Label(Disclosure.localized(), 14, Mist)
                             HeaderSheet.PRO -> Label(("This is a preview of the Pro badge. Purchases and subscriptions are unavailable." ar
-                                "دي معاينة لشارة Pro. الشراء والاشتراكات غير متاحة.").localized(), 14, Mist)
+                                "هذه معاينة لشارة Pro. الشراء والاشتراكات غير متاحة.").localized(), 14, Mist)
                             HeaderSheet.MENU -> {
                                 val choices = if (BuildConfig.DEBUG) Page.references else tabs.map { it.first }
                                 choices.forEach { next ->
@@ -234,7 +257,8 @@ private fun KnouxAppScaffold(
                                 Label(Disclosure.localized(), 13, Mist)
                                 val ar = LocalArabic.current
                                 AdaptiveActions(Action("English" ar "الإنجليزية", Mark.CHECK), Action("العربية" ar "العربية", Mark.CHECK),
-                                    firstEnabled = ar, secondEnabled = !ar, onFirst = { language(false) }, onSecond = { language(true) })
+                                    firstSelected = !ar, secondSelected = ar,
+                                    onFirst = { language(false) }, onSecond = { language(true) })
                                 AccentButton(Action(if (reduced) "Enable decorative motion" ar "تشغيل الحركة" else "Reduce motion" ar "تقليل الحركة", Mark.RADAR),
                                     Modifier.fillMaxWidth(), primary = false, tag = "motion-toggle") { reduceMotion(!reduced) }
                             }
@@ -249,8 +273,15 @@ private fun KnouxAppScaffold(
 @Composable
 internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> Unit) {
     val mirror = LocalArabic.current && (mark == Mark.BACK || mark == Mark.NEXT)
-    Box(Modifier.size(48.dp).testTag(tag).clip(RoundedCornerShape(20.dp))
-        .clickable(role = Role.Button, onClick = onClick).semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (pressed) .92f else 1f, tween(110), label = "icon press")
+    val wash by animateColorAsState(if (pressed) Color.White.copy(alpha = .12f) else Color.Transparent,
+        tween(120), label = "icon wash")
+    Box(Modifier.size(48.dp).testTag(tag).graphicsLayer { scaleX = scale; scaleY = scale }
+        .background(wash, RoundedCornerShape(20.dp))
+        .clickable(interactionSource = interaction, indication = null, role = Role.Button, onClick = onClick)
+        .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
         Glyph(mark, Modifier.size(22.dp).then(if (mirror) Modifier.rotate(180f) else Modifier))
     }
 }
@@ -274,7 +305,8 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
         PreviewModeDisclosure(disclose)
         if ((page == Page.HOME || page in Page.detailRoutes) && !LocalRoomy.current) {
             Row(Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(20.dp)).testTag("pro")
-                .clickable(role = Role.Button, onClick = pro).padding(horizontal = 4.dp),
+                .clickable(role = Role.Button, onClick = pro).semantics { contentDescription = "KNOUX AI Pro" }
+                .padding(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                 Glyph(Mark.CROWN, Modifier.size(15.dp), Gold)
                 Label("Pro", 11, Gold, FontWeight.Bold)
@@ -290,32 +322,37 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(2.dp)) {
         tabs.forEach { (tab, icon) ->
             val active = tab == selected
+            val fraction by animateFloatAsState(if (active) 1f else 0f,
+                animationSpec = tween(260, easing = androidx.compose.animation.core.FastOutSlowInEasing), label = "tab selection")
+            val tone by animateColorAsState(if (active) Chalk else Mist, tween(200), label = "tab tone")
+            val iconScale by animateFloatAsState(if (active) 1.1f else 1f, tween(230), label = "tab icon")
             Column(Modifier.weight(1f).heightIn(min = 48.dp).testTag("tab-${tab.id}").clip(RoundedCornerShape(20.dp))
-                .then(if (active) Modifier.tabSelection() else Modifier)
+                .tabSelection(fraction)
                 .selectable(active, role = Role.Tab, onClick = { open(tab) }).padding(vertical = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Glyph(icon, Modifier.size(20.dp), if (active) Chalk else Mist, active)
-                Label(tabTitle(tab).localized(), 11, if (active) Chalk else Mist, if (active) FontWeight.Bold else FontWeight.Normal, align = TextAlign.Center)
+                Glyph(icon, Modifier.size(20.dp).graphicsLayer { scaleX = iconScale; scaleY = iconScale }, tone, active)
+                Label(tabTitle(tab).localized(), 11, tone, if (active) FontWeight.Bold else FontWeight.Normal, align = TextAlign.Center)
             }
         }
     }
 }
 
 /** Selected tab: a filled, lit pill with a soft bloom under it. */
-private fun Modifier.tabSelection(): Modifier = drawBehind {
+private fun Modifier.tabSelection(fraction: Float): Modifier = drawBehind {
+    if (fraction <= .01f) return@drawBehind
     val rad = CornerRadius(size.height * .42f)
     for (dp in listOf(9, 5)) {
         val delta = dp.dp.toPx()
-        drawRoundRect(Brush.horizontalGradient(listOf(Light.violet.copy(alpha = .16f), Light.cyan.copy(alpha = .12f))),
+        drawRoundRect(Brush.horizontalGradient(listOf(Light.violet.copy(alpha = .22f), Light.cyan.copy(alpha = .18f))),
             topLeft = Offset(-delta * .5f, -delta * .35f), size = Size(size.width + delta, size.height + delta * .7f),
-            cornerRadius = CornerRadius(size.height * .42f + delta * .5f))
+            cornerRadius = CornerRadius(size.height * .42f + delta * .5f), alpha = fraction)
     }
-    drawRoundRect(Brush.linearGradient(listOf(Color(0xff7a2be8), Color(0xff4d23c4), Color(0xff1f3fb8)),
-        Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad)
-    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .28f), Color.Transparent)),
-        cornerRadius = rad)
-    drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .55f), Light.cyan.copy(alpha = .45f), Color.Transparent)),
-        cornerRadius = rad, style = Stroke(1.1.dp.toPx()))
+    drawRoundRect(Brush.linearGradient(listOf(Color(0xff9a2bff), Color(0xff5a28e8), Color(0xff2448ff)),
+        Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad, alpha = fraction)
+    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .34f), Color.Transparent)),
+        cornerRadius = rad, alpha = fraction)
+    drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .72f), Light.cyan.copy(alpha = .62f), Color.Transparent)),
+        cornerRadius = rad, style = Stroke(1.25.dp.toPx()), alpha = fraction)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -323,7 +360,7 @@ private fun Modifier.tabSelection(): Modifier = drawBehind {
 internal fun InfoSheet(title: Copy, dismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(onDismissRequest = dismiss, sheetState = state,
-        containerColor = Color(0xff1b1742), contentColor = Chalk) {
+        containerColor = Color(0xff1d1650), contentColor = Chalk) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 6.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Label(title.localized(), 23, weight = FontWeight.Bold)

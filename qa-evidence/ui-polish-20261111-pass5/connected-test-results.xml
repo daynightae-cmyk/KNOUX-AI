@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.knoux.ai.PreviewNavigationTest" tests="10" failures="0" errors="0" skipped="0" time="73.945" timestamp="2026-11-11T09:17:02" hostname="localhost">
+  <properties>
+    <property name="device" value="kx_preview(AVD) - 8.0.0" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="arabicSwitchMirrorsTabOrderAndPreservesNavigation" classname="com.knoux.ai.PreviewNavigationTest" time="12.807" />
+  <testcase name="scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation" classname="com.knoux.ai.PreviewNavigationTest" time="3.682" />
+  <testcase name="everyRemainingPrimaryActionOpensAReversiblePreview" classname="com.knoux.ai.PreviewNavigationTest" time="21.565" />
+  <testcase name="tabsReachAllTenScreensAndDetailBackReturnsToTheIndex" classname="com.knoux.ai.PreviewNavigationTest" time="9.672" />
+  <testcase name="cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean" classname="com.knoux.ai.PreviewNavigationTest" time="5.14" />
+  <testcase name="outerReviewOpensAnInnerPageAndBackReturnsToItsOrigin" classname="com.knoux.ai.PreviewNavigationTest" time="7.634" />
+  <testcase name="residueSelectionUpdatesTotalAndConfirmationDoesNotClean" classname="com.knoux.ai.PreviewNavigationTest" time="6.713" />
+  <testcase name="liveSmileCuesOnceAtCompletionThenFinishes" classname="com.knoux.ai.SplashSequenceTest" time="2.102" />
+  <testcase name="frozenDebugFrameStaysVisibleForCapture" classname="com.knoux.ai.SplashSequenceTest" time="0.77" />
+  <testcase name="reducedMotionShowsStaticBrandAndFinishesQuickly" classname="com.knoux.ai.SplashSequenceTest" time="1.746" />
+</testsuite>

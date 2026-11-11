@@ -139,6 +139,8 @@ class PreviewNavigationTest {
         scrollClick("detail-select-0")
         node("detail-select-0").assertIsOff()
         back()
+        // The origin restores its scroll position, so bring the heading back into view before asserting.
+        node("screen-duplicates").performScrollTo()
         screen("duplicates")
     }
 }

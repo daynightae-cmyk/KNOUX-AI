@@ -1,6 +1,13 @@
 package com.knoux.ai
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -38,7 +45,7 @@ internal fun ReferenceScreen(
     if (data == null) {
         Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             HeroHeading(page, "Device information is unavailable" ar "بيانات الجهاز غير متاحة", false)
-            Label(("No device measurements are available." ar "مفيش قياسات متاحة من الجهاز.").localized(), 15, Mist)
+            Label(("No device measurements are available." ar "لا توجد قياسات متاحة من الجهاز.").localized(), 15, Mist)
         }
         return
     }
@@ -193,17 +200,25 @@ private fun PreviewChoice(entry: Entry, selected: Boolean, tag: String, toggle: 
 
 @Composable
 private fun ScanProgress(paused: Boolean) {
+    val pulse = if (!paused && LocalPreviewMotion.current) {
+        val transition = rememberInfiniteTransition(label = "scan pulse")
+        transition.animateFloat(0f, 1f, infiniteRepeatable(tween(1200, easing = FastOutSlowInEasing),
+            RepeatMode.Reverse), label = "scan pulse")
+    } else null
     Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        ProgressDonut(72, if (LocalRoomy.current) "" else ("Scan Progress" ar "تقدم الفحص").localized())
+        ProgressDonut(72, if (LocalRoomy.current) "" else ("Scan Progress" ar "تقدم الفحص").localized(), live = !paused)
         Separator(Modifier.width(1.dp).height(50.dp))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
             val label = if (paused) "Preview paused" ar "المعاينة متوقفة"
                 else "Analyzing device state" ar "تحليل حالة الجهاز"
-            Label(label.localized(), 15, weight = FontWeight.Bold, modifier = Modifier.testTag("scan-state"))
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Box(Modifier.size(7.dp).background(Cyan.copy(alpha = .32f + .68f * (pulse?.value ?: 1f)), RoundedCornerShape(4.dp)))
+                Label(label.localized(), 15, weight = FontWeight.Bold, modifier = Modifier.testTag("scan-state"))
+            }
             Label((if (paused) "Sample progress stays at 72%" ar "التقدم التجريبي ثابت عند ٧٢٪"
                 else "Demo animation · no live scan" ar "حركة تجريبية · لا يوجد فحص فعلي").localized(), 10, Mist)
-            GradientBar(.72f, thickness = 9)
+            GradientBar(.72f, thickness = 9, live = !paused)
         }
     }
 }
@@ -215,7 +230,7 @@ private fun StorageCapacity() {
         Separator(Modifier.width(1.dp).height(33.dp))
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Label(("128 GB / 256 GB used" ar "128 GB مستخدم من 256 GB").localized(), 17, weight = FontWeight.Bold)
-            GradientBar(.5f, thickness = 8)
+            GradientBar(.5f, thickness = 8, live = true)
         }
         Label("50%", 12, Mist, FontWeight.Bold)
     }
@@ -238,12 +253,12 @@ private fun FeatureRow(page: Page, entry: Entry, index: Int, selectable: Boolean
                 if (roomy) {
                     Label(entry.value, 12, Pink, FontWeight.Bold)
                     entry.note?.let { Label(it.localized(), 10, Mist) }
-                    entry.progress?.let { GradientBar(it / 100f, thickness = 6) }
+                    entry.progress?.let { GradientBar(it / 100f, thickness = 6, live = page == Page.SCAN) }
                 }
             }
             if (!roomy) {
                 if (page == Page.REPORTS && index < 4) Sparkline(index, Modifier.width(57.dp).height(27.dp))
-                if (entry.progress != null) GradientBar(entry.progress / 100f, Modifier.width(70.dp), 6)
+                if (entry.progress != null) GradientBar(entry.progress / 100f, Modifier.width(70.dp), 6, live = page == Page.SCAN)
                 else Separator(Modifier.width(1.dp).height(27.dp))
                 Column(Modifier.widthIn(min = 36.dp, max = if (entry.action != null) 61.dp else 77.dp),
                     horizontalAlignment = Alignment.CenterHorizontally) {

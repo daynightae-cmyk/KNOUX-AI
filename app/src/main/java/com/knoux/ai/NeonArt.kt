@@ -15,14 +15,14 @@ import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.unit.dp
 import kotlin.math.*
 
-internal val Ink = Color(0xff05020c)
-internal val Chalk = Color(0xfffdfbff)
-internal val Mist = Color(0xffe2ddfb)
-internal val Violet = Color(0xffbd6bff)
-internal val Pink = Color(0xfff275ff)
-internal val Cyan = Color(0xff1de9ff)
-internal val Gold = Color(0xffffcc55)
-internal val Mint = Color(0xff4df7c0)
+internal val Ink = Color(0xff04010b)
+internal val Chalk = Color(0xfffffcff)
+internal val Mist = Color(0xffe7e1ff)
+internal val Violet = Color(0xffc36bff)
+internal val Pink = Color(0xffff6dff)
+internal val Cyan = Color(0xff0deaff)
+internal val Gold = Color(0xffffd15c)
+internal val Mint = Color(0xff3dffc0)
 private val Clear = Color.Transparent
 
 private fun path(data: String) = PathParser().parsePathString(data).toPath()
@@ -92,7 +92,7 @@ private val kPlanes = listOf(
 )
 
 private fun DrawScope.knouxK(bright: Boolean = false) {
-    val colors = listOf(listOf(Color(0xfff06aff), Color(0xffa62bff)), listOf(Color(0xffe77dff), Color(0xff6f2ffa), Cyan), listOf(Color(0xff3f63ff), Cyan))
+    val colors = listOf(listOf(Color(0xffff6aff), Color(0xffb02bff)), listOf(Color(0xffff7dff), Color(0xff7a2fff), Cyan), listOf(Color(0xff4a6bff), Cyan))
     val axes = listOf(Offset(12f, .7f) to Offset(7f, 13.5f), Offset(23f, 5.5f) to Offset(2f, 19.4f), Offset(12f, 11.5f) to Offset(21f, 19.5f))
     kPlanes.forEachIndexed { index, p ->
         if (bright) {
@@ -134,19 +134,19 @@ private fun glassFill(start: Offset = Offset(-25f, -38f), end: Offset = Offset(3
     Brush.linearGradient(listOf(Color(0xffff9bff), Color(0xff6a2be8), Color(0xff24105f), Color(0xff0f66e6), Cyan.copy(alpha = .7f)), start, end)
 
 @Composable
-internal fun HomeTileIcon(mark: Mark, tone: Color) {
-    Box(Modifier.size(44.dp), contentAlignment = Alignment.Center) {
+internal fun HomeTileIcon(mark: Mark, tone: Color, modifier: Modifier = Modifier) {
+    Box(modifier.size(40.dp), contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {
             val platform = Offset(size.width / 2f, size.height * .84f)
             // Soft light pool only - no hard ring, so the icon keeps a clean base.
-            drawOval(Brush.radialGradient(listOf(tone.copy(alpha = .44f), Color.Transparent),
+            drawOval(Brush.radialGradient(listOf(tone.copy(alpha = .56f), Color.Transparent),
                 platform, size.width * .42f), Offset(size.width * .24f, platform.y - size.height * .11f),
                 Size(size.width * .52f, size.height * .22f))
             val rim = Size(size.width * .74f, size.height * .16f)
-            drawOval(Brush.horizontalGradient(listOf(Color.Transparent, tone.copy(alpha = .95f), Color.Transparent)),
-                platform - Offset(rim.width / 2f, rim.height / 2f), rim, style = Stroke(1.dp.toPx()))
+            drawOval(Brush.horizontalGradient(listOf(Color.Transparent, tone.copy(alpha = 1f), Color.Transparent)),
+                platform - Offset(rim.width / 2f, rim.height / 2f), rim, style = Stroke(1.2.dp.toPx()))
         }
-        VolumetricGlyph(mark, tone, 34.dp)
+        VolumetricGlyph(mark, tone, 31.dp)
     }
 }
 
@@ -160,18 +160,27 @@ internal fun HomeTileIcon(mark: Mark, tone: Color) {
 internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier) {
     val home = mark == Mark.K
     val homeTall = LocalTall.current
-    val height = if (home) (if (homeTall) 176.dp else 164.dp) else 120.dp
+    val height = if (home) (if (homeTall) 160.dp else 152.dp) else 120.dp
     val unitDivisor = if (home) (if (homeTall) 150f else 140f) else 120f
     val tone = heroTone(mark)
     val points = rememberGlobePoints(if (home) 760 else 460)
-    val phase = if (motion) {
-        val transition = rememberInfiniteTransition(label = "hero drift")
-        transition.animateFloat(0f, 360f,
-            infiniteRepeatable(tween(42000, easing = LinearEasing)), label = "hero phase")
-    } else null
+    // One clock drives every layer. The states are only started while motion is
+    // allowed, so reduced-motion and still captures render a single static frame.
+    val transition = rememberInfiniteTransition(label = "hero")
+    val phase = if (motion) transition.animateFloat(0f, 360f,
+        infiniteRepeatable(tween(30000, easing = LinearEasing)), label = "hero phase") else null
+    val spin = if (motion) transition.animateFloat(0f, 360f,
+        infiniteRepeatable(tween(19000, easing = LinearEasing)), label = "hero spin") else null
+    val pulse = if (motion) transition.animateFloat(0f, 1f,
+        infiniteRepeatable(tween(4600, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "hero pulse") else null
     Box(modifier.fillMaxWidth().height(height), contentAlignment = Alignment.Center) {
         // Layer 1 - static scene: atmosphere, ribbons, pedestal, arcs, artwork.
-        Canvas(Modifier.matchParentSize()) {
+        // The whole scene breathes by a fraction of a percent.
+        Canvas(Modifier.matchParentSize().graphicsLayer {
+            val breath = pulse?.value ?: 0f
+            scaleX = 1f + breath * .012f
+            scaleY = 1f + breath * .012f
+        }) {
             atmosphere(size.width, size.height, tone)
             ribbonField(size.width, size.height, 0f, if (home) 1f else .72f)
             val x = size.width / 2f
@@ -182,7 +191,7 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
                 scale(unit, unit, Offset.Zero) {
                     val radius = if (home) 64f else 58f
                     val pedestalY = if (home) 70f else 60f
-                    bloom(Offset.Zero, radius * 1.78f, tone, .72f)
+                    bloom(Offset.Zero, radius * 1.78f, tone, .78f)
                     lightPedestal(radius * .92f, pedestalY, if (home) Light.magenta else tone)
                     heroArcs(radius * 1.00f, 0f)
                     if (!home) {
@@ -193,10 +202,14 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
             }
         }
         if (home) {
-            // Layer 2 - the particle globe spins as a cached layer.
+            // Layer 2 - the particle globe spins, bobs and squashes subtly as a
+            // cached layer; the display list is not rebuilt on every frame.
             Canvas(Modifier.matchParentSize().graphicsLayer {
                 val radians = (phase?.value ?: 0f) * PI.toFloat() / 180f
-                rotationZ = sin(radians) * 5f
+                transformOrigin = TransformOrigin(.5f, .44f)
+                rotationZ = sin(radians) * 7.5f
+                translationY = cos(radians * 1.35f) * 3.2f
+                scaleX = 1f + sin(radians * .7f) * .018f
             }) {
                 val x = size.width / 2f
                 val h = size.height
@@ -205,7 +218,14 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
                 translate(x, cy) { scale(unit, unit, Offset.Zero) { drawGlobe(64f * .94f, points) } }
             }
             // Layer 3 - the brand mark, crisp and in front of the globe.
-            Canvas(Modifier.matchParentSize()) {
+            Canvas(Modifier.matchParentSize().graphicsLayer {
+                val radians = (phase?.value ?: 0f) * PI.toFloat() / 180f
+                transformOrigin = TransformOrigin(.5f, .44f)
+                translationY = -cos(radians * 1.35f) * 1.6f
+                val breath = pulse?.value ?: 0f
+                scaleX = 1f + breath * .014f
+                scaleY = 1f + breath * .014f
+            }) {
                 val x = size.width / 2f
                 val h = size.height
                 val cy = h * .44f
@@ -213,16 +233,71 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
                 translate(x, cy) { scale(unit, unit, Offset.Zero) { glowingK(64f * 1.08f) } }
             }
         }
-        if (phase != null) Canvas(Modifier.matchParentSize()) {
-            val unit = size.height / unitDivisor
-            val radius = unit * if (home) 74f else 66f
-            val center = Offset(size.width / 2f, size.height * .44f)
-            drawArc(Light.cyan.copy(alpha = .82f), phase.value - 100f, 11f, false,
-                center - Offset(radius, radius), Size(radius * 2f, radius * 2f),
-                style = Stroke(unit * 1.3f, cap = StrokeCap.Round))
+        // Layer 4 - counter-rotating orbital light segments. Each layer is drawn
+        // once and rotated in the layer, which keeps the motion cheap even on the
+        // software-rendered verification emulator.
+        if (spin != null) {
+            val unit = with(androidx.compose.ui.platform.LocalDensity.current) { height.toPx() } / unitDivisor
+            val centerY = .44f
+            Canvas(Modifier.matchParentSize().graphicsLayer {
+                transformOrigin = TransformOrigin(.5f, centerY)
+                rotationZ = spin.value
+            }) {
+                val radius = unit * if (home) 73f else 65f
+                val cx = size.width / 2f
+                val cy = size.height * centerY
+                val box = Size(radius * 2f, radius * 2f)
+                val topLeft = Offset(cx - radius, cy - radius)
+                drawArc(Light.cyan.copy(alpha = .34f), -36f, 70f, false, topLeft, box,
+                    style = Stroke(unit * 4.2f, cap = StrokeCap.Round))
+                drawArc(Brush.sweepGradient(listOf(Light.cyan, Light.ice, Light.cyan.copy(alpha = .25f)), Offset(cx, cy)),
+                    -36f, 70f, false, topLeft, box, style = Stroke(unit * 1.15f, cap = StrokeCap.Round))
+                val end = (-36f + 70f) * PI.toFloat() / 180f
+                drawCircle(Light.ice.copy(alpha = .95f), unit * 1.5f,
+                    Offset(cx + radius * cos(end), cy + radius * sin(end)))
+            }
+            Canvas(Modifier.matchParentSize().graphicsLayer {
+                transformOrigin = TransformOrigin(.5f, centerY)
+                rotationZ = -spin.value * 1.34f
+            }) {
+                val radius = unit * if (home) 84f else 76f
+                val cx = size.width / 2f
+                val cy = size.height * centerY
+                val box = Size(radius * 2f, radius * 2f)
+                val topLeft = Offset(cx - radius, cy - radius)
+                drawArc(Light.magenta.copy(alpha = .26f), 138f, 42f, false, topLeft, box,
+                    style = Stroke(unit * 3.4f, cap = StrokeCap.Round))
+                drawArc(Brush.sweepGradient(listOf(Light.magenta, Light.pink, Light.magenta.copy(alpha = .2f)), Offset(cx, cy)),
+                    138f, 42f, false, topLeft, box, style = Stroke(unit * .9f, cap = StrokeCap.Round))
+                val end = (138f + 42f) * PI.toFloat() / 180f
+                drawCircle(Light.pink.copy(alpha = .9f), unit * 1.1f,
+                    Offset(cx + radius * cos(end), cy + radius * sin(end)))
+            }
+        }
+        // Layer 5 - fine glints that fade in and out with the breath clock.
+        if (pulse != null) Canvas(Modifier.matchParentSize().graphicsLayer { alpha = .38f + .62f * pulse.value }) {
+            val unit = size.minDimension / 100f
+            heroGlints.forEachIndexed { index, point ->
+                val tint = when (index % 3) {
+                    0 -> Light.cyan
+                    1 -> Light.pink
+                    else -> Light.ice
+                }
+                drawCircle(tint.copy(alpha = .78f), unit * (.22f + (index % 4) * .09f),
+                    Offset(size.width * point.x, size.height * point.y))
+            }
         }
     }
 }
+
+/** Normalised glint positions; static so the draw loop never allocates. */
+private val heroGlints = listOf(
+    Offset(.08f, .18f), Offset(.16f, .62f), Offset(.24f, .34f), Offset(.31f, .78f),
+    Offset(.38f, .12f), Offset(.46f, .56f), Offset(.54f, .24f), Offset(.62f, .84f),
+    Offset(.68f, .16f), Offset(.74f, .48f), Offset(.81f, .72f), Offset(.88f, .28f),
+    Offset(.93f, .58f), Offset(.12f, .84f), Offset(.43f, .90f), Offset(.58f, .06f),
+    Offset(.77f, .06f), Offset(.96f, .14f)
+)
 
 /** Brand K drawn in front of the globe: dark glass planes with hot rim light. */
 private fun DrawScope.glowingK(size: Float) {
@@ -231,31 +306,31 @@ private fun DrawScope.glowingK(size: Float) {
         scale(s, s, Offset.Zero) {
             // Colored bloom behind the mark separates it from the particle shell.
             drawCircle(Brush.radialGradient(listOf(
-                Color(0xffff5ce0).copy(alpha = .26f), Color(0xff6733ff).copy(alpha = .18f), Color.Transparent),
+                Color(0xffff4ade).copy(alpha = .34f), Color(0xff6d2dff).copy(alpha = .24f), Color.Transparent),
                 Offset(11f, 12f), 16f), 16f, Offset(11f, 12f))
             kPlanes.forEachIndexed { index, p ->
                 val tint = if (index == 2) Light.cyan else Light.magenta
-                drawPath(p, tint.copy(alpha = .30f), style = Stroke(5f, join = StrokeJoin.Round))
-                drawPath(p, tint.copy(alpha = .55f), style = Stroke(2.2f, join = StrokeJoin.Round))
+                drawPath(p, tint.copy(alpha = .38f), style = Stroke(5f, join = StrokeJoin.Round))
+                drawPath(p, tint.copy(alpha = .68f), style = Stroke(2.2f, join = StrokeJoin.Round))
             }
             val glass = listOf(
-                Brush.linearGradient(listOf(Color(0xff5c2ad8), Color(0xff2a1166), Color(0xff140a3e)), Offset(10f, 0f), Offset(4f, 14f)),
-                Brush.linearGradient(listOf(Color(0xff6d2ce2), Color(0xff241076), Color(0xff0b2a63)), Offset(22f, 6f), Offset(2f, 19f)),
-                Brush.linearGradient(listOf(Color(0xff1a3d9c), Color(0xff0a2f74), Color(0xff0b7fb0)), Offset(13f, 11f), Offset(21f, 19f))
+                Brush.linearGradient(listOf(Color(0xff6d2ce8), Color(0xff321282), Color(0xff170a4a)), Offset(10f, 0f), Offset(4f, 14f)),
+                Brush.linearGradient(listOf(Color(0xff7f2cf6), Color(0xff2b0f8f), Color(0xff0a2f78)), Offset(22f, 6f), Offset(2f, 19f)),
+                Brush.linearGradient(listOf(Color(0xff1d48c4), Color(0xff0a3790), Color(0xff0a8ecc)), Offset(13f, 11f), Offset(21f, 19f))
             )
             kPlanes.forEachIndexed { index, p ->
-                drawPath(p, Color(0xff06021a).copy(alpha = .55f), style = Stroke(1.1f, join = StrokeJoin.Round))
+                drawPath(p, Color(0xff06021a).copy(alpha = .62f), style = Stroke(1.1f, join = StrokeJoin.Round))
                 drawPath(p, glass[index])
                 val rim = when (index) {
                     0 -> Light.pink
                     1 -> Light.ice
                     else -> Light.cyan
                 }
-                drawPath(p, rim.copy(alpha = .85f), style = Stroke(.55f, join = StrokeJoin.Round))
+                drawPath(p, rim.copy(alpha = .95f), style = Stroke(.6f, join = StrokeJoin.Round))
             }
             // Hot leading edges where the light catches the glass.
-            drawPath(kPlanes[0], Light.ice.copy(alpha = .9f), style = Stroke(.3f, join = StrokeJoin.Round))
-            drawPath(kPlanes[1], Light.white.copy(alpha = .55f), style = Stroke(.28f, join = StrokeJoin.Round))
+            drawPath(kPlanes[0], Light.ice.copy(alpha = .98f), style = Stroke(.34f, join = StrokeJoin.Round))
+            drawPath(kPlanes[1], Light.white.copy(alpha = .72f), style = Stroke(.3f, join = StrokeJoin.Round))
         }
     }
 }

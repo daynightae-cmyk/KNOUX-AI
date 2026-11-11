@@ -1,0 +1,125 @@
+Physical size: 1080x1920
+Override size: 1080x2340
+Physical density: 420
+clean-center:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 22
+TotalTime: 22
+WaitTime: 30
+Complete
+UI hierarchy verified: screen-clean-center
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          8B3A866984C7237E7948900CBD416D0B0DEE8E717B81917A788F7B37FE1CAF3A       D:\KNOUX-AI\qa-evidence\ui-polis…
+duplicate-group-review:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 3
+Complete
+UI hierarchy verified: screen-duplicate-group-review
+SHA256          EF25D6BCA2116A3010C91D98826C11A02C98AF9F709BDD45DD37F3BA0FA018C7       D:\KNOUX-AI\qa-evidence\ui-polis…
+privacy-risk-inspector:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 4
+Complete
+UI hierarchy verified: screen-privacy-risk-inspector
+SHA256          4B34EC65BE61515525FD8D028D09779D802312DCF71BDAD91DDA704D7A218B9A       D:\KNOUX-AI\qa-evidence\ui-polis…
+deep-scan-summary:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 5
+Complete
+UI hierarchy verified: screen-deep-scan-summary
+SHA256          825BF22F29D577B484188A07FF8AF6A66CFCFAAF8880EB3B1190150E0FF44983       D:\KNOUX-AI\qa-evidence\ui-polis…
+performance-report-detail:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 2
+Complete
+UI hierarchy verified: screen-performance-report-detail
+SHA256          3328D939854A7DA083DFA11CCEABDB02DC5374B07843A8BE8E626FFA01AE0653       D:\KNOUX-AI\qa-evidence\ui-polis…
+residue-item-review:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 7
+Complete
+UI hierarchy verified: screen-residue-item-review
+SHA256          8E11A85A786CCE20B3CC1F280A8D8128E8C563EC9A7D8C70F1A0488F68FD573E       D:\KNOUX-AI\qa-evidence\ui-polis…
+installed-apps-review:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 5
+Complete
+UI hierarchy verified: screen-installed-apps-review
+SHA256          60180D470F4BAC2EE73E614B93BD1BA316F96135028F28A8614B3FA7E435D027       D:\KNOUX-AI\qa-evidence\ui-polis…
+storage-breakdown:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 4
+Complete
+UI hierarchy verified: screen-storage-breakdown
+SHA256          1B4F541F84F90A5CA50C06E67C2A60AB6C436AA4DE2B2503A4181F806AEEB9B4       D:\KNOUX-AI\qa-evidence\ui-polis…
+battery-diagnostics:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 5
+Complete
+UI hierarchy verified: screen-battery-diagnostics
+SHA256          A37E54551037EACE35E21C09180609A2C786E01A8CFE4AD46D8A8CE9C0D9250C       D:\KNOUX-AI\qa-evidence\ui-polis…
+ai-recommendations:
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 0
+TotalTime: 0
+WaitTime: 12
+Complete
+UI hierarchy verified: screen-ai-recommendations
+SHA256          CD108A2B6F8EF49645338545C5B79117AE201ECF4D2D6F2B1010260356CF5E61       D:\KNOUX-AI\qa-evidence\ui-polis…
+Starting: Intent { flg=0x20000000 cmp=com.knoux.ai/.MainActivity (has extras) }
+Warning: Activity not started, its current task has been brought to the front
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 674
+TotalTime: 674
+WaitTime: 688
+Complete
+

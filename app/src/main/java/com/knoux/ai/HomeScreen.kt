@@ -1,5 +1,10 @@
 package com.knoux.ai
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,16 +13,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlin.math.PI
+import kotlin.math.sin
 
 private data class HomeTile(val entry: Entry, val page: Page)
 private val homeTiles = listOf(
@@ -38,10 +47,14 @@ private val homeTiles = listOf(
 @Composable
 internal fun HomeScreen(open: (Page) -> Unit) {
     val roomy = LocalRoomy.current
+    val tilePhase = if (LocalPreviewMotion.current) {
+        val transition = rememberInfiniteTransition(label = "home tiles")
+        transition.animateFloat(0f, 360f, infiniteRepeatable(tween(9000, easing = LinearEasing)), label = "tile float")
+    } else null
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
         HeroHeading(Page.HOME, "The All-in-One AI Cleaner, Optimizer & Device Care" ar "تنظيف ذكي وتحسين الأداء والعناية بالجهاز")
         Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 5.dp),
-            verticalArrangement = Arrangement.spacedBy(if (LocalTall.current) 8.dp else 7.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            verticalArrangement = Arrangement.spacedBy(if (LocalTall.current) 6.dp else 5.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             val features = listOf(("Clean" ar "تنظيف") to Mark.BOLT, ("Optimize" ar "تحسين") to Mark.ROCKET,
                 ("Protect" ar "حماية") to Mark.SHIELD, ("Manage" ar "إدارة") to Mark.LAYERS)
             features.chunked(if (roomy) 2 else 4).forEach { group ->
@@ -50,8 +63,8 @@ internal fun HomeScreen(open: (Page) -> Unit) {
                         if (i > 0) Separator(Modifier.width(1.dp).height(19.dp))
                         Row(Modifier.weight(1f).padding(horizontal = 3.dp, vertical = 3.dp), verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally)) {
-                            Glyph(icon, Modifier.size(16.dp), if (i < 2) Pink else Cyan, true)
-                            Label(title.localized(), 10, Mist, align = TextAlign.Center)
+                            Glyph(icon, Modifier.size(17.dp), if (i < 2) Pink else Cyan, true)
+                            Label(title.localized(), 11, Chalk, align = TextAlign.Center)
                         }
                     }
                 }
@@ -63,12 +76,14 @@ internal fun HomeScreen(open: (Page) -> Unit) {
                 Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     tiles.forEachIndexed { col, tile ->
                         val index = if (roomy) row else row * 2 + col
-                        CategoryCard(tile.entry, index, Modifier.weight(1f).fillMaxHeight(), tile.page.id, home = true) {
+                        CategoryCard(tile.entry, index, Modifier.weight(1f).fillMaxHeight(), tile.page.id, home = true,
+                            floatPhase = tilePhase) {
                             open(tile.page)
                         }
                     }
                 }
             }
+            Spacer(Modifier.height(2.dp))
         }
     }
 }
@@ -115,7 +130,8 @@ private fun HomeMetrics() {
 }
 
 @Composable
-internal fun CategoryCard(entry: Entry, index: Int, modifier: Modifier = Modifier, tag: String, home: Boolean = false, onClick: () -> Unit) {
+internal fun CategoryCard(entry: Entry, index: Int, modifier: Modifier = Modifier, tag: String, home: Boolean = false,
+    floatPhase: State<Float>? = null, onClick: () -> Unit) {
     val accent = when {
         entry.icon == Mark.CHAT -> Mint
         home -> if (entry.icon in listOf(Mark.OVERLAY, Mark.DISK, Mark.BATTERY)) Cyan else Pink
@@ -123,12 +139,15 @@ internal fun CategoryCard(entry: Entry, index: Int, modifier: Modifier = Modifie
         else -> Cyan
     }
     val arrow = Modifier.size(13.dp).then(if (LocalArabic.current) Modifier.rotate(180f) else Modifier)
-    GlassPanel(modifier.heightIn(min = if (home && LocalTall.current) 86.dp else if (home) 80.dp else 66.dp).testTag("open-$tag")
+    GlassPanel(modifier.heightIn(min = if (home && LocalTall.current) 78.dp else if (home) 74.dp else 66.dp).testTag("open-$tag")
         .clip(RoundedCornerShape(14.dp)).clickable(role = Role.Button, onClick = onClick),
         tint = accent.takeIf { home }) {
-        Column(Modifier.fillMaxWidth().padding(7.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        Column(Modifier.fillMaxWidth().padding(6.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                if (home) HomeTileIcon(entry.icon, accent) else IconBadge(entry.icon, accent, diameter = 34)
+                if (home) HomeTileIcon(entry.icon, accent, if (floatPhase != null) Modifier.graphicsLayer {
+                    translationY = sin((floatPhase.value + index * 43f) * PI.toFloat() / 180f) * 1.8.dp.toPx()
+                } else Modifier)
+                else IconBadge(entry.icon, accent, diameter = 34)
                 Column(Modifier.weight(1f)) {
                     Label(entry.title.localized(), 12, weight = FontWeight.Bold)
                     if (!home) Label(entry.value, 13, Pink, FontWeight.Bold)
@@ -140,17 +159,17 @@ internal fun CategoryCard(entry: Entry, index: Int, modifier: Modifier = Modifie
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Row(Modifier
                         .background(Brush.horizontalGradient(
-                            listOf(accent.copy(alpha = .34f), accent.copy(alpha = .14f)), 0f, 260f),
+                            listOf(accent.copy(alpha = .46f), accent.copy(alpha = .20f)), 0f, 260f),
                             RoundedCornerShape(9.dp))
-                        .border(.7.dp, accent.copy(alpha = .55f), RoundedCornerShape(9.dp))
-                        .padding(horizontal = 7.dp, vertical = 2.dp),
+                        .border(1.dp, accent.copy(alpha = .82f), RoundedCornerShape(9.dp))
+                        .padding(horizontal = 6.dp, vertical = 1.dp),
                         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         Label(entry.value, 12, accent, FontWeight.Bold)
                         entry.note?.let { Label(it.localized(), 9, Mist) }
                     }
-                    entry.progress?.let { Label("$it%", 10, Mist, FontWeight.Bold, Modifier.weight(1f), TextAlign.End) }
+                    entry.progress?.let { Label("$it%", 10, Chalk, FontWeight.Bold, Modifier.weight(1f), TextAlign.End) }
                 }
-                entry.progress?.let { GradientBar(it / 100f, thickness = 4) }
+                entry.progress?.let { GradientBar(it / 100f, thickness = 3, live = true) }
             }
         }
     }

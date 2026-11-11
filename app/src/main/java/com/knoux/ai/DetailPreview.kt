@@ -1,6 +1,7 @@
 package com.knoux.ai
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -96,7 +97,7 @@ internal fun DetailPreview(page: Page) {
                         ordered.forEach { index ->
                             DuplicateSampleGroup(design.rows[index], index, index in selected, grid, { toggle(index) }, { open(index) })
                         }
-                        if (ordered.isEmpty()) Label(("No selected groups" ar "مفيش مجموعات محددة").localized(), 13, Mist)
+                        if (ordered.isEmpty()) Label(("No selected groups" ar "لا توجد مجموعات محددة").localized(), 13, Mist)
                     }
                     Page.STORAGE_BREAKDOWN -> StorageDetail(design.rows, category, { category = it }, { open(category) })
                     Page.REPORT_DETAIL -> ReportTrends(design.rows, ::open)
@@ -116,7 +117,7 @@ internal fun DetailPreview(page: Page) {
                             Page.BATTERY_DIAGNOSTICS -> BatteryRanking()
                             Page.AI_RECOMMENDATIONS -> InsightPanel("AI Insight" ar "رؤية الذكاء الاصطناعي",
                                 "12 example opportunities could recover 2.4 GB and extend battery life by up to 24%." ar
-                                    "١٢ فرصة في المثال ممكن توفّر 2.4 GB وتحسن عمر البطارية لحد ٢٤٪.", Mark.CHIP)
+                                    "١٢ فرصة في المثال يمكن أن توفّر 2.4 GB وتحسّن عمر البطارية حتى ٢٤٪.", Mark.CHIP)
                             else -> Unit
                         }
                         val ordered = when {
@@ -210,7 +211,7 @@ internal fun DetailPreview(page: Page) {
                         design.selected == null -> design.rows
                         else -> selected.map(design.rows::get)
                     }
-                    if (rows.isEmpty()) Label(("No example items selected" ar "مفيش عناصر محددة في المثال").localized(), 13, Mist)
+                    if (rows.isEmpty()) Label(("No example items selected" ar "لا توجد عناصر محددة في المثال").localized(), 13, Mist)
                     if (page == Page.STORAGE_BREAKDOWN && mode == DetailDialog.REVIEW && category == 0) {
                         listOf("Asphalt9_Data.obb · 4.2 GB", "Game_Update_v12.4.apk · 2.8 GB", "Game_Resources.zip · 1.9 GB")
                             .forEach { Label(it, 13) }
@@ -361,6 +362,7 @@ private fun DuplicateSampleGroup(entry: Entry, index: Int, selected: Boolean, gr
                     sizes[index].forEachIndexed { copy, size ->
                         Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                             Box(Modifier.fillMaxWidth().aspectRatio(1.24f).clip(RoundedCornerShape(7.dp))
+                                .clickable(role = Role.Button, onClick = open)
                                 .glass(7, active = copy == 0).padding(2.dp)) {
                                 Image(painterResource(pictures[index]), null,
                                     Modifier.fillMaxSize().clip(RoundedCornerShape(6.dp)), contentScale = ContentScale.Crop)
@@ -512,19 +514,34 @@ private val storageSuggestions = listOf(
 
 @Composable
 private fun CategoryDonut() {
+    val motion = LocalPreviewMotion.current
+    var entered by remember { mutableStateOf(!motion) }
+    LaunchedEffect(Unit) { entered = true }
+    val reveal by animateFloatAsState(if (entered) 1f else 0f,
+        animationSpec = tween(if (motion) 950 else 0), label = "category reveal")
     Box(Modifier.size(96.dp), contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {
-            val band = size.width * .14f
+            val band = size.width * .145f
             val inset = size.width * .09f
             val start = Offset(inset, inset)
             val arc = Size(size.width - inset * 2, size.height - inset * 2)
             val total = storageShares.sum().toFloat()
             var angle = -90f
+            val frontier = -90f + 360f * reveal
             storageShares.forEachIndexed { i, share ->
                 val sweep = 360f * share / total
-                drawArc(storageColors[i], angle + 1f, sweep - 2f, false, start, arc, style = Stroke(band))
+                val lit = (frontier - angle).coerceIn(0f, sweep)
+                if (lit > .2f) {
+                    drawArc(storageColors[i].copy(alpha = .28f), angle + 1f, lit - 1.4f, false, start, arc,
+                        style = Stroke(band * 1.7f))
+                    drawArc(storageColors[i], angle + 1f, lit - 1.4f, false, start, arc, style = Stroke(band))
+                    drawArc(Color.White.copy(alpha = .55f), angle + 1.6f, lit - 2.4f, false, start, arc,
+                        style = Stroke(band * .18f))
+                }
                 angle += sweep
             }
+            drawCircle(Color(0xff3c3274), radius = size.width / 2 - inset - band * .55f,
+                style = Stroke(band * .12f))
         }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Label("128 GB", 17, weight = FontWeight.ExtraBold)
@@ -586,7 +603,6 @@ private fun StorageDetail(rows: List<Entry>, category: Int, select: (Int) -> Uni
                     Label(name.localized(), 12, modifier = Modifier.weight(1f))
                     Label(value, 12, weight = FontWeight.Bold)
                     Label(share, 10, Mist)
-                    Glyph(Mark.NEXT, Modifier.size(12.dp).rotate(mirror), Mist)
                 }
             }
         }
@@ -594,11 +610,13 @@ private fun StorageDetail(rows: List<Entry>, category: Int, select: (Int) -> Uni
     Label(("All Categories" ar "كل الفئات").localized(), 16, weight = FontWeight.Bold)
     val perRow = if (LocalRoomy.current) 6 else 3
     rows.chunked(perRow).forEachIndexed { r, group ->
-        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min).selectableGroup(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             group.forEachIndexed { c, row ->
                 val i = r * perRow + c
                 GlassPanel(Modifier.weight(1f).fillMaxHeight().testTag("storage-tile-$i")
-                    .clip(RoundedCornerShape(12.dp)).clickable(role = Role.Button) { select(i) },
+                    .clip(RoundedCornerShape(12.dp))
+                    .selectable(selected = i == category, role = Role.Tab, onClick = { select(i) }),
                     radius = 12, tint = if (i == category) Pink else null) {
                     Column(Modifier.fillMaxWidth().padding(vertical = 7.dp, horizontal = 3.dp),
                         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
