@@ -1,5 +1,8 @@
 # TEST RESULTS — fourth visual pass (final verification on the shipped APK)
 
+Final commit containing this pass: `ff9da8e454d04ad41a7a5df415d35674007f9df6` on local
+`main` (parent `68670c3`, no remote, nothing pushed).
+
 Device: `emulator-5554`, AVD `kx_preview`, Android 8.0 / API 26, x86_64,
 SwiftShader software GPU (headless boot), physical 1080×1920, logical override
 1080×2340, 420 dpi. App `com.knoux.ai` 0.1.0-preview debug, min 26 / target 36.

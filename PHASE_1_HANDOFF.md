@@ -29,6 +29,8 @@ everything with a single final APK. Current authority:
   at the review size; dashboard colors strengthened against washout; splash "i"-dot
   no longer sheared by the faux-italic clip (see `SPLASH_STORYBOARD.md`).
 - Owner visual approval is still pending; Phase 2 remains not started.
+- Final commit: `ff9da8e454d04ad41a7a5df415d35674007f9df6` (local `main`, parent
+  `68670c3`; no remote, nothing pushed; `git status` clean).
 
 ## الخلاصة بالعربية (محدّثة بعد الجولة الرابعة)
 
