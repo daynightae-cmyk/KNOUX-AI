@@ -74,9 +74,9 @@ Reference-vs-runtime sheets for all 20 screens plus splash are in [comparisons/]
 
 ## Evidence and disk
 
-- Evidence set: **101,458,526 bytes / 70 files**, including the 11,098,940-byte APK, 20 screen captures, 1 scrolled capture, 9 splash frames, landing frame, MP4, 21 comparison sheets, logs and the audit.
+- Evidence set: **101,469,290 bytes / 71 files**, including the 11,098,940-byte APK, 20 screen captures, 1 scrolled capture, 9 splash frames, landing frame, MP4, 21 comparison sheets, logs and the audit.
 - D: free space immediately before cleanup: **6,317,645,824 bytes**. Immediately after cleanup: **6,397,992,960 bytes** (+80,347,136 bytes recovered; the emulator and NTFS keep moving this figure).
-- Removed only proven disposable outputs: `app\build` (63,781,839 B / 974 files), `D:\Temp\knoux-scrolled-pass5` (12,308,833 B / 6 files) and three ad-hoc crops (3,024,169 B). `.gradle`, prior evidence folders, reference material and all untracked work from other passes were left in place.
+- Removed only proven disposable outputs: `app\build` (63,781,839 B / 974 files), `D:\Temp\knoux-scrolled-pass5` (12,308,833 B / 6 files) and three ad-hoc crops (3,033,199 B). `.gradle`, prior evidence folders, reference material and all untracked work from other passes were left in place.
 - The delivered APK was copied to evidence and verified byte-identical to the installed `base.apk` before `app\build` was removed.
 
 Phase 1 stops here for owner visual acceptance. Real services, Room/Supabase, privileged permissions and file operations remain unauthorized.
