@@ -1,6 +1,7 @@
 package com.knoux.ai
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -14,7 +15,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -28,6 +31,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
@@ -38,6 +42,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.sp
@@ -59,7 +64,7 @@ internal object SplashGate {
     @Volatile var consumed = false
 }
 
-internal class SplashMotionController(val reduced: Boolean, val freezeAtMs: Long?) {
+internal class SplashMotionController(val reduced: Boolean) {
     val clock = Animatable(0f)
     val totalMs: Float get() = if (reduced) 750f else 3480f
     val fadeStart: Float get() = if (reduced) 450f else 3080f
@@ -71,15 +76,16 @@ internal class SplashMotionController(val reduced: Boolean, val freezeAtMs: Long
 }
 
 // ---- Scene timing (ms) ----
-private const val K1_START = 300f;  private const val K1_END = 680f
-private const val K2_START = 620f;  private const val K2_END = 1060f
-private const val K3_START = 980f;  private const val K3_END = 1260f
+private const val K1_START = 300f;  private const val K1_END = 650f
+private const val K2_START = 650f;  private const val K2_END = 1020f
+private const val K3_START = 1020f; private const val K3_END = 1260f
 private const val SWEEP_START = 1150f; private const val SWEEP_END = 1520f
 private const val WORD_START = 1260f; private const val WORD_STAGGER = 80f; private const val WORD_DUR = 250f
-private const val SMILE_START = 2080f; private const val SMILE_END = 2640f
-private const val BLOOM_START = 2580f; private const val BLOOM_END = 2800f
+private const val SMILE_START = 2080f
+internal const val SPLASH_SMILE_END_MS = 2800L
+private const val BLOOM_END = 3020f
 
-private val EaseOut = FastOutSlowInEasing
+private val PenEasing = CubicBezierEasing(.32f, 0f, .64f, 1f)
 
 // ---- K geometry (1000-unit design space, traced from the owner logo) ----
 private val kUpper: Path by lazy {
@@ -102,9 +108,9 @@ private val kLower: Path by lazy {
 }
 private val kCombined: Path by lazy { Path().apply { addPath(kUpper); addPath(kLower); addPath(kBlade) } }
 
-private val upperBrush = Brush.linearGradient(listOf(Color(0xfff0a0ff), Color(0xff8b2fe8)), Offset(505f, 241f), Offset(420f, 453f))
-private val bladeBrush = Brush.linearGradient(listOf(Color(0xffc06bff), Color(0xff6a3df0), Color(0xff3d8bff)), Offset(680f, 320f), Offset(330f, 545f))
-private val lowerBrush = Brush.linearGradient(listOf(Color(0xff3d6bff), Color(0xff35e5ff)), Offset(500f, 425f), Offset(645f, 548f))
+private val upperBrush = Brush.linearGradient(listOf(Color(0xfffc5bff), Color(0xffaf18ee), Color(0xff5423f8)), Offset(505f, 241f), Offset(420f, 453f))
+private val bladeBrush = Brush.linearGradient(listOf(Color(0xfffb69ff), Color(0xff7924ef), Color(0xff267aff)), Offset(680f, 320f), Offset(330f, 545f))
+private val lowerBrush = Brush.linearGradient(listOf(Color(0xff174ffd), Color(0xff00ecff)), Offset(500f, 425f), Offset(645f, 548f))
 
 // ---- Neon smile geometry (traced luminous curve beneath the wordmark) ----
 private val smilePoints = listOf(
@@ -127,7 +133,6 @@ private val smilePath: Path by lazy {
     }
 }
 private val smileMeasure: PathMeasure by lazy { PathMeasure().apply { setPath(smilePath, false) } }
-private val smileSegment = Path()
 private val smileBrush = Brush.horizontalGradient(
     0f to Color(0xff8b5cf6).copy(alpha = 0f), 0.08f to Color(0xff8b5cf6), 0.35f to Color(0xffa855f7),
     0.62f to Color(0xff3b82f6), 0.92f to Color(0xff22d3ee), 1f to Color(0xff22d3ee).copy(alpha = 0f),
@@ -151,7 +156,10 @@ private fun smileColor(t: Float): Color {
 }
 
 /** Reveals a stroke by sweeping a clip frontier along [dir] from [start]. */
-private fun DrawScope.clipSweep(start: Offset, dir: Offset, length: Float, progress: Float, block: DrawScope.() -> Unit) {
+private fun DrawScope.clipSweep(
+    start: Offset, dir: Offset, length: Float, progress: Float,
+    tint: Color, block: DrawScope.() -> Unit
+) {
     if (progress <= 0f) return
     if (progress >= 1f) { block(); return }
     val d = dir / sqrt(dir.x * dir.x + dir.y * dir.y)
@@ -164,25 +172,48 @@ private fun DrawScope.clipSweep(start: Offset, dir: Offset, length: Float, progr
         lineTo(f.x + n.x * m - d.x * 2 * m, f.y + n.y * m - d.y * 2 * m); close()
     }
     clipPath(poly) { block() }
+    // Luminous nib at the frontier: the K reads as if a light pen were writing it.
+    drawPenTip(f, d, tint, if (progress < 0.08f) progress / 0.08f else 1f)
+}
+
+/** Hot core plus a short comet tail; all positions are in the 1000-unit design space. */
+private fun DrawScope.drawPenTip(point: Offset, direction: Offset, tint: Color, strength: Float) {
+    if (strength <= 0f) return
+    for (i in 1..5) {
+        val back = point - direction * (i * 10.5f)
+        val alpha = (0.16f - i * 0.025f).coerceAtLeast(0.025f) * strength
+        val radius = (6.4f - i * 1.0f).coerceAtLeast(1.8f)
+        drawCircle(tint.copy(alpha = alpha), radius, back)
+    }
+    drawCircle(
+        Brush.radialGradient(
+            listOf(Chalk.copy(alpha = .62f * strength), tint.copy(alpha = .34f * strength), Color.Transparent),
+            point, 38f
+        ), 38f, point
+    )
+    drawCircle(Chalk.copy(alpha = .94f * strength), 3.4f, point)
+    drawCircle(Chalk.copy(alpha = strength), 1.5f, point)
 }
 
 private fun DrawScope.strokeGlow(path: Path, brush: Brush, tint: Color) {
-    drawPath(path, tint.copy(alpha = 0.16f), style = Stroke(5.5f, join = StrokeJoin.Round))
+    drawPath(path, tint.copy(alpha = .10f), style = Stroke(14f, join = StrokeJoin.Round))
+    drawPath(path, tint.copy(alpha = .30f), style = Stroke(6f, join = StrokeJoin.Round))
     drawPath(path, brush)
-    drawPath(path, Chalk.copy(alpha = 0.10f), style = Stroke(0.8f, join = StrokeJoin.Round))
+    drawPath(path, tint.copy(alpha = .85f), style = Stroke(1.6f, join = StrokeJoin.Round))
+    drawPath(path, Chalk.copy(alpha = .52f), style = Stroke(.7f, join = StrokeJoin.Round))
 }
 
 /** Scene B — the K constructs itself stroke by stroke, then a restrained light sweep. */
 private fun DrawScope.drawKnouxMark(c: SplashMotionController) {
-    val p1 = c.eased(K1_START, K1_END)
-    val p2 = c.eased(K2_START, K2_END)
-    val p3 = c.eased(K3_START, K3_END)
-    if (p1 > 0f) clipSweep(Offset(500f, 235f), Offset(-0.35f, 0.94f), 250f, p1) { strokeGlow(kUpper, upperBrush, Pink) }
+    val p1 = c.eased(K1_START, K1_END, PenEasing)
+    val p2 = c.eased(K2_START, K2_END, PenEasing)
+    val p3 = c.eased(K3_START, K3_END, PenEasing)
+    if (p1 > 0f) clipSweep(Offset(500f, 235f), Offset(-0.35f, 0.94f), 250f, p1, Pink) { strokeGlow(kUpper, upperBrush, Pink) }
     // Lower cyan is composited beneath the blade; it reveals last to complete the silhouette.
-    if (p3 > 0f) clipSweep(Offset(560f, 412f), Offset(0.30f, 0.95f), 175f, p3) { strokeGlow(kLower, lowerBrush, Cyan) }
-    if (p2 > 0f) clipSweep(Offset(308f, 556f), Offset(0.845f, -0.536f), 480f, p2) { strokeGlow(kBlade, bladeBrush, Violet) }
+    if (p3 > 0f) clipSweep(Offset(560f, 412f), Offset(0.30f, 0.95f), 175f, p3, Cyan) { strokeGlow(kLower, lowerBrush, Cyan) }
+    if (p2 > 0f) clipSweep(Offset(308f, 556f), Offset(0.845f, -0.536f), 480f, p2, Violet) { strokeGlow(kBlade, bladeBrush, Violet) }
     val sw = c.scene(SWEEP_START, SWEEP_END)
-    if (!c.reduced && sw > 0.02f && sw < 0.98f && p2 >= 1f) {
+    if (!c.reduced && sw > 0.02f && sw < 0.98f && p3 >= 1f) {
         val a = Offset(300f, 560f); val b = Offset(700f, 300f)
         val center = a + (b - a) * sw
         val half = (b - a) * 0.10f
@@ -194,12 +225,14 @@ private fun DrawScope.drawKnouxMark(c: SplashMotionController) {
 }
 
 /** Scene D — the luminous smile draws left to right, then blooms softly. */
-private fun DrawScope.drawNeonSmile(c: SplashMotionController) {
-    val p = c.eased(SMILE_START, SMILE_END)
+private fun DrawScope.drawNeonSmile(c: SplashMotionController, segment: Path) {
+    val end = SPLASH_SMILE_END_MS.toFloat()
+    val p = c.eased(SMILE_START, end, PenEasing)
     if (p <= 0f) return
-    smileSegment.reset()
-    smileMeasure.getSegment(0f, smileMeasure.length * p, smileSegment, true)
-    val bloom = if (c.reduced) 1f else c.scene(BLOOM_START, BLOOM_END)
+    val distance = smileMeasure.length * p
+    segment.reset()
+    smileMeasure.getSegment(0f, distance, segment, true)
+    val bloom = if (c.reduced) 1f else c.scene(end, BLOOM_END)
     // Smooth bloom: overlapping soft radial stamps follow the curve (no hard stroke bands).
     val haze = p * (0.45f + 0.55f * bloom)
     val last = smilePoints.size - 1f
@@ -214,9 +247,21 @@ private fun DrawScope.drawNeonSmile(c: SplashMotionController) {
         drawCircle(Brush.radialGradient(listOf(col.copy(alpha = 0.20f * a), Color.Transparent), pt, 24f), 24f, pt)
     }
     // Luminous body and hot core.
-    drawPath(smileSegment, smileBrush, alpha = 0.55f + 0.25f * bloom, style = Stroke(12f, cap = StrokeCap.Round))
-    drawPath(smileSegment, smileBrush, alpha = 0.95f, style = Stroke(5f, cap = StrokeCap.Round))
-    drawPath(smileSegment, smileCore, alpha = 0.85f, style = Stroke(2.2f, cap = StrokeCap.Round))
+    drawPath(segment, smileBrush, alpha = .22f + .10f * bloom, style = Stroke(28f, cap = StrokeCap.Round))
+    drawPath(segment, smileBrush, alpha = .90f, style = Stroke(13f, cap = StrokeCap.Round))
+    drawPath(segment, smileCore, alpha = .93f, style = Stroke(3.7f, cap = StrokeCap.Round))
+    if (!c.reduced && p < 1f) {
+        val tip = smileMeasure.getPosition(distance)
+        val behind = smileMeasure.getPosition((distance - 14f).coerceAtLeast(0f))
+        val delta = tip - behind
+        val magnitude = delta.getDistance()
+        val direction = if (magnitude > .01f) delta / magnitude else Offset(1f, 0f)
+        val strength = (p / .04f).coerceAtMost(1f)
+        drawPenTip(tip, direction, smileColor(p), strength)
+    }
+    if (p >= 1f) {
+        drawSplashFlare(smilePoints.last(), if (c.reduced) .72f else 1f - .62f * bloom)
+    }
 }
 
 private class WordmarkLayout(val full: TextLayoutResult, val letters: List<Triple<Int, androidx.compose.ui.geometry.Rect, TextLayoutResult>>)
@@ -229,16 +274,22 @@ private fun DrawScope.drawWordmark(c: SplashMotionController, wm: WordmarkLayout
     val baseline = full.firstBaseline
     for ((i, box, single) in wm.letters) {
         val start = WORD_START + i * WORD_STAGGER
-        val p = c.eased(start, start + WORD_DUR, EaseOut)
+        val p = c.eased(start, start + WORD_DUR, PenEasing)
         if (p <= 0f) continue
-        val rise = (1f - p) * 9f * s
         val x = left + box.left
-        val y = top + (baseline - single.firstBaseline) + rise
-        if (i >= 6) {
-            val brush = Brush.horizontalGradient(listOf(Color(0xffe08bff), Color(0xffa458ff)), startX = x, endX = x + single.size.width)
-            drawText(single, brush = brush, topLeft = Offset(x, y), alpha = p)
-        } else {
-            drawText(single, brush = SolidColor(Chalk), topLeft = Offset(x, y), alpha = p)
+        val y = top + baseline - single.firstBaseline
+        val brush = if (i >= 6) Brush.verticalGradient(
+            listOf(Color(0xfff28bff), Color(0xffa952ff)), startY = 0f, endY = single.size.height.toFloat()
+        ) else SolidColor(Chalk)
+        val reveal = x + single.size.width * p
+        // Compose fakes italics with a horizontal skew, which pushes tall ink
+        // (the i-dot, stem tops) past the glyph advance. While a letter is still
+        // being written the clip stays tight so the pen edge stays crisp; once
+        // the letter has fully landed, widen the clip by that skew overhang so
+        // completed glyphs are not sheared off at a vertical edge.
+        val settle = if (p >= 0.999f) single.size.height * 0.34f else 4f * s
+        clipRect(left = x - 4f * s, right = reveal + settle, top = y, bottom = y + single.size.height) {
+            drawText(single, brush = brush, topLeft = Offset(x, y))
         }
     }
 }
@@ -246,12 +297,17 @@ private fun DrawScope.drawWordmark(c: SplashMotionController, wm: WordmarkLayout
 /**
  * The brand signature overlay. Composed above the app scaffold; fades into Home.
  * [freezeAtMs] (debug only) holds a single frame for deterministic scene capture.
+ * [onSmileCompleted] fires once at the end of the moving smile on a live launch.
  */
 @Composable
-internal fun KnouxSplashRoute(reduced: Boolean, freezeAtMs: Long?, onFinished: () -> Unit) {
-    val controller = remember(reduced, freezeAtMs) { SplashMotionController(reduced, freezeAtMs) }
+internal fun KnouxSplashRoute(
+    reduced: Boolean, freezeAtMs: Long?, onSmileCompleted: () -> Unit = {}, onFinished: () -> Unit
+) {
+    val controller = remember(reduced, freezeAtMs) { SplashMotionController(reduced) }
     val density = LocalDensity.current
     val measurer = rememberTextMeasurer(cacheSize = 16)
+    val smileCompleted by rememberUpdatedState(onSmileCompleted)
+    val smileSegment = remember { Path() }
     var finished by remember { mutableStateOf(false) }
     fun finish() {
         if (!finished) { finished = true; SplashGate.consumed = true; onFinished() }
@@ -260,7 +316,14 @@ internal fun KnouxSplashRoute(reduced: Boolean, freezeAtMs: Long?, onFinished: (
         if (freezeAtMs != null) {
             controller.clock.snapTo(freezeAtMs.toFloat().coerceIn(0f, controller.totalMs))
         } else {
-            controller.clock.animateTo(controller.totalMs, tween(controller.totalMs.toInt(), easing = LinearEasing))
+            if (!reduced) {
+                controller.clock.animateTo(SPLASH_SMILE_END_MS.toFloat(), tween(SPLASH_SMILE_END_MS.toInt(), easing = LinearEasing))
+                // Hold the completed smile for a frame even when the renderer skips over its end.
+                withFrameNanos { }
+                if (!finished) smileCompleted()
+            }
+            val remainingMs = (controller.totalMs - controller.clock.value).toInt()
+            controller.clock.animateTo(controller.totalMs, tween(remainingMs, easing = LinearEasing))
             finish()
         }
     }
@@ -271,17 +334,17 @@ internal fun KnouxSplashRoute(reduced: Boolean, freezeAtMs: Long?, onFinished: (
     BoxWithConstraints(Modifier.fillMaxSize().testTag("knoux-splash").graphicsLayer {
         alpha = if (freezeAtMs != null) 1f else 1f - controller.scene(controller.fadeStart, controller.totalMs)
     }) {
-        val wPx = with(density) { maxWidth.toPx() }
-        val s = wPx * 0.92f / 1000f
+        val s = with(density) { minOf(maxWidth.toPx(), maxHeight.toPx()) } * 0.92f / 1000f
         val wordmark = remember(measurer, s, density) {
             val text = "knoux ai"
             fun layoutAt(fontPx: Float): TextLayoutResult {
                 val size = with(density) { fontPx.toSp() }
                 return measurer.measure(AnnotatedString(text),
-                    TextStyle(fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold, fontSize = size))
+                    TextStyle(fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold,
+                        fontStyle = FontStyle.Italic, fontSize = size))
             }
             var full = layoutAt(150f * s)
-            val target = 624f * s
+            val target = 775f * s
             if (full.size.width > 0) full = layoutAt(150f * s * target / full.size.width)
             val letters = text.mapIndexedNotNull { i, ch ->
                 if (ch == ' ') null else Triple(i, full.getBoundingBox(i),
@@ -289,18 +352,25 @@ internal fun KnouxSplashRoute(reduced: Boolean, freezeAtMs: Long?, onFinished: (
             }
             WordmarkLayout(full, letters)
         }
-        Canvas(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff0b092e), Ink, Color(0xff050516))))) {
+        Canvas(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff080521), Color(0xff040418), Color(0xff0a0422))))) {
             val bg = if (controller.reduced) 1f else controller.scene(0f, 300f)
             val center = Offset(size.width / 2f, size.height * 0.46f)
-            drawCircle(Brush.radialGradient(listOf(Color(0xff241457).copy(alpha = 0.85f * bg),
-                Color(0xff120a30).copy(alpha = 0.5f * bg), Color.Transparent), center, size.minDimension * 0.78f),
-                size.minDimension * 0.78f, center)
+            drawCircle(Brush.radialGradient(listOf(Color(0xff351184).copy(alpha = .54f * bg),
+                Color(0xff13104e).copy(alpha = .35f * bg), Color.Transparent), center, size.minDimension * 0.80f),
+                size.minDimension * 0.80f, center)
+            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = 0.10f * bg), Color.Transparent),
+                Offset(size.width * 0.18f, size.height * 0.90f), size.minDimension * 0.52f),
+                size.minDimension * 0.52f, Offset(size.width * 0.18f, size.height * 0.90f))
+            val light = controller.eased(120f, 940f)
+            val drift = if (controller.reduced) 0f else controller.scene(120f, controller.totalMs) * 34f - 17f
+            drawSplashRibbons(light, drift)
             val ox = (size.width - 1000f * s) / 2f
-            val oy = (size.height - 1000f * s) / 2f
+            val oy = (size.height - 1000f * s) / 2f - 58f * s
             translate(ox, oy) {
                 scale(s, s, Offset.Zero) {
-                    drawKnouxMark(controller)
-                    drawNeonSmile(controller)
+                    drawSplashOrbit(controller.eased(400f, 1780f), controller.scene(400f, 2700f))
+                    scale(1.57f, 1.57f, Offset(500f, 550f)) { drawKnouxMark(controller) }
+                    scale(.80f, 1f, Offset(500f, 800f)) { drawNeonSmile(controller, smileSegment) }
                 }
                 drawWordmark(controller, wordmark, s)
             }

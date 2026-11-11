@@ -15,14 +15,14 @@ import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.unit.dp
 import kotlin.math.*
 
-internal val Ink = Color(0xff08051b)
-internal val Chalk = Color(0xfffaf7ff)
-internal val Mist = Color(0xffd1cce8)
-internal val Violet = Color(0xffa458ff)
-internal val Pink = Color(0xffdf89f6)
-internal val Cyan = Color(0xff35e5ff)
-internal val Gold = Color(0xffffd680)
-internal val Mint = Color(0xff6ef9c9)
+internal val Ink = Color(0xff05020c)
+internal val Chalk = Color(0xfffdfbff)
+internal val Mist = Color(0xffe2ddfb)
+internal val Violet = Color(0xffbd6bff)
+internal val Pink = Color(0xfff275ff)
+internal val Cyan = Color(0xff1de9ff)
+internal val Gold = Color(0xffffcc55)
+internal val Mint = Color(0xff4df7c0)
 private val Clear = Color.Transparent
 
 private fun path(data: String) = PathParser().parsePathString(data).toPath()
@@ -91,7 +91,7 @@ private val kPlanes = listOf(
 )
 
 private fun DrawScope.knouxK(bright: Boolean = false) {
-    val colors = listOf(listOf(Color(0xfff3a1ff), Color(0xff9134ee)), listOf(Color(0xffd773ff), Color(0xff673cfa), Cyan), listOf(Color(0xff4856ff), Cyan))
+    val colors = listOf(listOf(Color(0xfff7a8ff), Color(0xffa62bff)), listOf(Color(0xffe77dff), Color(0xff6f2ffa), Cyan), listOf(Color(0xff3f63ff), Cyan))
     val axes = listOf(Offset(12f, .7f) to Offset(7f, 13.5f), Offset(23f, 5.5f) to Offset(2f, 19.4f), Offset(12f, 11.5f) to Offset(21f, 19.5f))
     kPlanes.forEachIndexed { index, p ->
         if (bright) {
@@ -130,19 +130,37 @@ private fun DrawScope.neonPath(p: Path, tone: Color = Violet, fill: Brush? = nul
 }
 
 private fun glassFill(start: Offset = Offset(-25f, -38f), end: Offset = Offset(30f, 38f)) =
-    Brush.linearGradient(listOf(Color(0xfff08bff), Color(0xff6733da), Color(0xff211157), Color(0xff145ace), Cyan.copy(alpha = .7f)), start, end)
+    Brush.linearGradient(listOf(Color(0xffff9bff), Color(0xff6a2be8), Color(0xff24105f), Color(0xff0f66e6), Cyan.copy(alpha = .7f)), start, end)
+
+@Composable
+internal fun HomeTileIcon(mark: Mark, tone: Color) {
+    Box(Modifier.size(40.dp), contentAlignment = Alignment.TopCenter) {
+        Canvas(Modifier.matchParentSize()) {
+            val platform = Offset(size.width / 2f, size.height * .78f)
+            drawCircle(Brush.radialGradient(listOf(tone.copy(alpha = .34f), Clear), platform, size.width * .56f),
+                size.width * .56f, platform)
+            val oval = Size(size.width * .86f, size.height * .23f)
+            val start = platform - Offset(oval.width / 2f, oval.height / 2f)
+            drawOval(Brush.verticalGradient(listOf(Clear, tone.copy(alpha = .82f)), start.y, start.y + oval.height),
+                start, oval, style = Stroke(1.4.dp.toPx()))
+        }
+        Glyph(mark, Modifier.size(32.dp), tone, true)
+    }
+}
 
 @Composable
 internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier) {
     val home = mark == Mark.K
-    val height = if (home) (if (LocalTall.current) 159 else 147) else 100
+    val homeTall = LocalTall.current
+    val height = if (home) (if (homeTall) 150 else 140) else 100
+    val unitDivisor = if (home) (if (homeTall) 142f else 132f) else 128f
     Box(modifier.fillMaxWidth().height(height.dp), contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize().graphicsLayer()) {
             val x = size.width / 2
             val h = size.height
             val cy = h * .46f
-            val unit = h / if (home) 161f else 133f
-            val wash = Brush.radialGradient(listOf(Color(0xff271673), Color(0xff1d114e), Clear), Offset(x, cy), h * .79f)
+            val unit = h / unitDivisor
+            val wash = Brush.radialGradient(listOf(Color(0xff3310a7), Color(0xff111043), Clear), Offset(x, cy), h * .83f)
             drawOval(wash, Offset(0f, -h * .09f), Size(size.width, h * 1.18f))
             particleWave(h)
             translate(x, cy) {
@@ -153,7 +171,7 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
             val transition = rememberInfiniteTransition(label = "neon orbit")
             val angle = transition.animateFloat(0f, 360f, infiniteRepeatable(tween(12000, easing = LinearEasing)), label = "orbit angle")
             Canvas(Modifier.matchParentSize()) {
-                val unit = size.height / if (home) 161f else 133f
+                val unit = size.height / unitDivisor
                 val center = Offset(size.width / 2, size.height * .46f)
                 val rad = unit * 64
                 drawArc(Cyan.copy(alpha = .46f), angle.value, 15f, false, center - Offset(rad, rad), Size(rad * 2, rad * 2), style = Stroke(unit * 1.6f, cap = StrokeCap.Round))
@@ -172,8 +190,11 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
 
 private fun DrawScope.particleWave(h: Float) {
     val w = size.width
-    val glow = Brush.horizontalGradient(.00f to Violet.copy(alpha = .15f), .15f to Pink.copy(alpha = .75f), .37f to Violet.copy(alpha = .22f),
-        .50f to Clear, .67f to Violet.copy(alpha = .22f), .87f to Pink.copy(alpha = .75f), 1f to Violet.copy(alpha = .15f))
+    val glow = Brush.horizontalGradient(
+        0f to Violet.copy(alpha = .16f), .18f to Color(0xffcb43ff), .38f to Violet.copy(alpha = .34f),
+        .50f to Clear, .65f to Color(0xff6258ff).copy(alpha = .38f), .83f to Color(0xff428bff),
+        1f to Cyan.copy(alpha = .16f)
+    )
     for (line in 0..14) {
         val p = Path()
         for (i in 0..48) {
@@ -193,7 +214,7 @@ private fun DrawScope.particleWave(h: Float) {
         val edge = abs(u - .5f) * 2
         if (edge < .34f) continue
         val y = h * (.60f + .17f * sin(u * 6.3f + row * .22f) + row * .024f)
-        val color = if ((row + i) % 4 == 0) Cyan else Violet
+        val color = if (u > .5f) Cyan else Violet
         drawCircle(color.copy(alpha = edge * (.15f + (i % 3) * .1f)), h * (.0025f + row % 3 * .0008f), Offset(w * u, y))
     }
 }
@@ -202,8 +223,8 @@ private fun DrawScope.orbitalArt(mark: Mark) {
     val home = mark == Mark.K
     val floor = if (home) 62f else 54f
     val orbit = if (home) 67f else 61f
-    drawCircle(Brush.radialGradient(listOf(Color(0xff4c26a5).copy(alpha = .68f), Color(0xff1649ae).copy(alpha = .31f), Clear), Offset.Zero, 92f), 92f, Offset.Zero)
-    val rim = Brush.sweepGradient(listOf(Cyan, Color(0xff253286), Violet, Pink, Color(0xff5246ee), Cyan), Offset.Zero)
+    drawCircle(Brush.radialGradient(listOf(Color(0xff5b2bc4).copy(alpha = .70f), Color(0xff1a53d6).copy(alpha = .34f), Clear), Offset.Zero, 92f), 92f, Offset.Zero)
+    val rim = Brush.sweepGradient(listOf(Cyan, Color(0xff2a3aa0), Violet, Pink, Color(0xff5a4bff), Cyan), Offset.Zero)
     for (r in listOf(orbit, orbit + 7, orbit + 13)) drawCircle(rim, r, Offset.Zero, alpha = if (r == orbit) .70f else .30f, style = Stroke(.65f))
     for (i in 0..66) {
         val radians = (i * 5.35f * PI / 180).toFloat()
@@ -214,14 +235,14 @@ private fun DrawScope.orbitalArt(mark: Mark) {
         val accent = if (i == 2) Cyan else Pink
         val box = Size(orbit * 2, orbit * 2)
         drawArc(accent.copy(alpha = .12f), start, extent, false, Offset(-orbit, -orbit), box, style = Stroke(13f))
-        drawArc(rim, start, extent, false, Offset(-orbit, -orbit), box, style = Stroke(4.6f))
-        drawArc(accent.copy(alpha = .9f), start, extent, false, Offset(-orbit, -orbit), box, style = Stroke(1.35f))
+        drawArc(rim, start, extent, false, Offset(-orbit, -orbit), box, style = Stroke(6.2f))
+        drawArc(Chalk.copy(alpha = .76f), start, extent, false, Offset(-orbit, -orbit), box, style = Stroke(1.3f))
     }
     val platform = Brush.horizontalGradient(listOf(Violet, Pink, Color(0xff6142ff), Cyan, Pink), -80f, 80f)
     for (i in 0..4) {
         val r = 54f + i * 10
         val hh = 10f + i * 3
-        drawOval(platform, Offset(-r, floor - hh / 2), Size(2 * r, hh), alpha = if (i == 1) .97f else .22f / (i + 1), style = Stroke(if (i == 1) 2.2f else .95f))
+        drawOval(platform, Offset(-r, floor - hh / 2), Size(2 * r, hh), alpha = if (i == 1) .97f else .30f / (i + 1), style = Stroke(if (i == 1) 3.2f else .95f))
     }
     drawOval(platform, Offset(-65f, floor - 6), Size(130f, 12f), alpha = .12f, style = Stroke(9f))
     when (mark) {
@@ -293,7 +314,7 @@ private fun DrawScope.orbitalArt(mark: Mark) {
 private fun DrawScope.sphere(home: Boolean) {
     val r = if (home) 55f else 49f
     drawCircle(Brush.radialGradient(listOf(Pink.copy(alpha = .20f), Color(0xff2549d7).copy(alpha = .12f), Clear), Offset.Zero, r + 24), r + 24, Offset.Zero)
-    drawCircle(Brush.radialGradient(listOf(Color(0xff080727), Color(0xff181158), Color(0xff2549d7), Color(0xff8759fa), Clear), Offset.Zero, r + 11), r + 11, Offset.Zero)
+    drawCircle(Brush.radialGradient(listOf(Color(0xff05051e), Color(0xff100944), Color(0xff233adb), Color(0xff6c32f6), Clear), Offset.Zero, r + 11), r + 11, Offset.Zero)
     drawCircle(Brush.radialGradient(listOf(Color(0xff2b3fd6).copy(alpha = .55f), Color(0xff181158).copy(alpha = .25f), Clear), Offset(-r * .18f, -r * .22f), r * 1.05f), r * 1.05f, Offset(-r * .18f, -r * .22f))
     val rim = Brush.sweepGradient(listOf(Cyan, Color(0xff3079fa), Pink, Color(0xff8561ff), Chalk, Cyan), Offset.Zero)
     drawCircle(rim, r, Offset.Zero, style = Stroke(2.4f))

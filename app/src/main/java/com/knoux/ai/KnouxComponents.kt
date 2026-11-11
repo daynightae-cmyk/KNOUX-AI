@@ -45,15 +45,15 @@ internal val LocalPreviewMotion = compositionLocalOf { false }
 internal val LocalRoomy = compositionLocalOf { false }
 internal val LocalTall = compositionLocalOf { false }
 internal val DisplayFace = FontFamily(Font(R.font.outfit_extrabold, FontWeight.ExtraBold))
-private val panel = listOf(Color(0xff201943), Color(0xff10122e), Color(0xff171c39))
-private val vivid = listOf(Color(0xffb53bfa), Color(0xff551bd4), Color(0xff1930dd), Color(0xff05bcea))
+private val panel = listOf(Color(0xff1b0d3c), Color(0xff090a22), Color(0xff0d1433))
+private val vivid = listOf(Color(0xffc61bf7), Color(0xff721eea), Color(0xff2d42e8), Color(0xff00c2ff))
 
 @Composable
 internal fun Copy.localized() = text(LocalArabic.current)
 
 @Composable
 internal fun KnouxTheme(arabic: Boolean, motion: Boolean, content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = darkColorScheme(primary = Cyan, secondary = Pink, background = Ink, surface = Color(0xff151332), onSurface = Chalk)) {
+    MaterialTheme(colorScheme = darkColorScheme(primary = Cyan, secondary = Pink, background = Ink, surface = Color(0xff1a1642), onSurface = Chalk)) {
         CompositionLocalProvider(
             LocalArabic provides arabic, LocalLayoutDirection provides if (arabic) LayoutDirection.Rtl else LayoutDirection.Ltr,
             LocalPreviewMotion provides motion, content = content
@@ -69,68 +69,104 @@ internal fun Label(
     Text(text, modifier, color = tint, fontSize = size.sp, lineHeight = (size * 1.18f).sp, fontWeight = weight, textAlign = align)
 }
 
-internal fun Modifier.glass(radius: Int, active: Boolean = false, ghost: Boolean = false, tab: Boolean = false): Modifier =
+internal fun Modifier.glass(
+    radius: Int, active: Boolean = false, ghost: Boolean = false, tab: Boolean = false, tint: Color? = null
+): Modifier =
     drawBehind {
         val rad = CornerRadius(radius.dp.toPx())
         val edge = when {
-            tab -> listOf(Color(0xff30185b), Color(0xff461ba5), Color(0xff281358))
+            tab -> listOf(Color(0xff3a1778), Color(0xff5a25d4), Color(0xff2c1268))
             active -> vivid
-            ghost -> listOf(Color(0xff2d245a), Color(0xff1b1940), Color(0xff302654))
+            ghost -> listOf(Color(0xff362a72), Color(0xff1d1a4a), Color(0xff3d2e6c))
             else -> panel
         }
         drawRoundRect(Brush.linearGradient(edge, Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad)
-        val flash = if (active) Color(0xffa652fa) else Color(0xff7752f5)
-        drawRoundRect(Brush.radialGradient(listOf(flash.copy(alpha = if (active) .62f else .32f), Color.Transparent), Offset(size.width * .30f, 0f), size.width.coerceAtLeast(1f) * .59f), cornerRadius = rad)
-        drawRoundRect(Brush.radialGradient(listOf((if (active && !tab) Cyan else Violet).copy(alpha = if (active) .55f else .25f), Color.Transparent), Offset(size.width * .56f, size.height * 1.07f), size.width.coerceAtLeast(1f) * .40f), cornerRadius = rad)
-        val stroke = if (active) listOf(Chalk, Color(0xffa97aff), if (tab) Violet else Color(0xff7cedff)) else
-            listOf(Color(0xffa893d1), Color(0xff5b5280), Color(0xffab7ce0), Color(0xff55547a))
-        drawRoundRect(Brush.linearGradient(stroke, Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad, style = Stroke((if (active) 1.3.dp else .7.dp).toPx()))
+        // Glass sheen along the top edge: gives every card a polished, lit surface.
+        drawRoundRect(Brush.verticalGradient(listOf(Chalk.copy(alpha = if (active) .22f else .14f), Color.Transparent),
+            startY = 0f, endY = size.height * .62f), cornerRadius = rad)
+        val flash = tint ?: if (active) Color(0xffd16bff) else Color(0xffa073ff)
+        val flashAlpha = if (active) .70f else .42f
+        val width = size.width.coerceAtLeast(1f)
+        drawRoundRect(Brush.radialGradient(listOf(flash.copy(alpha = flashAlpha), Color.Transparent),
+            Offset(width * .12f, 0f), width * .57f), cornerRadius = rad)
+        val bounce = if (active && !tab) Cyan else tint ?: Violet
+        drawRoundRect(Brush.radialGradient(listOf(bounce.copy(alpha = if (active) .55f else .26f), Color.Transparent),
+            Offset(width * .96f, size.height), width * .42f), cornerRadius = rad)
+        val stroke = when {
+            active -> listOf(Chalk, Color(0xffd9b4ff), if (tab) Pink else Color(0xff8ff5ff))
+            tint != null -> listOf(tint.copy(alpha = .98f), Color(0xff6b6ea4), tint.copy(alpha = .62f))
+            else -> listOf(Color(0xffc4b4ff), Color(0xff8f7fb4), Color(0xffc47ff2), Color(0xff8685a4))
+        }
+        val rimLight = Brush.horizontalGradient(
+            0f to Color.Transparent, .18f to Pink.copy(alpha = .80f), .45f to Color.Transparent,
+            .81f to Cyan.copy(alpha = .85f), 1f to Color.Transparent
+        )
+        drawRoundRect(rimLight, cornerRadius = rad,
+            alpha = if (active) 1f else .80f, style = Stroke((if (active) 3.dp else 2.dp).toPx()))
+        drawRoundRect(Brush.linearGradient(stroke, Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad, style = Stroke((if (active) 1.8.dp else 1.dp).toPx()))
     }
 
 private fun Modifier.buttonBloom(): Modifier = drawBehind {
     for (dp in listOf(14, 9, 5)) {
         val delta = dp.dp.toPx()
-        drawRoundRect(Brush.horizontalGradient(listOf(Violet.copy(alpha = .07f), Color(0xff5231f7).copy(alpha = .08f), Cyan.copy(alpha = .08f))),
+        drawRoundRect(Brush.horizontalGradient(listOf(Violet.copy(alpha = .11f), Color(0xff5231f7).copy(alpha = .12f), Cyan.copy(alpha = .12f))),
             topLeft = Offset(-delta, -delta * .55f), size = Size(size.width + delta * 2, size.height + delta * 1.10f),
             cornerRadius = CornerRadius(size.height / 2 + delta))
     }
 }
 
 @Composable
-internal fun GlassPanel(modifier: Modifier = Modifier, radius: Int = 14, content: @Composable () -> Unit) {
-    Box(modifier.glass(radius), contentAlignment = Alignment.CenterStart) { content() }
+internal fun GlassPanel(
+    modifier: Modifier = Modifier, radius: Int = 14, tint: Color? = null, content: @Composable () -> Unit
+) {
+    Box(modifier.glass(radius, tint = tint), contentAlignment = Alignment.CenterStart) { content() }
 }
 
 @Composable
 internal fun IconBadge(mark: Mark, tint: Color, modifier: Modifier = Modifier, diameter: Int = 36) {
     val shape = RoundedCornerShape((diameter * .30f).dp)
     Box(modifier.size(diameter.dp).background(
-        Brush.radialGradient(listOf(tint.copy(alpha = .46f), tint.copy(alpha = .16f), Color.Transparent)), shape
-    ).border(.6.dp, tint.copy(alpha = .38f), shape), contentAlignment = Alignment.Center) { Glyph(mark, Modifier.size((diameter * .72).dp), tint, true) }
+        Brush.radialGradient(listOf(tint.copy(alpha = .58f), tint.copy(alpha = .20f), Color.Transparent)), shape
+    ).border(.7.dp, tint.copy(alpha = .52f), shape), contentAlignment = Alignment.Center) { Glyph(mark, Modifier.size((diameter * .72).dp), tint, true) }
 }
 
 @Composable
-internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = true) {
-    NeonHero(page.hero, LocalPreviewMotion.current && isScanRunning)
+internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = true, artBeside: Boolean = false) {
+    val animate = LocalPreviewMotion.current && isScanRunning
+    val inline = artBeside && !LocalRoomy.current
     val title = page.title.localized()
     val split = title.lastIndexOf(' ')
     val first = if (split < 0) "" else title.substring(0, split + 1)
     val last = title.substring(split + 1)
     val fontSize = when {
+        inline -> 23
         page == Page.HOME -> 35
         page == Page.DUPLICATES || page == Page.RESIDUE -> 26
         else -> 30
     }
     val font = if (LocalArabic.current) FontFamily.Default else DisplayFace
-    Text(buildAnnotatedString {
+    val styledTitle = buildAnnotatedString {
         withStyle(SpanStyle(color = Chalk)) { append(first) }
-        withStyle(SpanStyle(brush = Brush.verticalGradient(listOf(Pink, Color(0xffc86cf2), Color(0xffa84ae8))))) { append(last) }
-    }, Modifier.fillMaxWidth().padding(horizontal = 4.dp).testTag("screen-${page.id}"), style = TextStyle(
-        fontSize = fontSize.sp, lineHeight = (fontSize * 1.05f).sp, fontFamily = font,
-        fontWeight = FontWeight.ExtraBold, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center
-    ))
-    Label(subtitle.localized(), if (page == Page.HOME) 14 else 12, Mist,
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 2.dp), align = TextAlign.Center)
+        withStyle(SpanStyle(brush = Brush.verticalGradient(listOf(Pink, Color(0xffd06bff), Color(0xffb44df0))))) { append(last) }
+    }
+    val alignment = if (inline) TextAlign.Start else TextAlign.Center
+    val headings: @Composable () -> Unit = {
+        Text(styledTitle, Modifier.fillMaxWidth().padding(horizontal = 4.dp).testTag("screen-${page.id}"), style = TextStyle(
+            fontSize = fontSize.sp, lineHeight = (fontSize * 1.05f).sp, fontFamily = font,
+            fontWeight = FontWeight.ExtraBold, fontStyle = FontStyle.Italic, textAlign = alignment
+        ))
+        Label(subtitle.localized(), if (page == Page.HOME) 14 else 12, Mist,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 2.dp), align = alignment)
+    }
+    if (inline) {
+        Row(Modifier.fillMaxWidth().padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Column(Modifier.weight(.61f), content = { headings() })
+            NeonHero(page.hero, animate, Modifier.weight(.39f))
+        }
+    } else {
+        NeonHero(page.hero, animate)
+        headings()
+    }
 }
 
 @Composable
@@ -162,19 +198,22 @@ internal fun AccentButton(
 internal fun GradientBar(value: Float, modifier: Modifier = Modifier, thickness: Int = 7) {
     Canvas(modifier.fillMaxWidth().height(thickness.dp)) {
         val radius = CornerRadius(size.height / 2f)
-        drawRoundRect(Color(0xff292652), cornerRadius = radius)
-        drawRoundRect(Color(0xff68588d), cornerRadius = radius, style = Stroke(.6.dp.toPx()))
+        drawRoundRect(Color(0xff241f4e), cornerRadius = radius)
+        drawRoundRect(Color(0xff7d6bb0), cornerRadius = radius, style = Stroke(.6.dp.toPx()))
         val fill = size.width * value.coerceIn(0f, 1f)
         if (fill > 0f) {
-            val colors = listOf(Pink, Color(0xff963dff), Color(0xff575dff), Cyan)
+            val colors = listOf(Pink, Color(0xffa63dff), Color(0xff5a63ff), Cyan)
             drawRoundRect(Brush.horizontalGradient(colors, endX = fill), size = Size(fill, size.height), cornerRadius = radius)
-            drawRoundRect(Color.White.copy(alpha = .30f), size = Size(fill, size.height), cornerRadius = radius, style = Stroke(.55.dp.toPx()))
+            drawRoundRect(Color.White.copy(alpha = .36f), size = Size(fill, size.height), cornerRadius = radius, style = Stroke(.55.dp.toPx()))
         }
     }
 }
 
 @Composable
-internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, split: Boolean = false, modifier: Modifier = Modifier) {
+internal fun ProgressDonut(
+    value: Int, label: String = "", diameter: Int = 73, split: Boolean = false,
+    modifier: Modifier = Modifier, displayValue: String = "$value%"
+) {
     Box(modifier.size(diameter.dp), contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {
             val width = size.width
@@ -183,13 +222,13 @@ internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, s
             val start = Offset(inset, inset)
             val arcSize = Size(width - inset * 2, width - inset * 2)
             val sweep = if (split) 342f else 348f * value / 100f
-            val tone = Brush.sweepGradient(listOf(Color(0xff9b35ff), Color(0xff5535f1), Cyan, if (split) Gold else Cyan, Cyan, Pink, Color(0xff9b35ff)))
-            drawCircle(Color(0xff383360), radius = width / 2 - inset, style = Stroke(band))
-            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .20f, style = Stroke(band * 1.8f, cap = StrokeCap.Round))
+            val tone = Brush.sweepGradient(listOf(Color(0xffb52bff), Color(0xff5f2ef7), Cyan, if (split) Gold else Cyan, Cyan, Pink, Color(0xffb52bff)))
+            drawCircle(Color(0xff2e2858), radius = width / 2 - inset, style = Stroke(band))
+            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .24f, style = Stroke(band * 1.8f, cap = StrokeCap.Round))
             drawArc(tone, -84f, sweep, false, start, arcSize, style = Stroke(band, cap = StrokeCap.Round))
         }
         Column(Modifier.padding(horizontal = (diameter * .15f).dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Label("$value%", if (diameter < 50) 13 else 21, weight = FontWeight.ExtraBold, align = TextAlign.Center)
+            Label(displayValue, if (diameter < 50) 13 else 21, weight = FontWeight.ExtraBold, align = TextAlign.Center)
             if (label.isNotEmpty()) Label(label, 9, Mist, align = TextAlign.Center)
         }
     }
@@ -203,17 +242,17 @@ internal fun NeonPill(label: String, tint: Color = Cyan, solid: Boolean = true) 
     val fill = when {
         aqua -> listOf(Color(0xff70f6ff), Color(0xff07bddd))
         outlined -> listOf(Color(0xff103246), Color(0xff0a1c2c))
-        else -> listOf(Color(0xff6235a9), Color(0xff341958))
+        else -> listOf(Color(0xff7a2fd0), Color(0xff3d1673))
     }
     Box(Modifier.background(Brush.verticalGradient(fill), shape)
-        .border(.6.dp, tint.copy(alpha = .64f), shape).padding(horizontal = 8.dp, vertical = 4.dp)) {
+        .border(.7.dp, tint.copy(alpha = .72f), shape).padding(horizontal = 8.dp, vertical = 4.dp)) {
         Label(label, 10, if (aqua) Color(0xff07182b) else if (outlined) Cyan else Chalk, FontWeight.Bold, align = TextAlign.Center)
     }
 }
 
 @Composable
 internal fun Separator(modifier: Modifier = Modifier) {
-    Box(modifier.background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xff9282bb), Color.Transparent))))
+    Box(modifier.background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xffa692d6), Color.Transparent))))
 }
 
 @Composable
@@ -335,8 +374,8 @@ internal fun PreviewModeDisclosure(onClick: () -> Unit) {
     val label = ("Design preview" ar "معاينة التصميم").localized()
     Box(Modifier.heightIn(min = 48.dp).testTag("design-preview").clip(RoundedCornerShape(18.dp))
         .clickable(role = Role.Button, onClick = onClick).padding(horizontal = 4.dp), contentAlignment = Alignment.Center) {
-        Label(label, 10, Cyan, FontWeight.Bold, Modifier.border(.8.dp, Cyan.copy(alpha = .60f), RoundedCornerShape(16.dp))
-            .background(Color(0xff131b3e), RoundedCornerShape(16.dp)).padding(horizontal = 8.dp, vertical = 4.dp), TextAlign.Center)
+        Label(label, 10, Cyan, FontWeight.Bold, Modifier.border(.8.dp, Cyan.copy(alpha = .75f), RoundedCornerShape(16.dp))
+            .background(Color(0xff172052), RoundedCornerShape(16.dp)).padding(horizontal = 8.dp, vertical = 4.dp), TextAlign.Center)
     }
 }
 

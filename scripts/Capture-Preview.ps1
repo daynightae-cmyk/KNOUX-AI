@@ -1,13 +1,13 @@
 param(
     [Parameter(Mandatory)][ValidatePattern('^[a-zA-Z0-9-]+$')][string]$Serial,
     [Parameter(Mandatory)][ValidatePattern('^[a-z0-9-]+\.png$')][string]$Name,
-    [string]$Sdk = 'D:\Android\sdk'
+    [string]$Sdk = 'D:\Android\sdk',
+    [string]$Destination = (Join-Path $PSScriptRoot '..\qa-evidence\ui')
 )
 $ErrorActionPreference = 'Stop'
 $adb = Join-Path $Sdk 'platform-tools\adb.exe'
-$directory = Join-Path $PSScriptRoot '..\qa-evidence\ui'
-New-Item -ItemType Directory -Path $directory -Force | Out-Null
-$target = Join-Path $directory $Name
+New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+$target = Join-Path $Destination $Name
 $process = [Diagnostics.Process]::new()
 $process.StartInfo.FileName = $adb
 foreach ($argument in @('-s', $Serial, 'exec-out', 'screencap', '-p')) {

@@ -1,0 +1,106 @@
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2091
+TotalTime: 2091
+WaitTime: 2115
+Complete
+/data/local/tmp/knoux-phase1-8e523eb23aad4fb9bc70a3d3e3ef7f09.mp4: 1 file pulled, 0 skipped. 42.4 MB/s (609221 bytes in 0.014s)
+--------- beginning of main
+11-11 06:20:15.301 10322 10322 D KnouxSplash: Smile click started
+Cold-launch SoundPool starts: 1
+
+Algorithm       Hash                                                                   Path
+---------       ----                                                                   ----
+SHA256          339EFAD397675166575958D518FF5CEF2B0E6CD8024B9610BD3497BDCE5E5E77       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2051
+TotalTime: 2051
+WaitTime: 2268
+Complete
+SHA256          F2BD96E188D748F699EBCB6FE409CF854CE4D458CA5E1246689A4F87C2FB6408       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2458
+TotalTime: 2458
+WaitTime: 2470
+Complete
+SHA256          639A45903879F734D265BDF09005F75851B5C7942A3E5A88EC1100C050FBE215       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2075
+TotalTime: 2075
+WaitTime: 2093
+Complete
+SHA256          FDD16EC7D4888C90D309E443EDEC9223C78910C75C875403CCDE9C088C3C9294       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2103
+TotalTime: 2103
+WaitTime: 2115
+Complete
+SHA256          12D015ADEE159FD5AEB58EFB674220A0F274D851AF98473FF2418BB5761C1C06       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2083
+TotalTime: 2083
+WaitTime: 2098
+Complete
+SHA256          14CBBFB90BA1C0272C2CAED2C01A9CC6F4FEEB7D3B0986BF1616494BF7B8DC86       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2544
+TotalTime: 2544
+WaitTime: 2607
+Complete
+SHA256          E797332254C8BC2BFE8A1F5FDB22186EDA1B7D26912E0739A6CC71E4BF3DC528       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 1971
+TotalTime: 1971
+WaitTime: 2028
+Complete
+SHA256          6A4582FF3BBB974CD1BC9BFB9B4858F14AE1FF5B4B60A5A6A32648B0ACFBC0BE       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2345
+TotalTime: 2345
+WaitTime: 2457
+Complete
+SHA256          59D36FF33E266740748052FB5680F14FBD39E109AC431FBDF8ACEFF3E896DDA3       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2134
+TotalTime: 2134
+WaitTime: 2161
+Complete
+SHA256          109E8E6B29708A46169952E0E7A4BBF4494CF758514BC0DF26EB1D11692DA713       D:\KNOUX-AI\qa-evidence\knoux-ai…
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity (has extras) }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 4379
+TotalTime: 4379
+WaitTime: 4409
+Complete
+

@@ -1,0 +1,11 @@
+Stopping: com.knoux.ai
+Starting: Intent { cmp=com.knoux.ai/.MainActivity }
+Status: ok
+Activity: com.knoux.ai/.MainActivity
+ThisTime: 2496
+TotalTime: 2496
+WaitTime: 2926
+Complete
+System.Threading.Tasks.VoidTaskResult
+--------- beginning of main
+Cold-launch SoundPool starts: 0

@@ -25,13 +25,48 @@ internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
     BATTERY("battery", "Battery Saver" ar "توفير البطارية", Mark.BATTERY),
     OPTIMIZE("ai-optimization", "AI Optimization" ar "التحسين الذكي", Mark.CHIP),
     CLEAN("clean", "Clean" ar "التنظيف", Mark.BROOM),
-    TOOLS("tools", "Tools" ar "الأدوات", Mark.GRID);
+    TOOLS("tools", "Tools" ar "الأدوات", Mark.GRID),
+    CLEAN_CENTER("clean-center", "Smart Clean Center" ar "مركز التنظيف الذكي", Mark.TRASH),
+    DUPLICATE_REVIEW("duplicate-group-review", "Duplicate Group Review" ar "مراجعة مجموعات التكرار", Mark.PICTURES),
+    PRIVACY_INSPECTOR("privacy-risk-inspector", "Privacy Risk Inspector" ar "فحص مخاطر الخصوصية", Mark.SHIELD),
+    SCAN_SUMMARY("deep-scan-summary", "Deep Scan Summary" ar "ملخص الفحص العميق", Mark.RADAR),
+    REPORT_DETAIL("performance-report-detail", "Performance Report Detail" ar "تفاصيل تقرير الأداء", Mark.BARS),
+    RESIDUE_REVIEW("residue-item-review", "Residue Item Review" ar "مراجعة بقايا التطبيقات", Mark.LAYERS),
+    APPS_REVIEW("installed-apps-review", "Installed Apps Review" ar "مراجعة التطبيقات المثبتة", Mark.GROUP),
+    STORAGE_BREAKDOWN("storage-breakdown", "Storage Breakdown" ar "تفاصيل مساحة التخزين", Mark.DISK),
+    BATTERY_DIAGNOSTICS("battery-diagnostics", "Battery Diagnostics" ar "تشخيص البطارية", Mark.BATTERY),
+    AI_RECOMMENDATIONS("ai-recommendations", "AI Recommendations" ar "توصيات الذكاء الاصطناعي", Mark.CHIP);
 
     companion object {
         val references = entries.take(10)
+        val detailRoutes = entries.dropWhile { it != CLEAN_CENTER }
         fun from(id: String?) = entries.find { it.id == id }
     }
 }
+
+internal val Page.reviewPage: Page?
+    get() = when (this) {
+        Page.CLEAN -> Page.CLEAN_CENTER
+        Page.DUPLICATES -> Page.DUPLICATE_REVIEW
+        Page.PRIVACY -> Page.PRIVACY_INSPECTOR
+        Page.SCAN -> Page.SCAN_SUMMARY
+        Page.REPORTS -> Page.REPORT_DETAIL
+        Page.RESIDUE -> Page.RESIDUE_REVIEW
+        Page.APPS -> Page.APPS_REVIEW
+        Page.STORAGE -> Page.STORAGE_BREAKDOWN
+        Page.BATTERY -> Page.BATTERY_DIAGNOSTICS
+        Page.OPTIMIZE -> Page.AI_RECOMMENDATIONS
+        else -> null
+    }
+
+internal val Page.reviewTab: Page?
+    get() = when (this) {
+        Page.CLEAN_CENTER, Page.DUPLICATE_REVIEW, Page.SCAN_SUMMARY, Page.RESIDUE_REVIEW -> Page.CLEAN
+        Page.PRIVACY_INSPECTOR, Page.APPS_REVIEW, Page.STORAGE_BREAKDOWN,
+        Page.BATTERY_DIAGNOSTICS, Page.AI_RECOMMENDATIONS -> Page.TOOLS
+        Page.REPORT_DETAIL -> Page.REPORTS
+        else -> null
+    }
 
 internal data class Metric(val value: String, val label: Copy, val icon: Mark)
 internal data class Fact(val label: Copy, val value: Copy, val icon: Mark)

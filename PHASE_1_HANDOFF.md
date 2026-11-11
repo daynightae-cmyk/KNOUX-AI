@@ -6,7 +6,35 @@
 **Status:** **PHASE 1 UI MILESTONE COMPLETE FOR OWNER REVIEW — NOT YET APPROVED**
 **Phase 2:** **NOT STARTED** (no services, Room, Supabase, privileged permissions or file operations added)
 
-## الخلاصة بالعربية
+## Fourth pass (2026-11-11): visual-finish pass — supersedes §3–§7 below for current state
+
+The fourth pass rebuilt the interrupted uncommitted work, applied the remaining visual
+fixes (Home fit, stronger dashboard colors, splash wordmark clip fix) and re-verified
+everything with a single final APK. Current authority:
+
+- Final APK: `qa-evidence/knoux-ai-visual-finish/KNOUX-AI-phase1-visual-finish-debug.apk`
+  — SHA-256 `343FC50947A5396E7AD3BE00DF00106ED1C5994724207A0E3BE33F7B8274FEF2`
+  (13,269,818 bytes; byte-identical to the Gradle output at capture time).
+- Evidence set: `qa-evidence/knoux-ai-visual-finish/` — `BASELINE.md`, `SCREEN_MAP.md`,
+  `SPLASH_STORYBOARD.md`, `TEST_RESULTS.md`, `HANDOFF_TO_PERSONALIZATION.md`,
+  `VISUAL_COMPARISONS/INDEX.md`, `gallery-outer.png`, `gallery-inner.png`, `ui/` +
+  `interior/` (20 runtime captures + 20 comparison strips), `splash/` (storyboard
+  frames, `cold-launch.mp4`, one-click log proof), `videos/` (walkthrough video +
+  five step frames). The `qa-evidence/ui|splash|phase1-polish|build|apk` folders from
+  the passes below remain preserved as prior evidence.
+- Verification on the final APK: build exit 0 (3m 37s), unit 3/3, lint 0 errors /
+  11 warnings, instrumentation **10/10**, 20/20 screen captures with hierarchy
+  verification, splash click count = 1, walkthrough video recorded.
+- New fixes in this pass: Home fits all six service cards above the bottom navigation
+  at the review size; dashboard colors strengthened against washout; splash "i"-dot
+  no longer sheared by the faux-italic clip (see `SPLASH_STORYBOARD.md`).
+- Owner visual approval is still pending; Phase 2 remains not started.
+
+## الخلاصة بالعربية (محدّثة بعد الجولة الرابعة)
+
+أُكملت الجولة الرابعة: أُعيد بناء العمل غير المُرسل من الجولة السابقة، وتضييق الشاشة الرئيسية ليتسع كل بطاقات الخدمات الست فوق شريط التنقل، وتقوية ألوان لوحة التحكم، وإصلاح قصّ نقطة حرف i في شعار شاشة البداية الناتج عن الميل الاصطناعي للخط. أُعيد البناء والاختبار بالكامل على نفس الـ APK النهائي: البناء ناجح، 3/3 اختبارات وحدة، 0 أخطاء Lint، 10/10 اختبارات أجهزة، والتقاط 20 شاشة مع تحقق التسلسل الهرمي قبل كل لقطة، وتسجيل إطلاق بارد بنقرة صوت واحدة بالضبط، وفيديو مناولة كامل مع إطارات توثيقية. كل الأدلة في `qa-evidence/knoux-ai-visual-finish/` وملفاتها التوضيحية. **الموافقة البصرية ما زالت بانتظارك، ولم تبدأ المرحلة الثانية.** أقسام §1–§10 أدناه توثّق الجولة الثالثة وتظل مرجعًا تاريخيًا للفروقات المرئية لكل شاشة.
+
+## الخلاصة بالعربية (الجولة الثالثة — تاريخية)
 
 تم إكمال جولة الصقل الثالثة للواجهة، وتثبيت شعار KNOUX الأصلي داخل أيقونات التطبيق وكرة الشاشة الرئيسية، وتحسين الزجاج والحواف والتوهج والشرائح. تم إيقاف الحركة الزخرفية للشاشة الرئيسية أثناء ظهور شاشة البداية حتى لا تستهلك إطار الرسم خلفها. أُعيد بناء التطبيق وتثبيته على المحاكي، وأُعيد التقاط عشر شاشات ولوحات التمرير والمقارنات، ونجحت الاختبارات: 8/8 واجهة، 3/3 وحدات، و0 أخطاء Lint. شاشة البداية السينمائية تعمل بالتسلسل المطلوب مع وضع تقليل الحركة وعدم إعادة التشغيل عند العودة من الخلفية. **الموافقة البصرية النهائية ما زالت بانتظارك، ولم تبدأ المرحلة الثانية.**
 

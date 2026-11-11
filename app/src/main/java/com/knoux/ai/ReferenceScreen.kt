@@ -31,7 +31,9 @@ internal const val PANEL_PROCEED = "proceed"
 internal const val PANEL_ACK = "ack"
 
 @Composable
-internal fun ReferenceScreen(page: Page, source: PreviewSource = PreviewSource.DESIGN_PREVIEW) {
+internal fun ReferenceScreen(
+    page: Page, source: PreviewSource = PreviewSource.DESIGN_PREVIEW, openReview: (Page) -> Unit = {}
+) {
     val data = PreviewFixtures.screen(page, source)
     if (data == null) {
         Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -114,6 +116,10 @@ internal fun ReferenceScreen(page: Page, source: PreviewSource = PreviewSource.D
                 FeatureRow(page, entry, i, selectable, i in selection,
                     action = { if (selectable) toggle(i) else detail(i) })
             }
+            if (page == Page.SCAN) {
+                AccentButton(Action(Page.SCAN_SUMMARY.title, Mark.BARS), Modifier.fillMaxWidth(),
+                    primary = false, tag = "open-deep-scan-summary") { openReview(Page.SCAN_SUMMARY) }
+            }
             if (!stickyActions) {
                 Spacer(Modifier.height(3.dp))
                 actions()
@@ -143,6 +149,12 @@ internal fun ReferenceScreen(page: Page, source: PreviewSource = PreviewSource.D
                     if (page == Page.PRIVACY) PreviewChoice(entry, entryIndex in selection, "detail-select") { toggle(entryIndex) }
                 }
                 PANEL_REVIEW, PANEL_PROCEED -> {
+                    if (mode == PANEL_REVIEW) page.reviewPage?.let { next ->
+                        AccentButton(Action(next.title, next.hero), Modifier.fillMaxWidth(), tag = "open-${next.id}") {
+                            sheet = null
+                            openReview(next)
+                        }
+                    }
                     val allowSelection = page == Page.DUPLICATES && mode == PANEL_PROCEED || page == Page.PRIVACY
                     data.entries.forEachIndexed { i, item ->
                         if (allowSelection) PreviewChoice(item, i in selection, "sheet-choice-$i") { toggle(i) }
@@ -250,7 +262,7 @@ private fun FeatureRow(page: Page, entry: Entry, index: Int, selectable: Boolean
 }
 
 @Composable
-private fun Sparkline(index: Int, modifier: Modifier) {
+internal fun Sparkline(index: Int, modifier: Modifier) {
     Canvas(modifier) {
         val color = if (index < 2) Violet else Cyan
         val heights = listOf(.10f,.22f,.35f,.50f,.65f,.84f)

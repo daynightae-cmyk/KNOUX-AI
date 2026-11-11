@@ -13,7 +13,11 @@ class PreviewNavigationTest {
 
     private fun node(tag: String) = ui.onNodeWithTag(tag)
     private fun click(tag: String) { node(tag).performClick() }
-    private fun scrollClick(tag: String) { node(tag).performScrollTo().performClick() }
+    private fun scrollClick(tag: String) {
+        val target = node(tag)
+        if (!target.isDisplayed()) target.performScrollTo()
+        target.assertIsDisplayed().performClick()
+    }
     private fun screen(page: String) { node("screen-$page").assertIsDisplayed(); node("design-preview").assertIsDisplayed() }
     private fun back() { click("back") }
 
@@ -112,5 +116,29 @@ class PreviewNavigationTest {
             scrollClick("close-sheet")
             back()
         }
+    }
+
+    @Test fun cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean() {
+        scrollClick("open-clean-center")
+        screen("clean-center")
+        node("detail-selection-total").performScrollTo().assertTextContains("4 of 5 selected", substring = true)
+        scrollClick("detail-select-0")
+        node("detail-selection-total").performScrollTo().assertTextContains("3 of 5 selected", substring = true)
+        scrollClick("primary-action")
+        scrollClick("confirm-detail-preview")
+        node("detail-preview-result").assertTextContains("No action performed", substring = true)
+    }
+
+    @Test fun outerReviewOpensAnInnerPageAndBackReturnsToItsOrigin() {
+        scrollClick("open-duplicates")
+        scrollClick("review-action")
+        scrollClick("open-duplicate-group-review")
+        screen("duplicate-group-review")
+        node("tab-clean").assertIsSelected()
+        node("detail-select-0").assertIsOn()
+        scrollClick("detail-select-0")
+        node("detail-select-0").assertIsOff()
+        back()
+        screen("duplicates")
     }
 }

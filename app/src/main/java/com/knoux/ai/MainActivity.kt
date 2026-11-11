@@ -18,12 +18,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -89,13 +92,20 @@ class MainActivity : ComponentActivity() {
                 ValueAnimator.areAnimatorsEnabled() && power?.isPowerSaveMode != true
             val splashReduced = reduced || !ValueAnimator.areAnimatorsEnabled() || power?.isPowerSaveMode == true
             var showSplash by remember { mutableStateOf(startSplash) }
-            // The splash fully covers Home: pause decorative work underneath it so the
-            // brand animation owns the frame budget on slower devices.
+            var dashboardPrepared by remember { mutableStateOf(!startSplash || splashReduced) }
             KnouxTheme(arabic, motion && !showSplash) {
                 Box(Modifier.fillMaxSize()) {
-                    KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                    if (dashboardPrepared || !showSplash) {
+                        KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                    }
                     if (showSplash) {
-                        KnouxSplashRoute(splashReduced, freezeSplash) { showSplash = false }
+                        val chime = rememberSplashChime(!splashReduced && freezeSplash == null)
+                        KnouxSplashRoute(splashReduced, freezeSplash, onSmileCompleted = {
+                            if (this@MainActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                chime?.play()
+                            }
+                            dashboardPrepared = true
+                        }) { showSplash = false }
                     }
                 }
             }
@@ -140,7 +150,7 @@ private fun KnouxAppScaffold(
     val nav = rememberNavController()
     val current by nav.currentBackStackEntryAsState()
     val page = Page.from(current?.destination?.route) ?: Page.HOME
-    val selected = when (page) {
+    val selected = page.reviewTab ?: when (page) {
         Page.HOME, Page.CLEAN, Page.TOOLS, Page.REPORTS -> page
         else -> Page.from(nav.previousBackStackEntry?.destination?.route)
             ?.takeIf { it == Page.CLEAN || it == Page.TOOLS } ?: Page.HOME
@@ -151,7 +161,15 @@ private fun KnouxAppScaffold(
         if (next in tabs.map { it.first }) nav.switchTab(next)
         else nav.navigate(next.id) { launchSingleTop = true }
     }
-    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff0b092e), Ink, Color(0xff050516)))).safeDrawingPadding()
+    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff130a3d), Color(0xff090420), Color(0xff030109))))
+        .drawBehind {
+            val top = Offset(size.width * .78f, size.height * .01f)
+            drawCircle(Brush.radialGradient(listOf(Color(0xff5a22c8).copy(alpha = .32f),
+                Color(0xff2c1570).copy(alpha = .16f), Color.Transparent), top, size.width * .95f), size.width * .95f, top)
+            val low = Offset(size.width * .10f, size.height * .88f)
+            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .09f), Color.Transparent), low, size.width * .70f),
+                size.width * .70f, low)
+        }.safeDrawingPadding()
         .semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         contentAlignment = Alignment.TopCenter) {
         BoxWithConstraints(Modifier.widthIn(max = 540.dp).fillMaxSize()) {
@@ -169,7 +187,8 @@ private fun KnouxAppScaffold(
                                 when (target) {
                                     Page.HOME -> HomeScreen(open)
                                     Page.CLEAN, Page.TOOLS -> ToolIndex(target, open)
-                                    else -> ReferenceScreen(target)
+                                    in Page.detailRoutes -> DetailPreview(target)
+                                    else -> ReferenceScreen(target, openReview = open)
                                 }
                             }
                         }
@@ -250,7 +269,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
             }
         }
         PreviewModeDisclosure(disclose)
-        if (page == Page.HOME && !LocalRoomy.current) {
+        if ((page == Page.HOME || page in Page.detailRoutes) && !LocalRoomy.current) {
             Row(Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(20.dp)).testTag("pro")
                 .clickable(role = Role.Button, onClick = pro).padding(horizontal = 4.dp),
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
@@ -282,7 +301,9 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun InfoSheet(title: Copy, dismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
-    ModalBottomSheet(onDismissRequest = dismiss, containerColor = Color(0xff171434), contentColor = Chalk) {
+    val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    ModalBottomSheet(onDismissRequest = dismiss, sheetState = state,
+        containerColor = Color(0xff1b1742), contentColor = Chalk) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 6.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Label(title.localized(), 23, weight = FontWeight.Bold)
@@ -295,7 +316,7 @@ internal fun InfoSheet(title: Copy, dismiss: () -> Unit, content: @Composable Co
 
 @Composable
 private fun ToolIndex(page: Page, open: (Page) -> Unit) {
-    val choices = if (page == Page.CLEAN) listOf(Page.SCAN, Page.DUPLICATES, Page.RESIDUE)
+    val choices = if (page == Page.CLEAN) listOf(Page.CLEAN_CENTER, Page.SCAN, Page.DUPLICATES, Page.RESIDUE)
     else listOf(Page.STORAGE, Page.APPS, Page.PRIVACY, Page.BATTERY, Page.OPTIMIZE)
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 11.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(9.dp)) {
