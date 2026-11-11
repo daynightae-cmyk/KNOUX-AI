@@ -267,13 +267,13 @@ internal fun AccentButton(
         .then(if (selected == true) Modifier.border(1.4.dp,
             Brush.horizontalGradient(listOf(Light.ice, Light.cyan, Light.pink)), round) else Modifier)
         .then(click)
-        .padding(horizontal = 14.dp, vertical = 7.dp),
+        .padding(horizontal = 12.dp, vertical = 7.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically
     ) {
         val tone = if (enabled) Chalk else Mist.copy(alpha = .64f)
         Glyph(action.icon, Modifier.size(20.dp), tone, primary && enabled)
         Label(action.label.localized(), if (action.label.localized().length > 20) 11 else 13, tone, FontWeight.Bold,
-            align = TextAlign.Center, maxLines = 1)
+            align = TextAlign.Center, maxLines = 2)
         if (tag == "start-scan" && !LocalRoomy.current) {
             val direction = if (LocalArabic.current) 180f else 0f
             Row(Modifier.rotate(direction).then(if (pulse != null) Modifier.graphicsLayer {
@@ -596,6 +596,25 @@ internal fun StatusSummaryPanel(screen: PreviewScreen, page: Page) {
     }
 }
 
+/** Gold capsule used by the master references to mark every sample metric. */
+@Composable
+internal fun DesignPreviewPill(
+    modifier: Modifier = Modifier,
+    label: Copy = ("DESIGN PREVIEW" ar "معاينة التصميم"),
+    onClick: (() -> Unit)? = null
+) {
+    val shape = RoundedCornerShape(14.dp)
+    val click = if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier
+    Row(modifier.heightIn(min = 30.dp).testTag("design-preview").clip(shape)
+        .background(Brush.horizontalGradient(listOf(Color(0xff24163f), Color(0xff160d2c))), shape)
+        .border(1.dp, Gold.copy(alpha = .82f), shape).then(click)
+        .padding(horizontal = 10.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        Box(Modifier.size(6.dp).background(Gold, RoundedCornerShape(3.dp)))
+        Label(label.localized(), 9, Gold, FontWeight.Bold)
+    }
+}
+
 @Composable
 internal fun PreviewModeDisclosure(onClick: () -> Unit) {
     val label = ("Design preview" ar "معاينة التصميم").localized()
@@ -625,7 +644,7 @@ internal fun AdaptiveActions(first: Action, second: Action, firstEnabled: Boolea
         AccentButton(first, Modifier.fillMaxWidth(), false, firstEnabled, "review-action", firstSelected, onClick = onFirst)
         AccentButton(second, Modifier.fillMaxWidth(), true, secondEnabled, "primary-action", secondSelected, onClick = onSecond)
     } else Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        AccentButton(first, Modifier.weight(.82f), false, firstEnabled, "review-action", firstSelected, onClick = onFirst)
-        AccentButton(second, Modifier.weight(1.18f), true, secondEnabled, "primary-action", secondSelected, onClick = onSecond)
+        AccentButton(first, Modifier.weight(1f), false, firstEnabled, "review-action", firstSelected, onClick = onFirst)
+        AccentButton(second, Modifier.weight(1f), true, secondEnabled, "primary-action", secondSelected, onClick = onSecond)
     }
 }

@@ -312,6 +312,7 @@ internal fun DrawScope.volumetricMark(mark: Mark, tone: Color, radius: Float) {
                 Mark.LAYERS -> translate(12f, 2f) { volumetricLayers(tone) }
                 Mark.RADAR -> translate(12f, 5f) { volumetricRadar(tone) }
                 Mark.GROUP -> volumetricGroup(tone)
+                Mark.GOOGLE -> volumetricGoogle()
                 else -> {
                     val p = glyphPath(mark) ?: return@scale
                     drawPath(p, Brush.verticalGradient(listOf(tone.copy(alpha = .85f), tone.copy(alpha = .35f)), -12f, 12f),
@@ -331,6 +332,33 @@ private fun DrawScope.volumetricGroup(tone: Color) {
         drawPath(people, tone.copy(alpha = .52f), style = Stroke(3.2f, cap = StrokeCap.Round, join = StrokeJoin.Round))
         drawPath(people, Light.ice, style = Stroke(1.4f, cap = StrokeCap.Round, join = StrokeJoin.Round))
     }
+}
+
+/**
+ * The four-colour provider mark used by the "Continue with Google" row.
+ *
+ * The arc is drawn from the classic four-segment arrangement - red across the
+ * top, yellow down the left, green along the bottom and blue closing the right
+ * side with the horizontal bar - so the row reads as the reference does.
+ */
+private fun DrawScope.volumetricGoogle() {
+    val red = Color(0xffea4335)
+    val yellow = Color(0xfffbbc05)
+    val green = Color(0xff34a853)
+    val blue = Color(0xff4285f4)
+    val r = 7.1f
+    val w = 2.7f
+    val box = Size(r * 2f, r * 2f)
+    val topLeft = Offset(12f - r, 12f - r)
+    // Angles follow the screen convention: 0 degrees is three o'clock and
+    // positive sweeps run clockwise, so 210-330 covers the top arc.
+    drawArc(red, 210f, 120f, false, topLeft, box, style = Stroke(w, cap = StrokeCap.Butt))
+    drawArc(yellow, 150f, 60f, false, topLeft, box, style = Stroke(w, cap = StrokeCap.Butt))
+    drawArc(green, 90f, 60f, false, topLeft, box, style = Stroke(w, cap = StrokeCap.Butt))
+    drawArc(blue, 330f, 120f, false, topLeft, box, style = Stroke(w, cap = StrokeCap.Butt))
+    // The bar of the G reaching into the centre of the mark.
+    drawRoundRect(blue, Offset(12f - .2f, 12f - w / 2f), Size(r * .78f, w),
+        androidx.compose.ui.geometry.CornerRadius(w / 2f))
 }
 
 private fun DrawScope.litBody(path: Path, tone: Color, top: Color = Light.white, radius: Float = 24f) {

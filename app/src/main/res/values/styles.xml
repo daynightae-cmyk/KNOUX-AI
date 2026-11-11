@@ -1,7 +1,16 @@
 <resources>
-    <style name="Theme.Knoux" parent="android:style/Theme.Material.NoActionBar">
+    <!--
+      The AppCompat base is required by androidx.biometric: the fingerprint
+      compatibility dialog on Android 6-8 inflates an AppCompat alert dialog.
+      Every visual element of KNOUX AI is drawn by Compose, so the platform
+      theme only provides the window background and the system bar treatment.
+    -->
+    <style name="Theme.Knoux" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">#08061C</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:colorAccent">#31E3FF</item>
+        <item name="colorPrimary">#6D2BFF</item>
+        <item name="colorPrimaryDark">#3A0E9B</item>
+        <item name="colorAccent">#31E3FF</item>
     </style>
 </resources>

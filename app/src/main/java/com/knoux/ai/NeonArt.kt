@@ -80,7 +80,10 @@ private val symbol = mapOf(
     Mark.GROUP to "M13 7A4 4 0 1 1 5 7A4 4 0 1 1 13 7 M3 21V17Q3 13 9 13Q15 13 15 17V21Z M16 4A4 4 0 0 1 16 11 M18 14Q22 15 22 19V21H18",
     Mark.SPEED to "M3 20A10 10 0 1 1 21 20 M12 13L17 7 M12 3V5 M4 11L6 12 M20 11L18 12",
     Mark.TROPHY to "M7 3H17V11Q17 16 12 16Q7 16 7 11Z M7 5H2Q2 12 7 12 M17 5H22Q22 12 17 12 M12 16V21 M7 21H17",
-    Mark.MEMORY to "M2 5H22V18H2Z M6 8H8V14H6Z M11 8H13V14H11Z M16 8H18V14H16Z M6 18V21 M12 18V21 M18 18V21"
+    Mark.MEMORY to "M2 5H22V18H2Z M6 8H8V14H6Z M11 8H13V14H11Z M16 8H18V14H16Z M6 18V21 M12 18V21 M18 18V21",
+    Mark.KEY to "M8 2A6 6 0 1 0 8 14A6 6 0 0 0 8 2Z M8 8A2 2 0 1 0 8 12A2 2 0 0 0 8 8Z M13 8H23V11H19V14H15V11H13Z",
+    Mark.GOOGLE to "M20 12A8 8 0 1 1 12 4V12H20",
+    Mark.SPARKLE to "M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6Z M19 3L19.9 5.1L22 6L19.9 6.9L19 9L18.1 6.9L16 6L18.1 5.1Z"
 ).mapValues { (_, svg) -> path(svg) }
 
 // Brand K traced from the owner logo (design/brand/knoux-logo-owner.png),
@@ -157,10 +160,10 @@ internal fun HomeTileIcon(mark: Mark, tone: Color, modifier: Modifier = Modifier
  * volumetric K globe.
  */
 @Composable
-internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier) {
+internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier, heightOverride: androidx.compose.ui.unit.Dp? = null) {
     val home = mark == Mark.K
     val homeTall = LocalTall.current
-    val height = if (home) (if (homeTall) 160.dp else 152.dp) else 120.dp
+    val height = heightOverride ?: if (home) (if (homeTall) 182.dp else 152.dp) else 120.dp
     val unitDivisor = if (home) (if (homeTall) 150f else 140f) else 120f
     val tone = heroTone(mark)
     val points = rememberGlobePoints(if (home) 760 else 460)

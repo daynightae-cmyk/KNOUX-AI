@@ -73,6 +73,7 @@ internal fun DetailPreview(page: Page) {
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())
             .testTag("detail-scroll-${page.id}"), horizontalAlignment = Alignment.CenterHorizontally) {
             HeroHeading(page, design.subtitle, artBeside = page == Page.CLEAN_CENTER || page == Page.BATTERY_DIAGNOSTICS)
+            ServiceWorld(page, selected.size, design.rows.size, total)
             Column(Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(7.dp)) {
                 DetailOverview(page, design)

@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.fragment.app.FragmentActivity
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
@@ -20,6 +21,7 @@ import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -83,13 +85,17 @@ internal data class DebugVisit(val page: Page, val number: Int, val still: Boole
 internal class PreviewPreferences(private val state: SavedStateHandle) : ViewModel() {
     val arabic = state.getStateFlow("arabic", Locale.getDefault().language == "ar")
     val reduceMotion = state.getStateFlow("reduceMotion", false)
+    val authenticated = state.getStateFlow("authenticated", false)
     fun language(arabic: Boolean) { state["arabic"] = arabic }
     fun motion(reduced: Boolean) { state["reduceMotion"] = reduced }
+    fun authenticate() { state["authenticated"] = true }
 }
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     private val visits = MutableStateFlow<DebugVisit?>(null)
     private var visitCount = 0
+    /** Debug capture flag: freezes decorative motion so screenshots are deterministic. */
+    private var captureStill = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,20 +103,47 @@ class MainActivity : ComponentActivity() {
         if (savedInstanceState == null) debugVisit(intent)
         val previewRoute = if (BuildConfig.DEBUG) intent?.getStringExtra("knoux.preview.route") else null
         val freezeSplash = if (BuildConfig.DEBUG) intent?.getLongExtra("knoux.preview.splash.time", -1L)?.takeIf { it >= 0L } else null
-        val startSplash = (savedInstanceState == null && !SplashGate.consumed && previewRoute == null) || freezeSplash != null
+        // Debug-only capture hooks; release builds ignore both extras.
+        val previewArabic = savedInstanceState == null && BuildConfig.DEBUG &&
+            intent?.getBooleanExtra("knoux.preview.arabic", false) == true
+        val previewReduced = savedInstanceState == null && BuildConfig.DEBUG &&
+            intent?.getBooleanExtra("knoux.preview.reduceMotion", false) == true
+        // Debug-only capture hook: freezes a specific authentication state so the
+        // cinematic gateway can be photographed deterministically.
+        val previewAuth = if (savedInstanceState == null && BuildConfig.DEBUG) {
+            when (intent?.getStringExtra("knoux.preview.auth")) {
+                "welcome" -> AuthStage.WELCOME
+                "verify" -> AuthStage.VERIFYING
+                "verified" -> AuthStage.VERIFIED
+                "unavailable" -> AuthStage.UNAVAILABLE
+                else -> null
+            }
+        } else null
+        val startSplash = (savedInstanceState == null && !SplashGate.consumed && previewRoute == null && previewAuth == null) ||
+            freezeSplash != null
         setContent {
             val preferences: PreviewPreferences = viewModel()
+            LaunchedEffect(Unit) {
+                if (previewArabic) preferences.language(true)
+                if (previewReduced) preferences.motion(true)
+            }
             val arabic by preferences.arabic.collectAsStateWithLifecycle()
             val reduced by preferences.reduceMotion.collectAsStateWithLifecycle()
+            val authenticated by preferences.authenticated.collectAsStateWithLifecycle()
             val visit by visits.collectAsStateWithLifecycle()
             val lifecycle by LocalLifecycleOwner.current.lifecycle.currentStateAsState()
             val power = LocalContext.current.getSystemService(PowerManager::class.java)
-            val motion = lifecycle.isAtLeast(Lifecycle.State.RESUMED) && !reduced && visit?.still != true &&
+            // The capture "still" flag is read from the activity, not from the
+            // collected visit state, so the motion decision is stable from the
+            // very first composition. Deriving it from the collected state would
+            // flip the flag mid-transition and leave the outgoing screen frozen
+            // on top of the incoming one.
+            val motion = lifecycle.isAtLeast(Lifecycle.State.RESUMED) && !reduced && !captureStill &&
                 ValueAnimator.areAnimatorsEnabled() && power?.isPowerSaveMode != true
             val splashReduced = reduced || !ValueAnimator.areAnimatorsEnabled() || power?.isPowerSaveMode == true
             var showSplash by remember { mutableStateOf(startSplash) }
+            // The identity gateway sits between the splash and the application.
             var dashboardPrepared by remember { mutableStateOf(!startSplash || splashReduced) }
-            // Track dashboard reveal animation progress (0 = hidden, 1 = fully revealed)
             val dashReveal = remember { Animatable(if (startSplash && !splashReduced) 0f else 1f) }
             LaunchedEffect(showSplash) {
                 if (!showSplash && dashReveal.value < 1f) {
@@ -119,26 +152,52 @@ class MainActivity : ComponentActivity() {
             }
             KnouxTheme(arabic, motion && !showSplash) {
                 Box(Modifier.fillMaxSize()) {
-                    if (dashboardPrepared || !showSplash) {
-                        // Fluid reveal: scale up from 0.95 + fade in as splash exits
-                        val scale = if (splashReduced) 1f else 0.95f + 0.05f * dashReveal.value
-                        val alpha = if (splashReduced) 1f else dashReveal.value
-                        Box(Modifier.fillMaxSize().graphicsLayer {
-                            scaleX = scale; scaleY = scale
-                            this.alpha = alpha
-                            transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0.52f)
-                        }) {
-                            KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
-                        }
-                    }
-                    if (showSplash) {
-                        val chime = rememberSplashChime(!splashReduced && freezeSplash == null)
-                        KnouxSplashRoute(splashReduced, freezeSplash, onSmileCompleted = {
-                            if (this@MainActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                                chime?.play()
+                    when {
+                        // A debug route jump is a capture hook: it opens the requested
+                        // screen directly and bypasses the identity gateway.
+                        previewRoute != null -> KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                        // The cinematic gateway is the first surface after the splash.
+                        !showSplash && !authenticated && previewAuth == null -> AuthGateway(
+                            reducedMotion = reduced,
+                            onAuthenticated = { preferences.authenticate() },
+                            onGuest = { preferences.authenticate() },
+                            onLanguage = preferences::language,
+                            onMotion = preferences::motion,
+                            reduced = reduced
+                        )
+                        // A forced debug state is captured on its own, without the shell.
+                        !showSplash && previewAuth != null -> AuthGateway(
+                            forcedStage = previewAuth,
+                            reducedMotion = reduced,
+                            onAuthenticated = { preferences.authenticate() },
+                            onGuest = { preferences.authenticate() },
+                            onLanguage = preferences::language,
+                            onMotion = preferences::motion,
+                            reduced = reduced
+                        )
+                        else -> {
+                            if (dashboardPrepared || !showSplash) {
+                                // Fluid reveal: scale up from 0.95 + fade in as splash exits
+                                val scale = if (splashReduced) 1f else 0.95f + 0.05f * dashReveal.value
+                                val alpha = if (splashReduced) 1f else dashReveal.value
+                                Box(Modifier.fillMaxSize().graphicsLayer {
+                                    scaleX = scale; scaleY = scale
+                                    this.alpha = alpha
+                                    transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0.52f)
+                                }) {
+                                    KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                                }
                             }
-                            dashboardPrepared = true
-                        }) { showSplash = false }
+                            if (showSplash) {
+                                val chime = rememberSplashChime(!splashReduced && freezeSplash == null)
+                                KnouxSplashRoute(splashReduced, freezeSplash, onSmileCompleted = {
+                                    if (this@MainActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                        chime?.play()
+                                    }
+                                    dashboardPrepared = true
+                                }) { showSplash = false }
+                            }
+                        }
                     }
                 }
             }
@@ -151,8 +210,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun debugVisit(intent: Intent?) {
-        if (BuildConfig.DEBUG) Page.from(intent?.getStringExtra("knoux.preview.route"))?.let {
-            visits.value = DebugVisit(it, ++visitCount, intent?.getBooleanExtra("knoux.preview.still", false) == true)
+        if (BuildConfig.DEBUG) {
+            captureStill = intent?.getBooleanExtra("knoux.preview.still", false) == true
+            Page.from(intent?.getStringExtra("knoux.preview.route"))?.let {
+                visits.value = DebugVisit(it, ++visitCount, captureStill)
+            }
         }
     }
 }
@@ -160,6 +222,8 @@ class MainActivity : ComponentActivity() {
 private val tabs = listOf(Page.HOME to Mark.HOME, Page.CLEAN to Mark.BROOM, Page.TOOLS to Mark.GRID, Page.REPORTS to Mark.BARS)
 private fun tabTitle(page: Page) = when (page) {
     Page.HOME -> "Home" ar "الرئيسية"
+    Page.CLEAN -> "Clean" ar "تنظيف"
+    Page.TOOLS -> "Tools" ar "أدوات"
     Page.REPORTS -> "Reports" ar "التقارير"
     else -> page.title
 }
@@ -183,17 +247,17 @@ private fun KnouxAppScaffold(
     val nav = rememberNavController()
     val current by nav.currentBackStackEntryAsState()
     val page = Page.from(current?.destination?.route) ?: Page.HOME
-    val selected = page.reviewTab ?: when (page) {
-        Page.HOME, Page.CLEAN, Page.TOOLS, Page.REPORTS -> page
-        else -> Page.from(nav.previousBackStackEntry?.destination?.route)
-            ?.let { prev ->
-                when (prev) {
-                    Page.CLEAN -> Page.CLEAN
-                    Page.TOOLS -> Page.TOOLS
-                    Page.HOME -> Page.HOME
-                    else -> null
-                }
-            } ?: Page.HOME
+    val tabPages = remember { setOf(Page.HOME, Page.CLEAN, Page.TOOLS, Page.REPORTS) }
+    val previous = Page.from(nav.previousBackStackEntry?.destination?.route)
+    val groupTab = page.reviewTab
+    val selected = when {
+        page in tabPages -> page
+        // A real section-to-section jump (Clean, Tools, Reports) wins. A direct entry
+        // from Home still shows the service's own section, matching the design references.
+        previous != null && previous in tabPages && previous != Page.HOME -> previous
+        groupTab != null -> groupTab
+        previous != null -> previous
+        else -> Page.HOME
     }
     var headerSheet by remember { mutableStateOf<HeaderSheet?>(null) }
     val back: () -> Unit = { if (!nav.popBackStack()) nav.switchTab(Page.HOME) }
@@ -221,7 +285,7 @@ private fun KnouxAppScaffold(
             CompositionLocalProvider(LocalRoomy provides roomy, LocalTall provides (maxHeight >= 800.dp && !roomy)) {
                 Column(Modifier.fillMaxSize()) {
                     KnouxTopBar(page, { headerSheet = HeaderSheet.MENU }, back, { headerSheet = HeaderSheet.PRO },
-                        { headerSheet = HeaderSheet.SETTINGS }, { headerSheet = HeaderSheet.DISCLOSURE })
+                        { headerSheet = HeaderSheet.SETTINGS })
                     NavHost(navController = nav, startDestination = Page.HOME.id, modifier = Modifier.weight(1f),
                         enterTransition = {
                             if (!navMotion) EnterTransition.None
@@ -246,7 +310,11 @@ private fun KnouxAppScaffold(
                             composable(target.id) {
                                 when (target) {
                                     Page.HOME -> HomeScreen(open)
-                                    Page.CLEAN, Page.TOOLS -> ToolIndex(target, open)
+                                    Page.CLEAN -> SmartCleanScreen(open)
+                                    Page.TOOLS -> DeviceToolsScreen(open)
+                                    Page.REPORTS -> ReportsScreen(open)
+                                    Page.PRIVACY -> PrivacySweepScreen(open)
+                                    Page.OPTIMIZE -> AiOptimizationScreen(open)
                                     in Page.detailRoutes -> DetailPreview(target)
                                     else -> ReferenceScreen(target, openReview = open)
                                 }
@@ -321,29 +389,39 @@ internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> 
 }
 
 @Composable
-private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () -> Unit, settings: () -> Unit, disclose: () -> Unit) {
-    Row(Modifier.fillMaxWidth().padding(horizontal = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () -> Unit, settings: () -> Unit) {
+    Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 3.dp).glass(20, tab = false)
+        .heightIn(min = 56.dp).padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         if (page == Page.HOME) IconControl(Mark.MENU, ("Menu" ar "القائمة").localized(), "menu", menu)
         else IconControl(Mark.BACK, ("Back" ar "رجوع").localized(), "back", back)
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Glyph(Mark.K, Modifier.size(33.dp))
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Glyph(Mark.K, Modifier.size(31.dp))
                     if (LocalDensity.current.fontScale <= 1.45f) {
-                        Label("knoux", if (LocalRoomy.current) 15 else 23, weight = FontWeight.ExtraBold)
-                        Label(" ai", if (LocalRoomy.current) 15 else 23, Pink, FontWeight.ExtraBold)
+                        val wordmark = when {
+                            LocalRoomy.current -> 14
+                            LocalArabic.current -> 18
+                            else -> 21
+                        }
+                        Label("knoux", wordmark, weight = FontWeight.ExtraBold)
+                        Label(" ai", wordmark, Pink, FontWeight.ExtraBold)
                     }
                 }
             }
         }
-        PreviewModeDisclosure(disclose)
-        if ((page == Page.HOME || page in Page.detailRoutes) && !LocalRoomy.current) {
-            Row(Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(20.dp)).testTag("pro")
-                .clickable(role = Role.Button, onClick = pro).semantics { contentDescription = "KNOUX AI Pro" }
-                .padding(horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                Glyph(Mark.CROWN, Modifier.size(15.dp), Gold)
-                Label("Pro", 11, Gold, FontWeight.Bold)
+        if (!LocalRoomy.current) {
+            Box(Modifier.heightIn(min = 48.dp).testTag("pro")
+                .clickable(role = Role.Button, onClick = pro).semantics { contentDescription = "KNOUX AI Pro" },
+                contentAlignment = Alignment.Center) {
+                Row(Modifier.clip(RoundedCornerShape(18.dp))
+                    .border(1.dp, Gold.copy(alpha = .85f), RoundedCornerShape(18.dp))
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Glyph(Mark.CROWN, Modifier.size(14.dp), Gold)
+                    Label("Pro", 11, Gold, FontWeight.Bold)
+                }
             }
         }
         IconControl(Mark.GEAR, ("Settings" ar "الإعدادات").localized(), "settings", settings)
@@ -359,34 +437,34 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
             val fraction by animateFloatAsState(if (active) 1f else 0f,
                 animationSpec = tween(260, easing = androidx.compose.animation.core.FastOutSlowInEasing), label = "tab selection")
             val tone by animateColorAsState(if (active) Chalk else Mist, tween(200), label = "tab tone")
-            val iconScale by animateFloatAsState(if (active) 1.1f else 1f, tween(230), label = "tab icon")
+            val iconScale by animateFloatAsState(if (active) 1.05f else 1f, tween(230), label = "tab icon")
             Column(Modifier.weight(1f).heightIn(min = 48.dp).testTag("tab-${tab.id}").clip(RoundedCornerShape(20.dp))
-                .tabSelection(fraction)
-                .selectable(active, role = Role.Tab, onClick = { open(tab) }).padding(vertical = 4.dp),
+                .selectable(active, role = Role.Tab, onClick = { open(tab) }),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Glyph(icon, Modifier.size(20.dp).graphicsLayer { scaleX = iconScale; scaleY = iconScale }, tone, active)
+                Box(Modifier.size(38.dp).clip(RoundedCornerShape(19.dp)).tabSelection(fraction),
+                    contentAlignment = Alignment.Center) {
+                    Glyph(icon, Modifier.size(20.dp).graphicsLayer { scaleX = iconScale; scaleY = iconScale }, tone, active)
+                }
                 Label(tabTitle(tab).localized(), 11, tone, if (active) FontWeight.Bold else FontWeight.Normal, align = TextAlign.Center)
             }
         }
     }
 }
 
-/** Selected tab: a filled, lit pill with a soft bloom under it. */
+/**
+ * Selected tab: a lit gradient disc behind the icon, matching the reference
+ * navigation where the active icon sits in a filled magenta-violet circle.
+ */
 private fun Modifier.tabSelection(fraction: Float): Modifier = drawBehind {
     if (fraction <= .01f) return@drawBehind
-    val rad = CornerRadius(size.height * .42f)
-    for (dp in listOf(9, 5)) {
-        val delta = dp.dp.toPx()
-        drawRoundRect(Brush.horizontalGradient(listOf(Light.violet.copy(alpha = .22f), Light.cyan.copy(alpha = .18f))),
-            topLeft = Offset(-delta * .5f, -delta * .35f), size = Size(size.width + delta, size.height + delta * .7f),
-            cornerRadius = CornerRadius(size.height * .42f + delta * .5f), alpha = fraction)
-    }
-    drawRoundRect(Brush.linearGradient(listOf(Color(0xff9a2bff), Color(0xff5a28e8), Color(0xff2448ff)),
-        Offset.Zero, Offset(size.width, size.height)), cornerRadius = rad, alpha = fraction)
-    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .34f), Color.Transparent)),
-        cornerRadius = rad, alpha = fraction)
-    drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .72f), Light.cyan.copy(alpha = .62f), Color.Transparent)),
-        cornerRadius = rad, style = Stroke(1.25.dp.toPx()), alpha = fraction)
+    val radius = size.minDimension / 2f
+    val center = Offset(size.width / 2f, size.height / 2f)
+    drawCircle(Brush.radialGradient(listOf(Color(0xffff54ff).copy(alpha = .34f * fraction),
+        Color(0xff5a28e8).copy(alpha = .30f * fraction), Color.Transparent), center, radius * 1.5f),
+        radius * 1.5f, center)
+    drawCircle(Brush.radialGradient(listOf(Color(0xff9a2bff), Color(0xff5a28e8), Color(0xff2448ff)), center, radius),
+        radius, center)
+    drawCircle(Color.White.copy(alpha = .30f * fraction), radius, center, style = Stroke(1.1.dp.toPx()))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -417,7 +495,6 @@ private fun ToolIndex(page: Page, open: (Page) -> Unit) {
         }
     }
 }
-
 @Preview(widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
 private fun PhonePreview() {

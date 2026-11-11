@@ -10,11 +10,11 @@ internal enum class Mark {
     LAYERS, DISK, BATTERY, CHIP, SEARCH, FILE, CAMERA, MIC, CLIP, LOCATION, OVERLAY, BELL,
     PERSON, VIDEO, MUSIC, SHARE, CHECK, WARN, CALENDAR, CLOCK, EYE, PLAY, PAUSE, TRASH,
     FOLDER, LINK, CHAT, GAME, BOX, DOWNLOAD, HEART, BOLT, SUN, SYNC, POWER, TEMP, ROCKET,
-    GROUP, SPEED, TROPHY, MEMORY
+    GROUP, SPEED, TROPHY, MEMORY, KEY, GOOGLE, SPARKLE
 }
 
 internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
-    HOME("home", "AI Smart Clean" ar "التنظيف الذكي", Mark.K),
+    HOME("home", "Smart Device Hub" ar "مركز الجهاز الذكي", Mark.K),
     PRIVACY("privacy", "Privacy Sweep" ar "مراجعة الخصوصية", Mark.SHIELD),
     DUPLICATES("duplicates", "Duplicate Files Finder" ar "اكتشاف الملفات المكررة", Mark.PICTURES),
     SCAN("deep-scan", "Deep Scan" ar "الفحص العميق", Mark.RADAR),
@@ -24,8 +24,8 @@ internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
     STORAGE("storage", "Storage Analyzer" ar "تحليل التخزين", Mark.DISK),
     BATTERY("battery", "Battery Saver" ar "توفير البطارية", Mark.BATTERY),
     OPTIMIZE("ai-optimization", "AI Optimization" ar "التحسين الذكي", Mark.CHIP),
-    CLEAN("clean", "Clean" ar "التنظيف", Mark.BROOM),
-    TOOLS("tools", "Tools" ar "الأدوات", Mark.GRID),
+    CLEAN("clean", "Smart Clean" ar "التنظيف الذكي", Mark.BROOM),
+    TOOLS("tools", "Device Tools" ar "أدوات الجهاز", Mark.GRID),
     CLEAN_CENTER("clean-center", "Smart Clean Center" ar "مركز التنظيف الذكي", Mark.TRASH),
     DUPLICATE_REVIEW("duplicate-group-review", "Duplicate Group Review" ar "مراجعة مجموعات التكرار", Mark.PICTURES),
     PRIVACY_INSPECTOR("privacy-risk-inspector", "Privacy Risk Inspector" ar "فحص مخاطر الخصوصية", Mark.SHIELD),
@@ -62,6 +62,9 @@ internal val Page.reviewPage: Page?
 internal val Page.reviewTab: Page?
     get() = when (this) {
         Page.CLEAN_CENTER, Page.DUPLICATE_REVIEW, Page.SCAN_SUMMARY, Page.RESIDUE_REVIEW -> Page.CLEAN
+        // Privacy Sweep and AI Optimization are reached from Device Tools, so the
+        // Tools tab stays lit - this is what the approved references show.
+        Page.PRIVACY, Page.OPTIMIZE, Page.STORAGE, Page.APPS, Page.BATTERY,
         Page.PRIVACY_INSPECTOR, Page.APPS_REVIEW, Page.STORAGE_BREAKDOWN,
         Page.BATTERY_DIAGNOSTICS, Page.AI_RECOMMENDATIONS -> Page.TOOLS
         Page.REPORT_DETAIL -> Page.REPORTS

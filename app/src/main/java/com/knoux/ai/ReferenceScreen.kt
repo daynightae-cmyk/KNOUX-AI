@@ -72,6 +72,9 @@ internal fun ReferenceScreen(
     Column(Modifier.fillMaxSize()) {
       Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
         HeroHeading(page, data.subtitle, !paused)
+        Box(Modifier.fillMaxWidth().padding(top = 2.dp), contentAlignment = Alignment.Center) {
+            DesignPreviewPill()
+        }
         Column(Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)) {
             val primary: @Composable () -> Unit = {

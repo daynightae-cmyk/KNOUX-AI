@@ -3,6 +3,7 @@ package com.knoux.ai
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,8 +19,21 @@ class PreviewNavigationTest {
         if (!target.isDisplayed()) target.performScrollTo()
         target.assertIsDisplayed().performClick()
     }
-    private fun screen(page: String) { node("screen-$page").assertIsDisplayed(); node("design-preview").assertIsDisplayed() }
+    private fun screen(page: String) {
+        node("screen-$page").performScrollTo().assertIsDisplayed()
+        node("design-preview").performScrollTo().assertIsDisplayed()
+    }
     private fun back() { click("back") }
+
+    /**
+     * The cinematic identity gateway sits in front of the application shell, so
+     * every navigation test enters as a guest first.
+     */
+    @Before fun passIdentityGateway() {
+        ui.waitUntil(15_000) { ui.onAllNodesWithTag("auth-guest").fetchSemanticsNodes().isNotEmpty() }
+        ui.onNodeWithTag("auth-guest").performClick()
+        ui.waitUntil(15_000) { ui.onAllNodesWithTag("tab-home").fetchSemanticsNodes().isNotEmpty() }
+    }
 
     @Test fun tabsReachAllTenScreensAndDetailBackReturnsToTheIndex() {
         screen("home")
@@ -130,6 +144,9 @@ class PreviewNavigationTest {
     }
 
     @Test fun outerReviewOpensAnInnerPageAndBackReturnsToItsOrigin() {
+        // Home tiles are quick actions into the service studios; the outer Duplicates
+        // page lives under the Clean section, which is the origin this test verifies.
+        click("tab-clean")
         scrollClick("open-duplicates")
         scrollClick("review-action")
         scrollClick("open-duplicate-group-review")
