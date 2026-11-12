@@ -3,6 +3,7 @@ package com.knoux.ai
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -57,6 +58,17 @@ internal fun OnboardingScreen(onComplete: () -> Unit) {
 
     val goBack: () -> Unit = {
         if (chapter > 0) scope.launch { chapter-- }
+    }
+
+    // Intercept system back: go to previous chapter, or treat as skip on chapter 0
+    BackHandler(enabled = true) {
+        if (chapter > 0) {
+            scope.launch { chapter-- }
+        } else {
+            context.getSharedPreferences("knoux_prefs", Context.MODE_PRIVATE)
+                .edit().putBoolean("knoux_onboarding_done", true).apply()
+            onComplete()
+        }
     }
 
     Box(

@@ -26,6 +26,7 @@ internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
     OPTIMIZE("ai-optimization", "AI Optimization" ar "التحسين الذكي", Mark.CHIP),
     CLEAN("clean", "Smart Clean" ar "التنظيف الذكي", Mark.BROOM),
     TOOLS("tools", "Device Tools" ar "أدوات الجهاز", Mark.GRID),
+    KNOUX_UNIVERSE("knoux-universe", "KNOUX Universe" ar "عالم KNOUX", Mark.SPARKLE),
     CLEAN_CENTER("clean-center", "Smart Clean Center" ar "مركز التنظيف الذكي", Mark.TRASH),
     DUPLICATE_REVIEW("duplicate-group-review", "Duplicate Group Review" ar "مراجعة مجموعات التكرار", Mark.PICTURES),
     PRIVACY_INSPECTOR("privacy-risk-inspector", "Privacy Risk Inspector" ar "فحص مخاطر الخصوصية", Mark.SHIELD),
@@ -35,8 +36,7 @@ internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
     APPS_REVIEW("installed-apps-review", "Installed Apps Review" ar "مراجعة التطبيقات المثبتة", Mark.GROUP),
     STORAGE_BREAKDOWN("storage-breakdown", "Storage Breakdown" ar "تفاصيل مساحة التخزين", Mark.DISK),
     BATTERY_DIAGNOSTICS("battery-diagnostics", "Battery Diagnostics" ar "تشخيص البطارية", Mark.BATTERY),
-    AI_RECOMMENDATIONS("ai-recommendations", "AI Recommendations" ar "توصيات الذكاء الاصطناعي", Mark.CHIP),
-    KNOUX_UNIVERSE("knoux-universe", "KNOUX Universe" ar "عالم KNOUX", Mark.SPARKLE);
+    AI_RECOMMENDATIONS("ai-recommendations", "AI Recommendations" ar "توصيات الذكاء الاصطناعي", Mark.CHIP);
 
     companion object {
         val references = entries.take(10)

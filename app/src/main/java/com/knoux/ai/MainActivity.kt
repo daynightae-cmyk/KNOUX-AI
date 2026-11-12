@@ -155,7 +155,7 @@ class MainActivity : FragmentActivity() {
             val splashReduced = reduced || !ValueAnimator.areAnimatorsEnabled() || power?.isPowerSaveMode == true
             var showSplash by remember { mutableStateOf(startSplash) }
             val onbPrefs = LocalContext.current.getSharedPreferences("knoux_prefs", Context.MODE_PRIVATE)
-            val onboardingDone = remember { onbPrefs.getBoolean("knoux_onboarding_done", false) }
+            var onboardingDone by remember { mutableStateOf(onbPrefs.getBoolean("knoux_onboarding_done", false)) }
             var showOnboarding by remember { mutableStateOf(false) }
             // The identity gateway sits between the splash and the application.
             var dashboardPrepared by remember { mutableStateOf(!startSplash || splashReduced) }
@@ -173,7 +173,10 @@ class MainActivity : FragmentActivity() {
                         previewRoute != null -> KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
                         // Cinematic onboarding on first launch
                         !showSplash && showOnboarding -> OnboardingScreen(
-                            onComplete = { showOnboarding = false }
+                            onComplete = {
+                                onboardingDone = true
+                                showOnboarding = false
+                            }
                         )
                         // The cinematic gateway is the first surface after the splash.
                         !showSplash && !authenticated && previewAuth == null -> AuthGateway(
