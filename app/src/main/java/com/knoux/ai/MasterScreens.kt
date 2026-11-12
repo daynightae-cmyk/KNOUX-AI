@@ -128,16 +128,43 @@ private fun MasterCard(
     }
 }
 
-/** Rounded icon tile with a lit rim, matching the reference service icons. */
+/**
+ * Premium 3D glass-backed service icon matching the reference quality standard.
+ *
+ * Layer stack (back to front):
+ *   1. Deep glass base with vertical dark-to-tint gradient
+ *   2. Radial inner glow (bloom) from top-left corner
+ *   3. Specular highlight arc on the top edge
+ *   4. Lit rim border: white→tint→transparent gradient
+ *   5. VolumetricGlyph with its own depth rendering
+ *   6. Subtle bottom-edge shadow to anchor the tile
+ */
 @Composable
 internal fun MasterIcon(mark: Mark, tint: Color, diameter: Int = 44) {
-    val shape = RoundedCornerShape((diameter * .30f).dp)
+    val radius = (diameter * .30f).dp
+    val shape = RoundedCornerShape(radius)
     Box(Modifier.size(diameter.dp).clip(shape)
-        .background(Brush.verticalGradient(listOf(tint.copy(alpha = .55f), Color(0xff120a33).copy(alpha = .92f))), shape)
-        .border(1.dp, Brush.horizontalGradient(listOf(Color.White.copy(alpha = .7f), tint, Color.Transparent)), shape),
+        .background(Brush.verticalGradient(
+            listOf(tint.copy(alpha = .60f), Color(0xff0e0828).copy(alpha = .95f),
+                Color(0xff050215).copy(alpha = .98f))), shape)
+        .border(1.2.dp, Brush.linearGradient(
+            listOf(Color.White.copy(alpha = .78f), tint.copy(alpha = .90f),
+                tint.copy(alpha = .40f), Color.Transparent)), shape),
         contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {
-            bloom(Offset(size.width * .30f, size.height * .20f), size.width * .85f, tint, .9f)
+            // Primary bloom from top-left
+            bloom(Offset(size.width * .28f, size.height * .18f), size.width * .90f, tint, 1.0f)
+            // Secondary smaller bloom for color depth
+            bloom(Offset(size.width * .72f, size.height * .82f), size.width * .50f,
+                tint.copy(alpha = .40f), 0.5f)
+            // Specular highlight arc on upper rim
+            drawArc(Brush.horizontalGradient(
+                listOf(Color.Transparent, Color.White.copy(alpha = .55f), Color.White.copy(alpha = .80f),
+                    Color.White.copy(alpha = .55f), Color.Transparent)),
+                180f, 180f, false,
+                Offset(size.width * .08f, size.height * .02f),
+                Size(size.width * .84f, size.height * .28f),
+                style = Stroke(size.width * .028f, cap = StrokeCap.Round))
         }
         VolumetricGlyph(mark, tint, (diameter * .68f).dp)
     }

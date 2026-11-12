@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="660" viewBox="0 0 1600 660" role="img" aria-label="KNOUX AI — Android intelligence visual preview">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#070411"/><stop offset=".53" stop-color="#160b35"/><stop offset="1" stop-color="#05192d"/></linearGradient>
+  <radialGradient id="halo"><stop stop-color="#8452ff" stop-opacity=".75"/><stop offset=".44" stop-color="#742fff" stop-opacity=".27"/><stop offset="1" stop-color="#742fff" stop-opacity="0"/></radialGradient>
+  <linearGradient id="neon" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ed8af8"/><stop offset=".38" stop-color="#a050ff"/><stop offset=".73" stop-color="#5476ff"/><stop offset="1" stop-color="#00deed"/></linearGradient>
+  <linearGradient id="violet" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#d44ef8"/><stop offset="1" stop-color="#00d7f6"/></linearGradient>
+  <linearGradient id="phone" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#2a1157"/><stop offset=".55" stop-color="#10103a"/><stop offset="1" stop-color="#07152c"/></linearGradient>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="tiny" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="4"/></filter>
+  <pattern id="grid" width="45" height="45" patternUnits="userSpaceOnUse"><path d="M45 0H0V45" fill="none" stroke="#8b77ed" stroke-opacity=".07"/></pattern>
+</defs>
+<rect width="1600" height="660" rx="30" fill="url(#bg)"/>
+<rect width="1600" height="660" rx="30" fill="url(#grid)"/>
+<circle cx="1220" cy="355" r="380" fill="url(#halo)"/>
+<path d="M0 100C250 95 282 175 530 170S820 60 1105 88S1415 85 1600 135" fill="none" stroke="#a03af7" stroke-width="5" stroke-opacity=".43"/>
+<path d="M0 115C250 110 288 192 535 186S820 78 1105 105S1415 104 1600 156" fill="none" stroke="#00d5ef" stroke-width="2" stroke-opacity=".39"/>
+<path d="M0 520C275 512 360 605 665 575S1295 470 1600 562" fill="none" stroke="#7830ff" stroke-width="3" stroke-opacity=".38"/>
+<g transform="translate(92 78)">
+ <rect x="0" y="0" width="70" height="70" rx="23" fill="#23134c" stroke="#8152ff" stroke-width="2"/>
+ <path d="M20 16L20 55M50 16L22 39 51 55" fill="none" stroke="url(#neon)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+ <text x="90" y="46" fill="#e8dcff" font-size="25" font-family="Segoe UI,Arial,sans-serif" letter-spacing="5" font-weight="700">KNOUX / MOBILE LAB</text>
+</g>
+<text x="92" y="276" font-family="Segoe UI,Arial,sans-serif" font-size="92" letter-spacing="-6" font-weight="800" fill="#ffffff">KNOUX <tspan fill="url(#neon)">AI</tspan></text>
+<text x="92" y="327" font-family="Segoe UI,Arial,sans-serif" font-size="27" letter-spacing="3.1" font-weight="600" fill="#c4afff">DESIGNING A MORE INTELLIGENT ANDROID</text>
+<text x="92" y="393" font-family="Segoe UI,Arial,sans-serif" font-size="22" fill="#bdc7e0">20 visual destinations · cinematic identity · bilingual UI</text>
+<text x="92" y="430" font-family="Segoe UI,Arial,sans-serif" font-size="22" fill="#bdc7e0">Real Compose interactions · evidence-led engineering</text>
+<rect x="92" y="472" rx="19" width="342" height="61" fill="#2d155e" stroke="#a44fff" stroke-opacity=".8"/>
+<circle cx="123" cy="501" r="7" fill="#0ae4cb"/><text x="145" y="510" font-family="Segoe UI,Arial,sans-serif" font-size="19" font-weight="700" fill="#f6f2ff">INTERACTIVE DESIGN PREVIEW</text>
+<text x="92" y="601" font-family="Segoe UI,Arial,sans-serif" font-size="17" letter-spacing="4" fill="#7772a6">ENGINEERED BY SADEK ELGAZAR · 2026</text>
+<!-- stylized device art, deliberately distinct from actual runtime screenshots -->
+<g transform="translate(1150 46) rotate(7 171 294)">
+ <rect x="2" y="8" width="340" height="600" rx="57" fill="#05040d" stroke="#7d58da" stroke-width="7"/>
+ <rect x="13" y="22" width="319" height="572" rx="48" fill="url(#phone)" stroke="#7b53dc" stroke-opacity=".5"/>
+ <rect x="119" y="29" width="107" height="21" rx="12" fill="#05040f"/>
+ <text x="42" y="87" font-family="Segoe UI,Arial,sans-serif" font-size="20" font-weight="800" fill="#e8e1ff">✦ knoux ai</text>
+ <rect x="198" y="64" width="101" height="24" rx="12" fill="#0e344a" stroke="#03d3e7" stroke-opacity=".8"/>
+ <text x="213" y="81" font-family="Segoe UI,Arial,sans-serif" font-size="10" fill="#5deaf6">Design preview</text>
+ <circle cx="169" cy="174" r="98" fill="#7f30e8" fill-opacity=".25" filter="url(#glow)"/>
+ <circle cx="169" cy="170" r="89" fill="none" stroke="#a765ff" stroke-width="3"/>
+ <circle cx="169" cy="170" r="73" fill="none" stroke="#11d3f4" stroke-width="6" stroke-opacity=".8"/>
+ <circle cx="169" cy="170" r="53" fill="#25116a" stroke="#c47bff" stroke-width="3"/>
+ <text x="128" y="198" font-family="Segoe UI,Arial,sans-serif" font-size="85" font-weight="900" font-style="italic" fill="url(#neon)">K</text>
+ <path d="M32 174C86 147 98 140 124 158" fill="none" stroke="#e15afa" stroke-width="4"/><path d="M212 160C256 143 286 164 308 172" fill="none" stroke="#08c9e9" stroke-width="4"/>
+ <text x="170" y="297" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" fill="#ffffff">AI Smart Clean</text>
+ <text x="170" y="326" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="12" fill="#b5a1dd">Device intelligence / preview</text>
+ <rect x="42" y="349" width="257" height="40" rx="20" fill="url(#violet)"/><text x="170" y="375" text-anchor="middle" font-family="Segoe UI,Arial,sans-serif" font-size="15" font-weight="800" fill="#fff">Explore the experience →</text>
+ <g fill="#1e1a4d" stroke="#6c4ba5" stroke-opacity=".65">
+  <rect x="33" y="415" width="129" height="70" rx="14"/><rect x="174" y="415" width="129" height="70" rx="14"/>
+  <rect x="33" y="498" width="129" height="70" rx="14"/><rect x="174" y="498" width="129" height="70" rx="14"/>
+ </g>
+ <text x="49" y="444" font-family="Segoe UI,Arial,sans-serif" font-size="20" fill="#e55ff9">◈</text><text x="49" y="470" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="white">Smart Clean</text>
+ <text x="190" y="444" font-family="Segoe UI,Arial,sans-serif" font-size="20" fill="#32cfff">◇</text><text x="190" y="470" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="white">File Finder</text>
+ <text x="49" y="527" font-family="Segoe UI,Arial,sans-serif" font-size="20" fill="#b766ff">⬡</text><text x="49" y="553" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="white">Privacy</text>
+ <text x="190" y="527" font-family="Segoe UI,Arial,sans-serif" font-size="20" fill="#23e7d9">▣</text><text x="190" y="553" font-family="Segoe UI,Arial,sans-serif" font-size="13" fill="white">Storage</text>
+</g>
+<g fill="none" stroke="url(#violet)" stroke-opacity=".7"><circle cx="1078" cy="330" r="31"/><circle cx="1505" cy="220" r="22"/><path d="M907 312L1030 312M1480 430L1550 390"/></g>
+<g fill="#b879ff"><circle cx="1078" cy="299" r="6"/><circle cx="1505" cy="199" r="5"/><circle cx="998" cy="244" r="4"/><circle cx="1465" cy="570" r="4"/></g>
+</svg>

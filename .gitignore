@@ -10,3 +10,6 @@
 /qa-evidence/build/preview-recovery*.log
 /qa-evidence/ui/first-candidate/
 *.iml
+
+# Ignore an unrelated empty nested clone scaffold; preserve it locally.
+/KNOUX-AI/
