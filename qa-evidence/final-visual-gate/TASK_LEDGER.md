@@ -125,7 +125,59 @@ Scope of that authorization:
 The `knoux_qa26` AVD was started for the same purpose but exited on its own, so the
 authorized handset is the active capture target.
 
+## VG06 — Closure record (measured)
+
+### Build & artifact
+| Fact | Value |
+|---|---|
+| Task | `:app:assembleDebug` → `BUILD SUCCESSFUL` |
+| APK | `app\build\outputs\apk\debug\app-debug.apk` |
+| APK SHA-256 | `4559EE0FF34B7CD6CCCED97347FFCA5CA7781E2E92A227050CA826ED54D6A61C` |
+| APK size | 15,912,598 bytes |
+| Signing | `CN=Android Debug` (cert SHA-256 `c07168d4…7c085e`) — **debug/test only, not a Play release** |
+| Device | `1334825549012211` itel S686LN, API 35, 1080×2436 @480dpi, portrait forced |
+| Captures | 8 PNG, `qa-evidence/final-visual-gate/runtime/` |
+
+### Repository
+| Fact | Value |
+|---|---|
+| Commit | `3adc6364f9dce0df671a6d44fc3f7d0208a90d96` |
+| Remote `refs/heads/main` (via `git ls-remote`) | `3adc6364f9dce0df671a6d44fc3f7d0208a90d96` |
+| Push | fast-forward `e5b0994..3adc636`, no force |
+| Disk D: free | 2.76 GB at gate start → **2.63 GB** |
+| Other agents' work | preserved: `AGENTS.md`, `MasterScreens.kt`, `NeonArt.kt`, `values-v31/styles.xml` still modified; all untracked trees intact |
+
+### Per-reference status — honest
+| Ref | Captured as | Verdict |
+|---|---|---|
+| 01 | `VG02_CH01_AR` | PASS |
+| 02 | `VG02_CH02_AR` | PASS after D1 + D2 |
+| 03 | `VG02_CH03_AR` | PASS |
+| 04 | `VG02_CH01_EN` | PASS (locale equivalent, not a 4th chapter) |
+| 08 | `VG03_LOGIN_EN`, `VG03_LOGIN_AR` | PASS |
+| 12 | `VG04_OTP_EMPTY_EN`, `VG04_OTP_EMPTY_AR` | PASS after D3 + D4 |
+| 05, 06, 07 | — | **NOT_VERIFIED** — login style/compact variants; the single implemented login carries their elements (security strip, provider rows, passkey + biometric) but each variant was not photographed as a separate state |
+| 09, 10, 11 | — | **NOT_VERIFIED** — OTP conditional/envelope/filled variants; the filled state was deliberately not staged because no provider can produce a real code |
+
+### Known deviations, stated rather than hidden
+- OTP subtitle is `"Enter your 6-digit verification code"`, not the reference's
+  "sent to your email". A delivery claim would be false with no mail provider.
+  Layout is identical; only the words differ (D4).
+- On the 815dp-tall login viewport the tertiary **"Continue as Guest"** control sits
+  just below the fold. Nothing is clipped or overlapped, every target is reachable by
+  scrolling, and all hit areas remain ≥48dp; the spacing was tightened so "Sign Up"
+  clears the gesture bar.
+- Reference SHA-256 values remain unverifiable — no on-disk `references/` tree exists
+  (see VG00).
+
+### Not authorized / not attempted in this lane
+Real Smart Clean, Pro entitlements, Room, Supabase, billing, Android privileged
+permissions and any file deletion remain untouched, per the phase-1 visual scope.
+
+**Gate status: AWAITING OWNER VISUAL ACCEPTANCE.**
+
 ## Standing rules for this gate
+
 - Never force-push, hard reset, `git clean`, or delete untracked work.
 - Never claim BUILD PASS as visual acceptance.
 - Never hardcode OTP digits, nor imply an email was sent without a real provider.
