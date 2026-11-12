@@ -62,8 +62,8 @@ internal val LocalPreviewMotion = compositionLocalOf { false }
 internal val LocalRoomy = compositionLocalOf { false }
 internal val LocalTall = compositionLocalOf { false }
 internal val DisplayFace = FontFamily(Font(R.font.outfit_extrabold, FontWeight.ExtraBold))
-private val panel = listOf(Color(0xff261160), Color(0xff0a082b), Color(0xff111a50))
-private val vivid = listOf(Color(0xffe11bff), Color(0xff7a22ff), Color(0xff2d4cff), Color(0xff00d9ff))
+private val panel = listOf(Color(0xff2d1570), Color(0xff0d0935), Color(0xff1c1860))
+private val vivid = listOf(Color(0xffee00ff), Color(0xff8800ff), Color(0xff3300ff), Color(0xff00ddff))
 
 @Composable
 internal fun Copy.localized() = text(LocalArabic.current)

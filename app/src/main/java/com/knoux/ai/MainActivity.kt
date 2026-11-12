@@ -1,9 +1,18 @@
 package com.knoux.ai
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
+import android.media.AudioAttributes
+import android.media.AudioFormat
+import android.media.AudioManager
+import android.media.AudioTrack
+import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -75,6 +84,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.exp
+import kotlin.math.sin
 
 internal val Disclosure = "All figures are sample data from the design. Nothing on your device has been scanned or changed." ar
     "كل الأرقام أمثلة من التصميم. لم يفحص التطبيق أي بيانات ولم يغيّر أي شيء على جهازك."
@@ -190,12 +202,18 @@ class MainActivity : FragmentActivity() {
                             }
                             if (showSplash) {
                                 val chime = rememberSplashChime(!splashReduced && freezeSplash == null)
-                                KnouxSplashRoute(splashReduced, freezeSplash, onSmileCompleted = {
-                                    if (this@MainActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                                        chime?.play()
-                                    }
-                                    dashboardPrepared = true
-                                }) { showSplash = false }
+                                KnouxSplashRoute(
+                                    reduced = splashReduced,
+                                    freezeAtMs = freezeSplash,
+                                    onSmileCompleted = {
+                                        if (this@MainActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                            chime?.play()
+                                        }
+                                        dashboardPrepared = true
+                                    },
+                                    // The Enter button appears at the end; tapping it dismisses the splash
+                                    onEnter = { showSplash = false }
+                                ) { showSplash = false }
                             }
                         }
                     }
@@ -228,6 +246,102 @@ private fun tabTitle(page: Page) = when (page) {
     else -> page.title
 }
 private enum class HeaderSheet { MENU, PRO, SETTINGS, DISCLOSURE }
+
+// ── Notification badge system ─────────────────────────────────────────────
+/** Per-tab notification counts. Incremented when the user visits a section. */
+internal object SectionNotifier {
+    private val _counts = mutableStateOf(mapOf<Page, Int>())
+    val counts: Map<Page, Int> get() = _counts.value
+
+    private val _messages = mutableStateOf(mapOf<Page, String>())
+    val messages: Map<Page, String> get() = _messages.value
+
+    // Seed with onboarding notices so the user sees something on first open
+    init { seed() }
+
+    private fun seed() {
+        _counts.value = mapOf(
+            Page.CLEAN to 2,
+            Page.TOOLS to 1,
+            Page.REPORTS to 3
+        )
+        _messages.value = mapOf(
+            Page.CLEAN to "2 items ready to clean",
+            Page.TOOLS to "App analysis available",
+            Page.REPORTS to "3 new insights"
+        )
+    }
+
+    fun markSeen(page: Page) {
+        _counts.value = _counts.value - page
+    }
+
+    fun post(page: Page, count: Int, message: String) {
+        _counts.value = _counts.value + (page to count)
+        _messages.value = _messages.value + (page to message)
+    }
+}
+
+// ── Haptic + audio touch feedback ────────────────────────────────────────
+internal object TouchFeedback {
+    private var vibrator: Vibrator? = null
+    private var tapTrack: AudioTrack? = null
+    private var initialized = false
+
+    fun init(context: Context) {
+        if (initialized) return
+        initialized = true
+        vibrator = try {
+            val vm = context.getSystemService(VibratorManager::class.java)
+            vm.defaultVibrator
+        } catch (_: Exception) {
+            @Suppress("DEPRECATION")
+            context.getSystemService(Vibrator::class.java)
+        }
+        // Build a crisp, short tap sound in memory — no asset file needed
+        tapTrack = buildTapSound()
+    }
+
+    private fun buildTapSound(): AudioTrack? = runCatching {
+        val sampleRate = 44100
+        val durationMs = 60
+        val samples = sampleRate * durationMs / 1000
+        val buf = ShortArray(samples)
+        // A single-frequency tick (high C6 ≈ 1047 Hz) with very fast decay
+        for (i in buf.indices) {
+            val t = i.toDouble() / sampleRate
+            val envelope = kotlin.math.exp(-t * 55.0) // extremely fast — sounds like a click
+            val sine = kotlin.math.sin(2 * PI * 1046.5 * t) + 0.3 * kotlin.math.sin(2 * PI * 2093.0 * t)
+            buf[i] = (0.18f * sine * envelope * Short.MAX_VALUE).toInt().coerceIn(-32768, 32767).toShort()
+        }
+        val attrs = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
+        val format = AudioFormat.Builder()
+            .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+            .setSampleRate(sampleRate)
+            .setChannelMask(AudioFormat.CHANNEL_OUT_MONO).build()
+        AudioTrack.Builder().setAudioAttributes(attrs).setAudioFormat(format)
+            .setBufferSizeInBytes(buf.size * 2)
+            .setTransferMode(AudioTrack.MODE_STATIC).build()
+            .also { it.write(buf, 0, buf.size) }
+    }.getOrNull()
+
+    fun tap(context: Context) {
+        try {
+            vibrator?.vibrate(VibrationEffect.createOneShot(22, 70))
+        } catch (_: Exception) {}
+        val am = context.getSystemService(AudioManager::class.java)
+        if (am?.ringerMode == AudioManager.RINGER_MODE_NORMAL) {
+            runCatching { tapTrack?.reloadStaticData(); tapTrack?.play() }
+        }
+    }
+
+    fun release() {
+        runCatching { tapTrack?.stop(); tapTrack?.release() }
+        tapTrack = null; vibrator = null; initialized = false
+    }
+}
 
 private fun NavHostController.switchTab(page: Page) {
     if (page == Page.HOME && popBackStack(Page.HOME.id, inclusive = false)) return
@@ -340,8 +454,7 @@ private fun KnouxAppScaffold(
                     InfoSheet(title, { headerSheet = null }) {
                         when (shown) {
                             HeaderSheet.DISCLOSURE -> Label(Disclosure.localized(), 14, Mist)
-                            HeaderSheet.PRO -> Label(("This is a preview of the Pro badge. Purchases and subscriptions are unavailable." ar
-                                "هذه معاينة لشارة Pro. الشراء والاشتراكات غير متاحة.").localized(), 14, Mist)
+                            HeaderSheet.PRO -> ProSheet()
                             HeaderSheet.MENU -> {
                                 val choices = if (BuildConfig.DEBUG) Page.references else tabs.map { it.first }
                                 choices.forEach { next ->
@@ -356,18 +469,150 @@ private fun KnouxAppScaffold(
                                 }
                             }
                             HeaderSheet.SETTINGS -> {
-                                Label(Disclosure.localized(), 13, Mist)
+                                // App version
+                                GlassPanel(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)), radius = 16) {
+                                    Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceBetween) {
+                                        Column {
+                                            Label(("KNOUX AI" ar "KNOUX AI").localized(), 16, Chalk, FontWeight.Bold)
+                                            Label(("Version 1.0 · Phase 1 Preview" ar "الإصدار 1.0 · معاينة المرحلة الأولى").localized(), 11, Mist.copy(alpha = 0.7f))
+                                        }
+                                        Box(Modifier.clip(RoundedCornerShape(10.dp))
+                                            .background(Brush.horizontalGradient(listOf(Color(0xff2a1c08), Color(0xff1a0d2a))), RoundedCornerShape(10.dp))
+                                            .border(1.dp, Gold.copy(alpha = .9f), RoundedCornerShape(10.dp))
+                                            .padding(horizontal = 10.dp, vertical = 4.dp)) {
+                                            Label("PRO", 10, Gold, FontWeight.Bold)
+                                        }
+                                    }
+                                }
+                                // Language
+                                Label(("🌐  " + ("Language" ar "اللغة").localized()), 13, Mist, FontWeight.Medium,
+                                    modifier = Modifier.fillMaxWidth().padding(top = 4.dp))
                                 val ar = LocalArabic.current
-                                AdaptiveActions(Action("English" ar "الإنجليزية", Mark.CHECK), Action("العربية" ar "العربية", Mark.CHECK),
+                                AdaptiveActions(
+                                    Action("🇬🇧  English" ar "الإنجليزية", Mark.CHECK),
+                                    Action("🇸🇦  العربية" ar "العربية", Mark.CHECK),
                                     firstSelected = !ar, secondSelected = ar,
-                                    onFirst = { language(false) }, onSecond = { language(true) })
-                                AccentButton(Action(if (reduced) "Enable decorative motion" ar "تشغيل الحركة" else "Reduce motion" ar "تقليل الحركة", Mark.RADAR),
+                                    onFirst = { language(false) }, onSecond = { language(true) }
+                                )
+                                // Motion
+                                Label(("⚡  " + ("Animations" ar "الرسوم المتحركة").localized()), 13, Mist, FontWeight.Medium,
+                                    modifier = Modifier.fillMaxWidth())
+                                AccentButton(
+                                    Action(if (reduced) "Enable Animations" ar "تشغيل الرسوم" else "Reduce Motion" ar "تقليل الحركة", Mark.RADAR),
                                     Modifier.fillMaxWidth(), primary = false, tag = "motion-toggle") { reduceMotion(!reduced) }
+                                // Disclosure
+                                Label(Disclosure.localized(), 11, Mist.copy(alpha = 0.6f))
                             }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ProSheet() {
+    val context = LocalContext.current
+    var generatedCode by remember { mutableStateOf<String?>(null) }
+    val whatsappNumber = "+971503281920"
+    val waLink = "https://wa.me/971503281920"
+
+    // Header banner
+    Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
+        .background(Brush.linearGradient(listOf(Color(0xff1a0040), Color(0xff002040), Color(0xff001a30))), RoundedCornerShape(18.dp))
+        .border(1.dp, Brush.horizontalGradient(listOf(Gold.copy(alpha = .8f), Cyan.copy(alpha = .5f), Gold.copy(alpha = .8f))), RoundedCornerShape(18.dp))
+        .padding(20.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Glyph(Mark.CROWN, Modifier.size(28.dp), Gold, true)
+                Label(("KNOUX AI Pro" ar "KNOUX AI Pro").localized(), 22, Gold, FontWeight.ExtraBold)
+            }
+            Spacer(Modifier.height(6.dp))
+            Label(("Unlock the full power of AI-driven device care" ar "أطلق القوة الكاملة للعناية الذكية بالجهاز").localized(),
+                13, Chalk.copy(alpha = 0.8f), align = TextAlign.Center)
+        }
+    }
+
+    // Pro features
+    val features = listOf(
+        Triple(Mark.SPARKLE, "Unlimited AI Deep Scans" ar "فحوصات ذكاء اصطناعي عميقة بلا حدود", Cyan),
+        Triple(Mark.SHIELD, "Advanced Privacy Shield" ar "درع الخصوصية المتقدم", Pink),
+        Triple(Mark.BOLT, "Priority Performance Boost" ar "تعزيز الأداء بأولوية قصوى", Gold),
+        Triple(Mark.CHIP, "AI Optimization Engine" ar "محرك تحسين الذكاء الاصطناعي", Violet),
+        Triple(Mark.ROCKET, "Exclusive Pro Features" ar "ميزات Pro حصرية", Mint)
+    )
+    features.forEach { (icon, title, tint) ->
+        GlassPanel(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)), radius = 14, tint = tint) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                IconBadge(icon, tint, diameter = 38)
+                Label(title.localized(), 14, Chalk, FontWeight.Medium, modifier = Modifier.weight(1f))
+                Glyph(Mark.CHECK, Modifier.size(16.dp), tint, true)
+            }
+        }
+    }
+
+    // Code generator
+    Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
+        .background(Brush.linearGradient(listOf(Color(0xff0d0030), Color(0xff001520))), RoundedCornerShape(16.dp))
+        .border(1.dp, Violet.copy(alpha = .6f), RoundedCornerShape(16.dp))
+        .padding(16.dp)) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.fillMaxWidth()) {
+            Label(("🎁  " + ("Get a Free Trial Code" ar "احصل على كود تجريبي مجاني").localized()), 14, Chalk, FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth(), align = TextAlign.Center)
+            if (generatedCode != null) {
+                Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xff001a10), RoundedCornerShape(12.dp))
+                    .border(1.5.dp, Mint.copy(alpha = .8f), RoundedCornerShape(12.dp))
+                    .padding(vertical = 12.dp, horizontal = 16.dp), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Label(("Your Trial Code:" ar "كود الكود التجريبي:").localized(), 11, Mist.copy(alpha = 0.7f))
+                        Spacer(Modifier.height(4.dp))
+                        Label(generatedCode!!, 24, Mint, FontWeight.ExtraBold, align = TextAlign.Center)
+                        Spacer(Modifier.height(4.dp))
+                        Label(("Send this code to activate Pro" ar "أرسل هذا الكود لتفعيل Pro").localized(), 11, Mist.copy(alpha = 0.6f))
+                    }
+                }
+            }
+            AccentButton(
+                Action(("✨  Generate Trial Code" ar "✨  توليد كود تجريبي"), Mark.SPARKLE),
+                Modifier.fillMaxWidth(), primary = true, tag = "gen-code"
+            ) {
+                val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                generatedCode = "KX-" + (1..8).map { chars.random() }.joinToString("")
+            }
+        }
+    }
+
+    // WhatsApp contact
+    Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
+        .background(Brush.linearGradient(listOf(Color(0xff003010), Color(0xff001a08))), RoundedCornerShape(16.dp))
+        .border(1.5.dp, Color(0xff25D366).copy(alpha = .8f), RoundedCornerShape(16.dp))
+        .clickable(role = Role.Button) {
+            runCatching {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(waLink))
+                context.startActivity(intent)
+            }
+        }
+        .padding(16.dp)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+            Box(Modifier.size(48.dp).clip(RoundedCornerShape(24.dp))
+                .background(Color(0xff25D366), RoundedCornerShape(24.dp)),
+                contentAlignment = Alignment.Center) {
+                Glyph(Mark.CHAT, Modifier.size(26.dp), Chalk, true)
+            }
+            Column(Modifier.weight(1f)) {
+                Label(("Contact on WhatsApp" ar "تواصل عبر واتساب").localized(), 15, Chalk, FontWeight.Bold)
+                Label(whatsappNumber, 13, Color(0xff25D366), FontWeight.Medium)
+                Label(("Tap to activate Pro subscription" ar "اضغط لتفعيل اشتراك Pro").localized(), 11, Mist.copy(alpha = 0.6f))
+            }
+            Glyph(Mark.NEXT, Modifier.size(20.dp), Color(0xff25D366))
         }
     }
 }
@@ -380,9 +625,12 @@ internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> 
     val scale by animateFloatAsState(if (pressed) .92f else 1f, tween(110), label = "icon press")
     val wash by animateColorAsState(if (pressed) Color.White.copy(alpha = .12f) else Color.Transparent,
         tween(120), label = "icon wash")
+    val context = LocalContext.current
     Box(Modifier.size(48.dp).testTag(tag).graphicsLayer { scaleX = scale; scaleY = scale }
         .background(wash, RoundedCornerShape(20.dp))
-        .clickable(interactionSource = interaction, indication = null, role = Role.Button, onClick = onClick)
+        .clickable(interactionSource = interaction, indication = null, role = Role.Button, onClick = {
+            TouchFeedback.tap(context); onClick()
+        })
         .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
         Glyph(mark, Modifier.size(22.dp).then(if (mirror) Modifier.rotate(180f) else Modifier))
     }
@@ -390,23 +638,73 @@ internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> 
 
 @Composable
 private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () -> Unit, settings: () -> Unit, disclose: () -> Unit) {
+    var logoTapCount by remember { mutableIntStateOf(0) }
+    var showDevAccess by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) { TouchFeedback.init(context) }
+    
+    LaunchedEffect(logoTapCount) {
+        if (logoTapCount >= 5) {
+            showDevAccess = true
+            logoTapCount = 0
+        } else if (logoTapCount > 0) {
+            kotlinx.coroutines.delay(2000)
+            logoTapCount = 0
+        }
+    }
+    
     Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
         .height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         if (page == Page.HOME) IconControl(Mark.MENU, ("Menu" ar "القائمة").localized(), "menu", menu)
         else IconControl(Mark.BACK, ("Back" ar "رجوع").localized(), "back", back)
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Glyph(Mark.K, Modifier.size(28.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { logoTapCount++ }
+                ) {
+                    // K-mark logo
+                    Glyph(Mark.K, Modifier.size(26.dp))
                     if (LocalDensity.current.fontScale <= 1.45f) {
+                        // "knoux" + "ai" on the SAME line, no wrapping
                         val wordmark = when {
                             LocalRoomy.current -> 13
                             LocalArabic.current -> 17
-                            else -> 20
+                            else -> 19
                         }
-                        Label("knoux", wordmark, weight = FontWeight.ExtraBold)
-                        Label(" ai", wordmark, Pink, FontWeight.ExtraBold)
+                        androidx.compose.foundation.layout.Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(0.dp)
+                        ) {
+                            Label("knoux", wordmark, Chalk, FontWeight.ExtraBold, maxLines = 1)
+                            Label(" ai", wordmark, Pink, FontWeight.ExtraBold, maxLines = 1)
+                        }
+                    }
+                    // Dev mode badge — inline after name, styled like auth chip
+                    if (DevAccessManager.isDevModeActive) {
+                        Box(
+                            Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(
+                                    Brush.horizontalGradient(listOf(Color(0xff2a1800), Color(0xff1a1430))),
+                                    RoundedCornerShape(10.dp)
+                                )
+                                .border(1.dp, Brush.horizontalGradient(listOf(Gold.copy(alpha = .9f), Cyan.copy(alpha = .5f))), RoundedCornerShape(10.dp))
+                                .padding(horizontal = 7.dp, vertical = 3.dp)
+                        ) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Glyph(Mark.KEY, Modifier.size(10.dp), Gold)
+                                Label("DEV", 9, Gold, FontWeight.Bold)
+                            }
+                        }
                     }
                 }
             }
@@ -414,7 +712,9 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
         PreviewModeDisclosure(disclose)
         if (!LocalRoomy.current) {
             Box(Modifier.heightIn(min = 48.dp).testTag("pro")
-                .clickable(role = Role.Button, onClick = pro).semantics { contentDescription = "KNOUX AI Pro" },
+                .clickable(role = Role.Button, onClick = {
+                    TouchFeedback.tap(context); pro()
+                }).semantics { contentDescription = "KNOUX AI Pro" },
                 contentAlignment = Alignment.Center) {
                 Row(Modifier.clip(RoundedCornerShape(20.dp))
                     .border(1.dp, Gold.copy(alpha = .85f), RoundedCornerShape(20.dp))
@@ -427,24 +727,60 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
         }
         IconControl(Mark.GEAR, ("Settings" ar "الإعدادات").localized(), "settings", settings)
     }
+
+    // Dev Access Dialog - triggered by 5 quick taps on the logo
+    if (showDevAccess) {
+        DevAccessDialog(
+            onDismiss = { showDevAccess = false },
+            onAuthenticated = { showDevAccess = false }
+        )
+    }
 }
 
 @Composable
 private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
+    val context = LocalContext.current
+    val notifCounts = SectionNotifier.counts
     Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp).glass(25).selectableGroup().padding(3.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)) {
         tabs.forEach { (tab, icon) ->
             val active = tab == selected
+            val badge = notifCounts[tab] ?: 0
             val fraction by animateFloatAsState(if (active) 1f else 0f,
                 animationSpec = tween(260, easing = androidx.compose.animation.core.FastOutSlowInEasing), label = "tab selection")
             val tone by animateColorAsState(if (active) Chalk else Mist, tween(200), label = "tab tone")
             val iconScale by animateFloatAsState(if (active) 1.05f else 1f, tween(230), label = "tab icon")
             Column(Modifier.weight(1f).heightIn(min = 48.dp).testTag("tab-${tab.id}").clip(RoundedCornerShape(20.dp))
-                .selectable(active, role = Role.Tab, onClick = { open(tab) }),
+                .selectable(active, role = Role.Tab, onClick = {
+                    TouchFeedback.tap(context)
+                    SectionNotifier.markSeen(tab)
+                    open(tab)
+                }),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                Box(Modifier.size(38.dp).clip(RoundedCornerShape(19.dp)).tabSelection(fraction),
-                    contentAlignment = Alignment.Center) {
-                    Glyph(icon, Modifier.size(20.dp).graphicsLayer { scaleX = iconScale; scaleY = iconScale }, tone, active)
+                Box(contentAlignment = Alignment.TopEnd) {
+                    Box(Modifier.size(38.dp).clip(RoundedCornerShape(19.dp)).tabSelection(fraction),
+                        contentAlignment = Alignment.Center) {
+                        Glyph(icon, Modifier.size(20.dp).graphicsLayer { scaleX = iconScale; scaleY = iconScale }, tone, active)
+                    }
+                    // Notification badge
+                    if (badge > 0 && !active) {
+                        val badgeAnim by animateFloatAsState(1f, tween(300), label = "badge pop")
+                        Box(
+                            Modifier
+                                .offset(x = 2.dp, y = (-2).dp)
+                                .size(16.dp)
+                                .graphicsLayer { scaleX = badgeAnim; scaleY = badgeAnim }
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(
+                                    Brush.radialGradient(listOf(Color(0xffff36f5), Color(0xff9922ff))),
+                                    RoundedCornerShape(8.dp)
+                                )
+                                .border(.8.dp, Color.White.copy(alpha = .6f), RoundedCornerShape(8.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Label(if (badge > 9) "9+" else badge.toString(), 8, Chalk, FontWeight.Bold, align = TextAlign.Center)
+                        }
+                    }
                 }
                 Label(tabTitle(tab).localized(), 11, tone, if (active) FontWeight.Bold else FontWeight.Normal, align = TextAlign.Center)
             }

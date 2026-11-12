@@ -5,11 +5,19 @@ import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,7 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -36,8 +48,10 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -45,6 +59,7 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlin.math.sqrt
@@ -84,6 +99,8 @@ private const val WORD_START = 1260f; private const val WORD_STAGGER = 80f; priv
 private const val SMILE_START = 2080f
 internal const val SPLASH_SMILE_END_MS = 2800L
 private const val BLOOM_END = 3020f
+private const val FACE_START = 2840f   // face reveals just after smile completes
+private const val FACE_END   = 3080f
 
 private val PenEasing = CubicBezierEasing(.32f, 0f, .64f, 1f)
 
@@ -331,10 +348,13 @@ private fun DrawScope.drawWordmark(c: SplashMotionController, wm: WordmarkLayout
  * The brand signature overlay. Composed above the app scaffold; fades into Home.
  * [freezeAtMs] (debug only) holds a single frame for deterministic scene capture.
  * [onSmileCompleted] fires once at the end of the moving smile on a live launch.
+ * [onEnter] is called when the user taps the CTA button at the end of the sequence.
  */
 @Composable
 internal fun KnouxSplashRoute(
-    reduced: Boolean, freezeAtMs: Long?, onSmileCompleted: () -> Unit = {}, onFinished: () -> Unit
+    reduced: Boolean, freezeAtMs: Long?, onSmileCompleted: () -> Unit = {},
+    onEnter: (() -> Unit)? = null,
+    onFinished: () -> Unit
 ) {
     val controller = remember(reduced, freezeAtMs) { SplashMotionController(reduced) }
     val density = LocalDensity.current
@@ -343,6 +363,16 @@ internal fun KnouxSplashRoute(
     val smileSegment = remember { Path() }
     val smileRibbon = remember { Path() }
     var finished by remember { mutableStateOf(false) }
+    // CTA button state: appears after smile completes, only when onEnter is set
+    var showEnterButton by remember { mutableStateOf(false) }
+    val buttonAlpha by animateFloatAsState(
+        if (showEnterButton) 1f else 0f,
+        tween(600, easing = FastOutSlowInEasing), label = "btn-alpha"
+    )
+    val buttonOffset by animateFloatAsState(
+        if (showEnterButton) 0f else 40f,
+        tween(600, easing = FastOutSlowInEasing), label = "btn-offset"
+    )
     fun finish() {
         if (!finished) { finished = true; SplashGate.consumed = true; onFinished() }
     }
@@ -352,9 +382,13 @@ internal fun KnouxSplashRoute(
         } else {
             if (!reduced) {
                 controller.clock.animateTo(SPLASH_SMILE_END_MS.toFloat(), tween(SPLASH_SMILE_END_MS.toInt(), easing = LinearEasing))
-                // Hold the completed smile for a frame even when the renderer skips over its end.
                 withFrameNanos { }
                 if (!finished) smileCompleted()
+                // If there's an enter button, show it and wait for the tap instead of auto-finishing
+                if (onEnter != null) {
+                    showEnterButton = true
+                    return@LaunchedEffect  // don't auto-finish; wait for user tap
+                }
             }
             val remainingMs = (controller.totalMs - controller.clock.value).toInt()
             controller.clock.animateTo(controller.totalMs, tween(remainingMs, easing = LinearEasing))
@@ -409,8 +443,166 @@ internal fun KnouxSplashRoute(
                     drawSplashOrbit(controller.eased(400f, 1780f), controller.scene(400f, 2700f))
                     scale(1.62f, 1.62f, Offset(500f, 550f)) { drawKnouxMark(controller) }
                     scale(.80f, 1f, Offset(500f, 800f)) { drawNeonSmile(controller, smileSegment, smileRibbon) }
+                    // Happy face blooms beside the smile tip after it finishes
+                    val faceP = controller.eased(FACE_START, FACE_END, PenEasing)
+                    if (faceP > 0f) drawHappyFaceMark(faceP)
                 }
                 drawWordmark(controller, wordmark, s)
+            }
+        }
+
+        // ── Enter CTA button — appears after smile completes ─────────────
+        if (onEnter != null && (showEnterButton || freezeAtMs != null)) {
+            Box(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(start = 40.dp, end = 40.dp, bottom = 64.dp)
+                    .graphicsLayer {
+                        alpha = buttonAlpha
+                        translationY = buttonOffset
+                    }
+            ) {
+                SplashEnterButton(onTap = {
+                    finish()
+                    onEnter()
+                })
+            }
+        }
+    }
+}
+
+/**
+ * A tiny neon happy face (circle + two eyes + smile arc) that blooms
+ * at the tip of the neon smile curve once it fully completes.
+ * Drawn in the 1000-unit design space; center is near the smile tip.
+ */
+private fun DrawScope.drawHappyFaceMark(progress: Float) {
+    if (progress <= 0f) return
+    // Center: just left of the smile tip, slightly above
+    val cx = 870f; val cy = 730f; val r = 42f * progress
+    if (r < 1f) return
+
+    val faceColor = Color(0xffffd700) // warm golden
+    val eyeColor  = Color(0xffffffff)
+
+    // Outer glow halo
+    drawCircle(Brush.radialGradient(
+        listOf(faceColor.copy(alpha = .22f * progress), Color.Transparent),
+        Offset(cx, cy), r * 2.4f
+    ), r * 2.4f, Offset(cx, cy))
+
+    // Face circle (outline only, neon style)
+    val faceGlow = listOf(16f to .08f, 10f to .18f, 5f to .36f, 2.6f to .68f)
+    for ((w, a) in faceGlow) {
+        drawCircle(faceColor.copy(alpha = a * progress), r, Offset(cx, cy), style = Stroke(w))
+    }
+    // Bright inner rim
+    drawCircle(Color.White.copy(alpha = .82f * progress), r, Offset(cx, cy), style = Stroke(1.1f))
+
+    // Eyes — two bright dots with a small glow
+    val eyeOffX = r * 0.34f; val eyeOffY = r * 0.26f
+    for (sign in listOf(-1f, 1f)) {
+        val ex = cx + sign * eyeOffX; val ey = cy - eyeOffY
+        drawCircle(faceColor.copy(alpha = .22f * progress), r * 0.22f, Offset(ex, ey))
+        drawCircle(eyeColor.copy(alpha = progress), r * 0.09f, Offset(ex, ey))
+    }
+
+    // Smile arc — a cubic bezier mouth drawn as a path
+    val mouthPath = Path().apply {
+        val mx = cx - r * 0.42f; val my = cy + r * 0.14f
+        moveTo(mx, my)
+        cubicTo(cx - r * 0.20f, cy + r * 0.68f,
+                cx + r * 0.20f, cy + r * 0.68f,
+                cx + r * 0.42f, my)
+    }
+    for ((w, a) in listOf(8f to .10f, 5f to .22f, 2.8f to .52f)) {
+        drawPath(mouthPath, faceColor.copy(alpha = a * progress), style = Stroke(w, cap = StrokeCap.Round))
+    }
+    drawPath(mouthPath, Color.White.copy(alpha = .88f * progress), style = Stroke(1.1f, cap = StrokeCap.Round))
+
+    // Cheek blushes
+    for (sign in listOf(-1f, 1f)) {
+        val bx = cx + sign * r * 0.60f; val by = cy + r * 0.30f
+        drawCircle(Color(0xffff88aa).copy(alpha = .30f * progress), r * 0.20f, Offset(bx, by))
+    }
+}
+
+/**
+ * The glowing brand CTA that sits at the bottom of the splash screen once the
+ * smile animation completes. Full brand gradient, travelling shimmer, haptic tap.
+ */
+@Composable
+private fun SplashEnterButton(onTap: () -> Unit) {
+    val interaction = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val scale by animateFloatAsState(if (pressed) 0.96f else 1f, tween(100), label = "btn-press")
+    val infinite = rememberInfiniteTransition(label = "btn-shimmer")
+    val shimmer = infinite.animateFloat(0f, 1f, infiniteRepeatable(tween(2400, easing = LinearEasing)), label = "shimmer")
+    val glow = infinite.animateFloat(0f, 1f, infiniteRepeatable(tween(2000, easing = FastOutSlowInEasing), RepeatMode.Reverse), label = "glow")
+    val context = androidx.compose.ui.platform.LocalContext.current
+
+    Box(Modifier.fillMaxWidth().graphicsLayer { scaleX = scale; scaleY = scale }) {
+        // Outer bloom
+        androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(72.dp)) {
+            val cx = size.width / 2f; val cy = size.height / 2f
+            val pulse = glow.value
+            for ((r, a) in listOf(size.width * .55f to .22f, size.width * .38f to .30f, size.width * .22f to .20f)) {
+                drawCircle(Brush.radialGradient(
+                    listOf(Color(0xffff36f5).copy(alpha = a * (0.6f + pulse * 0.4f)),
+                        Color(0xff5522ff).copy(alpha = a * .7f), Color.Transparent),
+                    Offset(cx, cy), r), r, Offset(cx, cy))
+            }
+        }
+
+        // Button body
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(58.dp)
+                .clip(RoundedCornerShape(29.dp))
+                .drawBehind {
+                    val w = size.width; val h = size.height
+                    val rad = CornerRadius(h / 2f)
+                    // Brand gradient
+                    drawRoundRect(Brush.horizontalGradient(listOf(
+                        Color(0xffff36f5), Color(0xffa826ff), Color(0xff344dff), Color(0xff00d8ff)
+                    )), cornerRadius = rad)
+                    // Shimmer
+                    val travel = shimmer.value * w * 1.6f - w * .3f
+                    drawRoundRect(Brush.linearGradient(
+                        listOf(Color.Transparent, Color.White.copy(alpha = .32f), Color.Transparent),
+                        start = Offset(travel - w * .22f, 0f), end = Offset(travel + w * .22f, h)
+                    ), cornerRadius = rad)
+                    // Top lip
+                    drawRoundRect(Brush.verticalGradient(
+                        listOf(Color.White.copy(alpha = .40f), Color.Transparent), 0f, h * .52f
+                    ), cornerRadius = rad)
+                    // Rim
+                    drawRoundRect(Brush.horizontalGradient(
+                        listOf(Color.White.copy(alpha = .90f), Color.Transparent, Cyan.copy(alpha = .80f))
+                    ), cornerRadius = rad, style = Stroke(1.4.dp.toPx()))
+                }
+                .clickable(interactionSource = interaction, indication = null, role = androidx.compose.ui.semantics.Role.Button) {
+                    TouchFeedback.tap(context)
+                    onTap()
+                }
+                .testTag("splash-enter"),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Glyph(Mark.K, Modifier.size(20.dp), Chalk, true)
+                Label(
+                    ("Enter KNOUX AI" ar "ادخل KNOUX AI").localized(),
+                    17, Chalk, FontWeight.ExtraBold
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy((-4).dp)) {
+                    Glyph(Mark.NEXT, Modifier.size(13.dp), Chalk)
+                    Glyph(Mark.NEXT, Modifier.size(13.dp), Chalk.copy(alpha = .5f))
+                }
             }
         }
     }
