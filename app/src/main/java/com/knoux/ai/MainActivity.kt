@@ -154,6 +154,9 @@ class MainActivity : FragmentActivity() {
                 ValueAnimator.areAnimatorsEnabled() && power?.isPowerSaveMode != true
             val splashReduced = reduced || !ValueAnimator.areAnimatorsEnabled() || power?.isPowerSaveMode == true
             var showSplash by remember { mutableStateOf(startSplash) }
+            val onbPrefs = LocalContext.current.getSharedPreferences("knoux_prefs", Context.MODE_PRIVATE)
+            val onboardingDone = remember { onbPrefs.getBoolean("knoux_onboarding_done", false) }
+            var showOnboarding by remember { mutableStateOf(false) }
             // The identity gateway sits between the splash and the application.
             var dashboardPrepared by remember { mutableStateOf(!startSplash || splashReduced) }
             val dashReveal = remember { Animatable(if (startSplash && !splashReduced) 0f else 1f) }
@@ -168,6 +171,10 @@ class MainActivity : FragmentActivity() {
                         // A debug route jump is a capture hook: it opens the requested
                         // screen directly and bypasses the identity gateway.
                         previewRoute != null -> KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                        // Cinematic onboarding on first launch
+                        !showSplash && showOnboarding -> OnboardingScreen(
+                            onComplete = { showOnboarding = false }
+                        )
                         // The cinematic gateway is the first surface after the splash.
                         !showSplash && !authenticated && previewAuth == null -> AuthGateway(
                             reducedMotion = reduced,
@@ -212,8 +219,14 @@ class MainActivity : FragmentActivity() {
                                         dashboardPrepared = true
                                     },
                                     // The Enter button appears at the end; tapping it dismisses the splash
-                                    onEnter = { showSplash = false }
-                                ) { showSplash = false }
+                                    onEnter = {
+                                        if (!onboardingDone) showOnboarding = true
+                                        showSplash = false
+                                    }
+                                ) {
+                                    if (!onboardingDone) showOnboarding = true
+                                    showSplash = false
+                                }
                             }
                         }
                     }
@@ -429,6 +442,7 @@ private fun KnouxAppScaffold(
                                     Page.REPORTS -> ReportsScreen(open)
                                     Page.PRIVACY -> PrivacySweepScreen(open)
                                     Page.OPTIMIZE -> AiOptimizationScreen(open)
+                                    Page.KNOUX_UNIVERSE -> KnouxUniverseScreen()
                                     in Page.detailRoutes -> DetailPreview(target)
                                     else -> ReferenceScreen(target, openReview = open)
                                 }
@@ -466,6 +480,11 @@ private fun KnouxAppScaffold(
                                 }
                                 AccentButton(Action("KNOUX AI Pro" ar "KNOUX AI Pro", Mark.CROWN), Modifier.fillMaxWidth(), primary = false) {
                                     headerSheet = HeaderSheet.PRO
+                                }
+                                AccentButton(Action(Page.KNOUX_UNIVERSE.title, Page.KNOUX_UNIVERSE.hero), Modifier.fillMaxWidth(), primary = false,
+                                    tag = "inspect-${Page.KNOUX_UNIVERSE.id}") {
+                                    headerSheet = null
+                                    open(Page.KNOUX_UNIVERSE)
                                 }
                             }
                             HeaderSheet.SETTINGS -> {

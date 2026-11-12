@@ -10,7 +10,7 @@ internal enum class Mark {
     LAYERS, DISK, BATTERY, CHIP, SEARCH, FILE, CAMERA, MIC, CLIP, LOCATION, OVERLAY, BELL,
     PERSON, VIDEO, MUSIC, SHARE, CHECK, WARN, CALENDAR, CLOCK, EYE, PLAY, PAUSE, TRASH,
     FOLDER, LINK, CHAT, GAME, BOX, DOWNLOAD, HEART, BOLT, SUN, SYNC, POWER, TEMP, ROCKET,
-    GROUP, SPEED, TROPHY, MEMORY, KEY, GOOGLE, SPARKLE
+    GROUP, SPEED, TROPHY, MEMORY, KEY, GOOGLE, SPARKLE, LOCK, HISTORY, COPY, CHART, RIGHT
 }
 
 internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
@@ -35,7 +35,8 @@ internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
     APPS_REVIEW("installed-apps-review", "Installed Apps Review" ar "مراجعة التطبيقات المثبتة", Mark.GROUP),
     STORAGE_BREAKDOWN("storage-breakdown", "Storage Breakdown" ar "تفاصيل مساحة التخزين", Mark.DISK),
     BATTERY_DIAGNOSTICS("battery-diagnostics", "Battery Diagnostics" ar "تشخيص البطارية", Mark.BATTERY),
-    AI_RECOMMENDATIONS("ai-recommendations", "AI Recommendations" ar "توصيات الذكاء الاصطناعي", Mark.CHIP);
+    AI_RECOMMENDATIONS("ai-recommendations", "AI Recommendations" ar "توصيات الذكاء الاصطناعي", Mark.CHIP),
+    KNOUX_UNIVERSE("knoux-universe", "KNOUX Universe" ar "عالم KNOUX", Mark.SPARKLE);
 
     companion object {
         val references = entries.take(10)
