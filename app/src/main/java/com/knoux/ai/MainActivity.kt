@@ -118,25 +118,35 @@ class MainActivity : FragmentActivity() {
         // Debug-only capture hooks; release builds ignore both extras.
         val previewArabic = savedInstanceState == null && BuildConfig.DEBUG &&
             intent?.getBooleanExtra("knoux.preview.arabic", false) == true
+        // Symmetric debug hook: forces the LTR English surface for capture, so a
+        // stored Arabic preference cannot make the English screenshots wrong.
+        val previewEnglish = savedInstanceState == null && BuildConfig.DEBUG &&
+            intent?.getBooleanExtra("knoux.preview.english", false) == true
         val previewReduced = savedInstanceState == null && BuildConfig.DEBUG &&
             intent?.getBooleanExtra("knoux.preview.reduceMotion", false) == true
         // Debug-only capture hook: freezes a specific authentication state so the
         // cinematic gateway can be photographed deterministically.
-        val previewAuth = if (savedInstanceState == null && BuildConfig.DEBUG) {
-            when (intent?.getStringExtra("knoux.preview.auth")) {
+        val previewAuth = if (savedInstanceState == null && BuildConfig.DEBUG) {            when (intent?.getStringExtra("knoux.preview.auth")) {
                 "welcome" -> AuthStage.WELCOME
                 "verify" -> AuthStage.VERIFYING
                 "verified" -> AuthStage.VERIFIED
                 "unavailable" -> AuthStage.UNAVAILABLE
+                "otp" -> AuthStage.OTP
                 else -> null
             }
         } else null
-        val startSplash = (savedInstanceState == null && !SplashGate.consumed && previewRoute == null && previewAuth == null) ||
+        // Debug-only capture hook: opens a specific onboarding chapter directly so
+        // screenshots can be taken without clearing the owner's personal data.
+        val previewOnboarding = if (savedInstanceState == null && BuildConfig.DEBUG) {
+            intent?.getStringExtra("knoux.preview.onboarding")?.toIntOrNull()
+        } else null
+        val startSplash = (savedInstanceState == null && !SplashGate.consumed && previewRoute == null && previewAuth == null && previewOnboarding == null) ||
             freezeSplash != null
         setContent {
             val preferences: PreviewPreferences = viewModel()
             LaunchedEffect(Unit) {
                 if (previewArabic) preferences.language(true)
+                if (previewEnglish) preferences.language(false)
                 if (previewReduced) preferences.motion(true)
             }
             val arabic by preferences.arabic.collectAsStateWithLifecycle()
@@ -171,6 +181,12 @@ class MainActivity : FragmentActivity() {
                         // A debug route jump is a capture hook: it opens the requested
                         // screen directly and bypasses the identity gateway.
                         previewRoute != null -> KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                        // Debug capture of a single onboarding chapter. It never
+                        // writes the first-run flag.
+                        !showSplash && previewOnboarding != null -> OnboardingScreen(
+                            onComplete = {},
+                            previewChapter = previewOnboarding
+                        )
                         // Cinematic onboarding on first launch
                         !showSplash && showOnboarding -> OnboardingScreen(
                             onComplete = {

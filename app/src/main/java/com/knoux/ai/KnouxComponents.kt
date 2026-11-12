@@ -149,7 +149,7 @@ internal fun Modifier.glass(
         drawRoundRect(rim, cornerRadius = rad, alpha = rimAlpha, style = Stroke(1.05.dp.toPx()))
     }
 
-private fun Modifier.buttonBloom(primary: Boolean, pulse: State<Float>? = null): Modifier = drawBehind {
+internal fun Modifier.buttonBloom(primary: Boolean, pulse: State<Float>? = null): Modifier = drawBehind {
     if (!primary) return@drawBehind
     val breath = pulse?.value ?: 0f
     for ((index, dp) in listOf(14, 9, 5).withIndex()) {
@@ -297,7 +297,7 @@ private fun Modifier.disabledSurface(): Modifier = drawBehind {
 }
 
 /** The lit surface used by primary calls to action. */
-private fun Modifier.primarySurface(shimmer: State<Float>?, glow: State<Float>?): Modifier = drawBehind {
+internal fun Modifier.primarySurface(shimmer: State<Float>?, glow: State<Float>?): Modifier = drawBehind {
     val width = size.width.coerceAtLeast(1f)
     val height = size.height.coerceAtLeast(1f)
     val rad = CornerRadius(height / 2f)
