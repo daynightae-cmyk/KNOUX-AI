@@ -19,6 +19,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
@@ -35,6 +36,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.knoux.ai.data.*
+import com.knoux.ai.visual.MirrorFrame
+import com.knoux.ai.visual.MirrorInstrument
+import com.knoux.ai.visual.MirrorPhase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -542,6 +546,34 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
         )
         MasterPreviewPill(pill)
 
+        // ── Mirror instrument: twin orbs joined by a tether ──────────────────
+        val mirrorPhase = when (state.phase) {
+            DuplicatePhase.IDLE -> if (state.groups.isNotEmpty()) MirrorPhase.RESULT else MirrorPhase.IDLE
+            DuplicatePhase.SCANNING -> MirrorPhase.RUNNING
+            DuplicatePhase.READY -> MirrorPhase.RESULT
+            DuplicatePhase.ERROR -> MirrorPhase.FAILED
+        }
+        val mirrorFrame = MirrorFrame(
+            phase = mirrorPhase,
+            tension = if (state.groups.isNotEmpty()) 1f else null,
+            heroValue = state.redundantBytes,
+            groupCount = state.groups.size,
+            motion = motion,
+            caption = when {
+                state.phase == DuplicatePhase.SCANNING -> "Hashing" ar "تجزئة"
+                state.measured && state.groups.isNotEmpty() -> "${state.groups.size} group(s)" ar "${state.groups.size} مجموعة"
+                state.measured -> "No copies" ar "لا نسخ"
+                else -> "Not measured" ar "لم يُقاس"
+            },
+            hasFindings = state.groups.isNotEmpty(),
+            widthDp = 340f,
+            lastResultAgeMillis = state.capturedAt,
+        )
+        MirrorInstrument(
+            frame = mirrorFrame,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 8.dp),
+        )
+
         LazyColumn(
             Modifier.fillMaxWidth().weight(1f).testTag("duplicate-list"),
             contentPadding = PaddingValues(horizontal = 11.dp, vertical = 7.dp),
@@ -804,26 +836,56 @@ private fun DuplicateGroupCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(7.dp),
                 ) {
-                    SelectionIndicator(candidate.uri in selected, Cyan)
-                    Column(Modifier.weight(1f)) {
-                        Label(candidate.displayName, 12, Chalk, maxLines = 2)
+                    val isImage = candidate.mimeType?.startsWith("image/") == true
+                    val isVideo = candidate.mimeType?.startsWith("video/") == true
+
+                    Row(
+                        Modifier.fillMaxWidth().heightIn(max = 64.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        Box(
+                            Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(
+                                    if (isVideo) Color(0xff00E8FF).copy(alpha = 0.2f)
+                                    else if (isImage) Color(0xffFF00EE).copy(alpha = 0.2f)
+                                    else Color(0xff1A1642)
+                                )
+                                .clickable { onOpen(candidate) },
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Glyph(
+                                if (isVideo) Mark.VIDEO else if (isImage) Mark.PICTURES else Mark.FILE,
+                                Modifier.size(16.dp),
+                                Mist,
+                                true,
+                            )
+                        }
+
+                        SelectionIndicator(candidate.uri in selected, Cyan)
+
+                        Column(Modifier.weight(1f)) {
+                            Label(candidate.displayName, 12, Chalk, maxLines = 2)
+                            Label(
+                                when {
+                                    !removable -> "This provider does not allow removal"
+                                    candidate.provenance == DataProvenance.MEDIASTORE ->
+                                        "Shared media — Android confirms removal"
+                                    candidate.provenance == DataProvenance.APP_OWNED_CACHE ->
+                                        "KNOUX cache copy — removed directly"
+                                    else -> "Inside a folder you granted"
+                                },
+                                10, Mist,
+                            )
+                        }
                         Label(
-                            when {
-                                !removable -> "This provider does not allow removal"
-                                candidate.provenance == DataProvenance.MEDIASTORE ->
-                                    "Shared media — Android confirms removal"
-                                candidate.provenance == DataProvenance.APP_OWNED_CACHE ->
-                                    "KNOUX cache copy — removed directly"
-                                else -> "Inside a folder you granted"
-                            },
-                            10, Mist,
+                            humanBytes(candidate.bytes), 11, Chalk, FontWeight.Bold,
+                            modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                                .clickable { onOpen(candidate) }.padding(6.dp),
                         )
                     }
-                    Label(
-                        humanBytes(candidate.bytes), 11, Chalk, FontWeight.Bold,
-                        modifier = Modifier.clip(RoundedCornerShape(10.dp))
-                            .clickable { onOpen(candidate) }.padding(6.dp),
-                    )
                 }
             }
         }
