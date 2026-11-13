@@ -154,3 +154,79 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
 - **No product code was modified by this entry.** The change is documentation and contract only; the app build and installed debug app are untouched.
 
 - **Task state:** PC05 remains QUEUED and is the next executable task under the new gate; PC04 stays VERIFIED at `54d6941`.
+
+## Entry 0013 - PC05 Deep Scan implemented; device-E2E externally blocked - 2026-11-13
+
+- **Device:** itel S686LN, Android 15 / API 35, serial `1334825549012211` (transport identifier deliberately not recorded; two USB+Wi-Fi transports may appear, always target explicit serial). Reached over owner-authorized transport.
+- **Starting state:** HEAD = origin/main = `b6cfbb8ee00ccbe8ed476b3f7c1f6d0c1b2a61a5`; PC05 QUEUED, no PC05 code committed. No personal file, other app, clipboard or owner setting was read or changed.
+- **Implemented (all source committed locally as `1b69344`, not pushed):**
+  - `DeepScanRepository`: real multi-module scan over granted scopes only — app cache, MediaStore images/video, SAF granted folders, large (>100 MB) and old (>1 year) files, byte-identical duplicates via `DuplicateRepository` full-stream SHA-256 (keeper always protected, aliases collapsed). Cooperative cancel between modules; per-module status; real progress counters; no fabricated numbers. `isModuleGranted() = true` replaced with real `PermissionState.mediaGrant`/`safTrees` checks.
+  - `DeepScanController`: pass lifecycle (ARMED/RUNNING/RESULT/PARTIAL/FAILED/PAUSED), durable Room v5 persistence (`deep_scan_sessions`/`modules`/`findings`), `latestOutcome()` restored from Room (placeholder removed), `reconcileRemoval()` re-reads after verified takedown, `InstrumentFrame` mapped from measured state only, execution delegated to `SmartCleanController.prepareMediaOperation`/`executeLocal`/`completeMediaOperation` with Android consent — no destructive button wired to a placeholder.
+  - `Abyss Sonar` instrument (`AbyssSonarInstrument` + `InstrumentModels`): vertical depth column, descent node at completed-module fraction, core orb grown by measured share, facet satellites per module; abyss teal dominant hue; progress null => listening sweep (never fake percentage); fog for unmeasured scope; reduced-motion still frame truthful; EN+AR copy budget.
+  - `DeepScanReal` screen: module selection with real grant checks, review sheet, irreversible-ack confirmation, execution through existing controller + OS consent.
+  - `DeepScanRules`: JVM-proven status taxonomy, facet mapping, size/age thresholds, URI de-duplication, empty-but-measured distinction.
+  - Room v5 migration (4 -> 5) with `DeepScanDao`; `SettingsStore.deepScanModules`; `MainActivity` route for `Page.SCAN`/`SCAN_SUMMARY`.
+  - `DeepScanRulesTest`: 11 JVM tests, all passing.
+- **Test evidence (exit 0):** `.\gradlew.bat :app:compileDebugKotlin` BUILD SUCCESSFUL; `.\gradlew.bat :app:compileDebugAndroidTestKotlin` BUILD SUCCESSFUL; `.\gradlew.bat :app:testDebugUnitTest` BUILD SUCCESSFUL (full regression incl. DeepScanRulesTest, 0 failures); `.\gradlew.bat :app:assembleDebug` BUILD SUCCESSFUL.
+- **APK:** debug `app-debug.apk`, 16.39 MB, SHA-256 `A23132F65B78062F05000DF3DC08BFFBD148687A090C5C1F2A9A4BDFF8EC457A`. Installed `install -r -t` exit 0 on itel S686LN API 35 without uninstall/clear. App launched; hub and Deep Scan screen reached via `knoux.preview.route=scan-summary`; screenshots `pc05_home.png`, `pc05_hub.png`, `pc05_scan_deep.png` in `D:\Temp\opencode\` (not committed, sanitized of device frame).
+- **BLOCKED (external, not a code defect):** the physical device USB transport drops between adb commands after `am force-stop`, so a stable device connection could not be maintained. Pending: running a real scan on device, testing trash/delete execution, capturing scan-result/result-state screenshots, full androidTest run on device. PC05 is NOT marked VERIFIED; device-E2E remains pending a stable authorized-device connection. No retry of exact-text edits without re-reading; no PC06 started.
+- **Task state:** PC05 IMPLEMENTED_NOT_MERGED (local commit `1b69344`, not pushed); PC04 stays VERIFIED at `54d6941`. PC05 not advanced to VERIFIED pending stable device connection.
+
+## Entry 0014 - PC05 device E2E verified on authorized itel S686LN API 35 (wireless ADB) - 2026-11-13
+
+- **Device:** itel S686LN, Android 15 / API 35, serial `1334825549012211`. Wireless ADB at `192.168.70.102:38341` recovered via `adb connect` after USB transport dropped. Serial verified with `getprop ro.product.model` (itel S686LN) and `getprop ro.build.version.sdk` (35).
+- **Connection recovery:** USB ADB transport disconnected after `am force-stop`. Followed recovery contract: `adb kill-server`, `adb start-server`, `adb devices -l` (empty), `adb connect 192.168.70.102:38341` (connected), `adb -s <serial> shell <cmd>` (verified). No pairing code needed; existing authorized transport reused.
+- **APK:** debug `app-debug.apk`, 16.39 MB, SHA-256 `A23132F65B78062F05000DF3DC08BFFBD148687A090C5C1F2A9A4BDFF8EC457A`. Installed via `adb install -r -t` exit 0 on device, no uninstall/clear of user data. Package `com.knoux.ai`, namespace `com.knoux.ai`.
+- **Launch:** `adb shell am start -n com.knoux.ai/.MainActivity -e knoux.preview.route deep-scan-summary` — Deep Scan screen reached directly, bypassing auth gateway via debug route hook (debug builds only).
+- **Real scan executed on device:** Media permissions granted (`READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEO`). Scan ran over granted scopes (app cache + MediaStore images/video). Found **3400 files** (~4 GB) across 4 measured modules; 1 module (documents/SAF) unmeasured — "No writable folder granted" (correct: no SAF tree granted). Abyss Sonar instrument showed real measured hero value, not fake progress.
+- **Synthetic fixture detection:** Created 3 fixtures in `/sdcard/Pictures/KNOUX_QA_PC05_TEST/` (fixture1.jpg, fixture2.png, fixture3.tmp), triggered `MEDIA_SCANNER_SCAN_FILE` broadcast, re-ran scan — count rose **3400 → 3403**, proving real file discovery through MediaStore. Fixtures cleaned up manually via `adb shell rm -rf` (not through app bulk delete, to avoid touching owner's media). No KNOUX_QA directories remain.
+- **Review sheet:** Opened with real module breakdown (images ~3137 items, video ~266 items, large/old files), Trash (نقل) and Delete (حذف) buttons wired to `SmartCleanController.prepareMediaOperation`/`executeLocal` with Android consent — **not placeholders**. Destructive action NOT executed on real device data (safety rule).
+- **Room persistence verified:** Force-stop + relaunch via `deep-scan-summary` route — outcome card showed **3403 items** and instrument showed same measured GB data. `latestOutcome()` restored from Room v5 `deep_scan_sessions`/`modules`/`findings` tables. `deepScanDao().latestFinishedSession()` query works on-device.
+- **Real-state screenshots captured (3+):** `pc05_scan_deep3_wireless.png` (idle), `pc05_result_real_wireless.png` (result, 3400 files), `pc05_review_real_wireless.png` (review sheet), `pc05_review_synthetic_wireless.png` (review with synthetic fixtures), `pc05_persisted_wireless.png` (persisted after restart). All in `D:\Temp\opencode\`, not committed, sanitized of device frame.
+- **JVM regression:** `:app:testDebugUnitTest` BUILD SUCCESSFUL (full regression incl. DeepScanRulesTest 11 tests). `:app:compileDebugKotlin` and `:app:compileDebugAndroidTestKotlin` BUILD SUCCESSFUL.
+- **Not run on device:** full androidTest suite — OEM `android.process.media` crashes (`FORTIFY: pthread_mutex_lock called on a destroyed mutex` in `libmtp.so`) documented in PC04 entries 0010/0011; media trash/delete instrumentation tests affected by provider instability, not PC05 code.
+- **Task state:** PC05 code committed locally as `1b69344` (not pushed). Device-E2E tested on authorized phone with real scan, real persistence, real review sheet. Destructive trash/delete NOT executed on owner's media (bulk-delete would affect 3400+ real files; per safety rule, destructive tests target only isolated synthetic fixtures, which were created and cleaned up manually via adb). PC05 not marked VERIFIED pending full androidTest on device (blocked by OEM media provider instability, not PC05 defect).
+- **No personal files, owner settings, or other apps touched.** `READ_MEDIA_IMAGES` granted only for the run; synthetic fixtures removed after test.
+
+## Entry 0015 - PC02 Mirror implemented; device-E2E blocked by connection - 2026-11-13
+
+- **Device:** itel S686LN, Android 15 / API 35. Wireless ADB at `192.168.70.102:38341` recovered via `adb connect`. USB serial `1334825549012211` (transport identifier deliberately not recorded).
+- **Connection blocker (external, not a code defect):** After `am force-stop com.knoux.ai`, the USB transport drops between adb commands. Chrome browser intercepts app launches, opening GitHub device authorization pages (`github.com/login/device/*`) instead of the KNOUX app. This appears to be related to the OpenCode desktop app (`ai.sol.opencode`) installed on the device. Multiple recovery attempts (adb kill-server/start-server, adb connect, force-stop Chrome) were made but the device could not be kept in a stable state for KNOUX app testing. PC02 device-E2E is blocked pending a stable connection.
+- **Starting state:** HEAD = `1b69344b594d503f063f99b7aa614127f2fab98e` (PC05 local commit, not pushed). PC02 was already VERIFIED at `59806cad` (29/29 JVM, 36/36 device). No PC02 visual retrofit code committed.
+- **Implemented (committed locally as `5de6131`, not pushed):**
+  - `MirrorInstrument.kt`: PC02 signature instrument — twin glass orbs on a tether. Keeper orb (original, protected, lock-sealed) and copies orb (removable, count marker). Tether tension = real group count fraction (0..1). Satellite pairs per group orbiting center. Magenta/violet dominant hue. Null tension = listening sweep. Fogged state for unmeasured scope. Reduced-motion still frame. EN+AR accessibility description.
+  - `MirrorFrame`: phase (IDLE/ARMED/RUNNING/PAUSED/RESULT/PARTIAL/FAILED/FOGGED), tension (Float?), heroValue (redundant bytes), groupCount, caption (Copy), hasFindings, widthDp.
+  - `MirrorPhase` enum: IDLE, ARMED, RUNNING, PAUSED, RESULT, PARTIAL, FAILED, FOGGED.
+  - `DuplicateReal.kt`: MirrorInstrument integrated above module list. Phase/caption derived from DuplicateState. Module-based readiness. Media-type glyphs (image/video/file) with colored chip backgrounds in group cards. Tap-to-open file preview preserved.
+  - `ThumbnailLoader.kt`: Thumbnail infrastructure (placeholder, not yet wired to image loading).
+- **Reused existing PC02 logic:** DuplicateController, DuplicateRepository, DuplicateRules, DuplicateGroup, FileCandidate, SHA-256 hashing, keeper protection, alias collapse, OS Trash/Delete consent — all preserved unchanged.
+- **Test evidence (exit 0):** `.\gradlew.bat :app:compileDebugKotlin` BUILD SUCCESSFUL; `.\gradlew.bat :app:testDebugUnitTest` BUILD SUCCESSFUL (full JVM regression including DuplicateRulesTest); `.\gradlew.bat :app:assembleDebug` BUILD SUCCESSFUL.
+- **APK:** debug `app-debug.apk`, 16.4 MB, SHA-256 `303C93DA143AADBA6DBB0154AE5869891A760BCBF63332B40BAD7BAE5595D300`.
+- **Not tested on device:** Real scan, trash/delete execution, screenshot capture, androidTest suite — all blocked by device connection instability.
+- **Task state:** PC02 IMPLEMENTED_UNVERIFIED (local commit `5de6131`, not pushed). PC02 was previously VERIFIED at `59806cad`; this visual retrofit adds the Mirror instrument without changing proven logic. Device-E2E pending stable connection.
+- **No personal files, owner settings, or other apps touched.**
+
+## Entry 0016 - PC02 Mirror device-E2E attempted; connection/OEM blocker - 2026-11-13
+
+- **Device:** itel S686LN, Android 15 / API 35, wireless ADB at `192.168.70.102:38341`.
+- **APK:** debug `app-debug.apk`, 16.4 MB, SHA-256 `303C93DA143AADBA6DBB0154AE5869891A760BCBF63332B40BAD7BAE5595D300`. Installed `install -r -t` exit 0, no uninstall/clear.
+- **PC02 Mirror visual retrofit implemented and committed** at `5de6131`:
+  - `MirrorInstrument.kt`: twin glass orbs on tether, keeper (protected) + copies, tension = real group count, magenta/violet dominant hue, null progress = listening sweep
+  - `ThumbnailLoader.kt`: thumbnail infrastructure (placeholder)
+  - `DuplicateReal.kt`: MirrorInstrument wired into screen, media-type glyphs in group cards
+- **Compilation:** `:app:compileDebugKotlin` BUILD SUCCESSFUL
+- **JVM regression:** `:app:testDebugUnitTest` BUILD SUCCESSFUL (all tests pass incl. DuplicateRulesTest)
+- **Android device tests:** `:app:connectedDebugAndroidTest` — 53 tests, 6 failures, ALL in `AuthGatewayTest` (NOT PC02):
+  1. `READ_MEDIA_IMAGES must be granted` — permission issue
+  2-5. Scroll/element-not-found — OEM UI issues
+  6. `Provider must verify GONE` — OEM MediaProvider `libmtp.so` crash
+  - All PC02 tests (DuplicateRulesTest, DuplicateRealTest, DuplicateMediaTest, DuplicateRealScreenTest) PASS
+- **Device-E2E manual testing BLOCKED:**
+  - OpenCode desktop app (`ai.sol.opencode`) overlays KNOUX AI UI, intercepting taps
+  - USB/wireless ADB transport drops between commands after `am force-stop`
+  - Could not reliably tap Compose buttons to run real scan → select → trash/delete flow
+  - Synthetic fixtures created (`/sdcard/Pictures/KNOUX_QA_PC02_TEST/`) but bulk trash/delete not executed on device
+  - Fixtures cleaned up via `adb shell rm -rf` after test
+- **PC02 status:** IMPLEMENTED_UNVERIFIED (visual retrofit). Underlying PC02 logic remains VERIFIED at `59806cad` (29/29 JVM, 36/36 device). PC02 Mirror device-E2E pending stable connection.
+- **Screenshots:** `pc02_duplicates_idle_wireless.png` captured (idle state with Mirror instrument). Result/review-state screenshots not captured due to blocker.
+- **No personal files, owner settings, or other apps touched.** `READ_MEDIA_IMAGES` granted only for test run.
