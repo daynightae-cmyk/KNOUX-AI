@@ -126,8 +126,7 @@ private val kLower: Path by lazy {
 private val kCombined: Path by lazy { Path().apply { addPath(kUpper); addPath(kLower); addPath(kBlade) } }
 
 private val upperBrush = Brush.linearGradient(listOf(Color(0xffff7cff), Color(0xffc218f9), Color(0xff3c1ad6)), Offset(505f, 241f), Offset(420f, 453f))
-private val bladeBrush = Brush.linearGradient(
-    0f to Color(0xffff8bff), .22f to Color(0xffd33bff), .52f to Color(0xff6322f6),
+private val bladeBrush = Brush.linearGradient(0f to Color(0xffff8bff), .22f to Color(0xffd33bff), .52f to Color(0xff6322f6),
     .78f to Color(0xff2a5cff), 1f to Color(0xff7ceeff), start = Offset(680f, 320f), end = Offset(316f, 550f)
 )
 private val lowerBrush = Brush.linearGradient(listOf(Color(0xff123fd8), Color(0xff0d7dff), Color(0xff00f0ff)), Offset(500f, 425f), Offset(645f, 548f))
@@ -155,31 +154,25 @@ private fun smileEdges(progress: Float): SmileEdges {
 }
 
 private val smileSamples by lazy { List(SMILE_SAMPLES + 1) { smileEdges(it.toFloat() / SMILE_SAMPLES) } }
-private val smileBrush = Brush.horizontalGradient(
-    0f to Color.Transparent, 0.11f to Color(0xfff02bff), 0.37f to Color(0xffa749fb),
+private val smileBrush = Brush.horizontalGradient(0f to Color.Transparent, 0.11f to Color(0xfff02bff), 0.37f to Color(0xffa749fb),
     0.62f to Color(0xff4a73ff), 0.93f to Color(0xff00e4ff), 1f to Color.Transparent,
     startX = 60f, endX = 940f
 )
-private val smileCore = Brush.horizontalGradient(
-    0f to Color(0xffe9d5ff).copy(alpha = 0f), 0.10f to Color(0xffe9d5ff), 0.5f to Color(0xffbfdbfe),
+private val smileCore = Brush.horizontalGradient(0f to Color(0xffe9d5ff).copy(alpha = 0f), 0.10f to Color(0xffe9d5ff), 0.5f to Color(0xffbfdbfe),
     0.90f to Color(0xffcffafe), 1f to Color(0xffcffafe).copy(alpha = 0f), startX = 60f, endX = 940f
 )
-private val smileStops = listOf(
-    0f to Color(0xfff02bff), 0.37f to Color(0xffa749fb), 0.62f to Color(0xff4a73ff), 1f to Color(0xff00e4ff)
+private val smileStops = listOf(0f to Color(0xfff02bff), 0.37f to Color(0xffa749fb), 0.62f to Color(0xff4a73ff), 1f to Color(0xff00e4ff)
 )
 private val kTrail = Path().apply {
     moveTo(227f, 283f)
     cubicTo(338f, 195f, 472f, 195f, 558f, 240f)
 }
-private val kTrailLight = Brush.horizontalGradient(
-    listOf(Color.Transparent, Color(0xffa32dff), Color(0xfff58bff)), 227f, 558f
+private val kTrailLight = Brush.horizontalGradient(listOf(Color.Transparent, Color(0xffa32dff), Color(0xfff58bff)), 227f, 558f
 )
-private val upperHighlight = Brush.radialGradient(
-    listOf(Color(0xffffd7ff), Color(0xffff6eff).copy(alpha = .32f), Color.Transparent),
+private val upperHighlight = Brush.radialGradient(listOf(Color(0xffffd7ff), Color(0xffff6eff).copy(alpha = .32f), Color.Transparent),
     Offset(551f, 241f), 95f
 )
-private val bladeHighlight = Brush.radialGradient(
-    listOf(Color(0xffbaf5ff), Color(0xff24c7ff).copy(alpha = .39f), Color.Transparent),
+private val bladeHighlight = Brush.radialGradient(listOf(Color(0xffbaf5ff), Color(0xff24c7ff).copy(alpha = .39f), Color.Transparent),
     Offset(476f, 491f), 91f
 )
 private fun smileColor(t: Float): Color {
@@ -193,8 +186,7 @@ private fun smileColor(t: Float): Color {
 }
 
 /** Reveals a stroke by sweeping a clip frontier along [dir] from [start]. */
-private fun DrawScope.clipSweep(
-    start: Offset, dir: Offset, length: Float, progress: Float,
+private fun DrawScope.clipSweep(start: Offset, dir: Offset, length: Float, progress: Float,
     tint: Color, block: DrawScope.() -> Unit
 ) {
     if (progress <= 0f) return
@@ -222,9 +214,7 @@ private fun DrawScope.drawPenTip(point: Offset, direction: Offset, tint: Color, 
         val radius = (6.4f - i * 1.0f).coerceAtLeast(1.8f)
         drawCircle(tint.copy(alpha = alpha), radius, back)
     }
-    drawCircle(
-        Brush.radialGradient(
-            listOf(Chalk.copy(alpha = .62f * strength), tint.copy(alpha = .34f * strength), Color.Transparent),
+    drawCircle(Brush.radialGradient(listOf(Chalk.copy(alpha = .62f * strength), tint.copy(alpha = .34f * strength), Color.Transparent),
             point, 38f
         ), 38f, point
     )
@@ -328,8 +318,7 @@ private fun DrawScope.drawWordmark(c: SplashMotionController, wm: WordmarkLayout
         if (p <= 0f) continue
         val x = left + box.left
         val y = top + baseline - single.firstBaseline
-        val brush = if (i >= 6) Brush.verticalGradient(
-            listOf(Color(0xffff7dff), Color(0xffe052ff), Color(0xffa32bff)), startY = 0f, endY = single.size.height.toFloat()
+        val brush = if (i >= 6) Brush.verticalGradient(listOf(Color(0xffff7dff), Color(0xffe052ff), Color(0xffa32bff)), startY = 0f, endY = single.size.height.toFloat()
         ) else SolidColor(Chalk)
         val reveal = x + single.size.width * p
         // Compose fakes italics with a horizontal skew, which pushes tall ink
@@ -351,8 +340,7 @@ private fun DrawScope.drawWordmark(c: SplashMotionController, wm: WordmarkLayout
  * [onEnter] is called when the user taps the CTA button at the end of the sequence.
  */
 @Composable
-internal fun KnouxSplashRoute(
-    reduced: Boolean, freezeAtMs: Long?, onSmileCompleted: () -> Unit = {},
+internal fun KnouxSplashRoute(reduced: Boolean, freezeAtMs: Long?, onSmileCompleted: () -> Unit = {},
     onEnter: (() -> Unit)? = null,
     onFinished: () -> Unit
 ) {
@@ -365,12 +353,10 @@ internal fun KnouxSplashRoute(
     var finished by remember { mutableStateOf(false) }
     // CTA button state: appears after smile completes, only when onEnter is set
     var showEnterButton by remember { mutableStateOf(false) }
-    val buttonAlpha by animateFloatAsState(
-        if (showEnterButton) 1f else 0f,
+    val buttonAlpha by animateFloatAsState(if (showEnterButton) 1f else 0f,
         tween(600, easing = FastOutSlowInEasing), label = "btn-alpha"
     )
-    val buttonOffset by animateFloatAsState(
-        if (showEnterButton) 0f else 40f,
+    val buttonOffset by animateFloatAsState(if (showEnterButton) 0f else 40f,
         tween(600, easing = FastOutSlowInEasing), label = "btn-offset"
     )
     fun finish() {
@@ -408,8 +394,7 @@ internal fun KnouxSplashRoute(
             fun layoutAt(fontPx: Float): TextLayoutResult {
                 val size = with(density) { fontPx.toSp() }
                 return measurer.measure(AnnotatedString(text),
-                    TextStyle(fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold,
-                        fontStyle = FontStyle.Italic, fontSize = size))
+                    TextStyle(fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold, fontSize = size))
             }
             var full = layoutAt(150f * s)
             val target = 820f * s
@@ -453,8 +438,7 @@ internal fun KnouxSplashRoute(
 
         // ── Enter CTA button — appears after smile completes ─────────────
         if (onEnter != null && (showEnterButton || freezeAtMs != null)) {
-            Box(
-                Modifier
+            Box(Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .padding(start = 40.dp, end = 40.dp, bottom = 64.dp)
@@ -487,8 +471,7 @@ private fun DrawScope.drawHappyFaceMark(progress: Float) {
     val eyeColor  = Color(0xffffffff)
 
     // Outer glow halo
-    drawCircle(Brush.radialGradient(
-        listOf(faceColor.copy(alpha = .22f * progress), Color.Transparent),
+    drawCircle(Brush.radialGradient(listOf(faceColor.copy(alpha = .22f * progress), Color.Transparent),
         Offset(cx, cy), r * 2.4f
     ), r * 2.4f, Offset(cx, cy))
 
@@ -548,16 +531,14 @@ private fun SplashEnterButton(onTap: () -> Unit) {
             val cx = size.width / 2f; val cy = size.height / 2f
             val pulse = glow.value
             for ((r, a) in listOf(size.width * .55f to .22f, size.width * .38f to .30f, size.width * .22f to .20f)) {
-                drawCircle(Brush.radialGradient(
-                    listOf(Color(0xffff36f5).copy(alpha = a * (0.6f + pulse * 0.4f)),
+                drawCircle(Brush.radialGradient(listOf(Color(0xffff36f5).copy(alpha = a * (0.6f + pulse * 0.4f)),
                         Color(0xff5522ff).copy(alpha = a * .7f), Color.Transparent),
                     Offset(cx, cy), r), r, Offset(cx, cy))
             }
         }
 
         // Button body
-        Box(
-            Modifier
+        Box(Modifier
                 .fillMaxWidth()
                 .height(58.dp)
                 .clip(RoundedCornerShape(29.dp))
@@ -565,22 +546,18 @@ private fun SplashEnterButton(onTap: () -> Unit) {
                     val w = size.width; val h = size.height
                     val rad = CornerRadius(h / 2f)
                     // Brand gradient
-                    drawRoundRect(Brush.horizontalGradient(listOf(
-                        Color(0xffff36f5), Color(0xffa826ff), Color(0xff344dff), Color(0xff00d8ff)
+                    drawRoundRect(Brush.horizontalGradient(listOf(Color(0xffff36f5), Color(0xffa826ff), Color(0xff344dff), Color(0xff00d8ff)
                     )), cornerRadius = rad)
                     // Shimmer
                     val travel = shimmer.value * w * 1.6f - w * .3f
-                    drawRoundRect(Brush.linearGradient(
-                        listOf(Color.Transparent, Color.White.copy(alpha = .32f), Color.Transparent),
+                    drawRoundRect(Brush.linearGradient(listOf(Color.Transparent, Color.White.copy(alpha = .32f), Color.Transparent),
                         start = Offset(travel - w * .22f, 0f), end = Offset(travel + w * .22f, h)
                     ), cornerRadius = rad)
                     // Top lip
-                    drawRoundRect(Brush.verticalGradient(
-                        listOf(Color.White.copy(alpha = .40f), Color.Transparent), 0f, h * .52f
+                    drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .40f), Color.Transparent), 0f, h * .52f
                     ), cornerRadius = rad)
                     // Rim
-                    drawRoundRect(Brush.horizontalGradient(
-                        listOf(Color.White.copy(alpha = .90f), Color.Transparent, Cyan.copy(alpha = .80f))
+                    drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .90f), Color.Transparent, Cyan.copy(alpha = .80f))
                     ), cornerRadius = rad, style = Stroke(1.4.dp.toPx()))
                 }
                 .clickable(interactionSource = interaction, indication = null, role = androidx.compose.ui.semantics.Role.Button) {
@@ -590,13 +567,11 @@ private fun SplashEnterButton(onTap: () -> Unit) {
                 .testTag("splash-enter"),
             contentAlignment = Alignment.Center
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Glyph(Mark.K, Modifier.size(20.dp), Chalk, true)
-                Label(
-                    ("Enter KNOUX AI" ar "ادخل KNOUX AI").localized(),
+                Label((Copy(R.string.k_enter_knoux_ai)).localized(),
                     17, Chalk, FontWeight.ExtraBold
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy((-4).dp)) {

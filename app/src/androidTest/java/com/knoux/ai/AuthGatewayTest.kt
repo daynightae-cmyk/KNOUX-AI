@@ -112,9 +112,8 @@ class AuthGatewayTest {
             ui.onAllNodesWithTag("tab-home").fetchSemanticsNodes().isNotEmpty()
         }
         node("tab-home").assertIsDisplayed()
-        val disclosure = ui.onAllNodesWithTag("design-preview").onFirst()
-        if (!disclosure.isDisplayed()) disclosure.performScrollTo()
-        disclosure.assertIsDisplayed()
+        // Release hygiene: no design-preview marker may survive in the shell.
+        assertEquals(0, ui.onAllNodesWithTag("design-preview").fetchSemanticsNodes().size)
     }
 
     @Test fun theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback() {

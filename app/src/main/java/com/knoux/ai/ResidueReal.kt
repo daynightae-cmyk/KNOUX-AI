@@ -581,20 +581,19 @@ internal fun RealResidueScreen(page: Page, open: (Page) -> Unit) {
     }
 
     val pill = when {
-        state.phase == ResiduePhase.SCANNING -> "MEASURING RESIDUE" ar "جارٍ قياس البقايا"
-        state.measured && state.previousScan -> "PREVIOUS PASS — SCAN AGAIN TO VERIFY" ar "فحص سابق — أعد الفحص للتحقق"
-        state.measured && state.status == DataStatus.PARTIAL -> "PARTIAL — SOME SOURCES NOT READ" ar "جزئي — بعض المصادر لم تُقرأ"
-        state.measured -> "MEASURED ON DEVICE" ar "مقيس على الجهاز"
-        state.phase == ResiduePhase.ERROR -> "PASS FAILED" ar "فشل الفحص"
-        else -> "NOT MEASURED YET" ar "لم يُقس بعد"
+        state.phase == ResiduePhase.SCANNING -> Copy(R.string.k_measuring_residue)
+        state.measured && state.previousScan -> Copy(R.string.k_previous_pass_scan_again_to_verify)
+        state.measured && state.status == DataStatus.PARTIAL -> Copy(R.string.k_partial_some_sources_not_read)
+        state.measured -> Copy(R.string.k_measured_on_device)
+        state.phase == ResiduePhase.ERROR -> Copy(R.string.k_pass_failed)
+        else -> Copy(R.string.k_not_measured_yet)
     }
 
     Column(Modifier.fillMaxSize()) {
         NeonHero(Mark.LAYERS, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
         MasterTitle(
-            "App" ar "بقايا", "Residue" ar "التطبيقات",
-            "Leftovers are matched by filename. Only KNOUX's own cache is ever pre-selected." ar
-                "تُطابق البقايا بالاسم فقط. ولا تُحدَّد مسبقًا إلا ذاكرة KNOUX المؤقتة.",
+            Copy(R.string.k_app), Copy(R.string.k_residue),
+            Copy(R.string.k_leftovers_are_matched_by_filename_only_knoux_s_own_cache),
             "screen-${page.id}"
         )
         MasterPreviewPill(pill)
@@ -641,11 +640,11 @@ internal fun RealResidueScreen(page: Page, open: (Page) -> Unit) {
 
         Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 7.dp)) {
             MasterActions(
-                Action("Sources & Rules" ar "المصادر والقواعد", Mark.SHIELD),
+                Action(Copy(R.string.k_sources_rules), Mark.SHIELD),
                 when {
-                    state.phase == ResiduePhase.SCANNING -> Action("Cancel Scan" ar "إلغاء الفحص", Mark.PAUSE)
-                    state.measured -> Action("Review Leftovers" ar "مراجعة البقايا", Mark.TRASH)
-                    else -> Action("Measure Residue" ar "قياس البقايا", Mark.RADAR)
+                    state.phase == ResiduePhase.SCANNING -> Action(Copy(R.string.k_cancel_scan), Mark.PAUSE)
+                    state.measured -> Action(Copy(R.string.k_review_leftovers), Mark.TRASH)
+                    else -> Action(Copy(R.string.k_measure_residue), Mark.RADAR)
                 },
                 onFirst = { sheet = "sources" },
                 onSecond = {
@@ -716,8 +715,8 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
                         modifier = Modifier.testTag("residue-total"),
                     )
                     Label(
-                        if (state.measured) "measured residue" ar "بقايا مقيسة"
-                        else "not measured yet" ar "لم يُقس بعد",
+                        if (state.measured) Copy(R.string.k_measured_residue)
+                        else Copy(R.string.k_not_measured_yet_2),
                         11, Mist,
                     )
                 }
@@ -727,7 +726,7 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
                         20, Chalk, FontWeight.Bold,
                         modifier = Modifier.testTag("residue-count"),
                     )
-                    Label("items" ar "عناصر", 10, Mist)
+                    Label(Copy(R.string.k_items), 10, Mist)
                 }
             }
             GradientBar(
@@ -749,14 +748,14 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
             if (state.measured && state.items.isNotEmpty()) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Label(
-                        "Select cache items" ar "تحديد عناصر الذاكرة",
+                        Copy(R.string.k_select_cache_items),
                         10, Mint, FontWeight.Bold,
                         modifier = Modifier.clip(RoundedCornerShape(10.dp))
                             .clickable { onSelectSafe() }.padding(6.dp)
                             .testTag("residue-select-safe"),
                     )
                     Label(
-                        "Clear selection" ar "مسح التحديد",
+                        Copy(R.string.k_clear_selection),
                         10, Mist,
                         modifier = Modifier.clip(RoundedCornerShape(10.dp))
                             .clickable { onClear() }.padding(6.dp)
@@ -766,8 +765,7 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
             }
             if (scanning) {
                 Label(
-                    "${state.progressLabel}… ${summary.count} item(s) so far" ar
-                        "${state.progressLabel}… ${summary.count} عنصرًا",
+                    Copy.args(R.string.k_items_found_progress, state.progressLabel, summary.count),
                     11, Cyan, FontWeight.Bold,
                     modifier = Modifier.testTag("residue-progress"),
                 )
@@ -784,11 +782,10 @@ private fun ResidueAgeCard(state: ResidueState, onAge: (Int) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Label(
-                "Shared-folder age rule" ar "قاعدة عمر المجلدات المشتركة", 12, Chalk, FontWeight.Bold,
+                Copy(R.string.k_shared_folder_age_rule), 12, Chalk, FontWeight.Bold,
             )
             Label(
-                "Own cache is always in scope. Shared files must be at least ${state.ageDays} day(s) old." ar
-                    "ذاكرة KNOUX دائمًا ضمن النطاق. الملفات المشتركة يجب أن يمضي عليها ${state.ageDays} يوم على الأقل.",
+                Copy.args(R.string.k_residue_age_scope, state.ageDays),
                 10, Mist,
             )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -802,7 +799,7 @@ private fun ResidueAgeCard(state: ResidueState, onAge: (Int) -> Unit) {
                             .testTag("residue-age-$days"),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Label(if (days == 0) "any age" ar "أي عمر" else Copy("$days d", "$days d"), 10, if (active) Cyan else Mist, FontWeight.Bold)
+                        Label(if (days == 0) Copy(R.string.k_any_age) else Copy("$days d", "$days d"), 10, if (active) Cyan else Mist, FontWeight.Bold)
                     }
                 }
             }
@@ -816,20 +813,15 @@ private fun ResidueEmptyCard(state: ResidueState) {
         Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Label(
                 when {
-                    state.phase == ResiduePhase.SCANNING -> "Reading cache and granted folders…"
-                    state.measured -> "No residue matched the ${state.scannedScopes.size} source(s) you included."
-                    else -> "No residue pass has run yet."
-                } ar when {
-                    state.phase == ResiduePhase.SCANNING -> "جارٍ قراءة الذاكرة والمجلدات الممنوحة…"
-                    state.measured -> "لا توجد بقايا في ${state.scannedScopes.size} مصدرًا ضمنتها."
-                    else -> "لم يُشغّل فحص البقايا بعد."
+                    state.phase == ResiduePhase.SCANNING -> Copy(R.string.k_reading_cache_and_granted_folders)
+                    state.measured -> Copy.args(R.string.k_no_residue_matched_sources, state.scannedScopes.size)
+                    else -> Copy(R.string.k_no_residue_pass_has_run_yet)
                 },
                 13, Chalk, FontWeight.Bold,
                 modifier = Modifier.testTag("residue-empty"),
             )
             Label(
-                ("Only filenames are matched. A file is never called abandoned because of its location alone."
-                    ar "تُطابق الأسماء فقط. ولا يُوصف ملف بأنه متروك بسبب موقعه وحده."),
+                (Copy(R.string.k_only_filenames_are_matched_a_file_is_never_called_abando)),
                 11, Mist,
             )
         }
@@ -904,9 +896,9 @@ private fun ResidueItemCard(
 private fun ResidueAuditCard(state: ResidueState) {
     GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
         Column(Modifier.fillMaxWidth().padding(11.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-            Label("Decision history (on this device)" ar "سجل القرارات (على هذا الجهاز)", 11, Chalk, FontWeight.Bold)
+            Label(Copy(R.string.k_decision_history_on_this_device), 11, Chalk, FontWeight.Bold)
             if (state.audit.isEmpty()) {
-                Label("No decision recorded yet." ar "لم يُسجل أي قرار بعد.", 10, Mist)
+                Label(Copy(R.string.k_no_decision_recorded_yet), 10, Mist)
             }
             state.audit.take(3).forEach { entry ->
                 Label(
@@ -960,15 +952,14 @@ private fun ResidueSourcesSheet(
     onOpenSettings: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    InfoSheet("Residue sources & rules" ar "مصادر البقايا وقواعدها", onDismiss) {
+    InfoSheet(Copy(R.string.k_residue_sources_rules), onDismiss) {
         Label(
-            ("KNOUX reads only the sources you include. A source that is not granted is reported as not read."
-                ar "KNOUX يقرأ فقط المصادر التي تضمّنها. المصدر غير الممنوح يُعرض كغير مقروء."),
+            (Copy(R.string.k_knoux_reads_only_the_sources_you_include_a_source_that_i)),
             12, Mist,
         )
         ResidueScopeRow(
             mark = Mark.BOX,
-            title = "KNOUX own cache" ar "ذاكرة KNOUX المؤقتة",
+            title = Copy(R.string.k_knoux_own_cache),
             detail = "Always available — only KNOUX's cache, never another app",
             checked = AccessScope.APP_CACHE in state.scopes,
             tag = "residue-scope-cache",
@@ -976,17 +967,17 @@ private fun ResidueSourcesSheet(
         )
         ResidueScopeRow(
             mark = Mark.FOLDER,
-            title = "Folders you granted" ar "مجلدات منحتها",
+            title = Copy(R.string.k_folders_you_granted),
             detail = if (state.safTrees == 0) "No folder added" else "${state.safTrees} folder(s) granted",
             checked = AccessScope.SAF_TREE in state.scopes,
             tag = "residue-scope-saf",
             onToggle = { vm.includeScope(AccessScope.SAF_TREE, it) },
-            action = "Add folder" ar "إضافة مجلد",
+            action = Copy(R.string.k_add_folder),
             onAction = onAddFolder,
         )
         ResidueScopeRow(
             mark = Mark.PICTURES,
-            title = "Shared media names" ar "أسماء الوسائط المشتركة",
+            title = Copy(R.string.k_shared_media_names),
             detail = when (state.mediaGrant) {
                 PermissionGrant.GRANTED -> "Granted — MediaStore rows visible"
                 PermissionGrant.PARTIAL_SELECTED -> "Partial — only selected items are visible"
@@ -996,16 +987,15 @@ private fun ResidueSourcesSheet(
             tag = "residue-scope-media",
             onToggle = { vm.includeScope(AccessScope.MEDIA_IMAGES, it) },
             action = if (state.mediaGrant == PermissionGrant.GRANTED)
-                "Manage in Settings" ar "الإدارة من الإعدادات" else "Grant access" ar "منح الوصول",
+                Copy(R.string.k_manage_in_settings) else Copy(R.string.k_grant_access),
             onAction = if (state.mediaGrant == PermissionGrant.GRANTED) onOpenSettings else onRequestMedia,
         )
         Label(
-            ("Shared media can only be moved to Android's trash. KNOUX never claims a file is abandoned because of where it sits."
-                ar "الوسائط المشتركة تُنقل إلى سلة أندرويد فقط. ولا يدّعي KNOUX أن ملفًا متروك بسبب موقعه."),
+            (Copy(R.string.k_shared_media_can_only_be_moved_to_android_s_trash_knoux)),
             10, Gold,
         )
         AccentButton(
-            Action("Measure selected sources" ar "قياس المصادر المحددة", Mark.RADAR),
+            Action(Copy(R.string.k_measure_selected_sources), Mark.RADAR),
             Modifier.fillMaxWidth(),
             tag = "residue-scope-scan",
             enabled = state.scopes.isNotEmpty() && state.phase != ResiduePhase.SCANNING,
@@ -1057,22 +1047,20 @@ private fun ResidueReviewSheet(
     onPermanent: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    InfoSheet("Review residue removal" ar "مراجعة إزالة البقايا", onDismiss) {
+    InfoSheet(Copy(R.string.k_review_residue_removal), onDismiss) {
         state.message?.let { Label(it, 12, Mint, modifier = Modifier.testTag("residue-result")) }
         state.error?.let { Label(it, 12, Gold, modifier = Modifier.testTag("residue-review-error")) }
-        if (state.busy) Label(("Working…" ar "جارٍ التنفيذ…"), 12, Cyan)
+        if (state.busy) Label((Copy(R.string.k_working)), 12, Cyan)
 
         val run = ResidueRules.dryRun(state.items, state.selected)
         if (run.items.isEmpty()) {
             Label(
-                ("Select at least one residue item. Nothing is pre-selected in shared folders."
-                    ar "اختر عنصر بقايا واحدًا على الأقل. لا شيء محدد مسبقًا في المجلدات المشتركة."),
+                (Copy(R.string.k_select_at_least_one_residue_item_nothing_is_pre_selected)),
                 13, Mist, modifier = Modifier.testTag("residue-no-selection"),
             )
         } else {
             Label(
-                "${run.items.size} item(s) · ${humanBytes(run.bytes)}" ar
-                    "${run.items.size} عنصرًا · ${humanBytes(run.bytes)}",
+                Copy.args(R.string.k_items_bytes_summary, run.items.size, humanBytes(run.bytes)),
                 15, Pink, FontWeight.Bold,
             )
             Label(
@@ -1108,7 +1096,7 @@ private fun ResidueReviewSheet(
         )
 
         AccentButton(
-            Action("Move media to Trash" ar "نقل الوسائط إلى السلة", Mark.TRASH),
+            Action(Copy(R.string.k_move_media_to_trash), Mark.TRASH),
             Modifier.fillMaxWidth(),
             primary = false,
             enabled = state.trashAvailable && !state.busy,
@@ -1126,19 +1114,18 @@ private fun ResidueReviewSheet(
         ) {
             SelectionIndicator(confirmPermanent, Gold)
             Label(
-                ("I understand permanent deletion cannot be undone" ar "أفهم أن الحذف النهائي لا يمكن التراجع عنه"),
+                (Copy(R.string.k_i_understand_permanent_deletion_cannot_be_undone)),
                 12, Chalk,
             )
         }
         AccentButton(
-            Action("Delete selected permanently" ar "حذف المحدد نهائيًا", Mark.WARN),
+            Action(Copy(R.string.k_delete_selected_permanently), Mark.WARN),
             Modifier.fillMaxWidth(),
             enabled = confirmPermanent && run.items.isNotEmpty() && !state.busy,
             tag = "residue-action-delete",
         ) { onPermanent() }
         Label(
-            ("Own-cache items are removed immediately; shared media only after Android's confirmation."
-                ar "تُزال عناصر ذاكرة KNOUX فورًا؛ والوسائط المشتركة فقط بعد تأكيد أندرويد."),
+            (Copy(R.string.k_own_cache_items_are_removed_immediately_shared_media_onl)),
             10, Mist,
         )
     }

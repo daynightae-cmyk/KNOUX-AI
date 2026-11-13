@@ -1,9 +1,6 @@
 package com.knoux.ai
 
-internal data class Copy(val en: String, val ar: String) {
-    fun text(arabic: Boolean) = if (arabic) ar else en
-}
-internal infix fun String.ar(translation: String) = Copy(this, translation)
+// `Copy`, the resource resolver and the number formatter live in KnouxStrings.kt.
 
 internal enum class Mark {
     K, MENU, BACK, NEXT, GEAR, CROWN, HOME, BROOM, GRID, BARS, SHIELD, PICTURES, RADAR,
@@ -14,29 +11,29 @@ internal enum class Mark {
 }
 
 internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
-    HOME("home", "Smart Device Hub" ar "مركز الجهاز الذكي", Mark.K),
-    PRIVACY("privacy", "Privacy Sweep" ar "مراجعة الخصوصية", Mark.SHIELD),
-    DUPLICATES("duplicates", "Duplicate Files Finder" ar "اكتشاف الملفات المكررة", Mark.PICTURES),
-    SCAN("deep-scan", "Deep Scan" ar "الفحص العميق", Mark.RADAR),
-    REPORTS("reports", "Reports & Insights" ar "التقارير والرؤى", Mark.BARS),
-    RESIDUE("residue", "App Residue Cleanup" ar "تنظيف بقايا التطبيقات", Mark.LAYERS),
-    APPS("app-manager", "App Manager" ar "إدارة التطبيقات", Mark.GRID),
-    STORAGE("storage", "Storage Analyzer" ar "تحليل التخزين", Mark.DISK),
-    BATTERY("battery", "Battery Saver" ar "توفير البطارية", Mark.BATTERY),
-    OPTIMIZE("ai-optimization", "AI Optimization" ar "التحسين الذكي", Mark.CHIP),
-    CLEAN("clean", "Smart Clean" ar "التنظيف الذكي", Mark.BROOM),
-    TOOLS("tools", "Device Tools" ar "أدوات الجهاز", Mark.GRID),
-    KNOUX_UNIVERSE("knoux-universe", "KNOUX Universe" ar "عالم KNOUX", Mark.SPARKLE),
-    CLEAN_CENTER("clean-center", "Smart Clean Center" ar "مركز التنظيف الذكي", Mark.TRASH),
-    DUPLICATE_REVIEW("duplicate-group-review", "Duplicate Group Review" ar "مراجعة مجموعات التكرار", Mark.PICTURES),
-    PRIVACY_INSPECTOR("privacy-risk-inspector", "Privacy Risk Inspector" ar "فحص مخاطر الخصوصية", Mark.SHIELD),
-    SCAN_SUMMARY("deep-scan-summary", "Deep Scan Summary" ar "ملخص الفحص العميق", Mark.RADAR),
-    REPORT_DETAIL("performance-report-detail", "Performance Report Detail" ar "تفاصيل تقرير الأداء", Mark.BARS),
-    RESIDUE_REVIEW("residue-item-review", "Residue Item Review" ar "مراجعة بقايا التطبيقات", Mark.LAYERS),
-    APPS_REVIEW("installed-apps-review", "Installed Apps Review" ar "مراجعة التطبيقات المثبتة", Mark.GROUP),
-    STORAGE_BREAKDOWN("storage-breakdown", "Storage Breakdown" ar "تفاصيل مساحة التخزين", Mark.DISK),
-    BATTERY_DIAGNOSTICS("battery-diagnostics", "Battery Diagnostics" ar "تشخيص البطارية", Mark.BATTERY),
-    AI_RECOMMENDATIONS("ai-recommendations", "AI Recommendations" ar "توصيات الذكاء الاصطناعي", Mark.CHIP);
+    HOME("home", Copy(R.string.k_smart_device_hub), Mark.K),
+    PRIVACY("privacy", Copy(R.string.k_privacy_sweep), Mark.SHIELD),
+    DUPLICATES("duplicates", Copy(R.string.k_duplicate_files_finder), Mark.PICTURES),
+    SCAN("deep-scan", Copy(R.string.k_deep_scan), Mark.RADAR),
+    REPORTS("reports", Copy(R.string.k_reports_insights), Mark.BARS),
+    RESIDUE("residue", Copy(R.string.k_app_residue_cleanup), Mark.LAYERS),
+    APPS("app-manager", Copy(R.string.k_app_manager), Mark.GRID),
+    STORAGE("storage", Copy(R.string.k_storage_analyzer), Mark.DISK),
+    BATTERY("battery", Copy(R.string.k_battery_saver), Mark.BATTERY),
+    OPTIMIZE("ai-optimization", Copy(R.string.k_ai_optimization), Mark.CHIP),
+    CLEAN("clean", Copy(R.string.k_smart_clean), Mark.BROOM),
+    TOOLS("tools", Copy(R.string.k_device_tools), Mark.GRID),
+    KNOUX_UNIVERSE("knoux-universe", Copy(R.string.k_knoux_universe), Mark.SPARKLE),
+    CLEAN_CENTER("clean-center", Copy(R.string.k_smart_clean_center), Mark.TRASH),
+    DUPLICATE_REVIEW("duplicate-group-review", Copy(R.string.k_duplicate_group_review), Mark.PICTURES),
+    PRIVACY_INSPECTOR("privacy-risk-inspector", Copy(R.string.k_privacy_risk_inspector), Mark.SHIELD),
+    SCAN_SUMMARY("deep-scan-summary", Copy(R.string.k_deep_scan_summary), Mark.RADAR),
+    REPORT_DETAIL("performance-report-detail", Copy(R.string.k_performance_report_detail), Mark.BARS),
+    RESIDUE_REVIEW("residue-item-review", Copy(R.string.k_residue_item_review), Mark.LAYERS),
+    APPS_REVIEW("installed-apps-review", Copy(R.string.k_installed_apps_review), Mark.GROUP),
+    STORAGE_BREAKDOWN("storage-breakdown", Copy(R.string.k_storage_breakdown_2), Mark.DISK),
+    BATTERY_DIAGNOSTICS("battery-diagnostics", Copy(R.string.k_battery_diagnostics), Mark.BATTERY),
+    AI_RECOMMENDATIONS("ai-recommendations", Copy(R.string.k_ai_recommendations), Mark.CHIP);
 
     companion object {
         val references = entries.take(10)
@@ -89,10 +86,10 @@ internal data class PreviewScreen(
 internal enum class PreviewSource { DESIGN_PREVIEW, LIVE_UNAVAILABLE }
 
 private fun m(value: String, label: Copy, icon: Mark) = Metric(value, label, icon)
-private fun f(label: Copy, value: String, icon: Mark) = Fact(label, value ar value, icon)
-private fun time(label: Copy) = Fact(label, "Today, 10:21 AM" ar "اليوم، ١٠:٢١ ص", Mark.CALENDAR)
+private fun f(label: Copy, value: String, icon: Mark) = Fact(label, Copy.runtime(value), icon)
+private fun time(label: Copy) = Fact(label, Copy(R.string.k_today_10_21_am), Mark.CALENDAR)
 private fun a(label: Copy, icon: Mark = Mark.EYE) = Action(label, icon)
-private val review = "Review" ar "مراجعة"
+private val review = Copy(R.string.k_review)
 
 internal object PreviewFixtures {
     fun screen(page: Page, source: PreviewSource): PreviewScreen? =
@@ -103,151 +100,151 @@ internal object PreviewFixtures {
 
     private val screens = mapOf(
         Page.PRIVACY to PreviewScreen(
-            "Review trackers, risky permissions, and privacy exposure indicators." ar "راجع أدوات التتبع والأذونات ومؤشرات التعرّض لمخاطر الخصوصية.",
-            listOf(m("7", "trackers found" ar "أدوات تتبع", Mark.PERSON), m("86 /100", "Privacy Score" ar "درجة الخصوصية", Mark.SHIELD)),
-            listOf(m("2", "Camera Access" ar "الكاميرا", Mark.CAMERA), m("1", "Microphone Access" ar "الميكروفون", Mark.MIC),
-                m("7", "Background Trackers" ar "تتبع بالخلفية", Mark.LAYERS), m("2", "Clipboard Watchers" ar "مراقبة الحافظة", Mark.CLIP)),
-            86, "Privacy Score" ar "درجة الخصوصية",
-            listOf(f("Protected apps" ar "تطبيقات محمية", "24", Mark.CHECK), f("Needs review" ar "تحتاج مراجعة", "5", Mark.WARN), time("Last sweep" ar "آخر مراجعة")),
-            "Privacy Items (5)" ar "بنود الخصوصية (٥)",
+            Copy(R.string.k_review_trackers_risky_permissions_and_privacy_exposure_i),
+            listOf(m("7", Copy(R.string.k_trackers_found_2), Mark.PERSON), m("86 /100", Copy(R.string.k_privacy_score), Mark.SHIELD)),
+            listOf(m("2", Copy(R.string.k_camera_access_2), Mark.CAMERA), m("1", Copy(R.string.k_microphone_access_2), Mark.MIC),
+                m("7", Copy(R.string.k_background_trackers_2), Mark.LAYERS), m("2", Copy(R.string.k_clipboard_watchers_2), Mark.CLIP)),
+            86, Copy(R.string.k_privacy_score),
+            listOf(f(Copy(R.string.k_protected_apps), "24", Mark.CHECK), f(Copy(R.string.k_needs_review_2), "5", Mark.WARN), time(Copy(R.string.k_last_sweep))),
+            Copy(R.string.k_privacy_items_5),
             listOf(
-                Entry("Ad SDK Trackers" ar "أدوات تتبع الإعلانات", "Third-party ad SDKs that track your activity across apps." ar "أدوات إعلانية خارجية تتتبع نشاطك عبر التطبيقات.", "7 found", Mark.BELL, review),
-                Entry("Background Location" ar "الموقع في الخلفية", "Apps that can access your location in the background." ar "تطبيقات يمكنها معرفة موقعك في الخلفية.", "1 app", Mark.LOCATION, review),
-                Entry("Clipboard Access" ar "الوصول إلى الحافظة", "Apps that can read your clipboard content." ar "تطبيقات يمكنها قراءة محتوى الحافظة.", "2 apps", Mark.CLIP, review),
-                Entry("Overlay Permission" ar "الظهور فوق التطبيقات", "Apps that can appear over other apps." ar "تطبيقات يمكنها الظهور فوق تطبيقات أخرى.", "1 app", Mark.OVERLAY, review),
-                Entry("Notification Listeners" ar "قراءة الإشعارات", "Apps that can read and process notifications." ar "تطبيقات يمكنها قراءة الإشعارات ومعالجتها.", "2 apps", Mark.BELL, review)),
-            a("Review Risks" ar "مراجعة المخاطر"), a("Improve Privacy" ar "تحسين الخصوصية", Mark.SHIELD), Selection.TRACKERS
+                Entry(Copy(R.string.k_ad_sdk_trackers), Copy(R.string.k_third_party_ad_sdks_that_track_your_activity_across_apps), "7 found", Mark.BELL, review),
+                Entry(Copy(R.string.k_background_location), Copy(R.string.k_apps_that_can_access_your_location_in_the_background), "1 app", Mark.LOCATION, review),
+                Entry(Copy(R.string.k_clipboard_access), Copy(R.string.k_apps_that_can_read_your_clipboard_content), "2 apps", Mark.CLIP, review),
+                Entry(Copy(R.string.k_overlay_permission), Copy(R.string.k_apps_that_can_appear_over_other_apps), "1 app", Mark.OVERLAY, review),
+                Entry(Copy(R.string.k_notification_listeners), Copy(R.string.k_apps_that_can_read_and_process_notifications), "2 apps", Mark.BELL, review)),
+            a(Copy(R.string.k_review_risks)), a(Copy(R.string.k_improve_privacy), Mark.SHIELD), Selection.TRACKERS
         ),
         Page.DUPLICATES to PreviewScreen(
-            "Detect and review duplicate photos, videos, audio, and documents." ar "راجع الصور والفيديوهات والصوت والمستندات المكررة.",
-            listOf(m("1,248", "duplicates found" ar "ملفات مكررة", Mark.FILE), m("8.7 GB", "recoverable" ar "قابلة للاسترداد", Mark.DISK)),
-            listOf(m("612", "Similar Photos" ar "صور متشابهة", Mark.PICTURES), m("238", "Repeated Videos" ar "فيديو مكرر", Mark.VIDEO),
-                m("316", "Copy Documents" ar "نسخ مستندات", Mark.FILE), m("82", "Duplicate Audio" ar "صوت مكرر", Mark.MUSIC)),
-            96, "Match Confidence" ar "ثقة التطابق",
-            listOf(Fact("Auto-grouped items" ar "تجميع تلقائي", "218 groups" ar "٢١٨ مجموعة", Mark.CHECK), Fact("Needs review" ar "تحتاج مراجعة", "37 items" ar "٣٧ عنصر", Mark.WARN), time("Last scan" ar "آخر فحص")),
-            "Duplicate Groups (5)" ar "مجموعات التكرار (٥)",
+            Copy(R.string.k_detect_and_review_duplicate_photos_videos_audio_and_docu),
+            listOf(m("1,248", Copy(R.string.k_duplicates_found), Mark.FILE), m("8.7 GB", Copy(R.string.k_recoverable), Mark.DISK)),
+            listOf(m("612", Copy(R.string.k_similar_photos), Mark.PICTURES), m("238", Copy(R.string.k_repeated_videos), Mark.VIDEO),
+                m("316", Copy(R.string.k_copy_documents), Mark.FILE), m("82", Copy(R.string.k_duplicate_audio), Mark.MUSIC)),
+            96, Copy(R.string.k_match_confidence),
+            listOf(Fact(Copy(R.string.k_auto_grouped_items), Copy(R.string.k_t_218_groups), Mark.CHECK), Fact(Copy(R.string.k_needs_review_2), Copy(R.string.k_t_37_items), Mark.WARN), time(Copy(R.string.k_last_scan))),
+            Copy(R.string.k_duplicate_groups_5),
             listOf(
-                Entry("Similar Selfies" ar "صور شخصية متشابهة", "Duplicates and near-identical selfies." ar "صور شخصية مكررة أو متقاربة.", "1.6 GB", Mark.PERSON, note = "189 items" ar "١٨٩ عنصر"),
-                Entry("Burst Photos" ar "صور متتابعة", "Multiple shots of the same moment." ar "لقطات متعددة لنفس اللحظة.", "3.1 GB", Mark.PICTURES, note = "423 items" ar "٤٢٣ عنصر"),
-                Entry("Duplicate Videos" ar "فيديوهات مكررة", "Repeated videos and saved copies." ar "فيديوهات مكررة ونسخ محفوظة.", "2.4 GB", Mark.VIDEO, note = "238 items" ar "٢٣٨ عنصر"),
-                Entry("Repeated Documents" ar "مستندات مكررة", "Duplicate PDF, DOC and XLS files." ar "نسخ مكررة من المستندات.", "1.1 GB", Mark.FILE, note = "316 items" ar "٣١٦ عنصر"),
-                Entry("Shared Media Copies" ar "نسخ وسائط مشتركة", "Duplicates from chats and shared apps." ar "نسخ من المحادثات وتطبيقات المشاركة.", "521 MB", Mark.SHARE, note = "82 items" ar "٨٢ عنصر")),
-            a("Preview Groups" ar "معاينة المجموعات"), a("Review & Remove" ar "مراجعة وإزالة", Mark.TRASH)
+                Entry(Copy(R.string.k_similar_selfies), Copy(R.string.k_duplicates_and_near_identical_selfies), "1.6 GB", Mark.PERSON, note = Copy(R.string.k_t_189_items)),
+                Entry(Copy(R.string.k_burst_photos), Copy(R.string.k_multiple_shots_of_the_same_moment), "3.1 GB", Mark.PICTURES, note = Copy(R.string.k_t_423_items)),
+                Entry(Copy(R.string.k_duplicate_videos), Copy(R.string.k_repeated_videos_and_saved_copies), "2.4 GB", Mark.VIDEO, note = Copy(R.string.k_t_238_items)),
+                Entry(Copy(R.string.k_repeated_documents), Copy(R.string.k_duplicate_pdf_doc_and_xls_files), "1.1 GB", Mark.FILE, note = Copy(R.string.k_t_316_items)),
+                Entry(Copy(R.string.k_shared_media_copies), Copy(R.string.k_duplicates_from_chats_and_shared_apps), "521 MB", Mark.SHARE, note = Copy(R.string.k_t_82_items))),
+            a(Copy(R.string.k_preview_groups)), a(Copy(R.string.k_review_remove), Mark.TRASH)
         ),
         Page.SCAN to PreviewScreen(
-            "Preview a scan for junk, duplicates, privacy issues, and system health." ar "عاين فحص الملفات المؤقتة والتكرار والخصوصية وحالة النظام.",
+            Copy(R.string.k_preview_a_scan_for_junk_duplicates_privacy_issues_and_sy),
             emptyList(),
-            listOf(m("2.4 GB", "Temporary Files" ar "ملفات مؤقتة", Mark.DISK), m("1,248", "Duplicate Media" ar "وسائط مكررة", Mark.PICTURES),
-                m("7", "Privacy Alerts" ar "تنبيهات خصوصية", Mark.SHIELD), m("95%", "App Health" ar "حالة التطبيقات", Mark.LAYERS)),
-            72, "Overall Scan" ar "إجمالي الفحص",
-            listOf(f("Modules scanned" ar "الوحدات", "5 of 5", Mark.LAYERS), Fact("Findings so far" ar "العناصر", "1,656 items" ar "١٬٦٥٦ عنصر", Mark.SEARCH), Fact("Estimated time" ar "الوقت التقديري", "~ 1 min 24 sec" ar "حوالي دقيقة و٢٤ ثانية", Mark.CLOCK)),
-            "Scan Modules (5)" ar "وحدات الفحص (٥)",
+            listOf(m("2.4 GB", Copy(R.string.k_temporary_files_2), Mark.DISK), m("1,248", Copy(R.string.k_duplicate_media), Mark.PICTURES),
+                m("7", Copy(R.string.k_privacy_alerts), Mark.SHIELD), m("95%", Copy(R.string.k_app_health), Mark.LAYERS)),
+            72, Copy(R.string.k_overall_scan),
+            listOf(f(Copy(R.string.k_modules_scanned), "5 of 5", Mark.LAYERS), Fact(Copy(R.string.k_findings_so_far), Copy(R.string.k_t_1_656_items), Mark.SEARCH), Fact(Copy(R.string.k_estimated_time), Copy(R.string.k_t_1_min_24_sec), Mark.CLOCK)),
+            Copy(R.string.k_scan_modules_5),
             listOf(
-                Entry("Scan Storage" ar "فحص التخزين", "Temporary and residual files" ar "الملفات المؤقتة والمتبقية", "84%", Mark.DISK, progress = 84),
-                Entry("Review Media" ar "مراجعة الوسائط", "Duplicate photos and videos" ar "الصور والفيديوهات المكررة", "67%", Mark.PICTURES, progress = 67),
-                Entry("Inspect Privacy" ar "فحص الخصوصية", "Trackers, permissions and risks" ar "التتبع والأذونات والمخاطر", "73%", Mark.SHIELD, progress = 73),
-                Entry("Analyze Apps" ar "تحليل التطبيقات", "App health and resource use" ar "حالة التطبيقات واستخدام الموارد", "91%", Mark.LAYERS, progress = 91),
-                Entry("Battery Diagnosis" ar "تشخيص البطارية", "Battery health and usage patterns" ar "حالة البطارية وأنماط الاستخدام", "58%", Mark.BATTERY, progress = 58)),
-            a("Pause Scan" ar "إيقاف المعاينة", Mark.PAUSE), a("Continue Scan" ar "استئناف المعاينة", Mark.PLAY)
+                Entry(Copy(R.string.k_scan_storage), Copy(R.string.k_temporary_and_residual_files), "84%", Mark.DISK, progress = 84),
+                Entry(Copy(R.string.k_review_media), Copy(R.string.k_duplicate_photos_and_videos), "67%", Mark.PICTURES, progress = 67),
+                Entry(Copy(R.string.k_inspect_privacy), Copy(R.string.k_trackers_permissions_and_risks), "73%", Mark.SHIELD, progress = 73),
+                Entry(Copy(R.string.k_analyze_apps), Copy(R.string.k_app_health_and_resource_use), "91%", Mark.LAYERS, progress = 91),
+                Entry(Copy(R.string.k_battery_diagnosis), Copy(R.string.k_battery_health_and_usage_patterns), "58%", Mark.BATTERY, progress = 58)),
+            a(Copy(R.string.k_pause_scan), Mark.PAUSE), a(Copy(R.string.k_continue_scan), Mark.PLAY)
         ),
         Page.REPORTS to PreviewScreen(
-            "Track cleanups, storage gains, optimization history, and device health trends." ar "عاين سجل التنظيف ومساحة التخزين والتحسين ومؤشرات الجهاز.",
-            listOf(m("12.6 GB", "total saved" ar "إجمالي التوفير", Mark.DISK), m("31", "cleanups completed" ar "عمليات تنظيف", Mark.BROOM)),
-            listOf(m("4.8 GB", "Weekly Savings" ar "توفير أسبوعي", Mark.CALENDAR), m("7", "Privacy Fixes" ar "إصلاحات الخصوصية", Mark.SHIELD),
-                m("+18%", "Battery Gains" ar "تحسن البطارية", Mark.BATTERY), m("1,248", "Duplicate Reduction" ar "تقليل التكرار", Mark.LAYERS)),
-            92, "Device Score" ar "درجة الجهاز",
-            listOf(Fact("Best improvement" ar "أفضل تحسن", "Storage Cleanup (6.4 GB saved)" ar "تنظيف التخزين (6.4 GB)", Mark.TROPHY),
-                f("Current device score" ar "درجة الجهاز", "92%  ▲ +6%", Mark.SPEED), time("Last report" ar "آخر تقرير")),
+            Copy(R.string.k_track_cleanups_storage_gains_optimization_history_and_de),
+            listOf(m("12.6 GB", Copy(R.string.k_total_saved_2), Mark.DISK), m("31", Copy(R.string.k_cleanups_completed), Mark.BROOM)),
+            listOf(m("4.8 GB", Copy(R.string.k_weekly_savings), Mark.CALENDAR), m("7", Copy(R.string.k_privacy_fixes_2), Mark.SHIELD),
+                m("+18%", Copy(R.string.k_battery_gains), Mark.BATTERY), m("1,248", Copy(R.string.k_duplicate_reduction), Mark.LAYERS)),
+            92, Copy(R.string.k_device_score_2),
+            listOf(Fact(Copy(R.string.k_best_improvement), Copy(R.string.k_storage_cleanup_6_4_gb_saved), Mark.TROPHY),
+                f(Copy(R.string.k_current_device_score), "92%  ▲ +6%", Mark.SPEED), time(Copy(R.string.k_last_report))),
             null,
             listOf(
-                Entry("Cleanup History" ar "سجل التنظيف", "Past cleanups, space saved, and items removed." ar "جلسات التنظيف والمساحة والعناصر.", "31", Mark.BROOM, note = "sessions" ar "جلسة"),
-                Entry("Storage Trend" ar "اتجاه التخزين", "Track storage usage and savings over time." ar "استخدام التخزين وتغيره مع الوقت.", "12.6 GB", Mark.DISK, note = "total saved" ar "إجمالي التوفير"),
-                Entry("Privacy Improvements" ar "تحسينات الخصوصية", "Trackers, cleared data, and reduced risks." ar "التتبع والبيانات وتقليل المخاطر.", "7", Mark.SHIELD, note = "fixes applied" ar "إصلاحات"),
-                Entry("Battery Sessions" ar "جلسات البطارية", "Optimization sessions and performance gains." ar "جلسات التحسين ومؤشرات الأداء.", "+18%", Mark.BATTERY, note = "battery gain" ar "تحسن البطارية"),
-                Entry("Smart Recommendations" ar "توصيات ذكية", "Free up ~2.1 GB · Optimize battery usage" ar "وفّر مساحة وحسّن استخدام البطارية.", "3", Mark.CHIP, note = "new" ar "جديدة")),
-            a("View History" ar "عرض السجل"), a("Generate Report" ar "إنشاء تقرير", Mark.FILE)
+                Entry(Copy(R.string.k_cleanup_history), Copy(R.string.k_past_cleanups_space_saved_and_items_removed), "31", Mark.BROOM, note = Copy(R.string.k_sessions)),
+                Entry(Copy(R.string.k_storage_trend), Copy(R.string.k_track_storage_usage_and_savings_over_time), "12.6 GB", Mark.DISK, note = Copy(R.string.k_total_saved_2)),
+                Entry(Copy(R.string.k_privacy_improvements), Copy(R.string.k_trackers_cleared_data_and_reduced_risks), "7", Mark.SHIELD, note = Copy(R.string.k_fixes_applied)),
+                Entry(Copy(R.string.k_battery_sessions), Copy(R.string.k_optimization_sessions_and_performance_gains), "+18%", Mark.BATTERY, note = Copy(R.string.k_battery_gain_2)),
+                Entry(Copy(R.string.k_smart_recommendations), Copy(R.string.k_free_up_2_1_gb_optimize_battery_usage), "3", Mark.CHIP, note = Copy(R.string.k_new))),
+            a(Copy(R.string.k_view_history)), a(Copy(R.string.k_generate_report), Mark.FILE)
         ),
         Page.RESIDUE to PreviewScreen(
-            "Find leftover folders, empty data, and remnants from removed apps." ar "عاين المجلدات الفارغة وبقايا التطبيقات المحذوفة.",
-            listOf(m("836 MB", "residual data" ar "بيانات متبقية", Mark.DISK), m("42", "orphan folders" ar "مجلدات متبقية", Mark.FOLDER)),
-            listOf(m("8", "Uninstalled Apps" ar "تطبيقات محذوفة", Mark.TRASH), m("42", "Empty Directories" ar "مجلدات فارغة", Mark.FOLDER),
-                m("516 MB", "Old Cache" ar "ذاكرة مؤقتة قديمة", Mark.LAYERS), m("17", "Broken Shortcuts" ar "اختصارات معطلة", Mark.LINK)),
-            91, "Cleanup Safe" ar "أمان التنظيف",
-            listOf(f("Safe to clean" ar "تنظيف آمن", "836 MB", Mark.CHECK), f("Needs review" ar "تحتاج مراجعة", "28 MB", Mark.WARN), time("Last scan" ar "آخر فحص")),
-            "Items Found (5)" ar "العناصر (٥)",
+            Copy(R.string.k_find_leftover_folders_empty_data_and_remnants_from_remov),
+            listOf(m("836 MB", Copy(R.string.k_residual_data), Mark.DISK), m("42", Copy(R.string.k_orphan_folders_2), Mark.FOLDER)),
+            listOf(m("8", Copy(R.string.k_uninstalled_apps), Mark.TRASH), m("42", Copy(R.string.k_empty_directories), Mark.FOLDER),
+                m("516 MB", Copy(R.string.k_old_cache), Mark.LAYERS), m("17", Copy(R.string.k_broken_shortcuts), Mark.LINK)),
+            91, Copy(R.string.k_cleanup_safe),
+            listOf(f(Copy(R.string.k_safe_to_clean_2), "836 MB", Mark.CHECK), f(Copy(R.string.k_needs_review_2), "28 MB", Mark.WARN), time(Copy(R.string.k_last_scan))),
+            Copy(R.string.k_items_found_5),
             listOf(
-                Entry("WhatsApp Leftovers" ar "بقايا واتساب", "Residual folders, logs, and unused data." ar "مجلدات وسجلات وبيانات غير مستخدمة.", "268 MB", Mark.CHAT, mb = 268),
-                Entry("Old Game Cache" ar "ذاكرة الألعاب القديمة", "Obsolete cache from uninstalled games." ar "بيانات مؤقتة من ألعاب محذوفة.", "184 MB", Mark.GAME, mb = 184),
-                Entry("Empty Media Folders" ar "مجلدات وسائط فارغة", "Media directories without files." ar "مجلدات وسائط بلا ملفات.", "96 MB", Mark.PICTURES, mb = 96),
-                Entry("Broken Temp Data" ar "بيانات مؤقتة تالفة", "Incomplete temporary data and sessions." ar "بيانات مؤقتة وجلسات غير مكتملة.", "172 MB", Mark.FILE, mb = 172),
-                Entry("Archived Installer Remnants" ar "بقايا ملفات التثبيت", "Leftover APK or OBB files." ar "ملفات APK أو OBB متبقية.", "116 MB", Mark.BOX, mb = 116)),
-            a("Preview Residue" ar "معاينة البقايا"), a("Clean Remnants" ar "تنظيف البقايا", Mark.BROOM), Selection.RESIDUE, true
+                Entry(Copy(R.string.k_whatsapp_leftovers), Copy(R.string.k_residual_folders_logs_and_unused_data), "268 MB", Mark.CHAT, mb = 268),
+                Entry(Copy(R.string.k_old_game_cache), Copy(R.string.k_obsolete_cache_from_uninstalled_games), "184 MB", Mark.GAME, mb = 184),
+                Entry(Copy(R.string.k_empty_media_folders), Copy(R.string.k_media_directories_without_files), "96 MB", Mark.PICTURES, mb = 96),
+                Entry(Copy(R.string.k_broken_temp_data), Copy(R.string.k_incomplete_temporary_data_and_sessions), "172 MB", Mark.FILE, mb = 172),
+                Entry(Copy(R.string.k_archived_installer_remnants), Copy(R.string.k_leftover_apk_or_obb_files), "116 MB", Mark.BOX, mb = 116)),
+            a(Copy(R.string.k_preview_residue)), a(Copy(R.string.k_clean_remnants), Mark.BROOM), Selection.RESIDUE, true
         ),
         Page.APPS to PreviewScreen(
-            "Review installed apps, space use, startup impact, and update status." ar "عاين التطبيقات واستخدام المساحة وبدء التشغيل والتحديثات.",
-            listOf(m("143", "installed apps" ar "تطبيقات مثبّتة", Mark.LAYERS), m("18.4 GB", "app storage" ar "مساحة التطبيقات", Mark.DISK)),
-            listOf(m("27", "Rarely Used" ar "قليلة الاستخدام", Mark.CALENDAR), m("16", "Large Apps (≥ 500 MB)" ar "تطبيقات كبيرة", Mark.DISK),
-                m("9", "Startup Apps" ar "بدء التشغيل", Mark.POWER), m("12", "Updates Available" ar "تحديثات متاحة", Mark.SYNC)),
-            87, "App Health" ar "حالة التطبيقات",
-            listOf(f("Apps to review" ar "تحتاج مراجعة", "27", Mark.WARN), f("Safe suggestions" ar "اقتراحات آمنة", "18", Mark.CHECK), time("Last checked" ar "آخر مراجعة")),
+            Copy(R.string.k_review_installed_apps_space_use_startup_impact_and_updat),
+            listOf(m("143", Copy(R.string.k_installed_apps), Mark.LAYERS), m("18.4 GB", Copy(R.string.k_app_storage), Mark.DISK)),
+            listOf(m("27", Copy(R.string.k_rarely_used), Mark.CALENDAR), m("16", Copy(R.string.k_large_apps_500_mb), Mark.DISK),
+                m("9", Copy(R.string.k_startup_apps), Mark.POWER), m("12", Copy(R.string.k_updates_available), Mark.SYNC)),
+            87, Copy(R.string.k_app_health),
+            listOf(f(Copy(R.string.k_apps_to_review), "27", Mark.WARN), f(Copy(R.string.k_safe_suggestions), "18", Mark.CHECK), time(Copy(R.string.k_last_checked))),
             null,
             listOf(
-                Entry("Streaming Apps" ar "تطبيقات البث", "Video, music, and live streaming apps." ar "تطبيقات الفيديو والموسيقى والبث.", "5.86 GB", Mark.VIDEO, "Optimize" ar "تحسين", "Last used: Today" ar "آخر استخدام: اليوم"),
-                Entry("Social Apps" ar "تطبيقات التواصل", "Social networking and community apps." ar "شبكات التواصل والمجتمعات.", "3.12 GB", Mark.GROUP, review, "Last used: Today" ar "آخر استخدام: اليوم"),
-                Entry("Game Collection" ar "الألعاب", "Installed games and game resources." ar "ألعاب مثبّتة وملفاتها.", "6.27 GB", Mark.GAME, "Manage" ar "إدارة", "Last used: Yesterday" ar "آخر استخدام: أمس"),
-                Entry("Utility Tools" ar "الأدوات المساعدة", "Productivity, file, and system tools." ar "أدوات الإنتاجية والملفات والنظام.", "2.43 GB", Mark.GRID, "Clean" ar "تنظيف", "Last used: Today" ar "آخر استخدام: اليوم"),
-                Entry("Messaging Apps" ar "تطبيقات الرسائل", "Chat, calls, and communication apps." ar "المحادثات والمكالمات والتواصل.", "744 MB", Mark.CHAT, "Open" ar "فتح", "Last used: Today" ar "آخر استخدام: اليوم")),
-            a("Review Apps" ar "مراجعة التطبيقات"), a("Manage Apps" ar "إدارة التطبيقات", Mark.GRID), grouped = true
+                Entry(Copy(R.string.k_streaming_apps), Copy(R.string.k_video_music_and_live_streaming_apps), "5.86 GB", Mark.VIDEO, Copy(R.string.k_optimize), Copy(R.string.k_last_used_today)),
+                Entry(Copy(R.string.k_social_apps), Copy(R.string.k_social_networking_and_community_apps), "3.12 GB", Mark.GROUP, review, Copy(R.string.k_last_used_today)),
+                Entry(Copy(R.string.k_game_collection), Copy(R.string.k_installed_games_and_game_resources), "6.27 GB", Mark.GAME, Copy(R.string.k_manage), Copy(R.string.k_last_used_yesterday)),
+                Entry(Copy(R.string.k_utility_tools), Copy(R.string.k_productivity_file_and_system_tools), "2.43 GB", Mark.GRID, Copy(R.string.k_clean_sample_summary), Copy(R.string.k_last_used_today)),
+                Entry(Copy(R.string.k_messaging_apps), Copy(R.string.k_chat_calls_and_communication_apps), "744 MB", Mark.CHAT, Copy(R.string.k_open), Copy(R.string.k_last_used_today))),
+            a(Copy(R.string.k_review_apps)), a(Copy(R.string.k_manage_apps), Mark.GRID), grouped = true
         ),
         Page.STORAGE to PreviewScreen(
-            "Understand storage usage, large files, and space distribution." ar "عاين استخدام التخزين والملفات الكبيرة وتوزيع المساحة.",
+            Copy(R.string.k_understand_storage_usage_large_files_and_space_distribut),
             emptyList(),
-            listOf(m("48.6 GB", "Apps" ar "تطبيقات", Mark.GRID), m("36.8 GB", "Media" ar "وسائط", Mark.PICTURES), m("8.4 GB", "Documents" ar "مستندات", Mark.FILE),
-                m("22.2 GB", "System" ar "النظام", Mark.GEAR), m("128 GB", "Free Space" ar "مساحة فارغة", Mark.LAYERS)),
-            50, "Used (128 GB)" ar "مستخدم (128 GB)",
-            listOf(Fact("Largest category" ar "أكبر فئة", "Apps & Games — 48.6 GB" ar "تطبيقات وألعاب — 48.6 GB", Mark.TROPHY),
-                f("Unused space trend" ar "تغير المساحة الفارغة", "+12.6 GB", Mark.BARS), time("Last updated" ar "آخر تحديث")),
-            "Storage Categories" ar "فئات التخزين",
+            listOf(m("48.6 GB", Copy(R.string.k_apps), Mark.GRID), m("36.8 GB", Copy(R.string.k_media), Mark.PICTURES), m("8.4 GB", Copy(R.string.k_documents), Mark.FILE),
+                m("22.2 GB", Copy(R.string.k_system), Mark.GEAR), m("128 GB", Copy(R.string.k_free_space), Mark.LAYERS)),
+            50, Copy(R.string.k_used_128_gb),
+            listOf(Fact(Copy(R.string.k_largest_category), Copy(R.string.k_apps_games_48_6_gb), Mark.TROPHY),
+                f(Copy(R.string.k_unused_space_trend), "+12.6 GB", Mark.BARS), time(Copy(R.string.k_last_updated))),
+            Copy(R.string.k_storage_categories),
             listOf(
-                Entry("Apps & Games" ar "تطبيقات وألعاب", "Installed apps, games, and app data." ar "التطبيقات والألعاب وبياناتها.", "48.6 GB", Mark.GRID),
-                Entry("Photos & Videos" ar "صور وفيديوهات", "Photos, videos, and screen recordings." ar "الصور والفيديو وتسجيلات الشاشة.", "36.8 GB", Mark.PICTURES),
-                Entry("Downloads" ar "التنزيلات", "Downloaded files and installers." ar "الملفات والتنزيلات والتثبيت.", "6.2 GB", Mark.DOWNLOAD),
-                Entry("Documents" ar "المستندات", "PDFs, Office files, and documents." ar "ملفات PDF وأوفيس ومستندات أخرى.", "8.4 GB", Mark.FILE),
-                Entry("WhatsApp Media" ar "وسائط واتساب", "Photos, videos, audio, and shared files." ar "صور وفيديو وصوت وملفات مشتركة.", "4.1 GB", Mark.CHAT),
-                Entry("System Files" ar "ملفات النظام", "Android system, cache, and essential files." ar "نظام Android والملفات الأساسية.", "22.2 GB", Mark.GEAR)),
-            a("View Breakdown" ar "عرض التفاصيل"), a("Manage Space" ar "إدارة المساحة", Mark.LAYERS), grouped = true
+                Entry(Copy(R.string.k_apps_games), Copy(R.string.k_installed_apps_games_and_app_data), "48.6 GB", Mark.GRID),
+                Entry(Copy(R.string.k_photos_videos_2), Copy(R.string.k_photos_videos_and_screen_recordings), "36.8 GB", Mark.PICTURES),
+                Entry(Copy(R.string.k_downloads_2), Copy(R.string.k_downloaded_files_and_installers), "6.2 GB", Mark.DOWNLOAD),
+                Entry(Copy(R.string.k_documents_2), Copy(R.string.k_pdfs_office_files_and_documents), "8.4 GB", Mark.FILE),
+                Entry(Copy(R.string.k_whatsapp_media), Copy(R.string.k_photos_videos_audio_and_shared_files), "4.1 GB", Mark.CHAT),
+                Entry(Copy(R.string.k_system_files), Copy(R.string.k_android_system_cache_and_essential_files), "22.2 GB", Mark.GEAR)),
+            a(Copy(R.string.k_view_breakdown)), a(Copy(R.string.k_manage_space), Mark.LAYERS), grouped = true
         ),
         Page.BATTERY to PreviewScreen(
-            "Reduce drain, control background activity, and extend battery life." ar "عاين توصيات تقليل الاستهلاك ونشاط الخلفية وإطالة عمر البطارية.",
-            listOf(m("6h 42m", "estimated gain" ar "تحسن تقديري", Mark.CLOCK), m("91%", "Battery health" ar "حالة البطارية", Mark.HEART)),
-            listOf(m("5", "Drain Sources" ar "مصادر الاستهلاك", Mark.BOLT), m("18", "Background Apps" ar "تطبيقات بالخلفية", Mark.LAYERS),
-                m("−22%", "Brightness Impact" ar "تأثير السطوع", Mark.SUN), m("287", "Charging Cycles" ar "دورات الشحن", Mark.SYNC)),
-            91, "Battery Health" ar "حالة البطارية",
-            listOf(f("Critical drain apps" ar "تطبيقات عالية الاستهلاك", "3", Mark.WARN), Fact("Safe actions" ar "إجراءات آمنة", "5 available" ar "٥ متاحة", Mark.CHECK), time("Last analysis" ar "آخر تحليل")),
-            "Optimization & Actions" ar "التحسين والإجراءات",
+            Copy(R.string.k_reduce_drain_control_background_activity_and_extend_batt),
+            listOf(m("6h 42m", Copy(R.string.k_estimated_gain_2), Mark.CLOCK), m("91%", Copy(R.string.k_battery_health_2), Mark.HEART)),
+            listOf(m("5", Copy(R.string.k_drain_sources), Mark.BOLT), m("18", Copy(R.string.k_background_apps), Mark.LAYERS),
+                m("−22%", Copy(R.string.k_brightness_impact), Mark.SUN), m("287", Copy(R.string.k_charging_cycles_2), Mark.SYNC)),
+            91, Copy(R.string.k_battery_health),
+            listOf(f(Copy(R.string.k_critical_drain_apps), "3", Mark.WARN), Fact(Copy(R.string.k_safe_actions), Copy(R.string.k_t_5_available), Mark.CHECK), time(Copy(R.string.k_last_analysis))),
+            Copy(R.string.k_optimization_actions),
             listOf(
-                Entry("Screen Brightness" ar "سطوع الشاشة", "High brightness increases battery drain." ar "السطوع العالي يزيد الاستهلاك.", "−22%", Mark.SUN, "Auto Optimize" ar "تحسين تلقائي"),
-                Entry("Background Sync" ar "مزامنة الخلفية", "Limit non-essential sync to save power." ar "تقليل المزامنة غير الضرورية.", "−14%", Mark.SYNC, "Restrict Sync" ar "تقييد المزامنة"),
-                Entry("App Wakeups" ar "تنشيط التطبيقات", "Stop frequent background wakeups." ar "تقليل تنشيط التطبيقات في الخلفية.", "−18%", Mark.LAYERS, "Limit Wakeups" ar "تقليل التنشيط"),
-                Entry("GPS Usage" ar "استخدام الموقع", "High-accuracy GPS can drain battery." ar "الدقة العالية قد تستهلك البطارية.", "−11%", Mark.LOCATION, "Use While Active" ar "أثناء الاستخدام"),
-                Entry("Charging Health" ar "صحة الشحن", "Optimize charging to prolong battery life." ar "توصية لتحسين الشحن وعمر البطارية.", "+7%", Mark.BATTERY, "Smart Charging" ar "شحن ذكي")),
-            a("View Details" ar "عرض التفاصيل"), a("Save Battery" ar "توفير البطارية", Mark.BOLT), grouped = true
+                Entry(Copy(R.string.k_screen_brightness), Copy(R.string.k_high_brightness_increases_battery_drain), "−22%", Mark.SUN, Copy(R.string.k_auto_optimize)),
+                Entry(Copy(R.string.k_background_sync), Copy(R.string.k_limit_non_essential_sync_to_save_power), "−14%", Mark.SYNC, Copy(R.string.k_restrict_sync)),
+                Entry(Copy(R.string.k_app_wakeups), Copy(R.string.k_stop_frequent_background_wakeups), "−18%", Mark.LAYERS, Copy(R.string.k_limit_wakeups)),
+                Entry(Copy(R.string.k_gps_usage), Copy(R.string.k_high_accuracy_gps_can_drain_battery), "−11%", Mark.LOCATION, Copy(R.string.k_use_while_active)),
+                Entry(Copy(R.string.k_charging_health), Copy(R.string.k_optimize_charging_to_prolong_battery_life), "+7%", Mark.BATTERY, Copy(R.string.k_smart_charging))),
+            a(Copy(R.string.k_view_details)), a(Copy(R.string.k_save_battery), Mark.BOLT), grouped = true
         ),
         Page.OPTIMIZE to PreviewScreen(
-            "Boost responsiveness, tune performance, and optimize battery usage intelligently." ar "عاين تحسين الاستجابة وضبط الأداء واستهلاك البطارية بذكاء.",
-            listOf(m("94", "Performance Score" ar "درجة الأداء", Mark.SPEED), m("+18%", "Battery gain" ar "تحسن البطارية", Mark.BATTERY)),
-            listOf(m("24% (−36%)", "CPU Load" ar "حمل المعالج", Mark.CHIP), m("1.6 GB", "Memory Freed" ar "ذاكرة متاحة", Mark.DISK),
-                m("12", "App Hibernation" ar "إسبات التطبيقات", Mark.LAYERS), m("Normal", "Thermal Status" ar "الحالة الحرارية", Mark.TEMP)),
-            94, "Optimized" ar "درجة التحسين",
-            listOf(f("Recommended actions" ar "إجراءات مقترحة", "5", Mark.CHECK), f("Applied safely" ar "تطبيق آمن", "5", Mark.SHIELD), time("Last tune-up" ar "آخر ضبط")),
-            "Optimization Tools (5)" ar "أدوات التحسين (٥)",
+            Copy(R.string.k_boost_responsiveness_tune_performance_and_optimize_batte),
+            listOf(m("94", Copy(R.string.k_performance_score_2), Mark.SPEED), m("+18%", Copy(R.string.k_battery_gain), Mark.BATTERY)),
+            listOf(m("24% (−36%)", Copy(R.string.k_cpu_load), Mark.CHIP), m("1.6 GB", Copy(R.string.k_memory_freed), Mark.DISK),
+                m("12", Copy(R.string.k_app_hibernation), Mark.LAYERS), m("Normal", Copy(R.string.k_thermal_status_2), Mark.TEMP)),
+            94, Copy(R.string.k_optimized),
+            listOf(f(Copy(R.string.k_recommended_actions), "5", Mark.CHECK), f(Copy(R.string.k_applied_safely), "5", Mark.SHIELD), time(Copy(R.string.k_last_tune_up))),
+            Copy(R.string.k_optimization_tools_5),
             listOf(
-                Entry("Memory Boost" ar "تعزيز الذاكرة", "Free up RAM and improve responsiveness." ar "توصية لتوفير الذاكرة وتحسين الاستجابة.", "+1.6 GB", Mark.MEMORY, note = "freed" ar "متاحة"),
-                Entry("Battery Balancing" ar "موازنة البطارية", "Intelligently manage power consumption." ar "إدارة استهلاك الطاقة بذكاء.", "+18%", Mark.BATTERY, note = "battery life" ar "عمر البطارية"),
-                Entry("Smart Hibernation" ar "إسبات ذكي", "Put inactive apps to sleep in the preview." ar "معاينة إسبات التطبيقات غير النشطة.", "12 apps", Mark.LAYERS, note = "hibernated" ar "في الإسبات"),
-                Entry("Startup Control" ar "التحكم في بدء التشغيل", "Review auto-start apps and boot time." ar "مراجعة تطبيقات البدء ووقت التشغيل.", "−4.2 s", Mark.POWER, note = "boot time" ar "وقت التشغيل"),
-                Entry("Thermal Guard" ar "الحماية الحرارية", "Review peak temperature recommendations." ar "معاينة توصيات الحرارة القصوى.", "−6°C", Mark.TEMP, note = "peak temp" ar "الحرارة القصوى")),
-            a("See Recommendations" ar "عرض التوصيات"), a("Optimize Now" ar "حسّن الآن", Mark.ROCKET), Selection.OPTIMIZATION
+                Entry(Copy(R.string.k_memory_boost), Copy(R.string.k_free_up_ram_and_improve_responsiveness), "+1.6 GB", Mark.MEMORY, note = Copy(R.string.k_freed)),
+                Entry(Copy(R.string.k_battery_balancing), Copy(R.string.k_intelligently_manage_power_consumption), "+18%", Mark.BATTERY, note = Copy(R.string.k_battery_life_2)),
+                Entry(Copy(R.string.k_smart_hibernation), Copy(R.string.k_put_inactive_apps_to_sleep_in_the_preview), "12 apps", Mark.LAYERS, note = Copy(R.string.k_hibernated)),
+                Entry(Copy(R.string.k_startup_control), Copy(R.string.k_review_auto_start_apps_and_boot_time), "−4.2 s", Mark.POWER, note = Copy(R.string.k_boot_time)),
+                Entry(Copy(R.string.k_thermal_guard), Copy(R.string.k_review_peak_temperature_recommendations), "−6°C", Mark.TEMP, note = Copy(R.string.k_peak_temp))),
+            a(Copy(R.string.k_see_recommendations)), a(Copy(R.string.k_optimize_now), Mark.ROCKET), Selection.OPTIMIZATION
         )
     )
 }

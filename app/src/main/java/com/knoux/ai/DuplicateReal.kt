@@ -528,20 +528,19 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
     }
 
     val pill = when {
-        state.phase == DuplicatePhase.SCANNING -> "HASHING CONTENT" ar "جارٍ حساب البصمة"
-        state.measured && state.previousScan -> "PREVIOUS PASS — SCAN AGAIN TO VERIFY" ar "فحص سابق — أعد الفحص للتحقق"
-        state.measured && state.status == DataStatus.PARTIAL -> "PARTIAL — SOME FILES NOT VERIFIED" ar "جزئي — بعض الملفات لم تُتحقق"
-        state.measured -> "SHA-256 VERIFIED ON DEVICE" ar "بصمة SHA-256 متحققة على الجهاز"
-        state.phase == DuplicatePhase.ERROR -> "PASS FAILED" ar "فشل الفحص"
-        else -> "NOT MEASURED YET" ar "لم يُقس بعد"
+        state.phase == DuplicatePhase.SCANNING -> Copy(R.string.k_hashing_content)
+        state.measured && state.previousScan -> Copy(R.string.k_previous_pass_scan_again_to_verify)
+        state.measured && state.status == DataStatus.PARTIAL -> Copy(R.string.k_partial_some_files_not_verified)
+        state.measured -> Copy(R.string.k_sha_256_verified_on_device)
+        state.phase == DuplicatePhase.ERROR -> Copy(R.string.k_pass_failed)
+        else -> Copy(R.string.k_not_measured_yet)
     }
 
     Column(Modifier.fillMaxSize()) {
         NeonHero(Mark.PICTURES, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
         MasterTitle(
-            "Duplicate" ar "الملفات", "Finder" ar "المكررة",
-            "Only byte-identical copies are shown; one original per group is kept." ar
-                "تُعرض النسخ المتطابقة بايتًا فقط؛ ويُحفظ أصل واحد في كل مجموعة.",
+            Copy(R.string.k_duplicate), Copy(R.string.k_finder),
+            Copy(R.string.k_only_byte_identical_copies_are_shown_one_original_per_gr),
             "screen-${page.id}"
         )
         MasterPreviewPill(pill)
@@ -560,10 +559,10 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
             groupCount = state.groups.size,
             motion = motion,
             caption = when {
-                state.phase == DuplicatePhase.SCANNING -> "Hashing" ar "تجزئة"
-                state.measured && state.groups.isNotEmpty() -> "${state.groups.size} group(s)" ar "${state.groups.size} مجموعة"
-                state.measured -> "No copies" ar "لا نسخ"
-                else -> "Not measured" ar "لم يُقاس"
+                state.phase == DuplicatePhase.SCANNING -> Copy(R.string.k_hashing)
+                state.measured && state.groups.isNotEmpty() -> Copy.args(R.string.k_groups_count, state.groups.size)
+                state.measured -> Copy(R.string.k_no_copies)
+                else -> Copy(R.string.k_not_measured_2)
             },
             hasFindings = state.groups.isNotEmpty(),
             widthDp = 340f,
@@ -622,11 +621,11 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
 
         Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 7.dp)) {
             MasterActions(
-                Action("Sources & Access" ar "المصادر والوصول", Mark.SHIELD),
+                Action(Copy(R.string.k_sources_access), Mark.SHIELD),
                 when {
-                    state.phase == DuplicatePhase.SCANNING -> Action("Cancel Scan" ar "إلغاء الفحص", Mark.PAUSE)
-                    state.measured -> Action("Review Copies" ar "مراجعة النسخ", Mark.COPY)
-                    else -> Action("Find Duplicates" ar "اكتشاف المكرر", Mark.RADAR)
+                    state.phase == DuplicatePhase.SCANNING -> Action(Copy(R.string.k_cancel_scan), Mark.PAUSE)
+                    state.measured -> Action(Copy(R.string.k_review_copies), Mark.COPY)
+                    else -> Action(Copy(R.string.k_find_duplicates), Mark.RADAR)
                 },
                 onFirst = { sheet = "sources" },
                 onSecond = {
@@ -695,8 +694,8 @@ private fun DuplicateSummaryCard(state: DuplicateState) {
                         modifier = Modifier.testTag("duplicate-redundant"),
                     )
                     Label(
-                        if (state.measured) "redundant copies (measured)" ar "نسخ زائدة (مقيسة)"
-                        else "not measured yet" ar "لم يُقس بعد",
+                        if (state.measured) Copy(R.string.k_redundant_copies_measured)
+                        else Copy(R.string.k_not_measured_yet_2),
                         11, Mist,
                     )
                 }
@@ -706,7 +705,7 @@ private fun DuplicateSummaryCard(state: DuplicateState) {
                         20, Chalk, FontWeight.Bold,
                         modifier = Modifier.testTag("duplicate-group-count"),
                     )
-                    Label("groups" ar "مجموعات", 10, Mist)
+                    Label(Copy(R.string.k_groups), 10, Mist)
                 }
             }
             GradientBar(
@@ -727,8 +726,7 @@ private fun DuplicateSummaryCard(state: DuplicateState) {
             }
             if (scanning) {
                 Label(
-                    "${state.progressLabel}… ${state.groupsFound} group(s) found" ar
-                        "${state.progressLabel}… ${state.groupsFound} مجموعة",
+                    Copy.args(R.string.k_groups_found_progress, state.progressLabel, state.groupsFound),
                     11, Cyan, FontWeight.Bold,
                     modifier = Modifier.testTag("duplicate-progress"),
                 )
@@ -743,20 +741,15 @@ private fun DuplicateEmptyCard(state: DuplicateState) {
         Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Label(
                 when {
-                    state.phase == DuplicatePhase.SCANNING -> "Reading and hashing file content…"
-                    state.measured -> "No byte-identical copies in ${state.scannedScopes.size} source(s)."
-                    else -> "No duplicate pass has run yet."
-                } ar when {
-                    state.phase == DuplicatePhase.SCANNING -> "جارٍ قراءة الملفات وحساب البصمات…"
-                    state.measured -> "لا توجد نسخ متطابقة في ${state.scannedScopes.size} مصدر."
-                    else -> "لم يُشغّل فحص التكرار بعد."
+                    state.phase == DuplicatePhase.SCANNING -> Copy(R.string.k_reading_and_hashing_file_content)
+                    state.measured -> Copy.args(R.string.k_no_byte_identical_copies_in_sources, state.scannedScopes.size)
+                    else -> Copy(R.string.k_no_duplicate_pass_has_run_yet)
                 },
                 13, Chalk, FontWeight.Bold,
                 modifier = Modifier.testTag("duplicate-empty"),
             )
             Label(
-                ("A file only appears here after its full content was read and matched. Similar photos are never grouped."
-                    ar "لا يظهر ملف هنا إلا بعد قراءة محتواه بالكامل ومطابقته. الصور المتشابهة لا تُجمع أبدًا."),
+                (Copy(R.string.k_a_file_only_appears_here_after_its_full_content_was_read)),
                 11, Mist,
             )
         }
@@ -939,40 +932,39 @@ private fun DuplicateSourcesSheet(
     onOpenSettings: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    InfoSheet("Duplicate sources" ar "مصادر التكرار", onDismiss) {
+    InfoSheet(Copy(R.string.k_duplicate_sources), onDismiss) {
         Label(
-            ("KNOUX reads only the sources you include. A source that is not granted is reported as not read."
-                ar "KNOUX يقرأ فقط المصادر التي تضمّنها. المصدر غير الممنوح يُعرض كغير مقروء."),
+            (Copy(R.string.k_knoux_reads_only_the_sources_you_include_a_source_that_i)),
             12, Mist,
         )
         DuplicateScopeRow(
             mark = Mark.PICTURES,
-            title = "Photos & videos" ar "الصور والفيديو",
+            title = Copy(R.string.k_photos_videos),
             detail = when (state.mediaGrant) {
                 PermissionGrant.GRANTED -> "Granted — library visible"
                 PermissionGrant.PARTIAL_SELECTED -> "Partial — only selected items are visible"
                 else -> "Not granted"
             },
             action = if (state.mediaGrant == PermissionGrant.GRANTED)
-                "Manage in Settings" ar "الإدارة من الإعدادات" else "Grant access" ar "منح الوصول",
+                Copy(R.string.k_manage_in_settings) else Copy(R.string.k_grant_access),
             tag = "dup-scope-media",
             onAction = if (state.mediaGrant == PermissionGrant.GRANTED) onOpenSettings else onRequestMedia,
         )
         DuplicateScopeRow(
             mark = Mark.FOLDER,
-            title = "Folders you granted" ar "مجلدات منحتها",
+            title = Copy(R.string.k_folders_you_granted),
             detail = if (state.safTrees == 0) "No folder added" else "${state.safTrees} folder(s) granted",
-            action = "Add folder" ar "إضافة مجلد",
+            action = Copy(R.string.k_add_folder),
             tag = "dup-scope-saf",
             onAction = onAddFolder,
         )
-        Label(("Include in the next pass" ar "تضمين في الفحص التالي"), 13, Cyan, FontWeight.Bold)
+        Label((Copy(R.string.k_include_in_the_next_pass)), 13, Cyan, FontWeight.Bold)
         AccessScope.entries.forEach { scope ->
             val title = when (scope) {
-                AccessScope.APP_CACHE -> "KNOUX cache" ar "ذاكرة KNOUX"
-                AccessScope.MEDIA_IMAGES -> "Photos" ar "الصور"
-                AccessScope.MEDIA_VIDEO -> "Videos" ar "الفيديو"
-                AccessScope.SAF_TREE -> "Granted folders" ar "المجلدات الممنوحة"
+                AccessScope.APP_CACHE -> Copy(R.string.k_knoux_cache)
+                AccessScope.MEDIA_IMAGES -> Copy(R.string.k_photos_2)
+                AccessScope.MEDIA_VIDEO -> Copy(R.string.k_videos_3)
+                AccessScope.SAF_TREE -> Copy(R.string.k_granted_folders)
             }
             Row(
                 Modifier.fillMaxWidth().heightIn(min = 48.dp)
@@ -993,7 +985,7 @@ private fun DuplicateSourcesSheet(
             }
         }
         AccentButton(
-            Action("Scan selected sources" ar "فحص المصادر المحددة", Mark.RADAR),
+            Action(Copy(R.string.k_scan_selected_sources), Mark.RADAR),
             Modifier.fillMaxWidth(),
             enabled = !state.busy && state.scopes.isNotEmpty() && state.phase != DuplicatePhase.SCANNING,
             tag = "dup-scope-scan",
@@ -1032,28 +1024,26 @@ private fun DuplicateReviewSheet(
     onPermanent: () -> Unit,
     onDismiss: () -> Unit,
 ) {
-    InfoSheet("Review duplicate removal" ar "مراجعة إزالة المكرر", onDismiss) {
+    InfoSheet(Copy(R.string.k_review_duplicate_removal), onDismiss) {
         state.message?.let {
             Label(it, 12, Mint, modifier = Modifier.testTag("duplicate-result"))
         }
         state.error?.let {
             Label(it, 12, Gold, modifier = Modifier.testTag("duplicate-review-error"))
         }
-        if (state.busy) Label(("Working…" ar "جارٍ التنفيذ…"), 12, Cyan)
+        if (state.busy) Label((Copy(R.string.k_working)), 12, Cyan)
 
         val copies = state.selectedCandidates
         val hasLocalCopies = copies.any { it.provenance != DataProvenance.MEDIASTORE }
         val hasSharedMedia = copies.any { it.provenance == DataProvenance.MEDIASTORE }
         if (copies.isEmpty()) {
             Label(
-                ("Select at least one non-original copy. The original in every group stays untouched."
-                    ar "اختر نسخة واحدة على الأقل ليست الأصل. يبقى أصل كل مجموعة دون تغيير."),
+                (Copy(R.string.k_select_at_least_one_non_original_copy_the_original_in_ev)),
                 13, Mist, modifier = Modifier.testTag("duplicate-no-selection"),
             )
         } else {
             Label(
-                "${copies.size} copy(ies) · ${humanBytes(state.selectedBytes)}" ar
-                    "${copies.size} نسخة · ${humanBytes(state.selectedBytes)}",
+                Copy.args(R.string.k_copies_summary, copies.size, humanBytes(state.selectedBytes)),
                 15, Pink, FontWeight.Bold,
             )
             copies.take(40).forEach { copy ->
@@ -1087,7 +1077,7 @@ private fun DuplicateReviewSheet(
             11, Gold,
         )
         AccentButton(
-            Action("Move copies to Trash" ar "نقل النسخ إلى السلة", Mark.TRASH),
+            Action(Copy(R.string.k_move_copies_to_trash), Mark.TRASH),
             Modifier.fillMaxWidth(),
             primary = false,
             enabled = state.trashAvailable && !state.busy,
@@ -1105,19 +1095,18 @@ private fun DuplicateReviewSheet(
         ) {
             SelectionIndicator(confirmPermanent, Gold)
             Label(
-                ("I understand permanent deletion cannot be undone" ar "أفهم أن الحذف النهائي لا يمكن التراجع عنه"),
+                (Copy(R.string.k_i_understand_permanent_deletion_cannot_be_undone)),
                 12, Chalk,
             )
         }
         AccentButton(
-            Action("Delete copies permanently" ar "حذف النسخ نهائيًا", Mark.WARN),
+            Action(Copy(R.string.k_delete_copies_permanently), Mark.WARN),
             Modifier.fillMaxWidth(),
             enabled = confirmPermanent && copies.isNotEmpty() && !state.busy,
             tag = "duplicate-action-delete",
         ) { onPermanent() }
         Label(
-            ("Local cache copies are removed immediately; shared media only after Android's confirmation."
-                ar "تُزال نسخ الذاكرة المؤقتة فورًا؛ والوسائط المشتركة فقط بعد تأكيد أندرويد."),
+            (Copy(R.string.k_local_cache_copies_are_removed_immediately_shared_media)),
             10, Mist,
         )
     }

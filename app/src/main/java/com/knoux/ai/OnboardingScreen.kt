@@ -93,19 +93,15 @@ internal fun OnboardingScreen(onComplete: () -> Unit, previewChapter: Int? = nul
 
     BackHandler(enabled = true) { goBack() }
 
-    Box(
-        Modifier
+    Box(Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(Color(0xff1a0b4d), Color(0xff0b0426), Color(0xff03000c))
+            .background(Brush.verticalGradient(listOf(Color(0xff1a0b4d), Color(0xff0b0426), Color(0xff03000c))
                 )
             )
     ) {
         Atmosphere()
 
-        Column(
-            Modifier
+        Column(Modifier
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.safeDrawing)
         ) {
@@ -136,21 +132,18 @@ internal fun OnboardingScreen(onComplete: () -> Unit, previewChapter: Int? = nul
  */
 @Composable
 private fun ChapterBar(onBack: () -> Unit, onSkip: () -> Unit) {
-    Row(
-        Modifier
+    Row(Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp, vertical = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        QuietTextAction(
-            label = ("Back" ar "رجوع").localized(),
+        QuietTextAction(label = (Copy(R.string.k_back_2)).localized(),
             leadingGlyph = Mark.BACK,
             tag = "onboarding-back",
             onClick = onBack
         )
-        QuietTextAction(
-            label = ("Skip" ar "تخطي").localized(),
+        QuietTextAction(label = (Copy(R.string.k_skip)).localized(),
             tag = "onboarding-skip",
             onClick = onSkip
         )
@@ -158,14 +151,12 @@ private fun ChapterBar(onBack: () -> Unit, onSkip: () -> Unit) {
 }
 
 @Composable
-private fun QuietTextAction(
-    label: String,
+private fun QuietTextAction(label: String,
     tag: String,
     leadingGlyph: Mark? = null,
     onClick: () -> Unit
 ) {
-    Row(
-        Modifier
+    Row(Modifier
             .heightIn(min = 48.dp)
             .clip(RoundedCornerShape(24.dp))
             .clickable(role = Role.Button, onClick = onClick)
@@ -187,8 +178,7 @@ private fun QuietTextAction(
 /** Bottom progress dots plus the single chapter call to action. */
 @Composable
 private fun ColumnScope.ChapterFooter(chapter: Int, onNext: () -> Unit) {
-    Column(
-        Modifier
+    Column(Modifier
             .fillMaxWidth()
             .padding(horizontal = 22.dp)
             .padding(top = 6.dp, bottom = 14.dp),
@@ -198,9 +188,9 @@ private fun ColumnScope.ChapterFooter(chapter: Int, onNext: () -> Unit) {
         ProgressDots(chapter)
 
         when (chapter) {
-            0 -> GradientCta(("Explore KNOUX" ar "استكشف KNOUX").localized(), onNext, "onboarding-cta-1")
-            1 -> GradientCta(("Next" ar "التالي").localized(), onNext, "onboarding-cta-2")
-            else -> GradientCta(("Start your journey with KNOUX AI" ar "ابدأ رحلتك مع KNOUX AI").localized(), onNext, "onboarding-cta-3")
+            0 -> GradientCta((Copy(R.string.k_explore_knoux)).localized(), onNext, "onboarding-cta-1")
+            1 -> GradientCta((Copy(R.string.k_next)).localized(), onNext, "onboarding-cta-2")
+            else -> GradientCta((Copy(R.string.k_start_your_journey_with_knoux_ai)).localized(), onNext, "onboarding-cta-3")
         }
     }
 }
@@ -211,13 +201,11 @@ private fun ProgressDots(active: Int) {
         repeat(3) { index ->
             val on = index == active
             val width by animateDpAsState(if (on) 26.dp else 8.dp, tween(260), label = "dot width")
-            Box(
-                Modifier
+            Box(Modifier
                     .height(8.dp)
                     .width(width)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(
-                        if (on) Brush.horizontalGradient(listOf(Cyan, Color(0xff5ce8ff)))
+                    .background(if (on) Brush.horizontalGradient(listOf(Cyan, Color(0xff5ce8ff)))
                         else Brush.horizontalGradient(listOf(Mist.copy(alpha = .34f), Mist.copy(alpha = .34f)))
                     )
                     .testTag("onboarding-dot-$index")
@@ -238,8 +226,7 @@ private fun GradientCta(label: String, onClick: () -> Unit, tag: String? = null)
     val motion = LocalPreviewMotion.current
     val pulse = if (motion) {
         val transition = rememberInfiniteTransition(label = "cta pulse")
-        transition.animateFloat(
-            0f, 1f,
+        transition.animateFloat(0f, 1f,
             infiniteRepeatable(tween(2800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
             label = "cta glow"
         )
@@ -249,8 +236,7 @@ private fun GradientCta(label: String, onClick: () -> Unit, tag: String? = null)
         transition.animateFloat(0f, 1f, infiniteRepeatable(tween(3800, easing = LinearEasing)), label = "cta travel")
     } else null
 
-    Row(
-        Modifier
+    Row(Modifier
             .fillMaxWidth()
             .heightIn(min = 56.dp)
             .then(if (tag != null) Modifier.testTag(tag) else Modifier)
@@ -277,8 +263,7 @@ private fun GradientCta(label: String, onClick: () -> Unit, tag: String? = null)
 
 @Composable
 private fun ChapterAwakening() {
-    Column(
-        Modifier
+    Column(Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp)
@@ -292,21 +277,18 @@ private fun ChapterAwakening() {
 
         Spacer(Modifier.height(10.dp))
 
-        GradientHeadline(
-            lead = ("Welcome to " ar "مرحبًا بك في ").localized(),
+        GradientHeadline(lead = (Copy(R.string.k_welcome_to)).localized(),
             accent = "KNOUX AI",
             size = 27
         )
 
         Spacer(Modifier.height(14.dp))
 
-        OutlinePill(("Intelligence. Beautifully engineered." ar "ذكاء صُمّم بإتقان.").localized())
+        OutlinePill((Copy(R.string.k_intelligence_beautifully_engineered)).localized())
 
         Spacer(Modifier.height(16.dp))
 
-        Label(
-            ("Begin your journey into a world that is smarter, stronger and more beautiful." ar
-                "ابدأ رحلتك داخل عالم أكثر ذكاءً وقوة وجمالاً.").localized(),
+        Label((Copy(R.string.k_begin_your_journey_into_a_world_that_is_smarter_stronger)).localized(),
             13, Mist.copy(alpha = .82f),
             modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
             align = TextAlign.Center
@@ -328,8 +310,7 @@ private fun ChapterAwakening() {
  */
 private data class OrbitSlot(val page: Page, val fx: Float, val fy: Float, val tint: Color)
 
-private val ORBIT_SLOTS = listOf(
-    OrbitSlot(Page.PRIVACY, 0.285f, 0.100f, Color(0xffa86bff)),
+private val ORBIT_SLOTS = listOf(OrbitSlot(Page.PRIVACY, 0.285f, 0.100f, Color(0xffa86bff)),
     OrbitSlot(Page.DUPLICATES, 0.715f, 0.100f, Color(0xffffb02e)),
     OrbitSlot(Page.HOME, 0.140f, 0.300f, Color(0xff3fa9ff)),
     OrbitSlot(Page.BATTERY, 0.860f, 0.300f, Color(0xff22e6a4)),
@@ -350,8 +331,7 @@ private fun orbitGlyph(page: Page): Mark = when (page) {
 
 @Composable
 private fun ChapterEcosystem() {
-    Column(
-        Modifier
+    Column(Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 12.dp)
@@ -362,22 +342,17 @@ private fun ChapterEcosystem() {
 
         Spacer(Modifier.height(2.dp))
 
-        Text(
-            ("One intelligent ecosystem." ar "منظومة ذكية واحدة.").localized(),
+        Text((Copy(R.string.k_one_intelligent_ecosystem)).localized(),
             modifier = Modifier.fillMaxWidth(),
-            style = TextStyle(
-                fontSize = 25.sp,
+            style = TextStyle(fontSize = 25.sp,
                 lineHeight = 30.sp,
                 fontFamily = if (LocalArabic.current) FontFamily.Default else DisplayFace,
-                fontWeight = FontWeight.ExtraBold,
-                fontStyle = FontStyle.Italic,
-                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
                 color = Chalk
             )
         )
         Spacer(Modifier.height(4.dp))
-        Label(
-            ("10 intelligent services, one unified platform." ar "10 خدمات ذكية، منصة واحدة متكاملة.").localized(),
+        Label((Copy(R.string.k_t_10_intelligent_services_one_unified_platform)).localized(),
             13, Mist.copy(alpha = .84f),
             modifier = Modifier.fillMaxWidth(),
             align = TextAlign.Center
@@ -394,8 +369,7 @@ private fun ChapterEcosystem() {
 @Composable
 private fun ServiceOrbit() {
     val motion = LocalPreviewMotion.current
-    BoxWithConstraints(
-        Modifier
+    BoxWithConstraints(Modifier
             .fillMaxWidth()
             .aspectRatio(0.70f)
     ) {
@@ -421,10 +395,8 @@ private fun ServiceOrbit() {
                     val midY = (from.y + centre.y) / 2f
                     quadraticTo(from.x, midY, midX, midY)
                 }
-                drawPath(
-                    path = path,
-                    brush = Brush.linearGradient(
-                        listOf(slot.tint.copy(alpha = .55f), Cyan.copy(alpha = .10f)),
+                drawPath(path = path,
+                    brush = Brush.linearGradient(listOf(slot.tint.copy(alpha = .55f), Cyan.copy(alpha = .10f)),
                         from, centre
                     ),
                     style = Stroke(1.2.dp.toPx(), cap = StrokeCap.Round)
@@ -433,8 +405,7 @@ private fun ServiceOrbit() {
         }
 
         ORBIT_SLOTS.forEach { slot ->
-            Box(
-                Modifier
+            Box(Modifier
                     .offset(x = w * slot.fx - cardW / 2, y = h * slot.fy - cardH / 2)
                     .size(cardW, cardH)
                     .graphicsLayer { alpha = rise.value; translationY = (1f - rise.value) * 14f }
@@ -453,10 +424,8 @@ private fun ServiceTile(slot: OrbitSlot) {
     val motion = LocalPreviewMotion.current
     val glow = if (motion) {
         val transition = rememberInfiniteTransition(label = "tile")
-        transition.animateFloat(
-            0f, 1f,
-            infiniteRepeatable(
-                tween(2400 + (slot.page.ordinal % 5) * 220, easing = FastOutSlowInEasing),
+        transition.animateFloat(0f, 1f,
+            infiniteRepeatable(tween(2400 + (slot.page.ordinal % 5) * 220, easing = FastOutSlowInEasing),
                 RepeatMode.Reverse
             ),
             label = "tile glow"
@@ -464,45 +433,35 @@ private fun ServiceTile(slot: OrbitSlot) {
     } else null
     val breath = glow?.value ?: .4f
 
-    Box(
-        Modifier
+    Box(Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        slot.tint.copy(alpha = .20f + .10f * breath),
+            .background(Brush.verticalGradient(listOf(slot.tint.copy(alpha = .20f + .10f * breath),
                         Color(0xff150c37).copy(alpha = .92f),
                         Color(0xff0b0524)
                     )
                 ),
                 shape
             )
-            .border(
-                1.dp,
-                Brush.linearGradient(
-                    listOf(slot.tint.copy(alpha = .90f), slot.tint.copy(alpha = .22f), Color.White.copy(alpha = .30f))
+            .border(1.dp,
+                Brush.linearGradient(listOf(slot.tint.copy(alpha = .90f), slot.tint.copy(alpha = .22f), Color.White.copy(alpha = .30f))
                 ),
                 shape
             ),
         contentAlignment = Alignment.Center
     ) {
         Canvas(Modifier.fillMaxSize()) {
-            drawCircle(
-                Brush.radialGradient(
-                    listOf(slot.tint.copy(alpha = .26f + .16f * breath), Color.Transparent),
+            drawCircle(Brush.radialGradient(listOf(slot.tint.copy(alpha = .26f + .16f * breath), Color.Transparent),
                     Offset(size.width * .5f, size.height * .22f), size.width * .62f
                 ),
                 size.width * .62f, Offset(size.width * .5f, size.height * .22f)
             )
         }
-        Column(
-            Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 6.dp),
+        Column(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Glyph(orbitGlyph(slot.page), Modifier.size(24.dp), slot.tint, true)
-            Label(
-                slot.page.title.localized(), 9, Chalk, FontWeight.SemiBold,
+            Label(slot.page.title.localized(), 9, Chalk, FontWeight.SemiBold,
                 modifier = Modifier.fillMaxWidth(),
                 align = TextAlign.Center,
                 maxLines = 2
@@ -516,13 +475,11 @@ private fun ServiceTile(slot: OrbitSlot) {
 private fun Nucleus(modifier: Modifier = Modifier) {
     val motion = LocalPreviewMotion.current
     val transition = rememberInfiniteTransition(label = "nucleus")
-    val pulse = if (motion) transition.animateFloat(
-        0f, 1f,
+    val pulse = if (motion) transition.animateFloat(0f, 1f,
         infiniteRepeatable(tween(3000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "nucleus pulse"
     ) else null
-    val spin = if (motion) transition.animateFloat(
-        0f, 360f,
+    val spin = if (motion) transition.animateFloat(0f, 360f,
         infiniteRepeatable(tween(16000, easing = LinearEasing)),
         label = "nucleus spin"
     ) else null
@@ -536,25 +493,19 @@ private fun Nucleus(modifier: Modifier = Modifier) {
         Canvas(Modifier.fillMaxSize()) {
             val c = Offset(size.width / 2f, size.height / 2f)
             val r = size.minDimension * .34f
-            drawCircle(
-                Brush.radialGradient(
-                    listOf(Violet.copy(alpha = .34f + .14f * breath), Cyan.copy(alpha = .12f), Color.Transparent),
+            drawCircle(Brush.radialGradient(listOf(Violet.copy(alpha = .34f + .14f * breath), Cyan.copy(alpha = .12f), Color.Transparent),
                     c, r * 1.75f
                 ), r * 1.75f, c
             )
-            drawCircle(
-                Brush.radialGradient(
-                    listOf(Color(0xff3a1a86).copy(alpha = .95f), Color(0xff150a3c), Color(0xff06010f)),
+            drawCircle(Brush.radialGradient(listOf(Color(0xff3a1a86).copy(alpha = .95f), Color(0xff150a3c), Color(0xff06010f)),
                     c, r * 1.2f
                 ), r, c
             )
-            drawCircle(
-                Brush.sweepGradient(listOf(Cyan, Violet, Pink, Color(0xff7a5bff), Cyan)),
+            drawCircle(Brush.sweepGradient(listOf(Cyan, Violet, Pink, Color(0xff7a5bff), Cyan)),
                 r, c, style = Stroke(1.5.dp.toPx())
             )
             rotate(spin?.value ?: 0f, c) {
-                drawOval(
-                    Cyan.copy(alpha = .55f),
+                drawOval(Cyan.copy(alpha = .55f),
                     topLeft = Offset(c.x - r * 1.42f, c.y - r * .30f),
                     size = Size(r * 2.84f, r * .60f),
                     style = Stroke(1.2.dp.toPx())
@@ -562,9 +513,7 @@ private fun Nucleus(modifier: Modifier = Modifier) {
             }
             // Pedestal
             val py = c.y + r * 1.30f
-            drawOval(
-                Brush.radialGradient(
-                    listOf(Cyan.copy(alpha = .55f + .2f * breath), Violet.copy(alpha = .26f), Color.Transparent),
+            drawOval(Brush.radialGradient(listOf(Cyan.copy(alpha = .55f + .2f * breath), Violet.copy(alpha = .26f), Color.Transparent),
                     Offset(c.x, py), r * 1.25f
                 ),
                 topLeft = Offset(c.x - r * 1.25f, py - r * .22f),
@@ -583,8 +532,7 @@ private fun Nucleus(modifier: Modifier = Modifier) {
 private fun ChapterCreator(onEnter: () -> Unit) {
     val context = LocalContext.current
 
-    Column(
-        Modifier
+    Column(Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp)
@@ -599,54 +547,41 @@ private fun ChapterCreator(onEnter: () -> Unit) {
 
         Spacer(Modifier.height(16.dp))
 
-        DividedCaption(("A KNOUX product" ar "أحد منتجات KNOUX").localized())
+        DividedCaption((Copy(R.string.k_a_knoux_product)).localized())
 
         Spacer(Modifier.height(6.dp))
 
-        Text(
-            "KNOUX AI",
+        Text("KNOUX AI",
             modifier = Modifier.fillMaxWidth(),
-            style = TextStyle(
-                fontSize = 38.sp,
+            style = TextStyle(fontSize = 38.sp,
                 lineHeight = 42.sp,
                 fontFamily = DisplayFace,
-                fontWeight = FontWeight.ExtraBold,
-                fontStyle = FontStyle.Italic,
-                textAlign = TextAlign.Center,
-                brush = Brush.horizontalGradient(
-                    listOf(Color(0xfff0e6ff), Color(0xffc9a8ff), Color(0xffb06bff), Color(0xffe07bff))
+                fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
+                brush = Brush.horizontalGradient(listOf(Color(0xfff0e6ff), Color(0xffc9a8ff), Color(0xffb06bff), Color(0xffe07bff))
                 )
             )
         )
 
         Spacer(Modifier.height(10.dp))
 
-        Text(
-            buildAnnotatedString {
-                withStyle(SpanStyle(color = Chalk)) { append(("A vision of engineering. " ar "رؤية هندسية. ").localized()) }
-                withStyle(
-                    SpanStyle(
-                        brush = Brush.horizontalGradient(
-                            listOf(Color(0xffff5cd6), Color(0xffc65bff), Color(0xff9b8bff))
+        Text(buildAnnotatedString {
+                withStyle(SpanStyle(color = Chalk)) { append((Copy(R.string.k_a_vision_of_engineering)).localized()) }
+                withStyle(SpanStyle(brush = Brush.horizontalGradient(listOf(Color(0xffff5cd6), Color(0xffc65bff), Color(0xff9b8bff))
                         )
                     )
-                ) { append(("An experience built for you." ar "تجربة صُممت من أجلك.").localized()) }
+                ) { append((Copy(R.string.k_an_experience_built_for_you)).localized()) }
             },
             modifier = Modifier.fillMaxWidth(),
-            style = TextStyle(
-                fontSize = 21.sp,
+            style = TextStyle(fontSize = 21.sp,
                 lineHeight = 27.sp,
                 fontFamily = if (LocalArabic.current) FontFamily.Default else DisplayFace,
-                fontWeight = FontWeight.ExtraBold,
-                fontStyle = FontStyle.Italic,
-                textAlign = TextAlign.Center
+                fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center
             )
         )
 
         Spacer(Modifier.height(8.dp))
 
-        Label(
-            ("Discover the innovation behind KNOUX AI." ar "اكتشف الابتكار الذي يقف خلف KNOUX AI.").localized(),
+        Label((Copy(R.string.k_discover_the_innovation_behind_knoux_ai)).localized(),
             13, Mist.copy(alpha = .82f),
             modifier = Modifier.fillMaxWidth(),
             align = TextAlign.Center
@@ -677,44 +612,33 @@ private fun FounderCard(onOpenSite: () -> Unit) {
     } else null
 
     val shape = RoundedCornerShape(24.dp)
-    Box(
-        Modifier
+    Box(Modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(
-                Brush.verticalGradient(
-                    listOf(Color(0xff2a1150).copy(alpha = .94f), Color(0xff120735).copy(alpha = .96f), Color(0xff1b0a38))
+            .background(Brush.verticalGradient(listOf(Color(0xff2a1150).copy(alpha = .94f), Color(0xff120735).copy(alpha = .96f), Color(0xff1b0a38))
                 ),
                 shape
             )
     ) {
         Canvas(Modifier.matchParentSize()) {
             val travel = (shimmer?.value ?: 0f) * size.width * 1.5f - size.width * .25f
-            drawRoundRect(
-                Brush.linearGradient(
-                    listOf(Color.Transparent, Gold.copy(alpha = .30f), Color.Transparent),
+            drawRoundRect(Brush.linearGradient(listOf(Color.Transparent, Gold.copy(alpha = .30f), Color.Transparent),
                     start = Offset(travel - size.width * .22f, 0f),
                     end = Offset(travel + size.width * .22f, size.height)
                 ),
                 cornerRadius = androidx.compose.ui.geometry.CornerRadius(24.dp.toPx())
             )
-            drawCircle(
-                Brush.radialGradient(
-                    listOf(Gold.copy(alpha = .18f), Color.Transparent),
+            drawCircle(Brush.radialGradient(listOf(Gold.copy(alpha = .18f), Color.Transparent),
                     Offset(0f, size.height * .5f), size.width * .40f
                 ),
                 0f, Offset(0f, size.height * .5f)
             )
         }
 
-        Box(
-            Modifier
+        Box(Modifier
                 .matchParentSize()
-                .border(
-                    width = 1.4.dp,
-                    brush = Brush.linearGradient(
-                        listOf(
-                            Gold.copy(alpha = .95f), Color(0xffb06bff),
+                .border(width = 1.4.dp,
+                    brush = Brush.linearGradient(listOf(Gold.copy(alpha = .95f), Color(0xffb06bff),
                             Color.White.copy(alpha = .85f), Gold.copy(alpha = .80f)
                         )
                     ),
@@ -722,13 +646,11 @@ private fun FounderCard(onOpenSite: () -> Unit) {
                 )
         )
 
-        Column(
-            Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
+        Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Row(
-                    Modifier.fillMaxWidth(),
+                Row(Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.Start) {
@@ -736,13 +658,10 @@ private fun FounderCard(onOpenSite: () -> Unit) {
                         Spacer(Modifier.height(2.dp))
                         Label("Founder & Software Engineer", 10, Mist.copy(alpha = .82f), maxLines = 2)
                     }
-                    Box(
-                        Modifier
+                    Box(Modifier
                             .width(1.dp)
                             .height(34.dp)
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(Color.Transparent, Gold.copy(alpha = .90f), Color.Transparent)
+                            .background(Brush.verticalGradient(listOf(Color.Transparent, Gold.copy(alpha = .90f), Color.Transparent)
                                 )
                             )
                     )
@@ -759,13 +678,12 @@ private fun FounderCard(onOpenSite: () -> Unit) {
 
             Spacer(Modifier.height(12.dp))
 
-            ComposedCaption(("Founder of KNOUX" ar "مؤسس KNOUX").localized())
+            ComposedCaption((Copy(R.string.k_founder_of_knoux)).localized())
 
             Spacer(Modifier.height(10.dp))
 
             // Website chip — a real, 48dp-tall interactive target.
-            Row(
-                Modifier
+            Row(Modifier
                     .heightIn(min = 48.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .clickable(role = Role.Button, onClick = onOpenSite)
@@ -791,8 +709,7 @@ private fun BrandLockup(compact: Boolean = false) {
     val wordSize = if (compact) 20 else 24
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(7.dp)
             ) {
                 Glyph(Mark.K, Modifier.size(if (compact) 26.dp else 30.dp), Chalk, true)
@@ -802,16 +719,13 @@ private fun BrandLockup(compact: Boolean = false) {
             Canvas(Modifier.width(150.dp).height(7.dp)) {
                 val path = Path().apply {
                     moveTo(4f, size.height * .42f)
-                    cubicTo(
-                        size.width * .30f, size.height * .10f,
+                    cubicTo(size.width * .30f, size.height * .10f,
                         size.width * .58f, size.height * .88f,
                         size.width - 4f, size.height * .32f
                     )
                 }
-                drawPath(
-                    path,
-                    Brush.horizontalGradient(
-                        listOf(Color(0xffff4ff0), Violet, Color(0xff5a6bff), Cyan)
+                drawPath(path,
+                    Brush.horizontalGradient(listOf(Color(0xffff4ff0), Violet, Color(0xff5a6bff), Cyan)
                     ),
                     style = Stroke(1.5.dp.toPx(), cap = StrokeCap.Round)
                 )
@@ -825,20 +739,17 @@ private fun BrandLockup(compact: Boolean = false) {
  * chapters 01 and 03.
  */
 @Composable
-private fun HeroOrb(
-    modifier: Modifier = Modifier,
+private fun HeroOrb(modifier: Modifier = Modifier,
     glyphFraction: Float = .50f,
     pedestal: Boolean = true
 ) {
     val motion = LocalPreviewMotion.current
     val transition = rememberInfiniteTransition(label = "hero orb")
-    val pulse = if (motion) transition.animateFloat(
-        0f, 1f,
+    val pulse = if (motion) transition.animateFloat(0f, 1f,
         infiniteRepeatable(tween(3200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "orb breath"
     ) else null
-    val spin = if (motion) transition.animateFloat(
-        0f, 360f,
+    val spin = if (motion) transition.animateFloat(0f, 360f,
         infiniteRepeatable(tween(19000, easing = LinearEasing)),
         label = "orb spin"
     ) else null
@@ -849,17 +760,13 @@ private fun HeroOrb(
             val c = Offset(size.width / 2f, size.height * .48f)
             val r = size.minDimension * .34f
 
-            drawCircle(
-                Brush.radialGradient(
-                    listOf(Pink.copy(alpha = .20f + .10f * breath), Violet.copy(alpha = .16f), Cyan.copy(alpha = .08f), Color.Transparent),
+            drawCircle(Brush.radialGradient(listOf(Pink.copy(alpha = .20f + .10f * breath), Violet.copy(alpha = .16f), Cyan.copy(alpha = .08f), Color.Transparent),
                     c, r * 1.85f
                 ), r * 1.85f, c
             )
 
             // Glass sphere: dark interior with a violet floor and cyan shoulder.
-            drawCircle(
-                Brush.radialGradient(
-                    0f to Violet.copy(alpha = .26f),
+            drawCircle(Brush.radialGradient(0f to Violet.copy(alpha = .26f),
                     .55f to Color(0xff1c0d4a).copy(alpha = .92f),
                     1f to Color(0xff05010f),
                     center = Offset(c.x - r * .30f, c.y - r * .34f),
@@ -867,32 +774,26 @@ private fun HeroOrb(
                 ), r, c
             )
 
-            drawCircle(
-                Brush.sweepGradient(
-                    listOf(Cyan, Color(0xff7a5bff), Pink, Violet, Cyan)
+            drawCircle(Brush.sweepGradient(listOf(Cyan, Color(0xff7a5bff), Pink, Violet, Cyan)
                 ), r, c, style = Stroke(1.4.dp.toPx())
             )
 
             // Top-left specular so the sphere reads as glass, not a flat disc.
-            drawCircle(
-                Brush.radialGradient(
-                    listOf(Color.White.copy(alpha = .30f), Color.Transparent),
+            drawCircle(Brush.radialGradient(listOf(Color.White.copy(alpha = .30f), Color.Transparent),
                     Offset(c.x - r * .36f, c.y - r * .44f), r * .60f
                 ), r * .60f, Offset(c.x - r * .36f, c.y - r * .44f)
             )
 
             // Orbit ribbons.
             rotate(spin?.value ?: 0f, c) {
-                drawOval(
-                    Cyan.copy(alpha = .58f),
+                drawOval(Cyan.copy(alpha = .58f),
                     topLeft = Offset(c.x - r * 1.34f, c.y - r * .26f),
                     size = Size(r * 2.68f, r * .52f),
                     style = Stroke(1.5.dp.toPx(), cap = StrokeCap.Round)
                 )
             }
             rotate(-(spin?.value ?: 0f) * .72f, c) {
-                drawOval(
-                    Pink.copy(alpha = .46f),
+                drawOval(Pink.copy(alpha = .46f),
                     topLeft = Offset(c.x - r * 1.16f, c.y - r * .20f),
                     size = Size(r * 2.32f, r * .40f),
                     style = Stroke(1.1.dp.toPx(), cap = StrokeCap.Round)
@@ -901,16 +802,13 @@ private fun HeroOrb(
 
             if (pedestal) {
                 val py = c.y + r * 1.24f
-                drawOval(
-                    Brush.radialGradient(
-                        listOf(Cyan.copy(alpha = .58f + .18f * breath), Violet.copy(alpha = .28f), Color.Transparent),
+                drawOval(Brush.radialGradient(listOf(Cyan.copy(alpha = .58f + .18f * breath), Violet.copy(alpha = .28f), Color.Transparent),
                         Offset(c.x, py), r * 1.20f
                     ),
                     topLeft = Offset(c.x - r * 1.20f, py - r * .22f),
                     size = Size(r * 2.40f, r * .44f)
                 )
-                drawOval(
-                    Cyan.copy(alpha = .70f),
+                drawOval(Cyan.copy(alpha = .70f),
                     topLeft = Offset(c.x - r * .74f, py - r * .10f),
                     size = Size(r * 1.48f, r * .20f),
                     style = Stroke(1.2.dp.toPx())
@@ -925,25 +823,18 @@ private fun HeroOrb(
 /** White lead + gradient accent headline, a single bidi-correct text run. */
 @Composable
 private fun GradientHeadline(lead: String, accent: String, size: Int) {
-    Text(
-        buildAnnotatedString {
+    Text(buildAnnotatedString {
             withStyle(SpanStyle(color = Chalk)) { append(lead) }
-            withStyle(
-                SpanStyle(
-                    brush = Brush.horizontalGradient(
-                        listOf(Color(0xfff4ecff), Color(0xffb9dcff), Color(0xff4ff0ff))
+            withStyle(SpanStyle(brush = Brush.horizontalGradient(listOf(Color(0xfff4ecff), Color(0xffb9dcff), Color(0xff4ff0ff))
                     )
                 )
             ) { append(accent) }
         },
         modifier = Modifier.fillMaxWidth(),
-        style = TextStyle(
-            fontSize = size.sp,
+        style = TextStyle(fontSize = size.sp,
             lineHeight = (size * 1.14f).sp,
             fontFamily = if (LocalArabic.current) FontFamily.Default else DisplayFace,
-            fontWeight = FontWeight.ExtraBold,
-            fontStyle = FontStyle.Italic,
-            textAlign = TextAlign.Center
+            fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center
         )
     )
 }
@@ -952,19 +843,14 @@ private fun GradientHeadline(lead: String, accent: String, size: Int) {
 @Composable
 private fun OutlinePill(label: String) {
     val shape = RoundedCornerShape(22.dp)
-    Box(
-        Modifier
+    Box(Modifier
             .clip(shape)
-            .background(
-                Brush.horizontalGradient(
-                    listOf(Color(0xff2b1560).copy(alpha = .55f), Color(0xff183a6b).copy(alpha = .45f))
+            .background(Brush.horizontalGradient(listOf(Color(0xff2b1560).copy(alpha = .55f), Color(0xff183a6b).copy(alpha = .45f))
                 ),
                 shape
             )
-            .border(
-                1.dp,
-                Brush.horizontalGradient(
-                    listOf(Violet.copy(alpha = .95f), Cyan.copy(alpha = .85f), Color.White.copy(alpha = .35f))
+            .border(1.dp,
+                Brush.horizontalGradient(listOf(Violet.copy(alpha = .95f), Cyan.copy(alpha = .85f), Color.White.copy(alpha = .35f))
                 ),
                 shape
             )
@@ -977,8 +863,7 @@ private fun OutlinePill(label: String) {
 /** Small caption flanked by tapered rules, e.g. "— أحد منتجات KNOUX —". */
 @Composable
 private fun DividedCaption(label: String) {
-    Row(
-        Modifier.fillMaxWidth(),
+    Row(Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -990,12 +875,9 @@ private fun DividedCaption(label: String) {
 
 @Composable
 private fun Rule(modifier: Modifier = Modifier) {
-    Box(
-        modifier
+    Box(modifier
             .height(1.dp)
-            .background(
-                Brush.horizontalGradient(
-                    listOf(Color.Transparent, Gold.copy(alpha = .55f), Color.Transparent)
+            .background(Brush.horizontalGradient(listOf(Color.Transparent, Gold.copy(alpha = .55f), Color.Transparent)
                 )
             )
     )
@@ -1004,14 +886,12 @@ private fun Rule(modifier: Modifier = Modifier) {
 /** Centre caption with gold rules and a hairline capsule, used inside the founder card. */
 @Composable
 private fun ComposedCaption(label: String) {
-    Row(
-        Modifier.fillMaxWidth(),
+    Row(Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Rule(Modifier.weight(1f))
-        Box(
-            Modifier
+        Box(Modifier
                 .clip(RoundedCornerShape(14.dp))
                 .border(1.dp, Gold.copy(alpha = .62f), RoundedCornerShape(14.dp))
                 .padding(horizontal = 12.dp, vertical = 4.dp)
@@ -1031,46 +911,37 @@ private fun Atmosphere() {
     val motion = LocalPreviewMotion.current
     val drift = if (motion) {
         val transition = rememberInfiniteTransition(label = "ribbon")
-        transition.animateFloat(
-            0f, 1f,
+        transition.animateFloat(0f, 1f,
             infiniteRepeatable(tween(9000, easing = LinearEasing)),
             label = "ribbon drift"
         )
     } else null
 
     Canvas(Modifier.fillMaxSize()) {
-        ribbon(
-            colour = listOf(Pink.copy(alpha = .55f), Violet.copy(alpha = .30f), Color.Transparent),
+        ribbon(colour = listOf(Pink.copy(alpha = .55f), Violet.copy(alpha = .30f), Color.Transparent),
             span = 1.35f,
             shift = drift?.value ?: 0f
         )
-        ribbon(
-            colour = listOf(Cyan.copy(alpha = .40f), Color(0xff3a6bff).copy(alpha = .22f), Color.Transparent),
+        ribbon(colour = listOf(Cyan.copy(alpha = .40f), Color(0xff3a6bff).copy(alpha = .22f), Color.Transparent),
             span = -1.15f,
             shift = 1f - (drift?.value ?: 0f)
         )
         // Soft corner bloom, both sides, as the references show.
-        drawCircle(
-            Brush.radialGradient(
-                listOf(Violet.copy(alpha = .30f), Color.Transparent),
+        drawCircle(Brush.radialGradient(listOf(Violet.copy(alpha = .30f), Color.Transparent),
                 Offset(size.width * .06f, size.height * .06f), size.width * .70f
             ), size.width * .70f, Offset(size.width * .06f, size.height * .06f)
         )
-        drawCircle(
-            Brush.radialGradient(
-                listOf(Cyan.copy(alpha = .14f), Color.Transparent),
+        drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .14f), Color.Transparent),
                 Offset(size.width * .96f, size.height * .88f), size.width * .62f
             ), size.width * .62f, Offset(size.width * .96f, size.height * .88f)
         )
         // Fine dust.
-        val dust = listOf(
-            Offset(.16f, .12f), Offset(.28f, .20f), Offset(.10f, .34f), Offset(.40f, .08f),
+        val dust = listOf(Offset(.16f, .12f), Offset(.28f, .20f), Offset(.10f, .34f), Offset(.40f, .08f),
             Offset(.06f, .58f), Offset(.22f, .70f), Offset(.90f, .18f), Offset(.84f, .36f),
             Offset(.94f, .52f), Offset(.76f, .64f), Offset(.88f, .78f), Offset(.66f, .90f)
         )
         dust.forEachIndexed { i, p ->
-            drawCircle(
-                Color.White.copy(alpha = .10f + .05f * (i % 3)),
+            drawCircle(Color.White.copy(alpha = .10f + .05f * (i % 3)),
                 1.2f.dp.toPx(),
                 Offset(size.width * p.x, size.height * p.y)
             )
@@ -1085,13 +956,11 @@ private fun DrawScope.ribbon(colour: List<Color>, span: Float, shift: Float) {
     val startY = if (span > 0) -h * .04f + h * .05f * shift else h * 1.02f - h * .05f * shift
     val path = Path().apply {
         moveTo(-w * .10f, startY)
-        cubicTo(
-            w * .28f, startY + h * .12f * span,
+        cubicTo(w * .28f, startY + h * .12f * span,
             w * .42f, startY + h * .20f * span,
             w * .60f, startY + h * .10f * span
         )
-        cubicTo(
-            w * .82f, startY - h * .02f * span,
+        cubicTo(w * .82f, startY - h * .02f * span,
             w * .50f, startY + h * .26f * span,
             w * 1.10f, startY + h * .16f * span
         )

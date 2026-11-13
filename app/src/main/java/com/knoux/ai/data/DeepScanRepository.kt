@@ -1,7 +1,8 @@
 package com.knoux.ai.data
 
+import com.knoux.ai.R
+
 import com.knoux.ai.Copy
-import com.knoux.ai.ar
 import com.knoux.ai.visual.DeepScanModule
 import com.knoux.ai.visual.DeepScanOutcome
 import com.knoux.ai.visual.DeepScanProgress
@@ -58,11 +59,9 @@ internal class DeepScanRepository(
         DeepScanModule(
             id = "app_cache",
             order = 0,
-            title = "KNOUX cache & temp" ar "ذاكرة KNOUX المؤقتة",
-            shortTitle = "Cache" ar "مؤقتة",
-            description = "KNOUX's own cache, code cache and external cache".ar(
-                "ذاكرة KNOUX وذاكرتها البرمجية والذاكرة الخارجية"
-            ),
+            title = Copy(R.string.k_knoux_cache_temp),
+            shortTitle = Copy(R.string.k_cache),
+            description = Copy(R.string.k_knoux_s_own_cache_code_cache_and_external_cache),
             mark = com.knoux.ai.Mark.BROOM,
             scopes = setOf(AccessScope.APP_CACHE),
             defaultEnabled = true,
@@ -70,9 +69,9 @@ internal class DeepScanRepository(
         DeepScanModule(
             id = "media_images",
             order = 1,
-            title = "Photos & images" ar "الصور",
-            shortTitle = "Photos" ar "صور",
-            description = "Images visible through MediaStore".ar("الصور الظاهرة عبر مكتبة الوسائط"),
+            title = Copy(R.string.k_photos_images),
+            shortTitle = Copy(R.string.k_photos),
+            description = Copy(R.string.k_images_visible_through_mediastore),
             mark = com.knoux.ai.Mark.PICTURES,
             scopes = setOf(AccessScope.MEDIA_IMAGES),
             defaultEnabled = true,
@@ -80,9 +79,9 @@ internal class DeepScanRepository(
         DeepScanModule(
             id = "media_video",
             order = 2,
-            title = "Videos" ar "الفيديوهات",
-            shortTitle = "Video" ar "فيديو",
-            description = "Videos visible through MediaStore".ar("الفيديوهات الظاهرة عبر مكتبة الوسائط"),
+            title = Copy(R.string.k_videos),
+            shortTitle = Copy(R.string.k_video),
+            description = Copy(R.string.k_videos_visible_through_mediastore),
             mark = com.knoux.ai.Mark.VIDEO,
             scopes = setOf(AccessScope.MEDIA_VIDEO),
             defaultEnabled = true,
@@ -90,9 +89,9 @@ internal class DeepScanRepository(
         DeepScanModule(
             id = "documents",
             order = 3,
-            title = "Granted folders" ar "المجلدات الممنوحة",
-            shortTitle = "Folders" ar "مجلدات",
-            description = "Files inside folders you granted to KNOUX".ar("ملفات داخل المجلدات التي منحتها لـ KNOUX"),
+            title = Copy(R.string.k_granted_folders),
+            shortTitle = Copy(R.string.k_folders),
+            description = Copy(R.string.k_files_inside_folders_you_granted_to_knoux),
             mark = com.knoux.ai.Mark.FOLDER,
             scopes = setOf(AccessScope.SAF_TREE),
             defaultEnabled = true,
@@ -100,11 +99,9 @@ internal class DeepScanRepository(
         DeepScanModule(
             id = "large_files",
             order = 4,
-            title = "Large files (100 MB+)" ar "ملفات كبيرة (١٠٠ م.ب+)",
-            shortTitle = "Large" ar "كبيرة",
-            description = "Single files at or above 100 MB in the readable scopes".ar(
-                "ملفات فردية بحجم ١٠٠ م.ب أو أكثر داخل النطاقات المقروءة"
-            ),
+            title = Copy(R.string.k_large_files_100_mb),
+            shortTitle = Copy(R.string.k_large),
+            description = Copy(R.string.k_single_files_at_or_above_100_mb_in_the_readable_scopes),
             mark = com.knoux.ai.Mark.DISK,
             scopes = setOf(AccessScope.MEDIA_IMAGES, AccessScope.MEDIA_VIDEO, AccessScope.SAF_TREE),
             defaultEnabled = true,
@@ -112,11 +109,9 @@ internal class DeepScanRepository(
         DeepScanModule(
             id = "old_files",
             order = 5,
-            title = "Untouched for a year" ar "لم تُلمس منذ سنة",
-            shortTitle = "Old" ar "قديمة",
-            description = "Files whose own timestamp is older than a year".ar(
-                "ملفات تاريخها المسجّل أقدم من سنة"
-            ),
+            title = Copy(R.string.k_untouched_for_a_year),
+            shortTitle = Copy(R.string.k_old),
+            description = Copy(R.string.k_files_whose_own_timestamp_is_older_than_a_year),
             mark = com.knoux.ai.Mark.CALENDAR,
             scopes = setOf(AccessScope.MEDIA_IMAGES, AccessScope.MEDIA_VIDEO, AccessScope.SAF_TREE),
             defaultEnabled = false,
@@ -124,11 +119,9 @@ internal class DeepScanRepository(
         DeepScanModule(
             id = "duplicates",
             order = 6,
-            title = "Byte-identical duplicates" ar "ملفات مكررة بالبايت",
-            shortTitle = "Duplicates" ar "مكررة",
-            description = "Full SHA-256 of every same-size file; one keeper is always protected".ar(
-                "بصمة SHA-256 كاملة لكل ملف متساوي الحجم؛ تُحمى نسخة أصلية دائماً"
-            ),
+            title = Copy(R.string.k_byte_identical_duplicates),
+            shortTitle = Copy(R.string.k_duplicates),
+            description = Copy(R.string.k_full_sha_256_of_every_same_size_file_one_keeper_is_alway),
             mark = com.knoux.ai.Mark.COPY,
             scopes = setOf(AccessScope.MEDIA_IMAGES, AccessScope.MEDIA_VIDEO, AccessScope.SAF_TREE),
             defaultEnabled = false,

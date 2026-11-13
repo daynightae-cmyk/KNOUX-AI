@@ -235,20 +235,20 @@ internal fun RealDeepScanScreen(
         ) {
             Column {
                 Label(
-                    text = "Deep Scan" ar "الفحص العميق",
+                    text = Copy(R.string.k_deep_scan),
                     size = 22,
                     tint = Chalk,
                     weight = FontWeight.ExtraBold,
                 )
                 Label(
                     text = when {
-                        running -> "Scanning granted scopes" ar "جارٍ فحص النطاقات الممنوحة"
-                        outcome == null -> "Nothing measured yet" ar "لم يُقس شيء بعد"
-                        outcome?.status == DeepScanStatus.COMPLETE -> "Measured on this device" ar "مقاس على هذا الجهاز"
-                        outcome?.status == DeepScanStatus.PARTIAL -> "Partly measured" ar "مقاس جزئياً"
-                        outcome?.status == DeepScanStatus.UNAVAILABLE -> "No scope could be read" ar "تعذرت قراءة أي نطاق"
-                        outcome?.status == DeepScanStatus.CANCELLED -> "Stopped, nothing removed" ar "توقف دون حذف"
-                        else -> "Measurement failed" ar "فشل القياس"
+                        running -> Copy(R.string.k_scanning_granted_scopes)
+                        outcome == null -> Copy(R.string.k_nothing_measured_yet)
+                        outcome?.status == DeepScanStatus.COMPLETE -> Copy(R.string.k_measured_on_this_device)
+                        outcome?.status == DeepScanStatus.PARTIAL -> Copy(R.string.k_partly_measured)
+                        outcome?.status == DeepScanStatus.UNAVAILABLE -> Copy(R.string.k_no_scope_could_be_read)
+                        outcome?.status == DeepScanStatus.CANCELLED -> Copy(R.string.k_stopped_nothing_removed)
+                        else -> Copy(R.string.k_measurement_failed)
                     },
                     size = 11,
                     tint = Mist,
@@ -305,7 +305,7 @@ internal fun RealDeepScanScreen(
                     modifier = Modifier.fillMaxWidth().height(48.dp).testTag("deep-scan-stop"),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Pink),
                 ) {
-                    Label("Stop" ar "إيقاف", 15, Pink, FontWeight.Bold)
+                    Label(Copy(R.string.k_stop), 15, Pink, FontWeight.Bold)
                 }
             } else {
                 Button(
@@ -320,8 +320,8 @@ internal fun RealDeepScanScreen(
                     ),
                 ) {
                     Label(
-                        text = if (outcome == null) "Start deep scan" ar "بدء الفحص العميق"
-                        else "Scan again" ar "فحص مرة أخرى",
+                        text = if (outcome == null) Copy(R.string.k_start_deep_scan)
+                        else Copy(R.string.k_scan_again),
                         size = 15,
                         tint = if (ready) Color(0xff07051A) else Muted,
                         weight = FontWeight.ExtraBold,
@@ -381,8 +381,8 @@ internal fun RealDeepScanScreen(
             onDismissRequest = { confirm = null; acknowledged = false },
             title = {
                 Label(
-                    text = if (irreversible) "Delete permanently?" ar "حذف نهائي؟"
-                    else "Move to Android trash?" ar "النقل إلى سلة أندرويد؟",
+                    text = if (irreversible) Copy(R.string.k_delete_permanently)
+                    else Copy(R.string.k_move_to_android_trash),
                     size = 19,
                     tint = Chalk,
                     weight = FontWeight.ExtraBold,
@@ -391,18 +391,15 @@ internal fun RealDeepScanScreen(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Label(
-                        text = "${removable.size} file(s) · ${formatBytes(bytes)}" ar
-                            "${removable.size} ملف · ${formatBytes(bytes)}",
+                        text = Copy.args(R.string.k_files_summary, removable.size, formatBytes(bytes)),
                         size = 13,
                         tint = Mist,
                     )
                     Label(
                         text = if (irreversible)
-                            "The OS may ask for approval. Verified removals cannot be undone." ar
-                            "قد يطلب النظام الموافقة. لا يمكن التراجع عن الحذف المتحقق."
+                            Copy(R.string.k_the_os_may_ask_for_approval_verified_removals_cannot_be)
                         else
-                            "Shared media is moved by Android, so it can be restored from the system trash." ar
-                            "تنقل أندرويد ملفات الوسائط، لذا يمكن استعادتها من سلة النظام.",
+                            Copy(R.string.k_shared_media_is_moved_by_android_so_it_can_be_restored_f),
                         size = 12,
                         tint = Mist,
                     )
@@ -412,7 +409,7 @@ internal fun RealDeepScanScreen(
                             modifier = Modifier.clickable { acknowledged = !acknowledged },
                         ) {
                             Checkbox(checked = acknowledged, onCheckedChange = { acknowledged = it })
-                            Label("I understand this is irreversible" ar "أفهم أن هذا لا رجعة فيه", 12, Gold)
+                            Label(Copy(R.string.k_i_understand_this_is_irreversible), 12, Gold)
                         }
                     }
                 }
@@ -428,7 +425,7 @@ internal fun RealDeepScanScreen(
                     enabled = !irreversible || acknowledged,
                 ) {
                     Label(
-                        text = if (irreversible) "Delete" ar "حذف" else "Move" ar "نقل",
+                        text = if (irreversible) Copy(R.string.k_delete) else Copy(R.string.k_move),
                         size = 15,
                         tint = if (irreversible) Pink else Color(0xff00D4AA),
                         weight = FontWeight.Bold,
@@ -437,7 +434,7 @@ internal fun RealDeepScanScreen(
             },
             dismissButton = {
                 TextButton(onClick = { confirm = null; acknowledged = false }) {
-                    Label("Cancel" ar "إلغاء", 14, Mist)
+                    Label(Copy(R.string.k_cancel), 14, Mist)
                 }
             },
         )
@@ -514,11 +511,11 @@ private fun OutcomeCard(
             Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Metric(formatBytes(outcome.removableBytes), "Removable" ar "قابل للإزالة", Color(0xff00D4AA))
-            Metric(outcome.removableCandidates.size.toString(), "Files" ar "ملفات", Cyan)
+            Metric(formatBytes(outcome.removableBytes), Copy(R.string.k_removable), Color(0xff00D4AA))
+            Metric(outcome.removableCandidates.size.toString(), Copy(R.string.k_files), Cyan)
             Metric(
                 if (unread == 0) outcome.measuredModules.size.toString() else "$unread ✕",
-                if (unread == 0) "Modules" ar "وحدات" else "Unread" ar "غير مقروء",
+                if (unread == 0) Copy(R.string.k_modules) else Copy(R.string.k_unread),
                 if (unread == 0) Color(0xff00D4AA) else Gold,
             )
         }
@@ -527,8 +524,7 @@ private fun OutcomeCard(
         }
         if (outcome.status == DeepScanStatus.UNAVAILABLE) {
             Label(
-                text = "No scope could be read. Grant access or add a folder, then scan again." ar
-                    "تعذرت قراءة أي نطاق. امنح الوصول أو أضف مجلداً ثم أعد الفحص.",
+                text = Copy(R.string.k_no_scope_could_be_read_grant_access_or_add_a_folder_then),
                 12, Gold,
             )
         }
@@ -544,7 +540,7 @@ private fun OutcomeCard(
             ),
         ) {
             Label(
-                if (reviewEnabled) "Review & clean" ar "مراجعة وتنظيف" else "Nothing removable" ar "لا شيء قابل للإزالة",
+                if (reviewEnabled) Copy(R.string.k_review_clean) else Copy(R.string.k_nothing_removable),
                 14,
                 if (reviewEnabled) Color(0xff00D4AA) else Muted,
                 FontWeight.Bold,
@@ -615,10 +611,10 @@ private fun ModuleSheet(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Label("Scan modules" ar "وحدات الفحص", 18, Chalk, FontWeight.ExtraBold)
+                Label(Copy(R.string.k_scan_modules), 18, Chalk, FontWeight.ExtraBold)
                 Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TextButton(onClick = { onAll(true) }) { Label("All" ar "الكل", 12, Cyan, FontWeight.Bold) }
-                    TextButton(onClick = { onAll(false) }) { Label("None" ar "لا شيء", 12, Mist) }
+                    TextButton(onClick = { onAll(true) }) { Label(Copy(R.string.k_all), 12, Cyan, FontWeight.Bold) }
+                    TextButton(onClick = { onAll(false) }) { Label(Copy(R.string.k_none), 12, Mist) }
                 }
             }
 
@@ -642,8 +638,7 @@ private fun ModuleSheet(
                         Label(module.title, 14, Chalk, FontWeight.Bold)
                         Label(
                             if (granted) module.description
-                            else "Needs ${module.scopes.joinToString { it.name }}" ar
-                                "يتطلب ${module.scopes.joinToString { it.name }}",
+                            else Copy.args(R.string.k_needs, module.scopes.joinToString { it.name }),
                             10,
                             if (granted) Mist else Gold,
                             maxLines = 2,
@@ -665,16 +660,16 @@ private fun ModuleSheet(
                     onClick = onRequestPermissions,
                     modifier = Modifier.weight(1f).height(44.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Cyan),
-                ) { Label("Media access" ar "وصول الوسائط", 12, Cyan, FontWeight.Bold) }
+                ) { Label(Copy(R.string.k_media_access), 12, Cyan, FontWeight.Bold) }
                 OutlinedButton(
                     onClick = onAddFolder,
                     modifier = Modifier.weight(1f).height(44.dp),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Cyan),
-                ) { Label("Add folder" ar "إضافة مجلد", 12, Cyan, FontWeight.Bold) }
+                ) { Label(Copy(R.string.k_add_folder), 12, Cyan, FontWeight.Bold) }
             }
 
             TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-                Label("Close" ar "إغلاق", 14, Mist)
+                Label(Copy(R.string.k_close), 14, Mist)
             }
         }
     }
@@ -717,10 +712,9 @@ private fun ReviewDialog(
                 .testTag("deep-scan-review-sheet"),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Label("Review findings" ar "مراجعة النتائج", 19, Chalk, FontWeight.ExtraBold)
+            Label(Copy(R.string.k_review_findings), 19, Chalk, FontWeight.ExtraBold)
             Label(
-                "${removable.size} eligible · ${formatBytes(removable.sumOf { it.bytes })}" ar
-                    "${removable.size} مؤهل · ${formatBytes(removable.sumOf { it.bytes })}",
+                Copy.args(R.string.k_eligible_summary, removable.size, formatBytes(removable.sumOf { it.bytes })),
                 12,
                 Cyan,
                 FontWeight.Bold,
@@ -740,8 +734,7 @@ private fun ReviewDialog(
                     Column(Modifier.weight(1f)) {
                         Label(module?.title ?: Copy(result.moduleId, result.moduleId), 13, Chalk, FontWeight.Bold)
                         Label(
-                            "${result.candidates.size} found · $eligible removable" ar
-                                "${result.candidates.size} موجود · $eligible قابل للإزالة",
+                            Copy.args(R.string.k_scan_found_summary, result.candidates.size, eligible),
                             10, Mist,
                         )
                     }
@@ -763,12 +756,12 @@ private fun ReviewDialog(
                         containerColor = Color(0xff00D4AA),
                         contentColor = Color(0xff07051A),
                     ),
-                ) { Label("Trash" ar "السلة", 14, Color(0xff07051A), FontWeight.ExtraBold) }
+                ) { Label(Copy(R.string.k_trash), 14, Color(0xff07051A), FontWeight.ExtraBold) }
                 OutlinedButton(
                     onClick = { onDelete(removable) },
                     modifier = Modifier.weight(1f).height(46.dp).testTag("deep-scan-delete"),
                     colors = ButtonDefaults.outlinedButtonColors(contentColor = Pink),
-                ) { Label("Delete" ar "حذف", 14, Pink, FontWeight.Bold) }
+                ) { Label(Copy(R.string.k_delete), 14, Pink, FontWeight.Bold) }
             }
             Text(
                 text = if (arabic)
@@ -779,7 +772,7 @@ private fun ReviewDialog(
                 fontSize = 10.sp,
             )
             TextButton(onClick = onDismiss, modifier = Modifier.fillMaxWidth()) {
-                Label("Close" ar "إغلاق", 14, Mist)
+                Label(Copy(R.string.k_close), 14, Mist)
             }
         }
     }

@@ -61,7 +61,10 @@ internal val LocalArabic = compositionLocalOf { false }
 internal val LocalPreviewMotion = compositionLocalOf { false }
 internal val LocalRoomy = compositionLocalOf { false }
 internal val LocalTall = compositionLocalOf { false }
-internal val DisplayFace = FontFamily(Font(R.font.outfit_extrabold, FontWeight.ExtraBold))
+/** Brand wordmark only: this face has no Arabic glyphs. */
+internal val BrandFace = FontFamily(Font(R.font.outfit_extrabold, FontWeight.ExtraBold))
+/** Every heading: renders Arabic and Latin in one texture. */
+internal val DisplayFace = KnouxFont
 private val panel = listOf(Color(0xff2d1570), Color(0xff0d0935), Color(0xff1c1860))
 private val vivid = listOf(Color(0xffee00ff), Color(0xff8800ff), Color(0xff3300ff), Color(0xff00ddff))
 
@@ -69,22 +72,12 @@ private val vivid = listOf(Color(0xffee00ff), Color(0xff8800ff), Color(0xff3300f
 internal fun Copy.localized() = text(LocalArabic.current)
 
 @Composable
-internal fun KnouxTheme(arabic: Boolean, motion: Boolean, content: @Composable () -> Unit) {
-    MaterialTheme(colorScheme = darkColorScheme(primary = Cyan, secondary = Pink, background = Ink, surface = Color(0xff1a1642), onSurface = Chalk)) {
-        CompositionLocalProvider(
-            LocalArabic provides arabic, LocalLayoutDirection provides if (arabic) LayoutDirection.Rtl else LayoutDirection.Ltr,
-            LocalPreviewMotion provides motion, content = content
-        )
-    }
-}
-
-@Composable
-internal fun Label(
-    text: String, size: Int = 12, tint: Color = Chalk, weight: FontWeight = FontWeight.Normal,
+internal fun Label(text: String, size: Int = 12, tint: Color = KnouxColors.textPrimary, weight: FontWeight = FontWeight.Normal,
     modifier: Modifier = Modifier, align: TextAlign? = null, maxLines: Int = Int.MAX_VALUE
 ) {
-    Text(text, modifier, color = tint, fontSize = size.sp, lineHeight = (size * 1.18f).sp, fontWeight = weight,
-        textAlign = align, maxLines = maxLines)
+    val resolved = size.coerceAtLeast(MIN_TEXT_SIZE)
+    Text(text, modifier, color = tint, fontSize = resolved.sp, lineHeight = (resolved * 1.3f).sp,
+        fontWeight = weightOf(weight), fontFamily = KnouxFont, textAlign = align, maxLines = maxLines)
 }
 
 /**
@@ -92,8 +85,7 @@ internal fun Label(
  * `.localized()` at every call site.
  */
 @Composable
-internal fun Label(
-    text: Copy, size: Int = 12, tint: Color = Chalk, weight: FontWeight = FontWeight.Normal,
+internal fun Label(text: Copy, size: Int = 12, tint: Color = KnouxColors.textPrimary, weight: FontWeight = FontWeight.Normal,
     modifier: Modifier = Modifier, align: TextAlign? = null, maxLines: Int = Int.MAX_VALUE
 ) = Label(text.localized(), size, tint, weight, modifier, align, maxLines)
 
@@ -105,8 +97,7 @@ internal fun Label(
  * border that is bright on the light side and quiet on the other, a soft cast
  * shadow underneath and one localised light concentration near the content.
  */
-internal fun Modifier.glass(
-    radius: Int, active: Boolean = false, ghost: Boolean = false, tab: Boolean = false, tint: Color? = null
+internal fun Modifier.glass(radius: Int, active: Boolean = false, ghost: Boolean = false, tab: Boolean = false, tint: Color? = null
 ): Modifier =
     drawBehind {
         val rad = CornerRadius(radius.dp.toPx())
@@ -148,8 +139,7 @@ internal fun Modifier.glass(
         drawRoundRect(Brush.linearGradient(stroke, Offset.Zero, Offset(width, height)), cornerRadius = rad,
             style = Stroke((if (active) 1.8.dp else 1.1.dp).toPx()))
         // Pinpoints on the rim keep the faces dark while making the glass catch the light.
-        val rim = Brush.linearGradient(
-            0f to Color.Transparent, .11f to flash.copy(alpha = 1f), .19f to Light.white.copy(alpha = .92f),
+        val rim = Brush.linearGradient(0f to Color.Transparent, .11f to flash.copy(alpha = 1f), .19f to Light.white.copy(alpha = .92f),
             .30f to Color.Transparent, .69f to Color.Transparent, .82f to bounce.copy(alpha = 1f),
             .87f to Light.ice.copy(alpha = .82f), 1f to Color.Transparent,
             start = Offset.Zero, end = Offset(width, height)
@@ -173,8 +163,7 @@ internal fun Modifier.buttonBloom(primary: Boolean, pulse: State<Float>? = null)
 }
 
 @Composable
-internal fun GlassPanel(
-    modifier: Modifier = Modifier, radius: Int = 14, tint: Color? = null, content: @Composable () -> Unit
+internal fun GlassPanel(modifier: Modifier = Modifier, radius: Int = 14, tint: Color? = null, content: @Composable () -> Unit
 ) {
     Box(modifier.glass(radius, tint = tint), contentAlignment = Alignment.CenterStart) { content() }
 }
@@ -187,8 +176,7 @@ internal fun GlassPanel(
 internal fun IconBadge(mark: Mark, tint: Color, modifier: Modifier = Modifier, diameter: Int = 36) {
     val shape = RoundedCornerShape((diameter * .30f).dp)
     val box = modifier.size(diameter.dp)
-    Box(box.background(
-        Brush.verticalGradient(listOf(tint.copy(alpha = .68f), Color(0xff150d38).copy(alpha = .88f))),
+    Box(box.background(Brush.verticalGradient(listOf(tint.copy(alpha = .68f), Color(0xff150d38).copy(alpha = .88f))),
         shape
     ).border(.9.dp, Brush.horizontalGradient(listOf(Color.White.copy(alpha = .78f), tint.copy(alpha = 1f), Color.Transparent)), shape),
         contentAlignment = Alignment.Center) {
@@ -215,16 +203,15 @@ internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = tr
         page == Page.DUPLICATES || page == Page.RESIDUE -> 24
         else -> 28
     }
-    val font = if (LocalArabic.current) FontFamily.Default else DisplayFace
+    val font = DisplayFace
     val styledTitle = buildAnnotatedString {
         withStyle(SpanStyle(color = Chalk)) { append(first) }
         withStyle(SpanStyle(brush = Brush.verticalGradient(listOf(Color(0xfff896ff), Color(0xffe06bff), Color(0xffc25bff))))) { append(last) }
     }
     val alignment = if (inline) TextAlign.Start else TextAlign.Center
     val headings: @Composable () -> Unit = {
-        Text(styledTitle, Modifier.fillMaxWidth().padding(horizontal = 4.dp).testTag("screen-${page.id}"), style = TextStyle(
-            fontSize = fontSize.sp, lineHeight = (fontSize * 1.05f).sp, fontFamily = font,
-            fontWeight = FontWeight.ExtraBold, fontStyle = FontStyle.Italic, textAlign = alignment
+        Text(styledTitle, Modifier.fillMaxWidth().padding(horizontal = 4.dp).testTag("screen-${page.id}"), style = TextStyle(fontSize = fontSize.sp, lineHeight = (fontSize * 1.05f).sp, fontFamily = font,
+            fontWeight = FontWeight.ExtraBold, textAlign = alignment
         ))
         Label(subtitle.localized(), if (page == Page.HOME) 13 else 11, Mist,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 1.dp), align = alignment)
@@ -241,8 +228,7 @@ internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = tr
 }
 
 @Composable
-internal fun AccentButton(
-    action: Action, modifier: Modifier = Modifier, primary: Boolean = true, enabled: Boolean = true,
+internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary: Boolean = true, enabled: Boolean = true,
     tag: String = "", selected: Boolean? = null, onClick: () -> Unit
 ) {
     val round = RoundedCornerShape(28.dp)
@@ -377,8 +363,7 @@ internal fun GradientBar(value: Float, modifier: Modifier = Modifier, thickness:
 }
 
 @Composable
-internal fun ProgressDonut(
-    value: Int, label: String = "", diameter: Int = 73, split: Boolean = false,
+internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, split: Boolean = false,
     modifier: Modifier = Modifier, displayValue: String = "$value%", live: Boolean = false
 ) {
     val motion = LocalPreviewMotion.current
@@ -404,8 +389,7 @@ internal fun ProgressDonut(
                 val angle = (-90f + tick * 10f) * PI.toFloat() / 180f
                 val outer = width / 2f - inset * .30f
                 val inner = outer - (if (tick % 3 == 0) width * .035f else width * .018f)
-                drawLine(
-                    (if (tick % 3 == 0) Light.ice.copy(alpha = .55f) else Color(0xff9a8ad0).copy(alpha = .34f)),
+                drawLine((if (tick % 3 == 0) Light.ice.copy(alpha = .55f) else Color(0xff9a8ad0).copy(alpha = .34f)),
                     Offset(size.width / 2f + cos(angle) * inner, size.height / 2f + sin(angle) * inner),
                     Offset(size.width / 2f + cos(angle) * outer, size.height / 2f + sin(angle) * outer),
                     width * .007f
@@ -608,9 +592,8 @@ internal fun StatusSummaryPanel(screen: PreviewScreen, page: Page) {
 
 /** Gold capsule used by the master references to mark every sample metric. */
 @Composable
-internal fun DesignPreviewPill(
-    modifier: Modifier = Modifier,
-    label: Copy = ("DESIGN PREVIEW" ar "معاينة التصميم"),
+internal fun DesignPreviewPill(modifier: Modifier = Modifier,
+    label: Copy = (Copy(R.string.k_design_preview)),
     onClick: (() -> Unit)? = null
 ) {
     val shape = RoundedCornerShape(14.dp)
@@ -627,7 +610,7 @@ internal fun DesignPreviewPill(
 
 @Composable
 internal fun PreviewModeDisclosure(onClick: () -> Unit) {
-    val label = ("Design preview" ar "معاينة التصميم").localized()
+    val label = (Copy(R.string.k_design_preview_2)).localized()
     val shape = RoundedCornerShape(16.dp)
     val pulse = if (LocalPreviewMotion.current) {
         val transition = rememberInfiniteTransition(label = "preview dot")

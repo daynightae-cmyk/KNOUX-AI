@@ -69,16 +69,13 @@ internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) 
     Column(Modifier.fillMaxWidth().padding(horizontal = 6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         val styled = buildAnnotatedString {
             withStyle(SpanStyle(color = Chalk)) { append(lead.localized()) }
-            withStyle(SpanStyle(brush = Brush.verticalGradient(
-                listOf(Color(0xffffa3ff), Color(0xffe35bff), Color(0xffb93bff))))) {
+            withStyle(SpanStyle(brush = Brush.verticalGradient(listOf(Color(0xffffa3ff), Color(0xffe35bff), Color(0xffb93bff))))) {
                 append(" ")
                 append(accent.localized())
             }
         }
-        Text(styled, Modifier.fillMaxWidth().testTag(tag), style = TextStyle(
-            fontSize = (if (roomy) 24 else 29).sp, lineHeight = (if (roomy) 28 else 33).sp,
-            fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold, fontStyle = FontStyle.Italic,
-            textAlign = TextAlign.Center
+        Text(styled, Modifier.fillMaxWidth().testTag(tag), style = TextStyle(fontSize = (if (roomy) 24 else 29).sp, lineHeight = (if (roomy) 28 else 33).sp,
+            fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center
         ))
         Label(subtitle.localized(), if (roomy) 12 else 13, Mist,
             modifier = Modifier.fillMaxWidth().padding(top = 3.dp), align = TextAlign.Center)
@@ -87,7 +84,7 @@ internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) 
 
 /** The compact gold disclosure that marks every master screen as design preview data. */
 @Composable
-internal fun MasterPreviewPill(label: Copy = ("DESIGN PREVIEW" ar "معاينة التصميم")) {
+internal fun MasterPreviewPill(label: Copy = (Copy(R.string.k_design_preview))) {
     Box(Modifier.fillMaxWidth().padding(top = 7.dp), contentAlignment = Alignment.Center) {
         DesignPreviewPill(label = label)
     }
@@ -119,8 +116,7 @@ internal fun PreviewNote(text: Copy, modifier: Modifier = Modifier) {
 
 /** Big rounded glass card used for the featured rows of the master screens. */
 @Composable
-internal fun MasterCard(
-    modifier: Modifier = Modifier, radius: Int = 22, tint: Color? = null,
+internal fun MasterCard(modifier: Modifier = Modifier, radius: Int = 22, tint: Color? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     GlassPanel(modifier.fillMaxWidth(), radius = radius, tint = tint) {
@@ -144,11 +140,9 @@ internal fun MasterIcon(mark: Mark, tint: Color, diameter: Int = 44) {
     val radius = (diameter * .30f).dp
     val shape = RoundedCornerShape(radius)
     Box(Modifier.size(diameter.dp).clip(shape)
-        .background(Brush.verticalGradient(
-            listOf(tint.copy(alpha = .60f), Color(0xff0e0828).copy(alpha = .95f),
+        .background(Brush.verticalGradient(listOf(tint.copy(alpha = .60f), Color(0xff0e0828).copy(alpha = .95f),
                 Color(0xff050215).copy(alpha = .98f))), shape)
-        .border(1.2.dp, Brush.linearGradient(
-            listOf(Color.White.copy(alpha = .78f), tint.copy(alpha = .90f),
+        .border(1.2.dp, Brush.linearGradient(listOf(Color.White.copy(alpha = .78f), tint.copy(alpha = .90f),
                 tint.copy(alpha = .40f), Color.Transparent)), shape),
         contentAlignment = Alignment.Center) {
         Canvas(Modifier.matchParentSize()) {
@@ -158,8 +152,7 @@ internal fun MasterIcon(mark: Mark, tint: Color, diameter: Int = 44) {
             bloom(Offset(size.width * .72f, size.height * .82f), size.width * .50f,
                 tint.copy(alpha = .40f), 0.5f)
             // Specular highlight arc on upper rim
-            drawArc(Brush.horizontalGradient(
-                listOf(Color.Transparent, Color.White.copy(alpha = .55f), Color.White.copy(alpha = .80f),
+            drawArc(Brush.horizontalGradient(listOf(Color.Transparent, Color.White.copy(alpha = .55f), Color.White.copy(alpha = .80f),
                     Color.White.copy(alpha = .55f), Color.Transparent)),
                 180f, 180f, false,
                 Offset(size.width * .08f, size.height * .02f),
@@ -172,8 +165,7 @@ internal fun MasterIcon(mark: Mark, tint: Color, diameter: Int = 44) {
 
 /** The service row of the Device Tools reference: icon, copy, metric chip, chevron. */
 @Composable
-private fun ServiceRow(
-    title: Copy, copy: Copy, metric: String, metricNote: Copy, mark: Mark, tint: Color,
+private fun ServiceRow(title: Copy, copy: Copy, metric: String, metricNote: Copy, mark: Mark, tint: Color,
     tag: String, onClick: () -> Unit
 ) {
     val mirror = if (LocalArabic.current) 180f else 0f
@@ -234,15 +226,14 @@ private fun TrendSparkline(tint: Color, modifier: Modifier = Modifier) {
 /** The segmented day-range control of the Reports reference. */
 @Composable
 private fun RangeTabs(selected: Int, onSelect: (Int) -> Unit) {
-    val labels = listOf("7 Days" ar "٧ أيام", "30 Days" ar "٣٠ يومًا", "90 Days" ar "٩٠ يومًا")
+    val labels = listOf(Copy(R.string.k_t_7_days), Copy(R.string.k_t_30_days), Copy(R.string.k_t_90_days))
     GlassPanel(Modifier.fillMaxWidth(), radius = 22) {
         Row(Modifier.fillMaxWidth().padding(5.dp).selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(4.dp)) {
             labels.forEachIndexed { index, title ->
                 val active = index == selected
                 Box(Modifier.weight(1f).heightIn(min = 44.dp).clip(RoundedCornerShape(18.dp))
-                    .background(if (active) Brush.horizontalGradient(
-                        listOf(Color(0xff9a2bff), Color(0xff5a28e8), Color(0xff2448ff)))
+                    .background(if (active) Brush.horizontalGradient(listOf(Color(0xff9a2bff), Color(0xff5a28e8), Color(0xff2448ff)))
                     else Brush.horizontalGradient(listOf(Color.Transparent, Color.Transparent)))
                     .border(1.dp, if (active) Color.White.copy(alpha = .40f) else Color.White.copy(alpha = .12f), RoundedCornerShape(18.dp))
                     .selectable(active, role = Role.Tab, onClick = { onSelect(index) })
@@ -265,8 +256,8 @@ private fun ActivityChart(modifier: Modifier = Modifier) {
         animationSpec = tween(if (motion) 950 else 0), label = "chart reveal")
     val values = listOf("0.4 GB" to .25f, "0.7 GB" to .44f, "0.6 GB" to .38f, "0.9 GB" to .56f,
         "1.1 GB" to .69f, "1.3 GB" to .81f, "1.0 GB" to .63f)
-    val days = listOf("Mon" ar "الاثنين", "Tue" ar "الثلاثاء", "Wed" ar "الأربعاء", "Thu" ar "الخميس",
-        "Fri" ar "الجمعة", "Sat" ar "السبت", "Sun" ar "الأحد")
+    val days = listOf(Copy(R.string.k_mon), Copy(R.string.k_tue), Copy(R.string.k_wed), Copy(R.string.k_thu),
+        Copy(R.string.k_fri), Copy(R.string.k_sat), Copy(R.string.k_sun))
     val dayLabels = days.map { it.localized() }
     val measurer = rememberTextMeasurer()
     Canvas(modifier) {
@@ -334,8 +325,7 @@ private fun RiskDonut(modifier: Modifier = Modifier) {
 
 /** A glowing opportunity sphere used by the AI Optimization reference. */
 @Composable
-private fun OpportunitySphere(
-    modifier: Modifier = Modifier, title: Copy, mark: Mark, tint: Color, selected: Boolean,
+private fun OpportunitySphere(modifier: Modifier = Modifier, title: Copy, mark: Mark, tint: Color, selected: Boolean,
     tag: String, onToggle: () -> Unit
 ) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
@@ -363,8 +353,7 @@ private fun OpportunitySphere(
 // 1 - Smart Device Hub (Home)
 // ---------------------------------------------------------------------------
 
-private data class HubCardSpec(
-    val title: Copy, val copy: Copy, val mark: Mark, val tint: Color, val tag: String, val page: Page
+private data class HubCardSpec(val title: Copy, val copy: Copy, val mark: Mark, val tint: Color, val tag: String, val page: Page
 )
 
 @Composable
@@ -379,32 +368,30 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
             // Hero section - now reduced height from Pass 3
             NeonHero(Mark.K, motion, Modifier.padding(top = 4.dp, bottom = 6.dp),
                 heightOverride = if (roomy) 96.dp else 112.dp)
-            MasterTitle("Smart" ar "مركز", "Device Hub" ar "الجهاز الذكي",
-                "Device intelligence, optimization and cleanup — with a clear preview before any changes."
-                    ar "ذكاء الجهاز والتحسين والتنظيف — مع معاينة واضحة قبل أي تغيير.",
+            MasterTitle(Copy(R.string.k_smart), Copy(R.string.k_device_hub),
+                Copy(R.string.k_device_intelligence_optimization_and_cleanup_with_a_clea),
                 "screen-home")
-            
+
             // Natural height prevents service rows and Quick Actions being cropped.
             Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                val cards = listOf(
-                    HubCardSpec("Smart Clean" ar "التنظيف الذكي",
-                        "Remove junk, duplicates and app residue." ar "أزل الملفات غير المرغوبة والمكررة وبقايا التطبيقات.",
+                val cards = listOf(HubCardSpec(Copy(R.string.k_smart_clean),
+                        Copy(R.string.k_remove_junk_duplicates_and_app_residue),
                         Mark.TRASH, Pink, "open-clean-center", Page.CLEAN_CENTER),
-                    HubCardSpec("AI Optimization" ar "التحسين الذكي",
-                        "Boost performance, tune system and save battery." ar "حسّن الأداء واضبط النظام ووفّر البطارية.",
+                    HubCardSpec(Copy(R.string.k_ai_optimization),
+                        Copy(R.string.k_boost_performance_tune_system_and_save_battery),
                         Mark.CHIP, Cyan, "hub-ai-optimization", Page.AI_RECOMMENDATIONS),
-                    HubCardSpec("Privacy Sweep" ar "مراجعة الخصوصية",
-                        "Review trackers, risky permissions and exposure." ar "راجع أدوات التتبع والأذونات الخطرة والتعرّض.",
+                    HubCardSpec(Copy(R.string.k_privacy_sweep),
+                        Copy(R.string.k_review_trackers_risky_permissions_and_exposure),
                         Mark.SHIELD, Pink, "hub-privacy-sweep", Page.PRIVACY_INSPECTOR),
-                    HubCardSpec("Storage Analyzer" ar "تحليل التخزين",
-                        "See what's using space and find what's reclaimable." ar "اعرف ما يستهلك المساحة وما يمكن استعادته.",
+                    HubCardSpec(Copy(R.string.k_storage_analyzer),
+                        Copy(R.string.k_see_what_s_using_space_and_find_what_s_reclaimable),
                         Mark.DISK, Cyan, "hub-storage-analyzer", Page.STORAGE_BREAKDOWN),
-                    HubCardSpec("App Manager" ar "إدارة التطبيقات",
-                        "Manage installed apps, usage and heavy weights." ar "أدر التطبيقات المثبتة واستخدامها وثقيلها.",
+                    HubCardSpec(Copy(R.string.k_app_manager),
+                        Copy(R.string.k_manage_installed_apps_usage_and_heavy_weights),
                         Mark.GROUP, Pink, "hub-app-manager", Page.APPS_REVIEW),
-                    HubCardSpec("Reports & Insights" ar "التقارير والرؤى",
-                        "Track cleanups, optimizations and device health trends." ar "تابع عمليات التنظيف والتحسين ومؤشرات صحة الجهاز.",
+                    HubCardSpec(Copy(R.string.k_reports_insights),
+                        Copy(R.string.k_track_cleanups_optimizations_and_device_health_trends),
                         Mark.BARS, Cyan, "hub-reports", Page.REPORTS)
                 )
                 // Service grid - 3x2 on normal screens, vertical on roomy
@@ -423,33 +410,31 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
                         }
                     }
                 }
-                
+
                 Spacer(Modifier.height(6.dp))
 
                 // Quick Actions row
-                Label(("Quick Actions" ar "إجراءات سريعة").localized(), 15, weight = FontWeight.ExtraBold,
+                Label((Copy(R.string.k_quick_actions)).localized(), 15, weight = FontWeight.ExtraBold,
                     modifier = Modifier.fillMaxWidth().padding(start = 2.dp, top = 2.dp, bottom = 3.dp))
                 MasterCard(radius = 18, tint = Violet) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        QuickAction(Modifier.weight(1f), "Deep Scan" ar "فحص عميق", Mark.RADAR, Cyan, "start-scan") { open(Page.SCAN_SUMMARY) }
+                        QuickAction(Modifier.weight(1f), Copy(R.string.k_deep_scan_2), Mark.RADAR, Cyan, "start-scan") { open(Page.SCAN_SUMMARY) }
                         Separator(Modifier.width(1.dp).height(34.dp))
-                        QuickAction(Modifier.weight(1f), "Save Battery" ar "توفير البطارية", Mark.BATTERY, Pink, "quick-battery") { open(Page.BATTERY_DIAGNOSTICS) }
+                        QuickAction(Modifier.weight(1f), Copy(R.string.k_save_battery), Mark.BATTERY, Pink, "quick-battery") { open(Page.BATTERY_DIAGNOSTICS) }
                         Separator(Modifier.width(1.dp).height(34.dp))
-                        QuickAction(Modifier.weight(1f), "Secure Device" ar "تأمين الجهاز", Mark.SHIELD, Gold, "quick-privacy") { open(Page.PRIVACY_INSPECTOR) }
+                        QuickAction(Modifier.weight(1f), Copy(R.string.k_secure_device), Mark.SHIELD, Gold, "quick-privacy") { open(Page.PRIVACY_INSPECTOR) }
                     }
                 }
-                
+
                 // Disclosure note - compact
-                PreviewNote(("Preview / Demo Sample Only — these are example values and do not represent live results from your device."
-                    ar "معاينة / تجريب فقط — هذه قيم أمثلة ولا تمثل نتائج فعلية من جهازك."))
+                PreviewNote((Copy(R.string.k_preview_demo_sample_only_these_are_example_values_and_do)))
             }
         }
     }
 }
 
 @Composable
-private fun QuickAction(
-    modifier: Modifier = Modifier, title: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit
+private fun QuickAction(modifier: Modifier = Modifier, title: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit
 ) {
     Column(modifier.clickable(role = Role.Button, onClick = onClick).testTag(tag)
         .padding(vertical = 7.dp), horizontalAlignment = Alignment.CenterHorizontally,
@@ -486,14 +471,12 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
             SatelliteTile(Mark.SHIELD, Pink, Modifier.align(Alignment.CenterStart).padding(start = 12.dp, bottom = 22.dp))
             SatelliteTile(Mark.BATTERY, Cyan, Modifier.align(Alignment.CenterEnd).padding(end = 12.dp, bottom = 26.dp))
         }
-        MasterTitle("Device" ar "أدوات", "Tools" ar "الجهاز",
-            "Your device intelligence workspace." ar "مساحة عمل ذكاء جهازك.", "screen-tools")
+        MasterTitle(Copy(R.string.k_device), Copy(R.string.k_tools_2),
+            Copy(R.string.k_your_device_intelligence_workspace), "screen-tools")
         MasterPreviewPill()
         // ── Pro Banner ──────────────────────────────────────────────────────
-        ProSectionBanner(
-            section = ProSection.APP_MANAGER,
-            tagline = ("📱 Batch operations • App freeze • Backup & restore • Usage analytics"
-                ar "📱 عمليات جماعية • تجميد التطبيقات • نسخ احتياطي • تحليلات الاستخدام"),
+        ProSectionBanner(section = ProSection.APP_MANAGER,
+            tagline = (Copy(R.string.k_batch_operations_app_freeze_backup_restore_usage_analyti)),
             onClick = { showProGate = true }
         )
         Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 7.dp),
@@ -503,20 +486,19 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
                 Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                         Glyph(Mark.CHECK, Modifier.size(12.dp), Cyan, true)
-                        Label(("FEATURED" ar "مميز").localized(), 10, Cyan, FontWeight.ExtraBold)
+                        Label((Copy(R.string.k_featured)).localized(), 10, Cyan, FontWeight.ExtraBold)
                     }
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                            Label(("Storage Analyzer" ar "محلل التخزين").localized(), 19, weight = FontWeight.ExtraBold)
-                            Label(("See where every byte goes, what is reclaimable and which folders dominate."
-                                ar "شاهد أين تذهب كل بايت وما يمكن استعادته وأي المجلدات تهيمن.").localized(), 11, Mist)
+                            Label((Copy(R.string.k_storage_analyzer_2)).localized(), 19, weight = FontWeight.ExtraBold)
+                            Label((Copy(R.string.k_see_where_every_byte_goes_what_is_reclaimable_and_which)).localized(), 11, Mist)
                         }
                         MasterIcon(Mark.DISK, Pink, 48)
                     }
                     Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Label("128 GB", 17, weight = FontWeight.ExtraBold)
-                        Label(("used of 256 GB" ar "مستخدم من 256 GB").localized(), 11, Mist,
+                        Label((Copy(R.string.k_used_of_256_gb)).localized(), 11, Mist,
                             modifier = Modifier.padding(bottom = 2.dp))
                     }
                     GradientBar(.5f, thickness = 7, live = motion)
@@ -527,33 +509,27 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
                     }
                 }
             }
-            ServiceRow("App Manager" ar "إدارة التطبيقات",
-                "Manage installed apps, usage, heavy weights and rarely used apps."
-                    ar "أدر التطبيقات المثبتة واستخدامها والثقيلة وقليلة الاستخدام.",
-                "41", "apps installed" ar "تطبيق مثبت", Mark.GROUP, Pink, "open-app-manager") { open(Page.APPS_REVIEW) }
-            ServiceRow("Privacy Sweep" ar "مراجعة الخصوصية",
-                "Review trackers, risky permissions and privacy exposure."
-                    ar "راجع أدوات التتبع والأذونات الخطرة والتعرّض للخصوصية.",
-                "7", "trackers found" ar "أدوات تتبع", Mark.SHIELD, Pink, "open-privacy") { open(Page.PRIVACY_INSPECTOR) }
-            ServiceRow("Battery Diagnostics" ar "تشخيص البطارية",
-                "Check battery health, usage patterns and background drain."
-                    ar "افحص صحة البطارية وأنماط الاستخدام والاستهلاك في الخلفية.",
-                "+18%", "estimated battery gain" ar "تحسن تقديري للبطارية",
+            ServiceRow(Copy(R.string.k_app_manager),
+                Copy(R.string.k_manage_installed_apps_usage_heavy_weights_and_rarely_use),
+                "41", Copy(R.string.k_apps_installed), Mark.GROUP, Pink, "open-app-manager") { open(Page.APPS_REVIEW) }
+            ServiceRow(Copy(R.string.k_privacy_sweep),
+                Copy(R.string.k_review_trackers_risky_permissions_and_privacy_exposure),
+                "7", Copy(R.string.k_trackers_found_2), Mark.SHIELD, Pink, "open-privacy") { open(Page.PRIVACY_INSPECTOR) }
+            ServiceRow(Copy(R.string.k_battery_diagnostics),
+                Copy(R.string.k_check_battery_health_usage_patterns_and_background_drain),
+                "+18%", Copy(R.string.k_estimated_battery_gain),
                 Mark.BATTERY, Cyan, "open-battery") { open(Page.BATTERY_DIAGNOSTICS) }
-            ServiceRow("AI Optimization" ar "التحسين الذكي",
-                "Boost performance, tune system and optimize battery usage intelligently."
-                    ar "حسّن الأداء واضبط النظام وحسّن استهلاك البطارية بذكاء.",
-                "94", "performance score" ar "درجة الأداء", Mark.CHIP, Pink, "open-ai-optimization") { open(Page.AI_RECOMMENDATIONS) }
-            ServiceRow("Storage Breakdown" ar "تفاصيل المساحة",
-                "A clear view of storage by category (photos, videos, apps, files and more)."
-                    ar "عرض واضح للتخزين حسب الفئة (صور، فيديوهات، تطبيقات، ملفات والمزيد).",
-                "12.6 GB", "reclaimable space" ar "مساحة قابلة للاسترداد",
+            ServiceRow(Copy(R.string.k_ai_optimization),
+                Copy(R.string.k_boost_performance_tune_system_and_optimize_battery_usage),
+                "94", Copy(R.string.k_performance_score), Mark.CHIP, Pink, "open-ai-optimization") { open(Page.AI_RECOMMENDATIONS) }
+            ServiceRow(Copy(R.string.k_storage_breakdown),
+                Copy(R.string.k_a_clear_view_of_storage_by_category_photos_videos_apps_f),
+                "12.6 GB", Copy(R.string.k_reclaimable_space),
                 Mark.LAYERS, Cyan, "open-storage-breakdown") { open(Page.STORAGE_BREAKDOWN) }
         }
     }
     if (showProGate) {
-        ProGateDialog(
-            section = ProSection.APP_MANAGER,
+        ProGateDialog(section = ProSection.APP_MANAGER,
             onDismiss = { showProGate = false },
             onActivate = { showProGate = false }
         )
@@ -584,22 +560,19 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
     val entries = PreviewFixtures.screen(Page.REPORTS, PreviewSource.DESIGN_PREVIEW)?.entries.orEmpty()
     Column(Modifier.fillMaxSize()) {
         NeonHero(Mark.BARS, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
-        MasterTitle("Reports &" ar "التقارير", "Insights" ar "والرؤى",
-            "See device trends and previous actions." ar "شاهد اتجاهات الجهاز والإجراءات السابقة.", "screen-reports")
+        MasterTitle(Copy(R.string.k_reports_2), Copy(R.string.k_insights),
+            Copy(R.string.k_see_device_trends_and_previous_actions), "screen-reports")
         MasterPreviewPill()
         // ── Pro Banner ──────────────────────────────────────────────────────
-        ProSectionBanner(
-            section = ProSection.REPORTS,
-            tagline = ("📊 PDF export • 90-day history • AI predictions • Weekly reports"
-                ar "📊 تصدير PDF • سجل ٩٠ يوماً • تنبؤات ذكية • تقارير أسبوعية"),
+        ProSectionBanner(section = ProSection.REPORTS,
+            tagline = (Copy(R.string.k_pdf_export_90_day_history_ai_predictions_weekly_reports)),
             onClick = { showProGate = true }
         )
         Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp)) {
             // The cards overflow on short screens (360x812dp), which used to clip
             // the whole action row out of the window. Scroll the evidence and pin
             // the actions so they are always reachable.
-            Column(
-                Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()),
+            Column(Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(7.dp),
             ) {
             RangeTabs(range) { range = it }
@@ -607,10 +580,10 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     MasterIcon(Mark.BARS, Pink, 32)
                     Column(Modifier.weight(1f).padding(start = 8.dp)) {
-                        Label(("Device Activity (7 Days)" ar "نشاط الجهاز (٧ أيام)").localized(), 14, weight = FontWeight.ExtraBold)
-                        Label(("Daily optimization activity (example)" ar "نشاط التحسين اليومي (مثال)").localized(), 10, Mist)
+                        Label((Copy(R.string.k_device_activity_7_days)).localized(), 14, weight = FontWeight.ExtraBold)
+                        Label((Copy(R.string.k_daily_optimization_activity_example)).localized(), 10, Mist)
                     }
-                    PreviewChip(("DESIGN PREVIEW" ar "معاينة التصميم"), Gold, "preview-chip-chart")
+                    PreviewChip((Copy(R.string.k_design_preview)), Gold, "preview-chip-chart")
                 }
                 ActivityChart(Modifier.fillMaxWidth().height(130.dp).padding(top = 5.dp))
             }
@@ -619,7 +592,7 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         MasterIcon(Mark.DISK, Pink, 30)
                         Column(Modifier.weight(1f)) {
-                            Label(("Storage Trend" ar "اتجاه التخزين").localized(), 12, weight = FontWeight.Bold)
+                            Label((Copy(R.string.k_storage_trend)).localized(), 12, weight = FontWeight.Bold)
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Label("128 GB", 13, Cyan, FontWeight.ExtraBold)
                                 Label("/ 256 GB", 9, Mist)
@@ -627,21 +600,21 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                         }
                     }
                     TrendSparkline(Cyan, Modifier.fillMaxWidth().height(32.dp).padding(top = 3.dp))
-                    PreviewChip(("DESIGN PREVIEW" ar "معاينة التصميم"), Gold, "preview-chip-storage")
+                    PreviewChip((Copy(R.string.k_design_preview)), Gold, "preview-chip-storage")
                 }
                 MasterCard(Modifier.weight(1f), radius = 18, tint = Violet) {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         MasterIcon(Mark.SHIELD, Cyan, 30)
                         Column(Modifier.weight(1f)) {
-                            Label(("Privacy Review" ar "مراجعة الخصوصية").localized(), 12, weight = FontWeight.Bold)
+                            Label((Copy(R.string.k_privacy_review)).localized(), 12, weight = FontWeight.Bold)
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Label("7", 13, Cyan, FontWeight.ExtraBold)
-                                Label(("items" ar "عناصر").localized(), 9, Mist)
+                                Label((Copy(R.string.k_items)).localized(), 9, Mist)
                             }
                         }
                     }
                     TrendSparkline(Violet, Modifier.fillMaxWidth().height(32.dp).padding(top = 3.dp))
-                    PreviewChip(("DESIGN PREVIEW" ar "معاينة التصميم"), Gold, "preview-chip-privacy")
+                    PreviewChip((Copy(R.string.k_design_preview)), Gold, "preview-chip-privacy")
                 }
             }
             GlassPanel(Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
@@ -651,8 +624,8 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                     verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
                     MasterIcon(Mark.CALENDAR, Pink, 34)
                     Column(Modifier.weight(1f)) {
-                        Label(("Historical Activity (Example)" ar "النشاط التاريخي (مثال)").localized(), 13, weight = FontWeight.Bold)
-                        Label(("Scan · Analyze · Optimize · Review" ar "فحص · تحليل · تحسين · مراجعة").localized(), 10, Mist)
+                        Label((Copy(R.string.k_historical_activity_example)).localized(), 13, weight = FontWeight.Bold)
+                        Label((Copy(R.string.k_scan_analyze_optimize_review)).localized(), 10, Mist)
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                         listOf(12, 20, 28).forEach { h ->
@@ -664,15 +637,14 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                 }
             }
             }
-            MasterActions(
-                Action("View History" ar "عرض السجل", Mark.CALENDAR),
-                Action("View Report Details" ar "عرض تفاصيل التقرير", Mark.BARS),
+            MasterActions(Action(Copy(R.string.k_view_history), Mark.CALENDAR),
+                Action(Copy(R.string.k_view_report_details), Mark.BARS),
                 onFirst = { sheet = "review" }, onSecond = { sheet = "proceed" }
             )
         }
     }
     sheet?.let { mode ->
-        InfoSheet(if (mode == "review") ("View History" ar "عرض السجل") else ("View Report Details" ar "عرض تفاصيل التقرير"),
+        InfoSheet(if (mode == "review") (Copy(R.string.k_view_history)) else (Copy(R.string.k_view_report_details)),
             { sheet = null }) {
             when (mode) {
                 "review" -> {
@@ -685,7 +657,7 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                 }
                 "proceed" -> {
                     entries.forEach { Label("${it.title.localized()} · ${it.value}", 13, Mist) }
-                    AccentButton(Action("Confirm preview" ar "تأكيد المعاينة", Mark.CHECK), Modifier.fillMaxWidth(),
+                    AccentButton(Action(Copy(R.string.k_confirm_preview), Mark.CHECK), Modifier.fillMaxWidth(),
                         tag = "confirm-preview") { sheet = "ack" }
                 }
                 else -> Label(NoChange.localized(), 16, Cyan, FontWeight.Bold, Modifier.testTag("preview-only-result"))
@@ -694,8 +666,7 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
         }
     }
     if (showProGate) {
-        ProGateDialog(
-            section = ProSection.REPORTS,
+        ProGateDialog(section = ProSection.REPORTS,
             onDismiss = { showProGate = false },
             onActivate = { showProGate = false }
         )
@@ -717,8 +688,7 @@ private fun PreviewChip(label: Copy, tint: Color, tag: String) {
 // 5 - Privacy Sweep (Privacy)
 // ---------------------------------------------------------------------------
 
-private data class RiskSpec(
-    val title: Copy, val count: Copy, val risk: Copy, val tint: Color, val mark: Mark
+private data class RiskSpec(val title: Copy, val count: Copy, val risk: Copy, val tint: Color, val mark: Mark
 )
 
 @Composable
@@ -728,31 +698,27 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
     var entryIndex by rememberSaveable { mutableIntStateOf(0) }
     var showProGate by remember { mutableStateOf(false) }
     val data = PreviewFixtures.screen(Page.PRIVACY, PreviewSource.DESIGN_PREVIEW)
-    val risks = listOf(
-        RiskSpec("Camera Access" ar "الوصول للكاميرا", "2 apps" ar "تطبيقان", "Medium Risk" ar "خطورة متوسطة", Gold, Mark.CAMERA),
-        RiskSpec("Microphone Access" ar "الوصول للميكروفون", "1 app" ar "تطبيق واحد", "High Risk" ar "خطورة عالية",
+    val risks = listOf(RiskSpec(Copy(R.string.k_camera_access), Copy(R.string.k_t_2_apps), Copy(R.string.k_medium_risk), Gold, Mark.CAMERA),
+        RiskSpec(Copy(R.string.k_microphone_access), Copy(R.string.k_t_1_app), Copy(R.string.k_high_risk),
             Color(0xffff5d8f), Mark.MIC),
-        RiskSpec("Background Trackers" ar "أدوات تتبع بالخلفية", "7 trackers" ar "٧ أدوات تتبع",
-            "Medium Risk" ar "خطورة متوسطة", Gold, Mark.LAYERS),
-        RiskSpec("Clipboard Watchers" ar "مراقبون الحافظة", "2 apps" ar "تطبيقان", "Low Risk" ar "خطورة منخفضة", Cyan, Mark.CLIP)
+        RiskSpec(Copy(R.string.k_background_trackers), Copy(R.string.k_t_7_trackers),
+            Copy(R.string.k_medium_risk), Gold, Mark.LAYERS),
+        RiskSpec(Copy(R.string.k_clipboard_watchers), Copy(R.string.k_t_2_apps), Copy(R.string.k_low_risk), Cyan, Mark.CLIP)
     )
-    val legend = listOf(
-        Triple("High Risk" ar "خطورة عالية", "1 (13%)", Color(0xffff5d8f)),
-        Triple("Medium Risk" ar "خطورة متوسطة", "2 (25%)", Gold),
-        Triple("Low Risk" ar "خطورة منخفضة", "3 (38%)", Cyan),
-        Triple("Minimal" ar "ضئيلة", "2 (25%)", Color(0xff9f9ad6))
+    val legend = listOf(Triple(Copy(R.string.k_high_risk), "1 (13%)", Color(0xffff5d8f)),
+        Triple(Copy(R.string.k_medium_risk), "2 (25%)", Gold),
+        Triple(Copy(R.string.k_low_risk), "3 (38%)", Cyan),
+        Triple(Copy(R.string.k_minimal), "2 (25%)", Color(0xff9f9ad6))
     )
     Column(Modifier.fillMaxSize()) {
         NeonHero(Mark.SHIELD, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
-        MasterTitle("Privacy" ar "مراجعة", "Sweep" ar "الخصوصية",
-            "Understand permissions, trackers and exposure." ar "افهم الأذونات وأدوات التتبع ومدى التعرّض.",
+        MasterTitle(Copy(R.string.k_privacy_2), Copy(R.string.k_sweep),
+            Copy(R.string.k_understand_permissions_trackers_and_exposure),
             "screen-privacy")
-        MasterPreviewPill(("DESIGN PREVIEW (SAMPLE DATA)" ar "معاينة التصميم (بيانات نموذجية)"))
+        MasterPreviewPill((Copy(R.string.k_design_preview_sample_data)))
         // ── Pro Banner ──────────────────────────────────────────────────────
-        ProSectionBanner(
-            section = ProSection.PRIVACY_SWEEP,
-            tagline = ("🛡️ Real-time threat detection • Encrypted vault • Tracker blocker"
-                ar "🛡️ كشف تهديدات فوري • خزنة مشفرة • حاجب المتتبعين"),
+        ProSectionBanner(section = ProSection.PRIVACY_SWEEP,
+            tagline = (Copy(R.string.k_real_time_threat_detection_encrypted_vault_tracker_block)),
             onClick = { showProGate = true }
         )
         Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp),
@@ -774,15 +740,15 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
                     Box(Modifier.size(104.dp), contentAlignment = Alignment.Center) {
                         RiskDonut(Modifier.fillMaxSize())
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Label(("Privacy Risk" ar "مخاطر الخصوصية").localized(), 9, Mist, align = TextAlign.Center)
+                            Label((Copy(R.string.k_privacy_risk)).localized(), 9, Mist, align = TextAlign.Center)
                             Label("38%", 26, weight = FontWeight.ExtraBold)
                             NeonPill("Medium", Gold, solid = false)
                         }
                     }
                     Separator(Modifier.width(1.dp).height(90.dp))
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                        Label(("Sample Risk Breakdown" ar "توزيع المخاطر النموذجي").localized(), 12, weight = FontWeight.ExtraBold)
-                        Label(("(Design Preview Values)" ar "(قيم المعاينة)").localized(), 10, Mist)
+                        Label((Copy(R.string.k_sample_risk_breakdown)).localized(), 12, weight = FontWeight.ExtraBold)
+                        Label((Copy(R.string.k_design_preview_values)).localized(), 10, Mist)
                         legend.forEach { (name, count, color) ->
                             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -794,31 +760,27 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
                     }
                 }
             }
-            PreviewNote(("Sample data only — design preview values to illustrate the Privacy Sweep experience. Not a real device scan."
-                ar "بيانات نموذجية فقط — قيم معاينة لتوضيح تجربة مراجعة الخصوصية. ليست فحصًا حقيقيًا للجهاز."))
+            PreviewNote((Copy(R.string.k_sample_data_only_design_preview_values_to_illustrate_the)))
             Spacer(Modifier.weight(1f))
-            MasterActions(
-                Action("Review Risks" ar "مراجعة المخاطر", Mark.SHIELD),
-                Action("Privacy Recommendations" ar "توصيات الخصوصية", Mark.CHECK),
+            MasterActions(Action(Copy(R.string.k_review_risks), Mark.SHIELD),
+                Action(Copy(R.string.k_privacy_recommendations), Mark.CHECK),
                 onFirst = { sheet = "review" }, onSecond = { sheet = "proceed" }
             )
         }
     }
     sheet?.let { mode ->
         val entries = data?.entries.orEmpty()
-        InfoSheet(
-            when (mode) {
-                "detail" -> risks.getOrNull(entryIndex)?.title ?: ("Privacy Item" ar "عنصر الخصوصية")
-                "review" -> ("Review Risks" ar "مراجعة المخاطر")
-                else -> ("Privacy Recommendations" ar "توصيات الخصوصية")
+        InfoSheet(when (mode) {
+                "detail" -> risks.getOrNull(entryIndex)?.title ?: (Copy(R.string.k_privacy_item))
+                "review" -> (Copy(R.string.k_review_risks))
+                else -> (Copy(R.string.k_privacy_recommendations))
             }, { sheet = null }) {
             when (mode) {
                 "detail" -> {
                     risks.getOrNull(entryIndex)?.let {
                         Label(it.count.localized(), 18, Pink, FontWeight.Bold)
                         Label(it.risk.localized(), 13, it.tint, FontWeight.Bold)
-                        Label(("Sample entry — no permission was read on this device."
-                            ar "عنصر نموذجي — لم تُقرأ أي أذونات من هذا الجهاز.").localized(), 12, Mist)
+                        Label((Copy(R.string.k_sample_entry_no_permission_was_read_on_this_device)).localized(), 12, Mist)
                     }
                     entries.getOrNull(entryIndex)?.let {
                         Label(it.detail.localized(), 13, Mist)
@@ -835,7 +797,7 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
                 }
                 "proceed" -> {
                     entries.forEach { Label("${it.title.localized()} · ${it.value}", 13, Mist) }
-                    AccentButton(Action("Confirm preview" ar "تأكيد المعاينة", Mark.CHECK), Modifier.fillMaxWidth(),
+                    AccentButton(Action(Copy(R.string.k_confirm_preview), Mark.CHECK), Modifier.fillMaxWidth(),
                         tag = "confirm-preview") { sheet = "ack" }
                 }
                 else -> Label(NoChange.localized(), 16, Cyan, FontWeight.Bold, Modifier.testTag("preview-only-result"))
@@ -844,8 +806,7 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
         }
     }
     if (showProGate) {
-        ProGateDialog(
-            section = ProSection.PRIVACY_SWEEP,
+        ProGateDialog(section = ProSection.PRIVACY_SWEEP,
             onDismiss = { showProGate = false },
             onActivate = { showProGate = false }
         )
@@ -890,24 +851,21 @@ internal fun AiOptimizationScreen(open: (Page) -> Unit) {
     val data = PreviewFixtures.screen(Page.OPTIMIZE, PreviewSource.DESIGN_PREVIEW)
     Column(Modifier.fillMaxSize()) {
         NeonHero(Mark.CHIP, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
-        MasterTitle("AI" ar "تحسين", "Optimization" ar "الذكاء الاصطناعي",
-            "Explore performance opportunities with KNOUX AI" ar "استكشف فرص الأداء مع KNOUX AI.",
+        MasterTitle(Copy(R.string.k_ai), Copy(R.string.k_optimization_2),
+            Copy(R.string.k_explore_performance_opportunities_with_knoux_ai),
             "screen-ai-optimization")
         MasterPreviewPill()
         // ── Pro Banner ──────────────────────────────────────────────────────
-        ProSectionBanner(
-            section = ProSection.AI_OPTIMIZATION,
-            tagline = ("🧠 Gaming boost • Adaptive AI • Thermal management • Smart scenes"
-                ar "🧠 تعزيز الألعاب • ذكاء اصطناعي تكيفي • إدارة الحرارة • مشاهد ذكية"),
+        ProSectionBanner(section = ProSection.AI_OPTIMIZATION,
+            tagline = (Copy(R.string.k_gaming_boost_adaptive_ai_thermal_management_smart_scenes)),
             onClick = { showProGate = true }
         )
         Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            val metrics = listOf(
-                Triple("Performance Analysis" ar "تحليل الأداء", "94 /100", Mark.SPEED),
-                Triple("Battery Efficiency" ar "كفاءة البطارية", "+18%", Mark.BATTERY),
-                Triple("Memory Pressure" ar "ضغط الذاكرة", "1.6 GB Free", Mark.MEMORY),
-                Triple("Thermal Observations" ar "ملاحظات حرارية", "Normal", Mark.TEMP)
+            val metrics = listOf(Triple(Copy(R.string.k_performance_analysis), "94 /100", Mark.SPEED),
+                Triple(Copy(R.string.k_battery_efficiency), "+18%", Mark.BATTERY),
+                Triple(Copy(R.string.k_memory_pressure), "1.6 GB Free", Mark.MEMORY),
+                Triple(Copy(R.string.k_thermal_observations), "Normal", Mark.TEMP)
             )
             metrics.chunked(2).forEachIndexed { row, pair ->
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
@@ -924,29 +882,28 @@ internal fun AiOptimizationScreen(open: (Page) -> Unit) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Separator(Modifier.weight(.16f).height(1.dp))
-                Label(("Optimization Opportunities" ar "فرص التحسين").localized(), 15, weight = FontWeight.ExtraBold,
+                Label((Copy(R.string.k_optimization_opportunities)).localized(), 15, weight = FontWeight.ExtraBold,
                     modifier = Modifier.weight(.68f), align = TextAlign.Center)
                 Separator(Modifier.weight(.16f).height(1.dp))
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                OpportunitySphere(Modifier.weight(1f), "Performance" ar "الأداء", Mark.BARS, Cyan,
+                OpportunitySphere(Modifier.weight(1f), Copy(R.string.k_performance), Mark.BARS, Cyan,
                     opportunities and 1 != 0, "row-0") { opportunities = opportunities xor 1 }
-                OpportunitySphere(Modifier.weight(1f), "Privacy" ar "الخصوصية", Mark.SHIELD, Pink,
+                OpportunitySphere(Modifier.weight(1f), Copy(R.string.k_privacy), Mark.SHIELD, Pink,
                     opportunities and 2 != 0, "row-1") { opportunities = opportunities xor 2 }
-                OpportunitySphere(Modifier.weight(1f), "Battery" ar "البطارية", Mark.BATTERY, Cyan,
+                OpportunitySphere(Modifier.weight(1f), Copy(R.string.k_battery), Mark.BATTERY, Cyan,
                     opportunities and 4 != 0, "row-2") { opportunities = opportunities xor 4 }
             }
             Spacer(Modifier.weight(1f))
-            AccentButton(Action("See Recommendations" ar "عرض التوصيات", Mark.SPARKLE),
+            AccentButton(Action(Copy(R.string.k_see_recommendations), Mark.SPARKLE),
                 Modifier.fillMaxWidth(), primary = true, tag = "primary-action") { sheet = "proceed" }
-            PreviewNote(("DESIGN PREVIEW — Example metrics and opportunities for visual demonstration only."
-                ar "معاينة تصميم — أمثلة ومؤشرات لتوضيح التجربة فقط."))
+            PreviewNote((Copy(R.string.k_design_preview_example_metrics_and_opportunities_for_vis)))
         }
     }
     sheet?.let { mode ->
         val entries = data?.entries.orEmpty()
-        InfoSheet(if (mode == "review") ("Review Opportunities" ar "مراجعة الفرص") else ("See Recommendations" ar "عرض التوصيات"),
+        InfoSheet(if (mode == "review") (Copy(R.string.k_review_opportunities)) else (Copy(R.string.k_see_recommendations)),
             { sheet = null }) {
             when (mode) {
                 "review" -> {
@@ -959,7 +916,7 @@ internal fun AiOptimizationScreen(open: (Page) -> Unit) {
                 }
                 "proceed" -> {
                     entries.forEach { Label("${it.title.localized()} · ${it.value}", 13, Mist) }
-                    AccentButton(Action("Confirm preview" ar "تأكيد المعاينة", Mark.CHECK), Modifier.fillMaxWidth(),
+                    AccentButton(Action(Copy(R.string.k_confirm_preview), Mark.CHECK), Modifier.fillMaxWidth(),
                         tag = "confirm-preview") { sheet = "ack" }
                 }
                 else -> Label(NoChange.localized(), 16, Cyan, FontWeight.Bold, Modifier.testTag("preview-only-result"))
@@ -968,8 +925,7 @@ internal fun AiOptimizationScreen(open: (Page) -> Unit) {
         }
     }
     if (showProGate) {
-        ProGateDialog(
-            section = ProSection.AI_OPTIMIZATION,
+        ProGateDialog(section = ProSection.AI_OPTIMIZATION,
             onDismiss = { showProGate = false },
             onActivate = { showProGate = false }
         )
@@ -982,7 +938,7 @@ private fun AiMetricCard(title: Copy, value: String, mark: Mark, tag: String, on
         .testTag(tag).clickable(role = Role.Button, onClick = onReview), radius = 20, tint = Violet) {
         Column(Modifier.fillMaxWidth().padding(11.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
             Label(title.localized(), 14, weight = FontWeight.ExtraBold)
-            Label(("Sample metric" ar "مؤشر نموذجي").localized(), 9, Mist)
+            Label((Copy(R.string.k_sample_metric)).localized(), 9, Mist)
             Spacer(Modifier.height(2.dp))
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)) {

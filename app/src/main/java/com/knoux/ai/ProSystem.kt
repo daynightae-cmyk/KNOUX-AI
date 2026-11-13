@@ -47,16 +47,16 @@ internal data class ProFeature(
  * Pro Section - كل قسم من أقسام التطبيق العشرة
  */
 internal enum class ProSection(val id: String, val title: Copy, val icon: Mark, val themeColor: Color) {
-    SMART_CLEAN("smart_clean", "AI Smart Clean" ar "التنظيف الذكي", Mark.SPARKLE, Cyan),
-    PRIVACY_SWEEP("privacy_sweep", "Privacy Sweep" ar "مسح الخصوصية", Mark.SHIELD, Pink),
-    DUPLICATE_FINDER("duplicate_finder", "Duplicate Files" ar "الملفات المكررة", Mark.COPY, Violet),
-    DEEP_SCAN("deep_scan", "Deep Scan" ar "الفحص العميق", Mark.SEARCH, Cyan),
-    REPORTS("reports", "Reports & Insights" ar "التقارير", Mark.BARS, Gold),
-    APP_RESIDUE("app_residue", "App Residue Cleanup" ar "تنظيف بقايا التطبيقات", Mark.BROOM, Pink),
-    APP_MANAGER("app_manager", "App Manager" ar "مدير التطبيقات", Mark.GRID, Violet),
-    STORAGE_ANALYZER("storage_analyzer", "Storage Analyzer" ar "محلل التخزين", Mark.CHART, Cyan),
-    BATTERY_SAVER("battery_saver", "Battery Saver" ar "موفر البطارية", Mark.BOLT, Gold),
-    AI_OPTIMIZATION("ai_optimization", "AI Optimization" ar "التحسين الذكي", Mark.CHIP, Mint);
+    SMART_CLEAN("smart_clean", Copy(R.string.k_ai_smart_clean), Mark.SPARKLE, Cyan),
+    PRIVACY_SWEEP("privacy_sweep", Copy(R.string.k_privacy_sweep_2), Mark.SHIELD, Pink),
+    DUPLICATE_FINDER("duplicate_finder", Copy(R.string.k_duplicate_files), Mark.COPY, Violet),
+    DEEP_SCAN("deep_scan", Copy(R.string.k_deep_scan), Mark.SEARCH, Cyan),
+    REPORTS("reports", Copy(R.string.k_reports_insights_2), Mark.BARS, Gold),
+    APP_RESIDUE("app_residue", Copy(R.string.k_app_residue_cleanup), Mark.BROOM, Pink),
+    APP_MANAGER("app_manager", Copy(R.string.k_app_manager_2), Mark.GRID, Violet),
+    STORAGE_ANALYZER("storage_analyzer", Copy(R.string.k_storage_analyzer_2), Mark.CHART, Cyan),
+    BATTERY_SAVER("battery_saver", Copy(R.string.k_battery_saver_2), Mark.BOLT, Gold),
+    AI_OPTIMIZATION("ai_optimization", Copy(R.string.k_ai_optimization), Mark.CHIP, Mint);
 
     companion object {
         fun fromId(id: String) = entries.find { it.id == id }
@@ -73,45 +73,40 @@ internal object ProFeaturesDB {
         ProFeature(
             "smart_clean_unlimited",
             Mark.ROCKET,
-            "Unlimited AI Cleaning Sessions" ar "جلسات تنظيف ذكية بلا حدود",
-            "Clean your device as many times as you want with advanced AI algorithms" ar 
-            "نظف جهازك بلا حدود باستخدام خوارزميات الذكاء الاصطناعي المتقدمة",
+            Copy(R.string.k_unlimited_ai_cleaning_sessions),
+            Copy(R.string.k_clean_your_device_as_many_times_as_you_want_with_advance),
             Cyan,
             ProSection.SMART_CLEAN.id
         ),
         ProFeature(
             "smart_clean_scheduled",
             Mark.CLOCK,
-            "Scheduled Auto-Cleaning" ar "التنظيف التلقائي المجدول",
-            "Set up automatic cleaning schedules - daily, weekly, or custom" ar
-            "إعداد جداول تنظيف تلقائية - يومية أو أسبوعية أو مخصصة",
+            Copy(R.string.k_scheduled_auto_cleaning),
+            Copy(R.string.k_set_up_automatic_cleaning_schedules_daily_weekly_or_cust),
             Violet,
             ProSection.SMART_CLEAN.id
         ),
         ProFeature(
             "smart_clean_deep_analysis",
             Mark.CHIP,
-            "AI Deep Pattern Analysis" ar "تحليل أنماط ذكي عميق",
-            "Advanced AI learns your usage patterns and cleans intelligently" ar
-            "ذكاء اصطناعي متقدم يتعلم أنماط استخدامك وينظف بذكاء",
+            Copy(R.string.k_ai_deep_pattern_analysis),
+            Copy(R.string.k_advanced_ai_learns_your_usage_patterns_and_cleans_intell),
             Pink,
             ProSection.SMART_CLEAN.id
         ),
         ProFeature(
             "smart_clean_priority",
             Mark.BOLT,
-            "Priority Performance Mode" ar "وضع الأداء ذو الأولوية",
-            "Lightning-fast cleaning with priority system resources" ar
-            "تنظيف فائق السرعة بموارد النظام ذات الأولوية",
+            Copy(R.string.k_priority_performance_mode),
+            Copy(R.string.k_lightning_fast_cleaning_with_priority_system_resources),
             Gold,
             ProSection.SMART_CLEAN.id
         ),
         ProFeature(
             "smart_clean_rollback",
             Mark.HISTORY,
-            "Smart Rollback & Recovery" ar "التراجع والاسترجاع الذكي",
-            "Undo any cleaning action with one tap - full safety guarantee" ar
-            "تراجع عن أي عملية تنظيف بضغطة واحدة - ضمان أمان كامل",
+            Copy(R.string.k_smart_rollback_recovery),
+            Copy(R.string.k_undo_any_cleaning_action_with_one_tap_full_safety_guaran),
             Mint,
             ProSection.SMART_CLEAN.id
         )
@@ -132,145 +127,120 @@ internal object ProFeaturesDB {
     // ─── Privacy Sweep Pro ───────────────────────────────────────────────────
     val privacyFeatures = listOf(
         ProFeature("prv_realtime", Mark.RADAR,
-            "Real-Time Threat Monitor" ar "مراقبة التهديدات الفورية",
-            "Live alerts when apps access your camera, mic or location in background" ar
-            "تنبيهات فورية عند وصول التطبيقات للكاميرا والميك والموقع في الخلفية",
+            Copy(R.string.k_real_time_threat_monitor),
+            Copy(R.string.k_live_alerts_when_apps_access_your_camera_mic_or_location),
             Pink, ProSection.PRIVACY_SWEEP.id),
         ProFeature("prv_vault", Mark.SHIELD,
-            "Encrypted Privacy Vault" ar "خزنة الخصوصية المشفرة",
-            "Lock sensitive photos, notes and files behind biometric authentication" ar
-            "احمِ الصور والملاحظات الحساسة خلف مصادقة بيومترية",
+            Copy(R.string.k_encrypted_privacy_vault),
+            Copy(R.string.k_lock_sensitive_photos_notes_and_files_behind_biometric_a),
             Violet, ProSection.PRIVACY_SWEEP.id),
         ProFeature("prv_tracker", Mark.EYE,
-            "Deep Tracker Blocker" ar "حاجب المتتبعين العميق",
-            "Identify and silence 500+ known ad-trackers and analytics SDKs" ar
-            "كشف وإسكات أكثر من ٥٠٠ متتبع إعلاني معروف",
+            Copy(R.string.k_deep_tracker_blocker),
+            Copy(R.string.k_identify_and_silence_500_known_ad_trackers_and_analytics),
             Cyan, ProSection.PRIVACY_SWEEP.id),
         ProFeature("prv_report", Mark.BARS,
-            "Full Privacy Audit Report" ar "تقرير مراجعة الخصوصية الكامل",
-            "Downloadable PDF report with every permission, risk and recommendation" ar
-            "تقرير PDF قابل للتنزيل بكل إذن وخطر وتوصية",
+            Copy(R.string.k_full_privacy_audit_report),
+            Copy(R.string.k_downloadable_pdf_report_with_every_permission_risk_and_r),
             Gold, ProSection.PRIVACY_SWEEP.id),
         ProFeature("prv_history", Mark.HISTORY,
-            "Permission History Timeline" ar "الجدول الزمني لسجل الأذونات",
-            "30-day history showing exactly when each app accessed your data" ar
-            "سجل ٣٠ يوماً يُظهر متى وصل كل تطبيق لبياناتك",
+            Copy(R.string.k_permission_history_timeline),
+            Copy(R.string.k_t_30_day_history_showing_exactly_when_each_app_accessed),
             Pink, ProSection.PRIVACY_SWEEP.id)
     )
 
     // ─── Deep Scan Pro ───────────────────────────────────────────────────────
     val deepScanFeatures = listOf(
         ProFeature("scan_malware", Mark.SEARCH,
-            "AI Malware & Spyware Scanner" ar "ماسح البرمجيات الخبيثة بالذكاء الاصطناعي",
-            "Detect hidden malware, spyware and adware across your entire storage" ar
-            "كشف البرمجيات الخبيثة والتجسسية الخفية في كل التخزين",
+            Copy(R.string.k_ai_malware_spyware_scanner),
+            Copy(R.string.k_detect_hidden_malware_spyware_and_adware_across_your_ent),
             Cyan, ProSection.DEEP_SCAN.id),
         ProFeature("scan_hidden", Mark.EYE,
-            "Hidden File Deep Inspector" ar "فاحص الملفات المخفية العميق",
-            "Reveal and examine every hidden file, folder and system cache" ar
-            "اكشف وافحص كل ملف ومجلد مخفي وذاكرة نظام",
+            Copy(R.string.k_hidden_file_deep_inspector),
+            Copy(R.string.k_reveal_and_examine_every_hidden_file_folder_and_system_c),
             Violet, ProSection.DEEP_SCAN.id),
         ProFeature("scan_schedule", Mark.CLOCK,
-            "Scheduled Background Scans" ar "الفحوصات المجدولة في الخلفية",
-            "Automatic deep scans run silently at night — wake up to clean results" ar
-            "فحوصات عميقة تلقائية تعمل ليلاً وتستيقظ على نتائج نظيفة",
+            Copy(R.string.k_scheduled_background_scans),
+            Copy(R.string.k_automatic_deep_scans_run_silently_at_night_wake_up_to_cl),
             Pink, ProSection.DEEP_SCAN.id),
         ProFeature("scan_custom", Mark.FOLDER,
-            "Custom Scan Profiles" ar "ملفات الفحص المخصصة",
-            "Build your own scan profiles targeting specific folders and file types" ar
-            "أنشئ ملفات فحص خاصة بك تستهدف مجلدات وأنواع ملفات محددة",
+            Copy(R.string.k_custom_scan_profiles),
+            Copy(R.string.k_build_your_own_scan_profiles_targeting_specific_folders),
             Gold, ProSection.DEEP_SCAN.id),
         ProFeature("scan_forensic", Mark.CHIP,
-            "Forensic-Grade Analysis" ar "تحليل بمستوى الطب الجنائي الرقمي",
-            "Examine file metadata, creation timestamps and modification logs" ar
-            "فحص بيانات الملف والطوابع الزمنية وسجلات التعديل",
+            Copy(R.string.k_forensic_grade_analysis),
+            Copy(R.string.k_examine_file_metadata_creation_timestamps_and_modificati),
             Cyan, ProSection.DEEP_SCAN.id)
     )
 
     // ─── Reports & Insights Pro ──────────────────────────────────────────────
     val reportsFeatures = listOf(
         ProFeature("rep_export", Mark.DOWNLOAD,
-            "Export Full PDF Report" ar "تصدير تقرير PDF كامل",
-            "Professional-grade PDF report with charts, graphs and AI recommendations" ar
-            "تقرير PDF احترافي بالرسوم البيانية وتوصيات الذكاء الاصطناعي",
+            Copy(R.string.k_export_full_pdf_report),
+            Copy(R.string.k_professional_grade_pdf_report_with_charts_graphs_and_ai),
             Gold, ProSection.REPORTS.id),
         ProFeature("rep_history", Mark.HISTORY,
-            "90-Day History & Trends" ar "السجل والاتجاهات لـ ٩٠ يوماً",
-            "Track your device health, storage and battery trends over 90 days" ar
-            "تتبع صحة جهازك والتخزين واتجاهات البطارية لـ ٩٠ يوماً",
+            Copy(R.string.k_t_90_day_history_trends),
+            Copy(R.string.k_track_your_device_health_storage_and_battery_trends_over),
             Cyan, ProSection.REPORTS.id),
         ProFeature("rep_ai_insights", Mark.SPARKLE,
-            "AI Predictive Insights" ar "رؤى الذكاء الاصطناعي التنبؤية",
-            "AI predicts future storage shortfalls and performance drops before they happen" ar
-            "يتنبأ الذكاء الاصطناعي بنقص التخزين وانخفاض الأداء قبل حدوثه",
+            Copy(R.string.k_ai_predictive_insights),
+            Copy(R.string.k_ai_predicts_future_storage_shortfalls_and_performance_dr),
             Mint, ProSection.REPORTS.id),
         ProFeature("rep_compare", Mark.CHART,
-            "Device Comparison Benchmarks" ar "معايير مقارنة الجهاز",
-            "Compare your device performance against similar models worldwide" ar
-            "قارن أداء جهازك بالنماذج المماثلة حول العالم",
+            Copy(R.string.k_device_comparison_benchmarks),
+            Copy(R.string.k_compare_your_device_performance_against_similar_models_w),
             Pink, ProSection.REPORTS.id),
         ProFeature("rep_schedule", Mark.CALENDAR,
-            "Automated Weekly Reports" ar "التقارير الأسبوعية التلقائية",
-            "Receive automated weekly summary reports delivered as notifications" ar
-            "احصل على تقارير ملخص أسبوعية تلقائية كإشعارات",
+            Copy(R.string.k_automated_weekly_reports),
+            Copy(R.string.k_receive_automated_weekly_summary_reports_delivered_as_no),
             Violet, ProSection.REPORTS.id)
     )
 
     // ─── App Manager Pro ─────────────────────────────────────────────────────
     val appManagerFeatures = listOf(
         ProFeature("app_batch", Mark.LAYERS,
-            "Batch App Operations" ar "العمليات الجماعية على التطبيقات",
-            "Freeze, uninstall or backup multiple apps simultaneously with one tap" ar
-            "جمّد أو احذف أو احتفظ بنسخة احتياطية لتطبيقات متعددة بضغطة واحدة",
+            Copy(R.string.k_batch_app_operations),
+            Copy(R.string.k_freeze_uninstall_or_backup_multiple_apps_simultaneously),
             Cyan, ProSection.APP_MANAGER.id),
         ProFeature("app_freeze", Mark.POWER,
-            "App Hibernation & Freeze" ar "تعليق التطبيقات وتجميدها",
-            "Freeze background apps to stop battery drain without uninstalling" ar
-            "جمّد تطبيقات الخلفية لإيقاف استنزاف البطارية دون حذف",
+            Copy(R.string.k_app_hibernation_freeze),
+            Copy(R.string.k_freeze_background_apps_to_stop_battery_drain_without_uni),
             Violet, ProSection.APP_MANAGER.id),
         ProFeature("app_backup", Mark.DOWNLOAD,
-            "Full App Backup & Restore" ar "النسخ الاحتياطي الكامل والاستعادة",
-            "Backup apps with their data to external storage before uninstalling" ar
-            "احتفظ بنسخة احتياطية من التطبيقات مع بياناتها قبل الحذف",
+            Copy(R.string.k_full_app_backup_restore),
+            Copy(R.string.k_backup_apps_with_their_data_to_external_storage_before_u),
             Gold, ProSection.APP_MANAGER.id),
         ProFeature("app_usage", Mark.BARS,
-            "Deep Usage Analytics" ar "تحليلات الاستخدام العميقة",
-            "Track exactly how much battery, RAM and data each app consumes" ar
-            "تتبع مقدار البطارية والذاكرة والبيانات التي يستهلكها كل تطبيق",
+            Copy(R.string.k_deep_usage_analytics),
+            Copy(R.string.k_track_exactly_how_much_battery_ram_and_data_each_app_con),
             Pink, ProSection.APP_MANAGER.id),
         ProFeature("app_clone", Mark.COPY,
-            "App Clone & Multi-Account" ar "استنساخ التطبيقات ومتعدد الحسابات",
-            "Run two instances of any social app with separate accounts" ar
-            "شغّل نسختين من أي تطبيق اجتماعي بحسابات منفصلة",
+            Copy(R.string.k_app_clone_multi_account),
+            Copy(R.string.k_run_two_instances_of_any_social_app_with_separate_accoun),
             Mint, ProSection.APP_MANAGER.id)
     )
 
     // ─── AI Optimization Pro ─────────────────────────────────────────────────
     val aiOptFeatures = listOf(
         ProFeature("opt_gaming", Mark.GAME,
-            "Gaming Boost Mode" ar "وضع تعزيز الألعاب",
-            "Allocate maximum CPU/GPU/RAM for gaming — block interruptions" ar
-            "خصّص أقصى CPU/GPU/RAM للألعاب وأوقف كل المقاطعات",
+            Copy(R.string.k_gaming_boost_mode),
+            Copy(R.string.k_allocate_maximum_cpu_gpu_ram_for_gaming_block_interrupti),
             Cyan, ProSection.AI_OPTIMIZATION.id),
         ProFeature("opt_ai_learn", Mark.CHIP,
-            "Adaptive AI Engine" ar "محرك الذكاء الاصطناعي التكيفي",
-            "AI learns your daily routine and auto-optimizes at the right moments" ar
-            "يتعلم الذكاء الاصطناعي روتينك اليومي ويحسّن تلقائياً في اللحظات المناسبة",
+            Copy(R.string.k_adaptive_ai_engine),
+            Copy(R.string.k_ai_learns_your_daily_routine_and_auto_optimizes_at_the_r),
             Mint, ProSection.AI_OPTIMIZATION.id),
         ProFeature("opt_thermal", Mark.TEMP,
-            "Thermal Management Pro" ar "إدارة الحرارة الاحترافية",
-            "Advanced cooling profiles to prevent throttling and overheating" ar
-            "ملفات تبريد متقدمة لمنع التقليل والسخونة الزائدة",
+            Copy(R.string.k_thermal_management_pro),
+            Copy(R.string.k_advanced_cooling_profiles_to_prevent_throttling_and_over),
             Pink, ProSection.AI_OPTIMIZATION.id),
         ProFeature("opt_network", Mark.SPEED,
-            "Network Speed Optimizer" ar "محسّن سرعة الشبكة",
-            "Prioritize bandwidth for active apps and boost download speeds" ar
-            "أعطِ الأولوية للبيانات للتطبيقات النشطة وعزّز سرعات التنزيل",
+            Copy(R.string.k_network_speed_optimizer),
+            Copy(R.string.k_prioritize_bandwidth_for_active_apps_and_boost_download),
             Gold, ProSection.AI_OPTIMIZATION.id),
         ProFeature("opt_scene", Mark.SPARKLE,
-            "Smart Scene Detection" ar "اكتشاف المشاهد الذكية",
-            "Auto-switch to Work, Gaming, Sleep or Power modes based on context" ar
-            "تبديل تلقائي لأوضاع العمل والألعاب والنوم أو الطاقة بحسب السياق",
+            Copy(R.string.k_smart_scene_detection),
+            Copy(R.string.k_auto_switch_to_work_gaming_sleep_or_power_modes_based_on),
             Violet, ProSection.AI_OPTIMIZATION.id)
     )
 } // end ProFeaturesDB
@@ -441,7 +411,7 @@ private fun ProGateHeader(section: ProSection) {
                     .padding(horizontal = 16.dp, vertical = 6.dp)
             ) {
                 Label(
-                    ("🔒  PRO FEATURE" ar "🔒  ميزة PRO").localized(),
+                    (Copy(R.string.k_pro_feature)).localized(),
                     12,
                     Gold,
                     FontWeight.Bold
@@ -449,7 +419,7 @@ private fun ProGateHeader(section: ProSection) {
             }
 
             Label(
-                ("Unlock premium features with Pro subscription" ar "افتح الميزات المميزة مع اشتراك Pro").localized(),
+                (Copy(R.string.k_unlock_premium_features_with_pro_subscription)).localized(),
                 13,
                 Mist.copy(alpha = 0.7f),
                 align = TextAlign.Center
@@ -535,7 +505,7 @@ private fun ProPricingCard(section: ProSection) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Label(
-                ("💎  Premium Pricing" ar "💎  أسعار مميزة").localized(),
+                (Copy(R.string.k_premium_pricing)).localized(),
                 16,
                 Gold,
                 FontWeight.ExtraBold
@@ -548,7 +518,7 @@ private fun ProPricingCard(section: ProSection) {
             ) {
                 // Monthly
                 PriceOption(
-                    period = "Monthly" ar "شهرياً",
+                    period = Copy(R.string.k_monthly),
                     price = "29 AED",
                     color = Cyan
                 )
@@ -562,7 +532,7 @@ private fun ProPricingCard(section: ProSection) {
 
                 // Yearly
                 PriceOption(
-                    period = "Yearly" ar "سنوياً",
+                    period = Copy(R.string.k_yearly),
                     price = "249 AED",
                     color = Gold,
                     badge = "-30%"
@@ -570,7 +540,7 @@ private fun ProPricingCard(section: ProSection) {
             }
 
             Label(
-                ("✨ All Pro features included • Cancel anytime" ar "✨ جميع ميزات Pro متضمنة • إلغاء في أي وقت").localized(),
+                (Copy(R.string.k_all_pro_features_included_cancel_anytime)).localized(),
                 11,
                 Mist.copy(alpha = 0.6f),
                 align = TextAlign.Center
@@ -626,7 +596,7 @@ private fun ProCodeGenerator(
             modifier = Modifier.fillMaxWidth()
         ) {
             Label(
-                ("🎁  Get a Free Trial Code" ar "🎁  احصل على كود تجريبي مجاني").localized(),
+                (Copy(R.string.k_get_a_free_trial_code_2)).localized(),
                 14,
                 Chalk,
                 FontWeight.Bold,
@@ -646,7 +616,7 @@ private fun ProCodeGenerator(
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Label(
-                            ("Your Trial Code:" ar "كود التجربة:").localized(),
+                            (Copy(R.string.k_your_trial_code_2)).localized(),
                             11,
                             Mist.copy(alpha = 0.7f)
                         )
@@ -660,7 +630,7 @@ private fun ProCodeGenerator(
                         )
                         Spacer(Modifier.height(4.dp))
                         Label(
-                            ("Send this code to activate Pro" ar "أرسل هذا الكود لتفعيل Pro").localized(),
+                            (Copy(R.string.k_send_this_code_to_activate_pro)).localized(),
                             11,
                             Mist.copy(alpha = 0.6f)
                         )
@@ -669,7 +639,7 @@ private fun ProCodeGenerator(
             }
 
             AccentButton(
-                Action(("✨  Generate Trial Code" ar "✨  توليد كود تجريبي"), Mark.SPARKLE),
+                Action((Copy(R.string.k_generate_trial_code)), Mark.SPARKLE),
                 Modifier.fillMaxWidth(),
                 primary = true,
                 tag = "gen-code-$sectionId"
@@ -725,14 +695,14 @@ private fun ProWhatsAppButton(
             }
             Column(Modifier.weight(1f)) {
                 Label(
-                    ("Activate via WhatsApp" ar "تفعيل عبر واتساب").localized(),
+                    (Copy(R.string.k_activate_via_whatsapp)).localized(),
                     16,
                     Chalk,
                     FontWeight.Bold
                 )
                 Label(whatsappNumber, 13, Color(0xff25D366), FontWeight.Medium)
                 Label(
-                    ("Tap to contact and activate $sectionName Pro" ar "اضغط للتواصل وتفعيل $sectionName Pro").localized(),
+                    (Copy.args(R.string.k_pro_whatsapp_tap, sectionName)).localized(),
                     11,
                     Mist.copy(alpha = 0.6f)
                 )
@@ -818,7 +788,7 @@ internal fun ProSectionBanner(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Label(
-                        ("Unlock ${section.title.localized()} Pro" ar "افتح ${section.title.localized()} Pro").localized(),
+                        (Copy.args(R.string.k_unlock, section.title.localized())).localized(),
                         13,
                         Gold,
                         FontWeight.ExtraBold

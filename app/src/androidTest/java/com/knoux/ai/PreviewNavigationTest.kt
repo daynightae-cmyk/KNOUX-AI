@@ -49,10 +49,21 @@ class PreviewNavigationTest {
         target.assertIsDisplayed()
     }
 
-    /** A design reference page: its heading plus the sample-data disclosure pill. */
+    /** A design reference page: its heading is the page-level marker. */
     private fun screen(page: String) {
         showing("screen-$page")
-        showing("design-preview")
+    }
+
+    /**
+     * A service without a connected engine reports that honestly instead of
+     * showing the retired design-preview fixtures.
+     */
+    private fun unavailableScreen() {
+        showing("service-unavailable")
+        showing("state-not-measured")
+        check(ui.onAllNodesWithTag("design-preview").fetchSemanticsNodes().isEmpty()) {
+            "A release build must not show a design-preview badge"
+        }
     }
 
     /**
@@ -99,7 +110,7 @@ class PreviewNavigationTest {
         showing("detail-scroll-$page")
     }
 
-    /** The five Device Tools entries open their measured detail workspaces. */
+    /** The five Device Tools entries and where they now lead. */
     private val toolDetails = listOf(
         "storage" to "storage-breakdown",
         "app-manager" to "installed-apps-review",
@@ -163,13 +174,15 @@ class PreviewNavigationTest {
         node("tab-home").assertIsDisplayed()
         node("menu").assertIsDisplayed()
         node("settings").assertIsDisplayed()
-        // The compact disclosure remains an actual action, not hidden by the brand.
-        ui.onAllNodesWithTag("design-preview").onFirst().assertIsDisplayed()
+        // Release hygiene: no design-preview marker survives anywhere in the shell.
+        check(ui.onAllNodesWithTag("design-preview").fetchSemanticsNodes().isEmpty()) {
+            "The shell must not show a design-preview badge"
+        }
     }
 
     /** P0: compact native header actions must not visually collide at phone width. */
     @Test fun compactHeaderControlsDoNotOverlapOnDevice() {
-        val ids = listOf("menu", "design-preview", "pro", "settings")
+        val ids = listOf("menu", "pro", "settings")
         val rectangles = ids.map { tag ->
             val bounds = ui.onAllNodesWithTag(tag).onFirst().fetchSemanticsNode().boundsInRoot
             org.junit.Assert.assertTrue("$tag must have real bounds", bounds.width > 0f && bounds.height > 0f)
@@ -208,16 +221,12 @@ class PreviewNavigationTest {
         click("tab-tools"); screen("tools")
         for ((entry, detail) in toolDetails) {
             scrollClick("open-$entry")
-            if (detail == "privacy-risk-inspector") privacyScreen() else detailScreen(detail)
+            if (detail == "privacy-risk-inspector") privacyScreen() else unavailableScreen()
             node("tab-tools").assertIsSelected()
             back(); screen("tools")
         }
         click("tab-reports"); screen("reports")
         node("tab-reports").assertIsSelected()
-        scrollClick("primary-action")
-        scrollClick("confirm-preview")
-        node("preview-only-result").assertIsDisplayed()
-        scrollClick("close-sheet")
         click("tab-home"); screen("home")
     }
 
@@ -290,45 +299,25 @@ class PreviewNavigationTest {
         check(home.left > reports.left) { "Tab order did not mirror in RTL" }
         click("tab-tools")
         scrollClick("open-battery")
-        detailScreen("battery-diagnostics")
+        unavailableScreen()
         node("screen-battery-diagnostics").assertTextContains("تشخيص البطارية")
     }
 
-    @Test fun everyRemainingPrimaryActionOpensAReversiblePreview() {
+    /**
+     * Release hygiene across every Device Tools entry: a service with an engine
+     * shows its measured surface, a service without one says it is not measured,
+     * and no route may fall back to a sample studio.
+     */
+    @Test fun noDeviceToolEverShowsASampleStudio() {
         click("tab-tools")
         for ((entry, detail) in toolDetails) {
             scrollClick("open-$entry")
-            if (detail == "privacy-risk-inspector") {
-                // PC04 replaced this design fixture with the measured sweep: it has
-                // no detail body, selection mask or preview dialog to prove.
-                privacyScreen()
-                back()
-                continue
+            if (detail == "privacy-risk-inspector") privacyScreen() else unavailableScreen()
+            check(ui.onAllNodesWithTag("service-world-$detail").fetchSemanticsNodes().isEmpty()) {
+                "$entry must not render a design-preview studio"
             }
-            detailScreen(detail)
-            // Pages that ship a sample selection start with one row selected; a
-            // page without a selection mask has no selectors at all. Either way
-            // the primary action must only ever open the preview dialog.
-            if (ui.onAllNodesWithTag("detail-select-0").fetchSemanticsNodes().isNotEmpty()) {
-                scrollClick("detail-select-0")
-            }
-            scrollClick("primary-action")
-            scrollClick("confirm-detail-preview")
-            node("detail-preview-result").assertTextContains("No action performed", substring = true)
-            scrollClick("close-sheet")
             back()
         }
-    }
-
-    @Test fun cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean() {
-        scrollClick("open-clean-center")
-        detailScreen("clean-center")
-        node("detail-selection-total").performScrollTo().assertTextContains("4 of 5 selected", substring = true)
-        scrollClick("detail-select-0")
-        node("detail-selection-total").performScrollTo().assertTextContains("3 of 5 selected", substring = true)
-        scrollClick("primary-action")
-        scrollClick("confirm-detail-preview")
-        node("detail-preview-result").assertTextContains("No action performed", substring = true)
     }
 
     @Test fun outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin() {

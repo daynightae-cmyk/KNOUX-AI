@@ -411,7 +411,7 @@ private fun rememberIfAnimated(animated: Boolean, periodMillis: Int): State<Floa
 @Composable
 private fun rememberPaused(): State<Float> = remember { mutableStateOf(0.5f) }
 
-private fun com.knoux.ai.Copy.localizedFor(arabic: Boolean): String = if (arabic) ar else en
+private fun com.knoux.ai.Copy.localizedFor(arabic: Boolean): String = text(arabic)
 
 private fun describe(frame: InstrumentFrame, arabic: Boolean): String {
     val phase = when (frame.phase) {

@@ -292,20 +292,19 @@ internal fun RealPrivacyScreen(page: Page) {
     }
 
     val pill = when {
-        state.phase == PrivacyPhase.MEASURING -> "MEASURING ON DEVICE" ar "جارٍ القياس على الجهاز"
-        state.measured && state.previousScan -> "PREVIOUS PASS — MEASURE AGAIN TO VERIFY" ar "فحص سابق — أعد القياس للتحقق"
-        state.measured && state.status == DataStatus.PARTIAL -> "PARTIAL — SOME CHECKS NOT READ" ar "جزئي — بعض الفحوص لم تُقرأ"
-        state.measured -> "MEASURED ON DEVICE" ar "مقيس على الجهاز"
-        state.phase == PrivacyPhase.ERROR -> "MEASUREMENT FAILED" ar "فشل القياس"
-        else -> "NOT MEASURED YET" ar "لم يُقس بعد"
+        state.phase == PrivacyPhase.MEASURING -> Copy(R.string.k_measuring_on_device)
+        state.measured && state.previousScan -> Copy(R.string.k_previous_pass_measure_again_to_verify)
+        state.measured && state.status == DataStatus.PARTIAL -> Copy(R.string.k_partial_some_checks_not_read)
+        state.measured -> Copy(R.string.k_measured_on_device)
+        state.phase == PrivacyPhase.ERROR -> Copy(R.string.k_measurement_failed_2)
+        else -> Copy(R.string.k_not_measured_yet)
     }
 
     Column(Modifier.fillMaxSize()) {
         NeonHero(Mark.SHIELD, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
         MasterTitle(
-            "Privacy" ar "مراجعة", "Sweep" ar "الخصوصية",
-            "Real Android state for this app. KNOUX cannot read another app's permissions." ar
-                "حالة أندرويد الفعلية لهذا التطبيق. لا يستطيع KNOUX قراءة أذونات تطبيق آخر.",
+            Copy(R.string.k_privacy_2), Copy(R.string.k_sweep),
+            Copy(R.string.k_real_android_state_for_this_app_knoux_cannot_read_anothe),
             "screen-${page.id}"
         )
         MasterPreviewPill(pill)
@@ -363,7 +362,7 @@ internal fun RealPrivacyScreen(page: Page) {
             horizontalArrangement = Arrangement.spacedBy(9.dp),
         ) {
             AccentButton(
-                Action("Android controls" ar "أدوات أندرويد", Mark.GEAR),
+                Action(Copy(R.string.k_android_controls), Mark.GEAR),
                 Modifier.weight(1f), primary = false, tag = "privacy-open-dashboard",
                 onClick = {
                     val intent: Intent? = KnouxData.privacy.osScreenIntent(PrivacyCheck.ANDROID_PRIVACY_DASHBOARD)
@@ -376,8 +375,8 @@ internal fun RealPrivacyScreen(page: Page) {
                 },
             )
             AccentButton(
-                if (state.busy) Action("Measuring…" ar "جارٍ القياس…", Mark.RADAR)
-                else Action("Measure now" ar "قِس الآن", Mark.RADAR),
+                if (state.busy) Action(Copy(R.string.k_measuring_2), Mark.RADAR)
+                else Action(Copy(R.string.k_measure_now), Mark.RADAR),
                 Modifier.weight(1f), primary = true, enabled = !state.busy,
                 tag = "privacy-measure",
                 onClick = {
@@ -392,18 +391,18 @@ internal fun RealPrivacyScreen(page: Page) {
 // ── Pieces ───────────────────────────────────────────────────────────────────
 
 private fun checkTitle(check: PrivacyCheck): Copy = when (check) {
-    PrivacyCheck.NETWORK_EGRESS -> "Network access" ar "الوصول للشبكة"
-    PrivacyCheck.ALL_FILES_ACCESS -> "All-files access" ar "الوصول لكل الملفات"
-    PrivacyCheck.SENSITIVE_PERMISSIONS -> "Sensitive permissions" ar "أذونات حساسة"
-    PrivacyCheck.MEDIA_ACCESS -> "Media library grant" ar "الوصول لوسائط الجهاز"
-    PrivacyCheck.SAF_WRITE_GRANTS -> "Chosen folders" ar "المجلدات المختارة"
-    PrivacyCheck.BACKUP_ALLOWED -> "OS backup" ar "النسخ الاحتياطي"
-    PrivacyCheck.CLEARTEXT_TRAFFIC -> "Cleartext traffic" ar "حركة غير مشفرة"
-    PrivacyCheck.NOTIFICATIONS -> "Notifications" ar "الإشعارات"
-    PrivacyCheck.SCREENSHOT_PROTECTION -> "Screenshot protection" ar "حماية لقطات الشاشة"
-    PrivacyCheck.DEBUGGABLE_BUILD -> "Build type" ar "نوع البنية"
-    PrivacyCheck.ANDROID_PRIVACY_DASHBOARD -> "Android privacy dashboard" ar "لوحة الخصوصية في أندرويد"
-    PrivacyCheck.OTHER_APP_PRIVACY -> "Other apps" ar "التطبيقات الأخرى"
+    PrivacyCheck.NETWORK_EGRESS -> Copy(R.string.k_network_access)
+    PrivacyCheck.ALL_FILES_ACCESS -> Copy(R.string.k_all_files_access)
+    PrivacyCheck.SENSITIVE_PERMISSIONS -> Copy(R.string.k_sensitive_permissions)
+    PrivacyCheck.MEDIA_ACCESS -> Copy(R.string.k_media_library_grant)
+    PrivacyCheck.SAF_WRITE_GRANTS -> Copy(R.string.k_chosen_folders)
+    PrivacyCheck.BACKUP_ALLOWED -> Copy(R.string.k_os_backup)
+    PrivacyCheck.CLEARTEXT_TRAFFIC -> Copy(R.string.k_cleartext_traffic)
+    PrivacyCheck.NOTIFICATIONS -> Copy(R.string.k_notifications)
+    PrivacyCheck.SCREENSHOT_PROTECTION -> Copy(R.string.k_screenshot_protection)
+    PrivacyCheck.DEBUGGABLE_BUILD -> Copy(R.string.k_build_type)
+    PrivacyCheck.ANDROID_PRIVACY_DASHBOARD -> Copy(R.string.k_android_privacy_dashboard)
+    PrivacyCheck.OTHER_APP_PRIVACY -> Copy(R.string.k_other_apps_2)
 }
 
 private fun severityTint(severity: PrivacySeverity): Color = when (severity) {
@@ -414,9 +413,9 @@ private fun severityTint(severity: PrivacySeverity): Color = when (severity) {
 }
 
 private fun statusLabel(row: PrivacyObservation): Copy = when (row.status) {
-    PrivacyStatus.PASS -> "Pass" ar "سليم"
-    PrivacyStatus.ATTENTION -> "Attention" ar "يحتاج انتباه"
-    PrivacyStatus.UNMEASURABLE -> "Not measurable" ar "غير قابل للقياس"
+    PrivacyStatus.PASS -> Copy(R.string.k_pass)
+    PrivacyStatus.ATTENTION -> Copy(R.string.k_attention)
+    PrivacyStatus.UNMEASURABLE -> Copy(R.string.k_not_measurable)
 }
 
 @Composable
@@ -431,9 +430,8 @@ private fun PrivacyScoreCard(state: PrivacyState) {
                         modifier = Modifier.testTag("privacy-score"),
                     )
                     Label(
-                        if (state.measured) "KNOUX privacy posture (measured checks only)" ar
-                            "مؤشر خصوصية KNOUX (الفحوص المقيسة فقط)"
-                        else "Not measured yet" ar "لم يُقس بعد",
+                        if (state.measured) Copy(R.string.k_knoux_privacy_posture_measured_checks_only)
+                        else Copy(R.string.k_not_measured_yet_3),
                         11, Mist,
                     )
                 }
@@ -468,7 +466,7 @@ private fun PrivacyScoreCard(state: PrivacyState) {
 private fun PrivacyEmptyCard() {
     GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
         Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-            Label("This is a real permission sweep, not a preview." ar "هذه مراجعة أذونات حقيقية وليست معاينة.", 13, Chalk, FontWeight.ExtraBold)
+            Label(Copy(R.string.k_this_is_a_real_permission_sweep_not_a_preview), 13, Chalk, FontWeight.ExtraBold)
             Label(
                 "Nothing has been measured in this session yet. Tap Measure now — the pass reads this app's manifest, grants, network policy, backup flag and the live window flag.",
                 11, Mist,
@@ -497,16 +495,16 @@ private fun PrivacyRowCard(
             Label(row.detail, 10, Mist)
             when (row.remedy) {
                 PrivacyRemedy.OS_SCREEN -> AccentButton(
-                    Action("Open Android settings" ar "افتح إعدادات أندرويد", Mark.GEAR),
+                    Action(Copy(R.string.k_open_android_settings), Mark.GEAR),
                     Modifier.fillMaxWidth(), primary = false, enabled = enabled,
                     tag = "privacy-action-${row.check.tag()}", onClick = onOpenOsScreen,
                 )
                 PrivacyRemedy.APP_SETTING -> Label(
-                    "Controls below in Screenshot protection." ar "التحكم بالأسفل في حماية لقطات الشاشة.",
+                    Copy(R.string.k_controls_below_in_screenshot_protection),
                     9, Cyan,
                 )
                 PrivacyRemedy.NONE, PrivacyRemedy.NOT_POSSIBLE -> Label(
-                    "No action inside KNOUX." ar "لا إجراء داخل KNOUX.", 9, Mist,
+                    Copy(R.string.k_no_action_inside_knoux), 9, Mist,
                 )
             }
         }
@@ -532,7 +530,7 @@ private fun PrivacySecureCard(enabled: Boolean, busy: Boolean, onToggle: (Boolea
         ) {
             IconBadge(Mark.LOCK, Cyan, diameter = 34)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                Label("Screenshot protection" ar "حماية لقطات الشاشة", 13, Chalk, FontWeight.ExtraBold)
+                Label(Copy(R.string.k_screenshot_protection), 13, Chalk, FontWeight.ExtraBold)
                 Label(
                     "Applies FLAG_SECURE to the KNOUX window. Android then blocks screenshots and the recents thumbnail for this app. KNOUX re-reads the flag afterwards.",
                     10, Mist,
@@ -561,7 +559,7 @@ private fun SwitchIndicator(checked: Boolean) {
 private fun PrivacyAuditCard(audit: List<PrivacyAuditEntry>) {
     GlassPanel(Modifier.fillMaxWidth().testTag("privacy-audit"), tint = Violet) {
         Column(Modifier.fillMaxWidth().padding(11.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Label("Action history" ar "سجل الإجراءات", 12, Chalk, FontWeight.ExtraBold)
+            Label(Copy(R.string.k_action_history), 12, Chalk, FontWeight.ExtraBold)
             audit.take(4).forEach { entry ->
                 val time = DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(entry.createdAtMillis))
                 Label(

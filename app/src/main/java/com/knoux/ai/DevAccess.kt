@@ -151,13 +151,13 @@ internal fun DevAccessDialog(
                 ) {
                     Glyph(Mark.KEY, Modifier.size(48.dp), Gold, true)
                     Label(
-                        ("🔐 Developer Access" ar "🔐 دخول المطور").localized(),
+                        (Copy(R.string.k_developer_access)).localized(),
                         20,
                         Gold,
                         FontWeight.ExtraBold
                     )
                     Label(
-                        ("Enter password to unlock all Pro features" ar "أدخل كلمة السر لفتح جميع ميزات Pro").localized(),
+                        (Copy(R.string.k_enter_password_to_unlock_all_pro_features)).localized(),
                         12,
                         Mist.copy(alpha = 0.7f),
                         align = TextAlign.Center
@@ -171,7 +171,7 @@ internal fun DevAccessDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Label(
-                    ("Password" ar "كلمة السر").localized(),
+                    (Copy(R.string.k_password_2)).localized(),
                     13,
                     Chalk,
                     FontWeight.Medium
@@ -217,7 +217,7 @@ internal fun DevAccessDialog(
                     ) { innerTextField ->
                         if (password.isEmpty()) {
                             Label(
-                                ("Enter password..." ar "أدخل كلمة السر...").localized(),
+                                (Copy(R.string.k_enter_password)).localized(),
                                 16,
                                 Mist.copy(alpha = 0.4f)
                             )
@@ -275,7 +275,7 @@ internal fun DevAccessDialog(
                 ) {
                     Glyph(Mark.KEY, Modifier.size(20.dp), Gold, true)
                     Label(
-                        ("Authenticate" ar "المصادقة").localized(),
+                        (Copy(R.string.k_authenticate)).localized(),
                         15,
                         if (password.isEmpty()) Mist.copy(alpha = 0.5f) else Gold,
                         FontWeight.Bold
@@ -292,8 +292,7 @@ internal fun DevAccessDialog(
                     .padding(12.dp)
             ) {
                 Label(
-                    ("ℹ️  This is a temporary developer access for testing purposes only." ar 
-                        "ℹ️  هذا دخول مطور مؤقت لأغراض الاختبار فقط.").localized(),
+                    (Copy(R.string.k_this_is_a_temporary_developer_access_for_testing_purpose)).localized(),
                     11,
                     Mist.copy(alpha = 0.7f),
                     align = TextAlign.Center,
@@ -329,7 +328,7 @@ internal fun DevModeIndicator() {
             ) {
                 Glyph(Mark.CROWN, Modifier.size(14.dp), Gold, true)
                 Label(
-                    ("DEV MODE" ar "وضع المطور").localized(),
+                    (Copy(R.string.k_dev_mode)).localized(),
                     10,
                     Gold,
                     FontWeight.Bold

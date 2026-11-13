@@ -89,10 +89,9 @@ import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.sin
 
-internal val Disclosure = "All figures are sample data from the design. Nothing on your device has been scanned or changed." ar
-    "كل الأرقام أمثلة من التصميم. لم يفحص التطبيق أي بيانات ولم يغيّر أي شيء على جهازك."
-internal val NoChange = "No action performed — UI preview only." ar "لم يُنفّذ أي إجراء — معاينة للواجهة فقط."
-internal val Close = "Close" ar "إغلاق"
+internal val Disclosure = Copy(R.string.k_all_figures_are_sample_data_from_the_design_nothing_on_y)
+internal val NoChange = Copy(R.string.k_no_action_performed_ui_preview_only)
+internal val Close = Copy(R.string.k_close)
 
 internal data class DebugVisit(val page: Page, val number: Int, val still: Boolean)
 internal class PreviewPreferences(private val state: SavedStateHandle) : ViewModel() {
@@ -278,10 +277,10 @@ class MainActivity : FragmentActivity() {
 
 private val tabs = listOf(Page.HOME to Mark.HOME, Page.CLEAN to Mark.BROOM, Page.TOOLS to Mark.GRID, Page.REPORTS to Mark.BARS)
 private fun tabTitle(page: Page) = when (page) {
-    Page.HOME -> "Home" ar "الرئيسية"
-    Page.CLEAN -> "Clean" ar "تنظيف"
-    Page.TOOLS -> "Tools" ar "أدوات"
-    Page.REPORTS -> "Reports" ar "التقارير"
+    Page.HOME -> Copy(R.string.k_home)
+    Page.CLEAN -> Copy(R.string.k_clean_sample_summary)
+    Page.TOOLS -> Copy(R.string.k_tools)
+    Page.REPORTS -> Copy(R.string.k_reports)
     else -> page.title
 }
 private enum class HeaderSheet { MENU, PRO, SETTINGS, DISCLOSURE }
@@ -483,8 +482,7 @@ private fun KnouxAppScaffold(
                                     Page.PRIVACY_INSPECTOR -> RealPrivacyScreen(target)
                                     // PC05 - real deep scan with Abyss Sonar instrument.
                                     Page.SCAN, Page.SCAN_SUMMARY -> RealDeepScanScreen(open)
-                                    in Page.detailRoutes -> DetailPreview(target)
-                                    else -> ReferenceScreen(target, openReview = open)
+                                    else -> EmptyServiceScreen(target, open)
                                 }
                             }
                         }
@@ -500,10 +498,10 @@ private fun KnouxAppScaffold(
                 }
                 headerSheet?.let { shown ->
                     val title = when (shown) {
-                        HeaderSheet.MENU -> "Explore KNOUX AI" ar "استكشف KNOUX AI"
-                        HeaderSheet.PRO -> "KNOUX AI Pro" ar "KNOUX AI Pro"
-                        HeaderSheet.SETTINGS -> "Preview settings" ar "إعدادات المعاينة"
-                        HeaderSheet.DISCLOSURE -> "Design preview" ar "معاينة التصميم"
+                        HeaderSheet.MENU -> Copy(R.string.k_explore_knoux_ai)
+                        HeaderSheet.PRO -> Copy(R.string.k_knoux_ai_pro)
+                        HeaderSheet.SETTINGS -> Copy(R.string.k_preview_settings)
+                        HeaderSheet.DISCLOSURE -> Copy(R.string.k_design_preview_2)
                     }
                     InfoSheet(title, { headerSheet = null }) {
                         when (shown) {
@@ -518,7 +516,7 @@ private fun KnouxAppScaffold(
                                         if (next != page) open(next)
                                     }
                                 }
-                                AccentButton(Action("KNOUX AI Pro" ar "KNOUX AI Pro", Mark.CROWN), Modifier.fillMaxWidth(), primary = false) {
+                                AccentButton(Action(Copy(R.string.k_knoux_ai_pro), Mark.CROWN), Modifier.fillMaxWidth(), primary = false) {
                                     headerSheet = HeaderSheet.PRO
                                 }
                                 AccentButton(Action(Page.KNOUX_UNIVERSE.title, Page.KNOUX_UNIVERSE.hero), Modifier.fillMaxWidth(), primary = false,
@@ -534,8 +532,8 @@ private fun KnouxAppScaffold(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceBetween) {
                                         Column {
-                                            Label(("KNOUX AI" ar "KNOUX AI").localized(), 16, Chalk, FontWeight.Bold)
-                                            Label(("Version 1.0 · Phase 1 Preview" ar "الإصدار 1.0 · معاينة المرحلة الأولى").localized(), 11, Mist.copy(alpha = 0.7f))
+                                            Label((Copy(R.string.k_knoux_ai)).localized(), 16, Chalk, FontWeight.Bold)
+                                            Label((Copy(R.string.k_version_1_0_phase_1_preview)).localized(), 11, Mist.copy(alpha = 0.7f))
                                         }
                                         Box(Modifier.clip(RoundedCornerShape(10.dp))
                                             .background(Brush.horizontalGradient(listOf(Color(0xff2a1c08), Color(0xff1a0d2a))), RoundedCornerShape(10.dp))
@@ -546,20 +544,20 @@ private fun KnouxAppScaffold(
                                     }
                                 }
                                 // Language
-                                Label(("🌐  " + ("Language" ar "اللغة").localized()), 13, Mist, FontWeight.Medium,
+                                Label(("🌐  " + (Copy(R.string.k_language)).localized()), 13, Mist, FontWeight.Medium,
                                     modifier = Modifier.fillMaxWidth().padding(top = 4.dp))
                                 val ar = LocalArabic.current
                                 AdaptiveActions(
-                                    Action("🇬🇧  English" ar "الإنجليزية", Mark.CHECK),
-                                    Action("🇸🇦  العربية" ar "العربية", Mark.CHECK),
+                                    Action(Copy(R.string.k_english_2), Mark.CHECK),
+                                    Action(Copy(R.string.k_text_f79db0), Mark.CHECK),
                                     firstSelected = !ar, secondSelected = ar,
                                     onFirst = { language(false) }, onSecond = { language(true) }
                                 )
                                 // Motion
-                                Label(("⚡  " + ("Animations" ar "الرسوم المتحركة").localized()), 13, Mist, FontWeight.Medium,
+                                Label(("⚡  " + (Copy(R.string.k_animations)).localized()), 13, Mist, FontWeight.Medium,
                                     modifier = Modifier.fillMaxWidth())
                                 AccentButton(
-                                    Action(if (reduced) "Enable Animations" ar "تشغيل الرسوم" else "Reduce Motion" ar "تقليل الحركة", Mark.RADAR),
+                                    Action(if (reduced) Copy(R.string.k_enable_animations) else Copy(R.string.k_reduce_motion_2), Mark.RADAR),
                                     Modifier.fillMaxWidth(), primary = false, tag = "motion-toggle") { reduceMotion(!reduced) }
                                 // Disclosure
                                 Label(Disclosure.localized(), 11, Mist.copy(alpha = 0.6f))
@@ -587,21 +585,21 @@ private fun ProSheet() {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Glyph(Mark.CROWN, Modifier.size(28.dp), Gold, true)
-                Label(("KNOUX AI Pro" ar "KNOUX AI Pro").localized(), 22, Gold, FontWeight.ExtraBold)
+                Label((Copy(R.string.k_knoux_ai_pro)).localized(), 22, Gold, FontWeight.ExtraBold)
             }
             Spacer(Modifier.height(6.dp))
-            Label(("Unlock the full power of AI-driven device care" ar "أطلق القوة الكاملة للعناية الذكية بالجهاز").localized(),
+            Label((Copy(R.string.k_unlock_the_full_power_of_ai_driven_device_care)).localized(),
                 13, Chalk.copy(alpha = 0.8f), align = TextAlign.Center)
         }
     }
 
     // Pro features
     val features = listOf(
-        Triple(Mark.SPARKLE, "Unlimited AI Deep Scans" ar "فحوصات ذكاء اصطناعي عميقة بلا حدود", Cyan),
-        Triple(Mark.SHIELD, "Advanced Privacy Shield" ar "درع الخصوصية المتقدم", Pink),
-        Triple(Mark.BOLT, "Priority Performance Boost" ar "تعزيز الأداء بأولوية قصوى", Gold),
-        Triple(Mark.CHIP, "AI Optimization Engine" ar "محرك تحسين الذكاء الاصطناعي", Violet),
-        Triple(Mark.ROCKET, "Exclusive Pro Features" ar "ميزات Pro حصرية", Mint)
+        Triple(Mark.SPARKLE, Copy(R.string.k_unlimited_ai_deep_scans), Cyan),
+        Triple(Mark.SHIELD, Copy(R.string.k_advanced_privacy_shield), Pink),
+        Triple(Mark.BOLT, Copy(R.string.k_priority_performance_boost), Gold),
+        Triple(Mark.CHIP, Copy(R.string.k_ai_optimization_engine), Violet),
+        Triple(Mark.ROCKET, Copy(R.string.k_exclusive_pro_features), Mint)
     )
     features.forEach { (icon, title, tint) ->
         GlassPanel(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)), radius = 14, tint = tint) {
@@ -622,7 +620,7 @@ private fun ProSheet() {
         .padding(16.dp)) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.fillMaxWidth()) {
-            Label(("🎁  " + ("Get a Free Trial Code" ar "احصل على كود تجريبي مجاني").localized()), 14, Chalk, FontWeight.Bold,
+            Label(("🎁  " + (Copy(R.string.k_get_a_free_trial_code)).localized()), 14, Chalk, FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth(), align = TextAlign.Center)
             if (generatedCode != null) {
                 Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
@@ -630,16 +628,16 @@ private fun ProSheet() {
                     .border(1.5.dp, Mint.copy(alpha = .8f), RoundedCornerShape(12.dp))
                     .padding(vertical = 12.dp, horizontal = 16.dp), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Label(("Your Trial Code:" ar "كود الكود التجريبي:").localized(), 11, Mist.copy(alpha = 0.7f))
+                        Label((Copy(R.string.k_your_trial_code)).localized(), 11, Mist.copy(alpha = 0.7f))
                         Spacer(Modifier.height(4.dp))
                         Label(generatedCode!!, 24, Mint, FontWeight.ExtraBold, align = TextAlign.Center)
                         Spacer(Modifier.height(4.dp))
-                        Label(("Send this code to activate Pro" ar "أرسل هذا الكود لتفعيل Pro").localized(), 11, Mist.copy(alpha = 0.6f))
+                        Label((Copy(R.string.k_send_this_code_to_activate_pro)).localized(), 11, Mist.copy(alpha = 0.6f))
                     }
                 }
             }
             AccentButton(
-                Action(("✨  Generate Trial Code" ar "✨  توليد كود تجريبي"), Mark.SPARKLE),
+                Action((Copy(R.string.k_generate_trial_code)), Mark.SPARKLE),
                 Modifier.fillMaxWidth(), primary = true, tag = "gen-code"
             ) {
                 val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -667,9 +665,9 @@ private fun ProSheet() {
                 Glyph(Mark.CHAT, Modifier.size(26.dp), Chalk, true)
             }
             Column(Modifier.weight(1f)) {
-                Label(("Contact on WhatsApp" ar "تواصل عبر واتساب").localized(), 15, Chalk, FontWeight.Bold)
+                Label((Copy(R.string.k_contact_on_whatsapp)).localized(), 15, Chalk, FontWeight.Bold)
                 Label(whatsappNumber, 13, Color(0xff25D366), FontWeight.Medium)
-                Label(("Tap to activate Pro subscription" ar "اضغط لتفعيل اشتراك Pro").localized(), 11, Mist.copy(alpha = 0.6f))
+                Label((Copy(R.string.k_tap_to_activate_pro_subscription)).localized(), 11, Mist.copy(alpha = 0.6f))
             }
             Glyph(Mark.NEXT, Modifier.size(20.dp), Color(0xff25D366))
         }
@@ -719,8 +717,8 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
         val compactHeader = maxWidth < 460.dp || LocalDensity.current.fontScale > 1.18f
         Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
             .height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-        if (page == Page.HOME) IconControl(Mark.MENU, ("Menu" ar "القائمة").localized(), "menu", menu)
-        else IconControl(Mark.BACK, ("Back" ar "رجوع").localized(), "back", back)
+        if (page == Page.HOME) IconControl(Mark.MENU, (Copy(R.string.k_menu)).localized(), "menu", menu)
+        else IconControl(Mark.BACK, (Copy(R.string.k_back_2)).localized(), "back", back)
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(
@@ -802,7 +800,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                 }
             }
         }
-        IconControl(Mark.GEAR, ("Settings" ar "الإعدادات").localized(), "settings", settings)
+        IconControl(Mark.GEAR, (Copy(R.string.k_settings)).localized(), "settings", settings)
         }
     }
 
@@ -904,7 +902,7 @@ private fun ToolIndex(page: Page, open: (Page) -> Unit) {
     else listOf(Page.STORAGE, Page.APPS, Page.PRIVACY, Page.BATTERY, Page.OPTIMIZE)
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 11.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(9.dp)) {
-        HeroHeading(page, "Explore the KNOUX AI interface." ar "استكشف واجهة KNOUX AI.")
+        HeroHeading(page, Copy(R.string.k_explore_the_knoux_ai_interface))
         choices.forEach { target ->
             AccentButton(Action(target.title, target.hero), Modifier.fillMaxWidth(), primary = false, tag = "open-${target.id}") { open(target) }
         }

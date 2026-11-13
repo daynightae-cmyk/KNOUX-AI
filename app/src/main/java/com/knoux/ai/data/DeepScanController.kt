@@ -1,9 +1,10 @@
 package com.knoux.ai.data
 
+import com.knoux.ai.R
+
 import android.content.IntentSender
 import androidx.room.withTransaction
 import com.knoux.ai.Copy
-import com.knoux.ai.ar
 import com.knoux.ai.visual.DeepScanHistory
 import com.knoux.ai.visual.DeepScanModule
 import com.knoux.ai.visual.DeepScanOutcome
@@ -121,7 +122,7 @@ internal class DeepScanController(
                 if (selection.isEmpty()) {
                     _frame.value = idleFrame(selection, _lastOutcome.value).copy(
                         phase = InstrumentPhase.FAILED,
-                        caption = "No module selected" ar "لم تُحدد وحدة",
+                        caption = Copy(R.string.k_no_module_selected),
                     )
                     return@withContext null
                 }
@@ -133,7 +134,7 @@ internal class DeepScanController(
                         facet(module, null, selection)
                     },
                     motion = motion,
-                    caption = "Reading access" ar "قراءة صلاحيات الوصول",
+                    caption = Copy(R.string.k_reading_access),
                     lastResultAgeMillis = _lastOutcome.value?.let { ageOf(it.finishedAtOrStartedMillis) },
                 )
                 val excluded = database.exclusionDao().uris().toSet()
@@ -151,13 +152,13 @@ internal class DeepScanController(
     } catch (cancelled: CancellationException) {
         _frame.value = _frame.value.copy(
             phase = InstrumentPhase.PAUSED,
-            caption = "Stopped" ar "متوقف",
+            caption = Copy(R.string.k_stopped),
         )
         throw cancelled
     } catch (failure: Exception) {
         _frame.value = _frame.value.copy(
             phase = InstrumentPhase.FAILED,
-            caption = "Not measured" ar "لم يُقس",
+            caption = Copy(R.string.k_not_measured),
         )
         Result.failure(failure)
     }
@@ -329,8 +330,8 @@ internal class DeepScanController(
     private fun idleFrame(selection: Set<String>, last: DeepScanOutcome?): InstrumentFrame {
         val age = last?.let { ageOf(it.finishedAtOrStartedMillis) }
         val caption: Copy = when {
-            age != null -> "Last scan kept" ar "آخر فحص محفوظ"
-            else -> "Ready to dive" ar "جاهز للغوص"
+            age != null -> Copy(R.string.k_last_scan_kept)
+            else -> Copy(R.string.k_ready_to_dive)
         }
         return InstrumentFrame(
             phase = InstrumentPhase.IDLE,
@@ -349,9 +350,9 @@ internal class DeepScanController(
         } else null
         val runningModule = modules.firstOrNull { it.id == progress.currentModuleId }
         val caption: Copy = when {
-            fraction == null || progress.modulesCompleted == 0 -> "Listening" ar "إصغاء"
-            runningModule != null -> "Measuring" ar "قياس"
-            else -> "Deepening" ar "تعميق"
+            fraction == null || progress.modulesCompleted == 0 -> Copy(R.string.k_listening)
+            runningModule != null -> Copy(R.string.k_measuring)
+            else -> Copy(R.string.k_deepening)
         }
         return InstrumentFrame(
             phase = InstrumentPhase.RUNNING,
@@ -384,11 +385,11 @@ internal class DeepScanController(
             DeepScanStatus.CANCELLED -> InstrumentPhase.PAUSED
         }
         val caption: Copy = when (outcome.status) {
-            DeepScanStatus.COMPLETE -> "Scan complete" ar "اكتمل الفحص"
-            DeepScanStatus.PARTIAL -> "Partial read" ar "قراءة جزئية"
-            DeepScanStatus.UNAVAILABLE -> "Nothing measured" ar "لم يُقس شيء"
-            DeepScanStatus.CANCELLED -> "Stopped" ar "متوقف"
-            DeepScanStatus.FAILED -> "Scan failed" ar "فشل الفحص"
+            DeepScanStatus.COMPLETE -> Copy(R.string.k_scan_complete)
+            DeepScanStatus.PARTIAL -> Copy(R.string.k_partial_read)
+            DeepScanStatus.UNAVAILABLE -> Copy(R.string.k_nothing_measured)
+            DeepScanStatus.CANCELLED -> Copy(R.string.k_stopped)
+            DeepScanStatus.FAILED -> Copy(R.string.k_scan_failed)
         }
         val byId = outcome.moduleResults.associateBy { it.moduleId }
         return InstrumentFrame(

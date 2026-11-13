@@ -82,8 +82,7 @@ internal enum class AuthStage { LANDING, WELCOME, VERIFYING, VERIFIED, UNAVAILAB
  * never fabricate a session.
  */
 @Composable
-internal fun AuthGateway(
-    forcedStage: AuthStage? = null,
+internal fun AuthGateway(forcedStage: AuthStage? = null,
     reducedMotion: Boolean = false,
     onAuthenticated: () -> Unit,
     onGuest: () -> Unit,
@@ -148,8 +147,7 @@ internal fun AuthGateway(
     AuthBackdrop {
         when (stage) {
             AuthStage.LANDING -> LandingStage(motion = motion, onEnter = { stage = AuthStage.WELCOME })
-            AuthStage.WELCOME -> WelcomeStage(
-                motion = motion,
+            AuthStage.WELCOME -> WelcomeStage(motion = motion,
                 onUnlock = { launchPrompt() },
                 onPasskey = { sheet = "passkey" },
                 onGoogle = { sheet = "google" },
@@ -162,8 +160,7 @@ internal fun AuthGateway(
             )
             AuthStage.VERIFYING -> VerifyStage(motion = motion, onCancel = { stage = AuthStage.WELCOME })
             AuthStage.VERIFIED -> VerifiedStage(motion = motion)
-            AuthStage.OTP -> OtpStage(
-                motion = motion,
+            AuthStage.OTP -> OtpStage(motion = motion,
                 onBack = { stage = AuthStage.WELCOME },
                 onPasskey = { sheet = "passkey" },
                 onGoogle = { sheet = "google" }
@@ -176,66 +173,48 @@ internal fun AuthGateway(
     }
 
     sheet?.let { kind ->
-        InfoSheet(
-            when (kind) {
-                "passkey" -> ("Use a passkey" ar "استخدم مفتاح مرور")
-                "google" -> ("Continue with Google" ar "المتابعة عبر Google")
-                "credentials" -> ("Sign-in is not configured" ar "تسجيل الدخول غير مُهيّأ")
-                "recovery" -> ("Password recovery" ar "استعادة كلمة المرور")
-                "signup" -> ("Create an account" ar "إنشاء حساب")
-                "settings" -> ("Preview settings" ar "إعدادات المعاينة")
-                else -> ("Privacy information" ar "معلومات الخصوصية")
+        InfoSheet(when (kind) {
+                "passkey" -> (Copy(R.string.k_use_a_passkey))
+                "google" -> (Copy(R.string.k_continue_with_google))
+                "credentials" -> (Copy(R.string.k_sign_in_is_not_configured))
+                "recovery" -> (Copy(R.string.k_password_recovery))
+                "signup" -> (Copy(R.string.k_create_an_account))
+                "settings" -> (Copy(R.string.k_preview_settings))
+                else -> (Copy(R.string.k_privacy_information))
             }, { sheet = null }) {
             when (kind) {
                 "passkey" -> {
-                    Label(("Passkey sign-in is not configured in this preview build."
-                        ar "تسجيل الدخول بمفتاح المرور غير مُهيّأ في نسخة المعاينة هذه.").localized(), 14, Mist)
-                    Label(("No credential provider, key or account session is created here."
-                        ar "لا يتم هنا إنشاء أي مزوّد بيانات أو مفتاح أو جلسة حساب.").localized(), 13, Mist)
+                    Label((Copy(R.string.k_passkey_sign_in_is_not_configured_in_this_preview_build)).localized(), 14, Mist)
+                    Label((Copy(R.string.k_no_credential_provider_key_or_account_session_is_created)).localized(), 13, Mist)
                 }
                 "google" -> {
-                    Label(("Google sign-in is not configured in this preview build."
-                        ar "تسجيل الدخول عبر Google غير مُهيّأ في نسخة المعاينة هذه.").localized(), 14, Mist)
-                    Label(("No OAuth client, client secret or account session is created here."
-                        ar "لا يتم هنا إنشاء أي عميل OAuth أو سر أو جلسة حساب.").localized(), 13, Mist)
+                    Label((Copy(R.string.k_google_sign_in_is_not_configured_in_this_preview_build)).localized(), 14, Mist)
+                    Label((Copy(R.string.k_no_oauth_client_client_secret_or_account_session_is_crea)).localized(), 13, Mist)
                 }
                 "credentials" -> {
-                    Label(("Email and password sign-in has no identity provider connected yet, "
-                        + "so no credentials are sent or verified and no session is created."
-                        ar "تسجيل الدخول بالبريد وكلمة المرور لا يملك مزوّد هوية متصلًا بعد، "
-                        + "لذلك لا تُرسل أي بيانات ولا يتم التحقق منها ولا تُنشأ جلسة.").localized(), 14, Mist)
-                    Label(("The fields are fully editable for layout review only. A real sign-in will be "
-                        + "wired to an approved provider before this screen is released."
-                        ar "الحقول قابلة للتحرير بالكامل لمراجعة التصميم فقط. سيُربط تسجيل الدخول الحقيقي "
-                        + "بمزوّد معتمد قبل إصدار هذه الشاشة.").localized(), 13, Mist)
+                    Label(Copy(R.string.k_auth_credentials_note), 14, Mist)
+                    Label(Copy(R.string.k_auth_credentials_review), 13, Mist)
                 }
                 "recovery" -> {
-                    Label(("Recovery requires the same identity provider and is therefore unavailable here."
-                        ar "تتطلب الاستعادة نفس مزوّد الهوية، ولذلك فهي غير متاحة هنا.").localized(), 14, Mist)
-                    Label(("No email is sent and no reset link is generated in this preview build."
-                        ar "لا تُرسل أي رسالة ولا يُنشأ أي رابط إعادة تعيين في نسخة المعاينة هذه.").localized(), 13, Mist)
+                    Label((Copy(R.string.k_recovery_requires_the_same_identity_provider_and_is_ther)).localized(), 14, Mist)
+                    Label((Copy(R.string.k_no_email_is_sent_and_no_reset_link_is_generated_in_this)).localized(), 13, Mist)
                 }
                 "signup" -> {
-                    Label(("Account creation is not connected in this preview build."
-                        ar "إنشاء الحساب غير متصل في نسخة المعاينة هذه.").localized(), 14, Mist)
-                    Label(("No account, profile or entitlement is created by this screen."
-                        ar "لا تُنشئ هذه الشاشة أي حساب أو ملف شخصي أو استحقاق.").localized(), 13, Mist)
+                    Label((Copy(R.string.k_account_creation_is_not_connected_in_this_preview_build)).localized(), 14, Mist)
+                    Label((Copy(R.string.k_no_account_profile_or_entitlement_is_created_by_this_scr)).localized(), 13, Mist)
                 }
                 "settings" -> {
                     Label(Disclosure.localized(), 13, Mist)
                     val ar = LocalArabic.current
-                    AdaptiveActions(Action("English" ar "الإنجليزية", Mark.CHECK),
-                        Action("العربية" ar "العربية", Mark.CHECK),
+                    AdaptiveActions(Action(Copy(R.string.k_english), Mark.CHECK),
+                        Action(Copy(R.string.k_text_26b1b2), Mark.CHECK),
                         firstSelected = !ar, secondSelected = ar,
                         onFirst = { onLanguage(false) }, onSecond = { onLanguage(true) })
-                    AccentButton(Action(if (reduced) "Enable decorative motion" ar "تشغيل الحركة" else "Reduce motion" ar "تقليل الحركة",
+                    AccentButton(Action(if (reduced) Copy(R.string.k_enable_decorative_motion) else Copy(R.string.k_reduce_motion),
                         Mark.RADAR), Modifier.fillMaxWidth(), primary = false, tag = "motion-toggle") { onMotion(!reduced) }
                 }
                 else -> {
-                    Label(("KNOUX AI can read device information only after you grant permission. "
-                        + "This preview performs no device scan and sends no sample data anywhere."
-                        ar "يمكن لـ KNOUX AI قراءة معلومات الجهاز فقط بعد منحك الإذن. "
-                        + "لا تُجري هذه المعاينة أي فحص للجهاز ولا ترسل أي بيانات نموذجية.").localized(), 13, Mist)
+                    Label(Copy(R.string.k_auth_permission_note), 13, Mist)
                 }
             }
             Label(Disclosure.localized(), 12, Mist)
@@ -314,16 +293,13 @@ private fun AuthBackdrop(content: @Composable () -> Unit) {
 
             // Central radial glow overlay
             val center = Offset(size.width * 0.5f, size.height * 0.38f)
-            drawCircle(Brush.radialGradient(listOf(
-                Color(0xff6600ff).copy(alpha = 0.35f * (0.7f + pulse * 0.3f)),
+            drawCircle(Brush.radialGradient(listOf(Color(0xff6600ff).copy(alpha = 0.35f * (0.7f + pulse * 0.3f)),
                 Color(0xff3300aa).copy(alpha = 0.20f),
                 Color.Transparent), center, size.width * 0.75f), size.width * 0.75f, center)
-            drawCircle(Brush.radialGradient(listOf(
-                Color(0xff00f5ff).copy(alpha = 0.12f * (0.6f + pulse * 0.4f)),
+            drawCircle(Brush.radialGradient(listOf(Color(0xff00f5ff).copy(alpha = 0.12f * (0.6f + pulse * 0.4f)),
                 Color.Transparent), Offset(size.width * 0.8f, size.height * 0.1f), size.width * 0.5f),
                 size.width * 0.5f, Offset(size.width * 0.8f, size.height * 0.1f))
-            drawCircle(Brush.radialGradient(listOf(
-                Color(0xffff00ee).copy(alpha = 0.10f * (0.6f + pulse * 0.4f)),
+            drawCircle(Brush.radialGradient(listOf(Color(0xffff00ee).copy(alpha = 0.10f * (0.6f + pulse * 0.4f)),
                 Color.Transparent), Offset(size.width * 0.15f, size.height * 0.85f), size.width * 0.45f),
                 size.width * 0.45f, Offset(size.width * 0.15f, size.height * 0.85f))
         }
@@ -360,8 +336,7 @@ private fun AuthBrandLockup(previewBadge: Boolean) {
 @Composable
 private fun AuthTitle(lead: Copy, accent: Copy, subtitle: Copy, splitAccent: Boolean = false) {
     Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        val gradient = Brush.verticalGradient(
-            listOf(Color(0xffffa3ff), Color(0xffe35bff), Color(0xffb93bff)))
+        val gradient = Brush.verticalGradient(listOf(Color(0xffffa3ff), Color(0xffe35bff), Color(0xffb93bff)))
         val styled = buildAnnotatedString {
             withStyle(SpanStyle(color = Chalk)) { append(lead.localized()) }
             if (splitAccent) {
@@ -373,9 +348,7 @@ private fun AuthTitle(lead: Copy, accent: Copy, subtitle: Copy, splitAccent: Boo
                 }
             }
         }
-        Text(styled, Modifier.fillMaxWidth(), style = TextStyle(
-            fontSize = 30.sp, lineHeight = 35.sp, fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold,
-            fontStyle = FontStyle.Italic, textAlign = TextAlign.Center))
+        Text(styled, Modifier.fillMaxWidth(), style = TextStyle(fontSize = 30.sp, lineHeight = 35.sp, fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center))
         Label(subtitle.localized(), 13, Mist, modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
             align = TextAlign.Center)
     }
@@ -386,8 +359,7 @@ private fun AuthTitle(lead: Copy, accent: Copy, subtitle: Copy, splitAccent: Boo
  * Decorative only — real auth via BiometricPrompt.
  */
 @Composable
-private fun FingerprintOrb(
-    diameter: Int, stage: AuthStage, motion: Boolean, modifier: Modifier = Modifier
+private fun FingerprintOrb(diameter: Int, stage: AuthStage, motion: Boolean, modifier: Modifier = Modifier
 ) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -409,8 +381,7 @@ private fun FingerprintOrb(
             val breath = pulse?.value ?: 0.6f
 
             // Outer glow atmosphere
-            drawCircle(Brush.radialGradient(listOf(
-                Pink.copy(alpha = .30f * (0.6f + breath * 0.4f)),
+            drawCircle(Brush.radialGradient(listOf(Pink.copy(alpha = .30f * (0.6f + breath * 0.4f)),
                 Color(0xff6600ff).copy(alpha = .18f),
                 Color.Transparent), Offset(cx, cy), r * 1.3f), r * 1.3f, Offset(cx, cy))
 
@@ -435,8 +406,7 @@ private fun FingerprintOrb(
                 val outer = r * 0.99f
                 val inner = outer - r * (if (tick % 6 == 0) 0.055f else 0.022f)
                 val tickAlpha = if (tick % 6 == 0) 0.85f else 0.35f
-                drawLine(
-                    if (tick % 3 == 0) Cyan.copy(alpha = tickAlpha) else Pink.copy(alpha = tickAlpha * 0.7f),
+                drawLine(if (tick % 3 == 0) Cyan.copy(alpha = tickAlpha) else Pink.copy(alpha = tickAlpha * 0.7f),
                     Offset(cx + kotlin.math.cos(angle) * inner, cy + kotlin.math.sin(angle) * inner),
                     Offset(cx + kotlin.math.cos(angle) * outer, cy + kotlin.math.sin(angle) * outer),
                     if (tick % 6 == 0) r * 0.018f else r * 0.011f
@@ -450,8 +420,7 @@ private fun FingerprintOrb(
                 val t = i / (ridgeCount - 1f)
                 val arcR = r * (0.08f + t * 0.62f)
                 val fade = (1f - t * 0.25f).coerceAtLeast(0.5f)
-                val ridgeColor = Brush.linearGradient(
-                    listOf(Cyan.copy(alpha = fade * 0.9f), Color(0xff7788ff).copy(alpha = fade * 0.85f), Pink.copy(alpha = fade * 0.75f)),
+                val ridgeColor = Brush.linearGradient(listOf(Cyan.copy(alpha = fade * 0.9f), Color(0xff7788ff).copy(alpha = fade * 0.85f), Pink.copy(alpha = fade * 0.75f)),
                     Offset(ridgeCore.x - arcR, ridgeCore.y - arcR), Offset(ridgeCore.x + arcR, ridgeCore.y + arcR))
 
                 // Outer ridges are broken (like real fingerprints)
@@ -533,8 +502,7 @@ private fun FingerprintOrb(
 
 /** The three provider rows of the reference. */
 @Composable
-private fun ProviderRow(
-    title: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit
+private fun ProviderRow(title: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit
 ) {
     GlassPanel(Modifier.fillMaxWidth().heightIn(min = 64.dp).clip(RoundedCornerShape(20.dp))
         .testTag(tag).clickable(role = Role.Button, onClick = onClick), radius = 20, tint = tint) {
@@ -596,15 +564,13 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
     val context = LocalContext.current
 
     Box(Modifier.fillMaxSize()) {
-        Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(52.dp))
 
             // ── Animated brand K orb ──────────────────────────────────────
-            Box(
-                Modifier
+            Box(Modifier
                     .size(220.dp)
                     .graphicsLayer {
                         scaleX = logoScale; scaleY = logoScale
@@ -619,15 +585,12 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
                     val pulse = orbPulse?.value ?: 0.5f
 
                     // Multi-layer atmospheric glow
-                    drawCircle(Brush.radialGradient(listOf(
-                        Color(0xff9922ff).copy(alpha = .34f * (0.6f + pulse * 0.4f)),
+                    drawCircle(Brush.radialGradient(listOf(Color(0xff9922ff).copy(alpha = .34f * (0.6f + pulse * 0.4f)),
                         Color(0xff3300cc).copy(alpha = .18f),
                         Color.Transparent), Offset(cx, cy), r * 1.6f), r * 1.6f, Offset(cx, cy))
-                    drawCircle(Brush.radialGradient(listOf(
-                        Cyan.copy(alpha = .16f * (0.5f + pulse * 0.5f)),
+                    drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .16f * (0.5f + pulse * 0.5f)),
                         Color.Transparent), Offset(cx * 1.3f, cy * 0.6f), r * 0.9f), r * 0.9f, Offset(cx * 1.3f, cy * 0.6f))
-                    drawCircle(Brush.radialGradient(listOf(
-                        Pink.copy(alpha = .12f * (0.5f + pulse * 0.5f)),
+                    drawCircle(Brush.radialGradient(listOf(Pink.copy(alpha = .12f * (0.5f + pulse * 0.5f)),
                         Color.Transparent), Offset(cx * 0.7f, cy * 1.4f), r * 0.8f), r * 0.8f, Offset(cx * 0.7f, cy * 1.4f))
 
                     // Three concentric rings (like the reference auth orb)
@@ -661,8 +624,7 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
                 Box(Modifier.size(90.dp), contentAlignment = Alignment.Center) {
                     Canvas(Modifier.matchParentSize()) {
                         val pulse = orbPulse?.value ?: 0.5f
-                        val bloom = Brush.radialGradient(listOf(
-                            Color(0xffb040ff).copy(alpha = .36f + pulse * .18f), Color.Transparent),
+                        val bloom = Brush.radialGradient(listOf(Color(0xffb040ff).copy(alpha = .36f + pulse * .18f), Color.Transparent),
                             Offset(size.width / 2f, size.height / 2f), size.minDimension * 0.9f)
                         drawCircle(bloom, size.minDimension * 0.9f, Offset(size.width / 2f, size.height / 2f))
                     }
@@ -673,30 +635,25 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
             Spacer(Modifier.height(28.dp))
 
             // ── Main title ───────────────────────────────────────────────
-            Column(
-                Modifier.fillMaxWidth().padding(horizontal = 24.dp)
+            Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp)
                     .graphicsLayer { alpha = titleAlpha },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val titleText = buildAnnotatedString {
                     withStyle(SpanStyle(color = Chalk)) {
-                        append(("Your Device's" ar "الحارس الذكي").localized())
+                        append((Copy(R.string.k_your_device_s)).localized())
                     }
-                    withStyle(SpanStyle(brush = Brush.linearGradient(
-                        listOf(Cyan, Color(0xff8844ff), Pink),
+                    withStyle(SpanStyle(brush = Brush.linearGradient(listOf(Cyan, Color(0xff8844ff), Pink),
                         start = Offset(0f, 0f), end = Offset(400f, 0f)
                     ))) {
                         append("\n")
-                        append(("AI Guardian" ar "لجهازك").localized())
+                        append((Copy(R.string.k_ai_guardian)).localized())
                     }
                 }
-                Text(
-                    titleText,
+                Text(titleText,
                     Modifier.fillMaxWidth(),
-                    style = TextStyle(
-                        fontSize = 34.sp, lineHeight = 40.sp,
-                        fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold,
-                        fontStyle = FontStyle.Italic, textAlign = TextAlign.Center
+                    style = TextStyle(fontSize = 34.sp, lineHeight = 40.sp,
+                        fontFamily = DisplayFace, fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center
                     )
                 )
             }
@@ -704,9 +661,7 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
             Spacer(Modifier.height(10.dp))
 
             // ── Tagline ──────────────────────────────────────────────────
-            Label(
-                ("Clean · Protect · Optimize · Analyze" ar
-                    "تنظيف · حماية · تحسين · تحليل").localized(),
+            Label((Copy(R.string.k_clean_protect_optimize_analyze)).localized(),
                 13,
                 Mist.copy(alpha = 0.72f),
                 modifier = Modifier
@@ -719,15 +674,13 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
             Spacer(Modifier.height(10.dp))
 
             // ── Feature pills ────────────────────────────────────────────
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 20.dp).graphicsLayer { alpha = tagAlpha },
+            Row(Modifier.fillMaxWidth().padding(horizontal = 20.dp).graphicsLayer { alpha = tagAlpha },
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                listOf(
-                    "AI Powered" ar "بالذكاء الاصطناعي" to Cyan,
-                    "10 Tools" ar "١٠ أداة" to Violet,
-                    "Pro Ready" ar "Pro جاهز" to Gold
+                listOf(Copy(R.string.k_ai_powered) to Cyan,
+                    Copy(R.string.k_t_10_tools) to Violet,
+                    Copy(R.string.k_pro_ready) to Gold
                 ).forEachIndexed { i, (label, color) ->
                     if (i > 0) Spacer(Modifier.width(8.dp))
                     NeonPill(label.localized(), color, solid = false)
@@ -738,8 +691,7 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
             Spacer(Modifier.height(32.dp))
 
             // ── THE ENTER BUTTON ─────────────────────────────────────────
-            Box(
-                Modifier
+            Box(Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
                     .graphicsLayer {
@@ -754,8 +706,7 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
                         val pulse = orbPulse?.value ?: 0.5f
                         val cx = size.width / 2f; val cy = size.height / 2f
                         for ((radius, alpha) in listOf(size.width * .56f to .18f, size.width * .40f to .28f, size.width * .26f to .18f)) {
-                            drawCircle(Brush.radialGradient(
-                                listOf(Color(0xffff36f5).copy(alpha = alpha * (0.7f + pulse * 0.3f)),
+                            drawCircle(Brush.radialGradient(listOf(Color(0xffff36f5).copy(alpha = alpha * (0.7f + pulse * 0.3f)),
                                     Color(0xff6622ff).copy(alpha = alpha * .8f), Color.Transparent),
                                 Offset(cx, cy), radius), radius, Offset(cx, cy))
                         }
@@ -763,8 +714,7 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
                 }
 
                 // Button surface
-                Box(
-                    Modifier
+                Box(Modifier
                         .fillMaxWidth()
                         .height(60.dp)
                         .clip(RoundedCornerShape(30.dp))
@@ -772,32 +722,25 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
                             val w = size.width; val h = size.height
                             val rad = androidx.compose.ui.geometry.CornerRadius(h / 2f)
                             // Brand gradient
-                            drawRoundRect(
-                                Brush.horizontalGradient(listOf(
-                                    Color(0xffff36f5), Color(0xffa826ff),
+                            drawRoundRect(Brush.horizontalGradient(listOf(Color(0xffff36f5), Color(0xffa826ff),
                                     Color(0xff344dff), Color(0xff00d8ff)
                                 )), cornerRadius = rad)
                             // Shimmer band
                             if (shimmer != null) {
                                 val travel = shimmer.value * w * 1.6f - w * .3f
-                                drawRoundRect(
-                                    Brush.linearGradient(
-                                        listOf(Color.Transparent, Color.White.copy(alpha = .30f), Color.Transparent),
+                                drawRoundRect(Brush.linearGradient(listOf(Color.Transparent, Color.White.copy(alpha = .30f), Color.Transparent),
                                         start = androidx.compose.ui.geometry.Offset(travel - w * .24f, 0f),
                                         end = androidx.compose.ui.geometry.Offset(travel + w * .24f, h)
                                     ), cornerRadius = rad)
                             }
                             // Top lip highlight
-                            drawRoundRect(
-                                Brush.verticalGradient(listOf(Color.White.copy(alpha = .38f), Color.Transparent),
+                            drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = .38f), Color.Transparent),
                                     startY = 0f, endY = h * .55f), cornerRadius = rad)
                             // Bright rim
-                            drawRoundRect(
-                                Brush.horizontalGradient(listOf(Color.White.copy(alpha = .88f), Color.Transparent, Cyan.copy(alpha = .82f))),
+                            drawRoundRect(Brush.horizontalGradient(listOf(Color.White.copy(alpha = .88f), Color.Transparent, Cyan.copy(alpha = .82f))),
                                 cornerRadius = rad, style = Stroke(1.3.dp.toPx()))
                         }
-                        .clickable(
-                            interactionSource = ctaInteraction,
+                        .clickable(interactionSource = ctaInteraction,
                             indication = null,
                             role = Role.Button
                         ) {
@@ -807,13 +750,11 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
                         .testTag("landing-enter"),
                     contentAlignment = Alignment.Center
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Row(verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Glyph(Mark.K, Modifier.size(22.dp), Chalk, true)
-                        Label(
-                            ("Get Started" ar "ابدأ الآن").localized(),
+                        Label((Copy(R.string.k_get_started)).localized(),
                             17, Chalk, FontWeight.ExtraBold
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy((-5).dp)) {
@@ -828,19 +769,16 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
             Spacer(Modifier.height(18.dp))
 
             // ── Skip / guest link ────────────────────────────────────────
-            Box(
-                Modifier
+            Box(Modifier
                     .graphicsLayer { alpha = ctaAlpha }
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
+                    .clickable(interactionSource = remember { MutableInteractionSource() },
                         indication = null,
                         role = Role.Button,
                         onClick = onEnter
                     )
                     .padding(horizontal = 24.dp, vertical = 10.dp)
             ) {
-                Label(
-                    ("Explore without signing in →" ar "→ تصفح بدون تسجيل دخول").localized(),
+                Label((Copy(R.string.k_explore_without_signing_in)).localized(),
                     13, Mist.copy(alpha = 0.55f)
                 )
             }
@@ -852,8 +790,7 @@ private fun LandingStage(motion: Boolean, onEnter: () -> Unit) {
 
 /** Welcome state — full hexagonal cyberpunk identity portal. */
 @Composable
-private fun WelcomeStage(
-    motion: Boolean, onUnlock: () -> Unit, onPasskey: () -> Unit, onGoogle: () -> Unit,
+private fun WelcomeStage(motion: Boolean, onUnlock: () -> Unit, onPasskey: () -> Unit, onGoogle: () -> Unit,
     onGuest: () -> Unit, onPrivacy: () -> Unit, onSettings: () -> Unit,
     onCredentials: () -> Unit, onRecovery: () -> Unit, onSignUp: () -> Unit
 ) {
@@ -862,8 +799,7 @@ private fun WelcomeStage(
     var revealed by rememberSaveable { mutableStateOf(false) }
     var remember by rememberSaveable { mutableStateOf(false) }
 
-    Column(
-        Modifier
+    Column(Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .verticalScroll(rememberScrollState())
@@ -871,13 +807,11 @@ private fun WelcomeStage(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // ── Utility row: PRO capsule and the settings gear ──────────────────
-        Row(
-            Modifier.fillMaxWidth().padding(top = 2.dp),
+        Row(Modifier.fillMaxWidth().padding(top = 2.dp),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                Modifier
+            Row(Modifier
                     .heightIn(min = 38.dp)
                     .clip(RoundedCornerShape(19.dp))
                     .background(Brush.horizontalGradient(listOf(Color(0xff2a1c05), Color(0xff150d24))), RoundedCornerShape(19.dp))
@@ -890,8 +824,7 @@ private fun WelcomeStage(
                 Label("PRO", 12, Gold, FontWeight.Bold, maxLines = 1)
             }
             Spacer(Modifier.width(4.dp))
-            Box(
-                Modifier
+            Box(Modifier
                     .size(46.dp)
                     .clip(RoundedCornerShape(23.dp))
                     .clickable(role = Role.Button, onClick = onSettings)
@@ -913,14 +846,12 @@ private fun WelcomeStage(
                 Canvas(Modifier.width(170.dp).height(8.dp)) {
                     val path = Path().apply {
                         moveTo(4f, size.height * .46f)
-                        cubicTo(
-                            size.width * .30f, size.height * .08f,
+                        cubicTo(size.width * .30f, size.height * .08f,
                             size.width * .58f, size.height * .92f,
                             size.width - 4f, size.height * .30f
                         )
                     }
-                    drawPath(
-                        path,
+                    drawPath(path,
                         Brush.horizontalGradient(listOf(Color(0xffff4ff0), Violet, Color(0xff5a6bff), Cyan)),
                         style = Stroke(1.6.dp.toPx(), cap = StrokeCap.Round)
                     )
@@ -933,24 +864,18 @@ private fun WelcomeStage(
         // ── Title ──────────────────────────────────────────────────────────
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             val titleStyle = buildAnnotatedString {
-                withStyle(SpanStyle(color = Chalk)) { append(("Welcome " ar "مرحبًا بعودتك ").localized()) }
-                withStyle(
-                    SpanStyle(
-                        brush = Brush.horizontalGradient(listOf(Color(0xffff5cf0), Color(0xffd24bff), Color(0xffa06bff)))
+                withStyle(SpanStyle(color = Chalk)) { append((Copy(R.string.k_welcome)).localized()) }
+                withStyle(SpanStyle(brush = Brush.horizontalGradient(listOf(Color(0xffff5cf0), Color(0xffd24bff), Color(0xffa06bff)))
                     )
-                ) { append(("Back" ar "").localized()) }
+                ) { append((Copy(R.string.k_back)).localized()) }
             }
-            Text(
-                titleStyle, Modifier.fillMaxWidth(),
-                style = TextStyle(
-                    fontSize = 34.sp, lineHeight = 40.sp, fontFamily = DisplayFace,
-                    fontWeight = FontWeight.ExtraBold, fontStyle = FontStyle.Italic,
-                    textAlign = TextAlign.Center
+            Text(titleStyle, Modifier.fillMaxWidth(),
+                style = TextStyle(fontSize = 34.sp, lineHeight = 40.sp, fontFamily = DisplayFace,
+                    fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center
                 )
             )
             Spacer(Modifier.height(4.dp))
-            Label(
-                ("Sign in to your KNOUX AI account" ar "سجّل الدخول إلى حساب KNOUX AI").localized(),
+            Label((Copy(R.string.k_sign_in_to_your_knoux_ai_account)).localized(),
                 13, Mist.copy(alpha = .86f),
                 modifier = Modifier.fillMaxWidth(), align = TextAlign.Center
             )
@@ -959,18 +884,14 @@ private fun WelcomeStage(
         Spacer(Modifier.height(10.dp))
 
         // ── Secure access strip ────────────────────────────────────────────
-        Row(
-            Modifier
+        Row(Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(18.dp))
-                .background(
-                    Brush.horizontalGradient(
-                        listOf(Color(0xff4a1f8f).copy(alpha = .55f), Color(0xff1b1050).copy(alpha = .80f), Color(0xff123a6b).copy(alpha = .60f))
+                .background(Brush.horizontalGradient(listOf(Color(0xff4a1f8f).copy(alpha = .55f), Color(0xff1b1050).copy(alpha = .80f), Color(0xff123a6b).copy(alpha = .60f))
                     ),
                     RoundedCornerShape(18.dp)
                 )
-                .border(
-                    1.dp,
+                .border(1.dp,
                     Brush.horizontalGradient(listOf(Violet.copy(alpha = .85f), Cyan.copy(alpha = .70f))),
                     RoundedCornerShape(18.dp)
                 )
@@ -978,20 +899,16 @@ private fun WelcomeStage(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Box(
-                Modifier
+            Box(Modifier
                     .size(34.dp)
                     .clip(RoundedCornerShape(11.dp))
-                    .background(
-                        Brush.verticalGradient(listOf(Color(0xff8a4bff), Color(0xff5a1fd0))),
+                    .background(Brush.verticalGradient(listOf(Color(0xff8a4bff), Color(0xff5a1fd0))),
                         RoundedCornerShape(11.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) { Glyph(Mark.SHIELD, Modifier.size(20.dp), Chalk, true) }
             Box(Modifier.width(1.dp).height(28.dp).background(Chalk.copy(alpha = .30f)))
-            Label(
-                ("Secure Access — your data stays private, on your device." ar
-                    "وصول آمن — بياناتك تبقى خاصة، على جهازك.").localized(),
+            Label((Copy(R.string.k_secure_access_your_data_stays_private_on_your_device)).localized(),
                 11, Chalk.copy(alpha = .92f), FontWeight.Medium,
                 modifier = Modifier.weight(1f), maxLines = 2
             )
@@ -1000,28 +917,25 @@ private fun WelcomeStage(
         Spacer(Modifier.height(8.dp))
 
         // ── Credentials ────────────────────────────────────────────────────
-        GlassField(
-            value = email,
+        GlassField(value = email,
             onValueChange = { email = it },
             mark = Mark.CHAT,
-            placeholder = ("Email Address" ar "البريد الإلكتروني").localized(),
+            placeholder = (Copy(R.string.k_email_address)).localized(),
             tag = "auth-email",
             keyboard = KeyboardType.Email
         )
 
         Spacer(Modifier.height(10.dp))
 
-        GlassField(
-            value = secret,
+        GlassField(value = secret,
             onValueChange = { secret = it },
             mark = Mark.LOCK,
-            placeholder = ("Password" ar "كلمة المرور").localized(),
+            placeholder = (Copy(R.string.k_password)).localized(),
             tag = "auth-password",
             keyboard = KeyboardType.Password,
             obscure = !revealed
         ) {
-            Box(
-                Modifier
+            Box(Modifier
                     .size(44.dp)
                     .clip(RoundedCornerShape(22.dp))
                     .clickable(role = Role.Button, onClick = { revealed = !revealed })
@@ -1033,12 +947,10 @@ private fun WelcomeStage(
         Spacer(Modifier.height(8.dp))
 
         // ── Remember me / Forgot password ──────────────────────────────────
-        Row(
-            Modifier.fillMaxWidth(),
+        Row(Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                Modifier
+            Row(Modifier
                     .heightIn(min = 48.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .clickable(role = Role.Checkbox, onClick = { remember = !remember })
@@ -1048,11 +960,10 @@ private fun WelcomeStage(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 SelectionIndicator(remember, Violet)
-                Label(("Remember Me" ar "تذكّرني").localized(), 12, Chalk.copy(alpha = .90f), maxLines = 1)
+                Label((Copy(R.string.k_remember_me)).localized(), 12, Chalk.copy(alpha = .90f), maxLines = 1)
             }
             Spacer(Modifier.weight(1f))
-            Box(
-                Modifier
+            Box(Modifier
                     .heightIn(min = 48.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .clickable(role = Role.Button, onClick = onRecovery)
@@ -1060,31 +971,30 @@ private fun WelcomeStage(
                     .padding(horizontal = 4.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Label(("Forgot Password?" ar "نسيت كلمة المرور؟").localized(), 12, Cyan, FontWeight.SemiBold, maxLines = 1)
+                Label((Copy(R.string.k_forgot_password)).localized(), 12, Cyan, FontWeight.SemiBold, maxLines = 1)
             }
         }
 
         Spacer(Modifier.height(10.dp))
 
-        SignInCta(("Sign In" ar "تسجيل الدخول").localized(), onCredentials)
+        SignInCta((Copy(R.string.k_sign_in)).localized(), onCredentials)
 
         Spacer(Modifier.height(10.dp))
 
-        SectionDivider(("or continue with" ar "أو تابع باستخدام").localized())
+        SectionDivider((Copy(R.string.k_or_continue_with)).localized())
 
         Spacer(Modifier.height(10.dp))
 
-        ReferenceProviderRow("Continue with Google" ar "المتابعة عبر Google", Mark.GOOGLE, "auth-google", onGoogle)
+        ReferenceProviderRow(Copy(R.string.k_continue_with_google), Mark.GOOGLE, "auth-google", onGoogle)
 
         Spacer(Modifier.height(10.dp))
 
-        ReferenceProviderRow("Use a Passkey" ar "استخدم مفتاح مرور", Mark.KEY, "auth-passkey", onPasskey)
+        ReferenceProviderRow(Copy(R.string.k_use_a_passkey_2), Mark.KEY, "auth-passkey", onPasskey)
 
         Spacer(Modifier.height(2.dp))
 
         // Genuine biometric capability, kept deliberately small and secondary.
-        Box(
-            Modifier
+        Box(Modifier
                 .heightIn(min = 48.dp)
                 .clip(RoundedCornerShape(24.dp))
                 .clickable(role = Role.Button, onClick = onUnlock)
@@ -1092,19 +1002,17 @@ private fun WelcomeStage(
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Label(("Sign in with biometrics" ar "الدخول بالبصمة").localized(), 12, Mist.copy(alpha = .82f), FontWeight.Medium)
+            Label((Copy(R.string.k_sign_in_with_biometrics)).localized(), 12, Mist.copy(alpha = .82f), FontWeight.Medium)
         }
 
         Spacer(Modifier.height(6.dp))
 
-        Row(
-            Modifier.fillMaxWidth(),
+        Row(Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Label(("Don't have an account? " ar "ليس لديك حساب؟ ").localized(), 13, Chalk.copy(alpha = .88f), maxLines = 1)
-            Box(
-                Modifier
+            Label((Copy(R.string.k_don_t_have_an_account)).localized(), 13, Chalk.copy(alpha = .88f), maxLines = 1)
+            Box(Modifier
                     .heightIn(min = 48.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .clickable(role = Role.Button, onClick = onSignUp)
@@ -1112,14 +1020,13 @@ private fun WelcomeStage(
                     .padding(horizontal = 6.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Label(("Sign Up" ar "إنشاء حساب").localized(), 13, Cyan, FontWeight.Bold, maxLines = 1)
+                Label((Copy(R.string.k_sign_up)).localized(), 13, Cyan, FontWeight.Bold, maxLines = 1)
             }
         }
 
         Spacer(Modifier.height(2.dp))
 
-        Box(
-            Modifier
+        Box(Modifier
                 .heightIn(min = 44.dp)
                 .clip(RoundedCornerShape(22.dp))
                 .clickable(role = Role.Button, onClick = onGuest)
@@ -1127,7 +1034,7 @@ private fun WelcomeStage(
                 .padding(horizontal = 14.dp),
             contentAlignment = Alignment.Center
         ) {
-            Label(("Continue as Guest" ar "المتابعة كزائر").localized(), 11, Mist.copy(alpha = .55f), maxLines = 1)
+            Label((Copy(R.string.k_continue_as_guest)).localized(), 11, Mist.copy(alpha = .55f), maxLines = 1)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -1136,8 +1043,7 @@ private fun WelcomeStage(
 
 /** Glass credential field: icon, hairline, real editable text, optional trailing control. */
 @Composable
-private fun GlassField(
-    value: String,
+private fun GlassField(value: String,
     onValueChange: (String) -> Unit,
     mark: Mark,
     placeholder: String,
@@ -1147,19 +1053,15 @@ private fun GlassField(
     trailing: (@Composable () -> Unit)? = null
 ) {
     val shape = RoundedCornerShape(20.dp)
-    Row(
-        Modifier
+    Row(Modifier
             .fillMaxWidth()
             .heightIn(min = 58.dp)
             .clip(shape)
-            .background(
-                Brush.horizontalGradient(
-                    listOf(Color(0xff2b1658).copy(alpha = .92f), Color(0xff140a36).copy(alpha = .94f), Color(0xff101a44).copy(alpha = .92f))
+            .background(Brush.horizontalGradient(listOf(Color(0xff2b1658).copy(alpha = .92f), Color(0xff140a36).copy(alpha = .94f), Color(0xff101a44).copy(alpha = .92f))
                 ),
                 shape
             )
-            .border(
-                1.dp,
+            .border(1.dp,
                 Brush.horizontalGradient(listOf(Violet.copy(alpha = .85f), Color(0xff4a7dff).copy(alpha = .70f), Cyan.copy(alpha = .75f))),
                 shape
             )
@@ -1173,8 +1075,7 @@ private fun GlassField(
             if (value.isEmpty()) {
                 Label(placeholder, 15, Mist.copy(alpha = .58f), maxLines = 1)
             }
-            BasicTextField(
-                value = value,
+            BasicTextField(value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth().testTag(tag),
                 singleLine = true,
@@ -1196,15 +1097,13 @@ private fun SignInCta(label: String, onClick: () -> Unit) {
     val scale by animateFloatAsState(if (pressed) .972f else 1f, tween(120), label = "signin scale")
     val pulse = if (LocalPreviewMotion.current) {
         val spin = rememberInfiniteTransition(label = "signin pulse")
-        spin.animateFloat(
-            0f, 1f,
+        spin.animateFloat(0f, 1f,
             infiniteRepeatable(tween(2800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
             label = "signin glow"
         )
     } else null
 
-    Row(
-        Modifier
+    Row(Modifier
             .fillMaxWidth()
             .heightIn(min = 58.dp)
             .graphicsLayer { scaleX = scale; scaleY = scale }
@@ -1218,8 +1117,7 @@ private fun SignInCta(label: String, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Glyph(Mark.NEXT, Modifier.size(21.dp).rotate(if (LocalArabic.current) 180f else 0f), Chalk, true)
-        Box(
-            Modifier
+        Box(Modifier
                 .padding(horizontal = 14.dp)
                 .width(1.dp)
                 .height(22.dp)
@@ -1232,20 +1130,15 @@ private fun SignInCta(label: String, onClick: () -> Unit) {
 /** Thin "or continue with" rule pair. */
 @Composable
 private fun SectionDivider(label: String) {
-    Row(
-        Modifier.fillMaxWidth(),
+    Row(Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Box(
-            Modifier.weight(1f).height(1.dp).background(
-                Brush.horizontalGradient(listOf(Color.Transparent, Mist.copy(alpha = .38f)))
+        Box(Modifier.weight(1f).height(1.dp).background(Brush.horizontalGradient(listOf(Color.Transparent, Mist.copy(alpha = .38f)))
             )
         )
         Label(label, 12, Mist.copy(alpha = .78f), maxLines = 1)
-        Box(
-            Modifier.weight(1f).height(1.dp).background(
-                Brush.horizontalGradient(listOf(Mist.copy(alpha = .38f), Color.Transparent))
+        Box(Modifier.weight(1f).height(1.dp).background(Brush.horizontalGradient(listOf(Mist.copy(alpha = .38f), Color.Transparent))
             )
         )
     }
@@ -1255,19 +1148,15 @@ private fun SectionDivider(label: String) {
 @Composable
 private fun ReferenceProviderRow(title: Copy, mark: Mark, tag: String, onClick: () -> Unit) {
     val shape = RoundedCornerShape(22.dp)
-    Row(
-        Modifier
+    Row(Modifier
             .fillMaxWidth()
             .heightIn(min = 58.dp)
             .clip(shape)
-            .background(
-                Brush.horizontalGradient(
-                    listOf(Color(0xff2a1656).copy(alpha = .88f), Color(0xff150a38).copy(alpha = .92f), Color(0xff171a4a).copy(alpha = .88f))
+            .background(Brush.horizontalGradient(listOf(Color(0xff2a1656).copy(alpha = .88f), Color(0xff150a38).copy(alpha = .92f), Color(0xff171a4a).copy(alpha = .88f))
                 ),
                 shape
             )
-            .border(
-                1.dp,
+            .border(1.dp,
                 Brush.horizontalGradient(listOf(Violet.copy(alpha = .60f), Cyan.copy(alpha = .50f))),
                 shape
             )
@@ -1278,8 +1167,7 @@ private fun ReferenceProviderRow(title: Copy, mark: Mark, tag: String, onClick: 
         horizontalArrangement = Arrangement.Center
     ) {
         if (mark == Mark.GOOGLE) GoogleG(22) else Glyph(mark, Modifier.size(22.dp), Chalk.copy(alpha = .92f), true)
-        Box(
-            Modifier
+        Box(Modifier
                 .padding(horizontal = 12.dp)
                 .width(1.dp)
                 .height(22.dp)
@@ -1306,8 +1194,7 @@ private fun GoogleG(size: Int) {
         drawArc(green, 68f, 60f, false, topLeft, rect, style = Stroke(stroke))
         drawArc(blue, -14f, 78f, false, topLeft, rect, style = Stroke(stroke))
         // The bar that turns the ring into a G.
-        drawRect(
-            blue,
+        drawRect(blue,
             topLeft = Offset(this.size.width * .50f, this.size.height * .42f),
             size = Size(this.size.width * .50f, stroke)
         )
@@ -1316,8 +1203,7 @@ private fun GoogleG(size: Int) {
 
 
 @Composable
-private fun OtpStage(
-    motion: Boolean, onBack: () -> Unit, onPasskey: () -> Unit, onGoogle: () -> Unit
+private fun OtpStage(motion: Boolean, onBack: () -> Unit, onPasskey: () -> Unit, onGoogle: () -> Unit
 ) {
     var code by rememberSaveable { mutableStateOf("") }
     var seconds by rememberSaveable { mutableStateOf(59) }
@@ -1331,27 +1217,21 @@ private fun OtpStage(
     }
 
     val active = code.length.coerceAtMost(5)
-    val resendNotice = ("Code resend is not connected to a provider in this preview build."
-        ar "إعادة إرسال الرمز غير متصلة بمزوّد في نسخة المعاينة هذه.").localized()
-    val verifyNotice = ("Verification is not connected to a provider yet, so this code cannot be "
-        + "checked and no session is created."
-        ar "التحقّق غير متصل بمزوّد بعد، لذلك لا يمكن فحص هذا الرمز ولا تُنشأ أي جلسة.").localized()
+    val resendNotice = (Copy(R.string.k_code_resend_is_not_connected_to_a_provider_in_this_previ)).localized()
+    val verifyNotice = Copy(R.string.k_auth_verification_note).localized()
 
-    Column(
-        Modifier
+    Column(Modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.safeDrawing)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier.fillMaxWidth().padding(top = 2.dp),
+        Row(Modifier.fillMaxWidth().padding(top = 2.dp),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                Modifier
+            Row(Modifier
                     .heightIn(min = 38.dp)
                     .clip(RoundedCornerShape(19.dp))
                     .background(Brush.horizontalGradient(listOf(Color(0xff2a1c05), Color(0xff150d24))), RoundedCornerShape(19.dp))
@@ -1382,18 +1262,14 @@ private fun OtpStage(
             Canvas(Modifier.fillMaxSize()) {
                 val c = Offset(size.width / 2f, size.height * .48f)
                 val r = size.minDimension * .46f
-                drawCircle(
-                    Brush.radialGradient(
-                        listOf(Violet.copy(alpha = .34f), Cyan.copy(alpha = .16f), Color.Transparent),
+                drawCircle(Brush.radialGradient(listOf(Violet.copy(alpha = .34f), Cyan.copy(alpha = .16f), Color.Transparent),
                         c, r * 1.7f
                     ), r * 1.7f, c
                 )
                 drawCircle(Cyan.copy(alpha = .40f), r * 1.30f, c, style = Stroke(1.dp.toPx()))
                 // Pedestal disc under the shield.
                 val py = c.y + r * 1.05f
-                drawOval(
-                    Brush.radialGradient(
-                        listOf(Cyan.copy(alpha = .55f), Violet.copy(alpha = .24f), Color.Transparent),
+                drawOval(Brush.radialGradient(listOf(Cyan.copy(alpha = .55f), Violet.copy(alpha = .24f), Color.Transparent),
                         Offset(c.x, py), r * 1.20f
                     ),
                     topLeft = Offset(c.x - r * 1.20f, py - r * .20f),
@@ -1404,8 +1280,7 @@ private fun OtpStage(
                 Glyph(Mark.SHIELD, Modifier.size(96.dp), Cyan, true)
             }
             Box(Modifier.size(96.dp), contentAlignment = Alignment.BottomEnd) {
-                Box(
-                    Modifier
+                Box(Modifier
                         .size(30.dp)
                         .clip(RoundedCornerShape(15.dp))
                         .background(Brush.verticalGradient(listOf(Cyan, Color(0xff16b6d8))), RoundedCornerShape(15.dp)),
@@ -1418,27 +1293,21 @@ private fun OtpStage(
 
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
             val titleStyle = buildAnnotatedString {
-                withStyle(SpanStyle(color = Chalk)) { append(("Verify your " ar "تحقّق من ").localized()) }
-                withStyle(
-                    SpanStyle(
-                        brush = Brush.horizontalGradient(listOf(Color(0xffff5cf0), Color(0xffd24bff), Color(0xffa06bff)))
+                withStyle(SpanStyle(color = Chalk)) { append((Copy(R.string.k_verify_your)).localized()) }
+                withStyle(SpanStyle(brush = Brush.horizontalGradient(listOf(Color(0xffff5cf0), Color(0xffd24bff), Color(0xffa06bff)))
                     )
-                ) { append(("identity" ar "هويتك").localized()) }
+                ) { append((Copy(R.string.k_identity)).localized()) }
             }
-            Text(
-                titleStyle, Modifier.fillMaxWidth(),
-                style = TextStyle(
-                    fontSize = 32.sp, lineHeight = 38.sp, fontFamily = DisplayFace,
-                    fontWeight = FontWeight.ExtraBold, fontStyle = FontStyle.Italic,
-                    textAlign = TextAlign.Center
+            Text(titleStyle, Modifier.fillMaxWidth(),
+                style = TextStyle(fontSize = 32.sp, lineHeight = 38.sp, fontFamily = DisplayFace,
+                    fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center
                 )
             )
             Spacer(Modifier.height(4.dp))
-            Label(
-                // Reference 12 says "sent to your email". No mail provider is
+            Label(// Reference 12 says "sent to your email". No mail provider is
                 // connected, so claiming a delivery would be false; the layout is
                 // identical but the copy states only what is true.
-                ("Enter your 6-digit verification code" ar "أدخل رمز التحقق المكوّن من 6 أرقام").localized(),
+                (Copy(R.string.k_enter_your_6_digit_verification_code)).localized(),
                 13, Mist.copy(alpha = .86f),
                 modifier = Modifier.fillMaxWidth(), align = TextAlign.Center
             )
@@ -1453,18 +1322,15 @@ private fun OtpStage(
 
         Spacer(Modifier.height(12.dp))
 
-        Row(
-            Modifier.fillMaxWidth(),
+        Row(Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
             Glyph(Mark.CLOCK, Modifier.size(15.dp), Cyan.copy(alpha = .40f).let { Cyan })
             Spacer(Modifier.width(6.dp))
-            Label(
-                ("Resend code in " ar "إعادة الإرسال بعد ").localized(), 12, Mist.copy(alpha = .82f), maxLines = 1
+            Label((Copy(R.string.k_resend_code_in)).localized(), 12, Mist.copy(alpha = .82f), maxLines = 1
             )
-            Label(
-                // Locale.ROOT is required: the device locale is Arabic, and a
+            Label(// Locale.ROOT is required: the device locale is Arabic, and a
                 // locale-sensitive %d renders Arabic-Indic numerals (٠٠:٥٩), whose
                 // zero is a bare dot and is unreadable at this size.
                 String.format(Locale.ROOT, "%02d:%02d", seconds / 60, seconds % 60), 12,
@@ -1474,8 +1340,7 @@ private fun OtpStage(
 
         Spacer(Modifier.height(2.dp))
 
-        Box(
-            Modifier
+        Box(Modifier
                 .heightIn(min = 44.dp)
                 .clip(RoundedCornerShape(22.dp))
                 .clickable(role = Role.Button, onClick = {
@@ -1486,16 +1351,14 @@ private fun OtpStage(
                 .padding(horizontal = 14.dp),
             contentAlignment = Alignment.Center
         ) {
-            Label(
-                ("Resend code" ar "إعادة إرسال الرمز").localized(), 12,
+            Label((Copy(R.string.k_resend_code)).localized(), 12,
                 Cyan.copy(alpha = if (seconds == 0) 1f else .55f), FontWeight.SemiBold, maxLines = 1
             )
         }
 
         if (notice != null) {
             Spacer(Modifier.height(6.dp))
-            Row(
-                Modifier
+            Row(Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(14.dp))
                     .background(Color(0xff2a1c05).copy(alpha = .70f), RoundedCornerShape(14.dp))
@@ -1511,7 +1374,7 @@ private fun OtpStage(
 
         Spacer(Modifier.height(12.dp))
 
-        VerifyCta(("Verify" ar "تحقّق").localized()) {
+        VerifyCta((Copy(R.string.k_verify)).localized()) {
             // No OTP provider is configured, so nothing is verified and no session
             // is created. The user is told the truth instead of a fake success.
             notice = verifyNotice
@@ -1519,20 +1382,19 @@ private fun OtpStage(
 
         Spacer(Modifier.height(14.dp))
 
-        SectionDivider(("or" ar "أو").localized())
+        SectionDivider((Copy(R.string.k_or)).localized())
 
         Spacer(Modifier.height(10.dp))
 
-        ReferenceProviderRow("Use a Passkey" ar "استخدم مفتاح مرور", Mark.KEY, "otp-passkey", onPasskey)
+        ReferenceProviderRow(Copy(R.string.k_use_a_passkey_2), Mark.KEY, "otp-passkey", onPasskey)
 
         Spacer(Modifier.height(10.dp))
 
-        ReferenceProviderRow("Verify with Google" ar "التحقّق عبر Google", Mark.GOOGLE, "otp-google", onGoogle)
+        ReferenceProviderRow(Copy(R.string.k_verify_with_google), Mark.GOOGLE, "otp-google", onGoogle)
 
         Spacer(Modifier.height(10.dp))
 
-        Box(
-            Modifier
+        Box(Modifier
                 .heightIn(min = 48.dp)
                 .clip(RoundedCornerShape(24.dp))
                 .clickable(role = Role.Button, onClick = onBack)
@@ -1542,7 +1404,7 @@ private fun OtpStage(
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Glyph(Mark.BACK, Modifier.size(15.dp).rotate(if (LocalArabic.current) 180f else 0f), Mist.copy(alpha = .85f))
-                Label(("Back to sign in" ar "العودة لتسجيل الدخول").localized(), 13, Mist.copy(alpha = .85f), FontWeight.Medium, maxLines = 1)
+                Label((Copy(R.string.k_back_to_sign_in)).localized(), 13, Mist.copy(alpha = .85f), FontWeight.Medium, maxLines = 1)
             }
         }
 
@@ -1557,8 +1419,7 @@ private fun OtpStage(
 @Composable
 private fun OtpSlots(code: String, active: Int, onCode: (String) -> Unit) {
     Box(Modifier.fillMaxWidth()) {
-        Row(
-            Modifier.fillMaxWidth(),
+        Row(Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -1566,34 +1427,26 @@ private fun OtpSlots(code: String, active: Int, onCode: (String) -> Unit) {
                 val filled = index < code.length
                 val focused = index == active && code.length < 6
                 val shape = RoundedCornerShape(14.dp)
-                Box(
-                    Modifier
+                Box(Modifier
                         .weight(1f)
                         .aspectRatio(0.78f)
                         .clip(shape)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(
-                                    Color(0xff2c1560).copy(alpha = if (filled) .95f else .70f),
+                        .background(Brush.verticalGradient(listOf(Color(0xff2c1560).copy(alpha = if (filled) .95f else .70f),
                                     Color(0xff120735).copy(alpha = .92f)
                                 )
                             ),
                             shape
                         )
-                        .border(
-                            if (focused) 1.6.dp else 1.dp,
-                            Brush.linearGradient(
-                                if (focused) listOf(Cyan, Color(0xff7a5bff))
+                        .border(if (focused) 1.6.dp else 1.dp,
+                            Brush.linearGradient(if (focused) listOf(Cyan, Color(0xff7a5bff))
                                 else listOf(Violet.copy(alpha = .85f), Cyan.copy(alpha = .62f))
                             ),
                             shape
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        if (filled) code[index].toString() else "",
-                        style = TextStyle(
-                            color = Chalk, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold,
+                    Text(if (filled) code[index].toString() else "",
+                        style = TextStyle(color = Chalk, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold,
                             textAlign = TextAlign.Center
                         )
                     )
@@ -1601,8 +1454,7 @@ private fun OtpSlots(code: String, active: Int, onCode: (String) -> Unit) {
             }
         }
         // The real input sits above the decoration with transparent ink.
-        BasicTextField(
-            value = code,
+        BasicTextField(value = code,
             onValueChange = onCode,
             modifier = Modifier
                 .fillMaxWidth()
@@ -1627,15 +1479,13 @@ private fun VerifyCta(label: String, onClick: () -> Unit) {
     val scale by animateFloatAsState(if (pressed) .972f else 1f, tween(120), label = "verify scale")
     val pulse = if (LocalPreviewMotion.current) {
         val spin = rememberInfiniteTransition(label = "verify pulse")
-        spin.animateFloat(
-            0f, 1f,
+        spin.animateFloat(0f, 1f,
             infiniteRepeatable(tween(2800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
             label = "verify glow"
         )
     } else null
 
-    Row(
-        Modifier
+    Row(Modifier
             .fillMaxWidth()
             .heightIn(min = 56.dp)
             .graphicsLayer { scaleX = scale; scaleY = scale }
@@ -1649,8 +1499,7 @@ private fun VerifyCta(label: String, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Glyph(Mark.CHECK, Modifier.size(19.dp), Chalk, true)
-        Box(
-            Modifier
+        Box(Modifier
                 .padding(horizontal = 14.dp)
                 .width(1.dp)
                 .height(22.dp)
@@ -1667,14 +1516,14 @@ private fun VerifyStage(motion: Boolean, onCancel: () -> Unit) {
         Spacer(Modifier.height(10.dp))
         AuthTopBar(onBack = onCancel)
         Spacer(Modifier.height(26.dp))
-        AuthTitle("Verify your" ar "تحقق من", "identity" ar "هويتك",
-            "Waiting for biometric verification…" ar "في انتظار التحقق بالبصمة…")
+        AuthTitle(Copy(R.string.k_verify_your_2), Copy(R.string.k_identity),
+            Copy(R.string.k_waiting_for_biometric_verification))
         Spacer(Modifier.height(18.dp))
         Box(Modifier.size(268.dp), contentAlignment = Alignment.Center) {
             FingerprintOrb(258, AuthStage.VERIFYING, motion, Modifier.testTag("auth-verify-orb"))
         }
         Spacer(Modifier.height(24.dp))
-        AccentButton(Action("Cancel" ar "إلغاء", Mark.BACK), Modifier.fillMaxWidth(0.62f).padding(horizontal = 18.dp),
+        AccentButton(Action(Copy(R.string.k_cancel), Mark.BACK), Modifier.fillMaxWidth(0.62f).padding(horizontal = 18.dp),
             primary = false, tag = "auth-cancel", onClick = onCancel)
         Spacer(Modifier.height(24.dp))
     }
@@ -1691,18 +1540,17 @@ private fun VerifiedStage(motion: Boolean) {
             FingerprintOrb(252, AuthStage.VERIFIED, motion, Modifier.testTag("auth-verified-orb"))
         }
         Spacer(Modifier.height(26.dp))
-        AuthTitle("Identity" ar "تم التحقق من", "verified" ar "الهوية",
-            "Welcome back to KNOUX AI" ar "مرحبًا بعودتك إلى KNOUX AI")
+        AuthTitle(Copy(R.string.k_identity_2), Copy(R.string.k_verified),
+            Copy(R.string.k_welcome_back_to_knoux_ai))
         Spacer(Modifier.weight(1f))
-        Label(("Opening your dashboard…" ar "جارٍ فتح لوحة التحكم…").localized(), 15, Mist,
+        Label((Copy(R.string.k_opening_your_dashboard)).localized(), 15, Mist,
             modifier = Modifier.padding(bottom = 42.dp), align = TextAlign.Center)
     }
 }
 
 /** Biometric unavailable state of the reference. */
 @Composable
-private fun UnavailableStage(
-    motion: Boolean, onBack: () -> Unit, onSettings: () -> Unit,
+private fun UnavailableStage(motion: Boolean, onBack: () -> Unit, onSettings: () -> Unit,
     onPasskey: () -> Unit, onGoogle: () -> Unit, onGuest: () -> Unit
 ) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally) {
@@ -1713,13 +1561,13 @@ private fun UnavailableStage(
             FingerprintOrb(216, AuthStage.UNAVAILABLE, motion, Modifier.testTag("auth-unavailable-orb"))
         }
         Spacer(Modifier.height(14.dp))
-        AuthTitle("Biometric" ar "البصمة", "unavailable" ar "غير متاحة",
-            "Choose another sign-in method to continue." ar "اختر طريقة تسجيل دخول أخرى للمتابعة.")
+        AuthTitle(Copy(R.string.k_biometric), Copy(R.string.k_unavailable),
+            Copy(R.string.k_choose_another_sign_in_method_to_continue))
         Spacer(Modifier.height(22.dp))
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            ProviderRow("Use a passkey" ar "استخدم مفتاح مرور", Mark.KEY, Pink, "auth-passkey", onPasskey)
-            ProviderRow("Continue with Google" ar "المتابعة عبر Google", Mark.GOOGLE, Cyan, "auth-google", onGoogle)
-            ProviderRow("Continue as Guest" ar "المتابعة كزائر", Mark.PERSON, Violet, "auth-guest", onGuest)
+            ProviderRow(Copy(R.string.k_use_a_passkey), Mark.KEY, Pink, "auth-passkey", onPasskey)
+            ProviderRow(Copy(R.string.k_continue_with_google), Mark.GOOGLE, Cyan, "auth-google", onGoogle)
+            ProviderRow(Copy(R.string.k_continue_as_guest), Mark.PERSON, Violet, "auth-guest", onGuest)
         }
         Spacer(Modifier.height(24.dp))
     }
@@ -1730,7 +1578,7 @@ private fun UnavailableStage(
 private fun AuthTopBar(onBack: () -> Unit, onSettings: () -> Unit = {}) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 3.dp).glass(20, tab = false)
         .heightIn(min = 56.dp).padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-        IconControl(Mark.BACK, ("Back" ar "رجوع").localized(), "back", onBack)
+        IconControl(Mark.BACK, (Copy(R.string.k_back_2)).localized(), "back", onBack)
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -1750,6 +1598,6 @@ private fun AuthTopBar(onBack: () -> Unit, onSettings: () -> Unit = {}) {
             Glyph(Mark.CROWN, Modifier.size(15.dp), Gold)
             Label("Pro", 11, Gold, FontWeight.Bold)
         }
-        IconControl(Mark.GEAR, ("Settings" ar "الإعدادات").localized(), "settings", onSettings)
+        IconControl(Mark.GEAR, (Copy(R.string.k_settings)).localized(), "settings", onSettings)
     }
 }

@@ -54,102 +54,102 @@ internal data class KnouxProject(
 
 internal val knouxProjects = listOf(
     KnouxProject(
-        "knoux-ai", "KNOUX AI" ar "KNOUX AI",
-        "AI-powered device intelligence: clean, protect, optimize, analyze." ar "ذكاء اصطناعي لجهازك: تنظيف وحماية وتحسين وتحليل.",
-        ProjectCategory.AI_ENGINEERING, "Android" ar "Android",
+        "knoux-ai", Copy(R.string.k_knoux_ai),
+        Copy(R.string.k_ai_powered_device_intelligence_clean_protect_optimize_an),
+        ProjectCategory.AI_ENGINEERING, Copy(R.string.k_android),
         ProjectStatus.ACTIVE, Mark.CHIP, Cyan, "KNOUX-AI"
     ),
     KnouxProject(
-        "kforge", "KForge" ar "KForge",
-        "Engineering and development command center by KNOUX." ar "مركز قيادة هندسي وتطويري من KNOUX.",
-        ProjectCategory.AI_ENGINEERING, "Multi-platform" ar "متعدد المنصات",
+        "kforge", Copy(R.string.k_kforge),
+        Copy(R.string.k_engineering_and_development_command_center_by_knoux),
+        ProjectCategory.AI_ENGINEERING, Copy(R.string.k_multi_platform),
         ProjectStatus.IN_DEVELOPMENT, Mark.BOLT, Violet, "KForge"
     ),
     KnouxProject(
-        "knouxcrypt", "KnouxCrypt" ar "KnouxCrypt",
-        "Security and encryption software." ar "برنامج أمان وتشفير.",
-        ProjectCategory.SECURITY, "Desktop/Mobile" ar "سطح المكتب/الجوال",
+        "knouxcrypt", Copy(R.string.k_knouxcrypt),
+        Copy(R.string.k_security_and_encryption_software),
+        ProjectCategory.SECURITY, Copy(R.string.k_desktop_mobile),
         ProjectStatus.IN_DEVELOPMENT, Mark.LOCK, Pink, "KnouxCrypt"
     ),
     KnouxProject(
-        "kx-private-vpn", "KX-Private-VPN" ar "KX-Private-VPN",
-        "Android privacy application. VPN connectivity requires server configuration." ar "تطبيق خصوصية لأندرويد. تقنية VPN تتطلب ضبط الخادم.",
-        ProjectCategory.SECURITY, "Android" ar "Android",
+        "kx-private-vpn", Copy(R.string.k_kx_private_vpn),
+        Copy(R.string.k_android_privacy_application_vpn_connectivity_requires_se),
+        ProjectCategory.SECURITY, Copy(R.string.k_android),
         ProjectStatus.PREVIEW, Mark.SHIELD, Cyan, "KX-Private-VPN"
     ),
     KnouxProject(
-        "knoux-gemini", "KNOuX-Gemini-SmartOrganizer" ar "KNOuX-Gemini-SmartOrganizer",
-        "Desktop intelligent file organization powered by Gemini AI." ar "تنظيم ذكي للملفات على سطح المكتب بقوة Gemini AI.",
-        ProjectCategory.UTILITIES, "Desktop" ar "سطح المكتب",
+        "knoux-gemini", Copy(R.string.k_knoux_gemini_smartorganizer),
+        Copy(R.string.k_desktop_intelligent_file_organization_powered_by_gemini),
+        ProjectCategory.UTILITIES, Copy(R.string.k_desktop),
         ProjectStatus.IN_DEVELOPMENT, Mark.FOLDER, Gold, "KNOuX-Gemini-SmartOrganizer"
     ),
     KnouxProject(
-        "knouxrec", "Knouxrec" ar "Knouxrec",
-        "Recording and capture utility by KNOUX." ar "أداة تسجيل والتقاط من KNOUX.",
-        ProjectCategory.UTILITIES, "Desktop" ar "سطح المكتب",
+        "knouxrec", Copy(R.string.k_knouxrec),
+        Copy(R.string.k_recording_and_capture_utility_by_knoux),
+        ProjectCategory.UTILITIES, Copy(R.string.k_desktop),
         ProjectStatus.IN_DEVELOPMENT, Mark.MIC, Violet, "Knouxrec"
     ),
     KnouxProject(
-        "knoux-repair", "knoux-Repair" ar "knoux-Repair",
-        "System maintenance and repair software." ar "برنامج صيانة وإصلاح النظام.",
-        ProjectCategory.UTILITIES, "Desktop" ar "سطح المكتب",
+        "knoux-repair", Copy(R.string.k_knoux_repair),
+        Copy(R.string.k_system_maintenance_and_repair_software),
+        ProjectCategory.UTILITIES, Copy(R.string.k_desktop),
         ProjectStatus.IN_DEVELOPMENT, Mark.SYNC, Pink, "knoux-Repair"
     ),
     KnouxProject(
-        "knoux-webpilot", "KNOUX WebPilot" ar "KNOUX WebPilot",
-        "Capture Intelligence — convert webpage content into reusable structured formats." ar "التقاط المحتوى وتحويله إلى تنسيقات منظمة.",
-        ProjectCategory.BROWSER_WEB, "Microsoft Edge" ar "Microsoft Edge",
+        "knoux-webpilot", Copy(R.string.k_knoux_webpilot),
+        Copy(R.string.k_capture_intelligence_convert_webpage_content_into_reusab),
+        ProjectCategory.BROWSER_WEB, Copy(R.string.k_microsoft_edge),
         ProjectStatus.ACTIVE, Mark.SEARCH, Cyan, "KNOUX-WebPilot",
         storeUrl = "https://microsoftedge.microsoft.com/addons/search/KNOUX%20WebPilot"
     ),
     KnouxProject(
-        "knoux-grabflow", "KNOuX GrabFlow" ar "KNOuX GrabFlow",
-        "Media & Video Finder — identify accessible webpage media and file assets." ar "الكشف عن الوسائط والملفات في صفحات الويب.",
-        ProjectCategory.BROWSER_WEB, "Microsoft Edge" ar "Microsoft Edge",
+        "knoux-grabflow", Copy(R.string.k_knoux_grabflow),
+        Copy(R.string.k_media_video_finder_identify_accessible_webpage_media_and),
+        ProjectCategory.BROWSER_WEB, Copy(R.string.k_microsoft_edge),
         ProjectStatus.ACTIVE, Mark.DOWNLOAD, Gold, "KNOuX-GrabFlow",
         storeUrl = "https://microsoftedge.microsoft.com/addons/search/KNOuX%20GrabFlow"
     ),
     KnouxProject(
-        "knoux-x", "knoux-x" ar "knoux-x",
-        "KNOUX platform extension and tool." ar "أداة وامتداد منصة KNOUX.",
-        ProjectCategory.BROWSER_WEB, "Web" ar "ويب",
+        "knoux-x", Copy(R.string.k_knoux_x),
+        Copy(R.string.k_knoux_platform_extension_and_tool),
+        ProjectCategory.BROWSER_WEB, Copy(R.string.k_web),
         ProjectStatus.IN_DEVELOPMENT, Mark.BOLT, Violet, "knoux-x"
     ),
     KnouxProject(
-        "knoux-store", "knoux-store" ar "knoux-store",
-        "Official KNOUX digital storefront and web presence." ar "المتجر الرقمي الرسمي لـ KNOUX.",
-        ProjectCategory.CORPORATE, "Web" ar "ويب",
+        "knoux-store", Copy(R.string.k_knoux_store),
+        Copy(R.string.k_official_knoux_digital_storefront_and_web_presence),
+        ProjectCategory.CORPORATE, Copy(R.string.k_web),
         ProjectStatus.ACTIVE, Mark.CROWN, Gold, "knoux-store",
         websiteUrl = "https://knoux.store/"
     ),
     KnouxProject(
-        "basma-moussa", "Basma-Moussa-Media-Universe" ar "Basma-Moussa-Media-Universe",
-        "Digital media universe — independent brand project." ar "كون وسائط رقمية — مشروع علامة مستقلة.",
-        ProjectCategory.SPECIALIZED, "Web" ar "ويب",
+        "basma-moussa", Copy(R.string.k_basma_moussa_media_universe),
+        Copy(R.string.k_digital_media_universe_independent_brand_project),
+        ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
         ProjectStatus.CLIENT_WORK, Mark.VIDEO, Pink, "Basma-Moussa-Media-Universe"
     ),
     KnouxProject(
-        "swim-fit", "Swim-Fit-Academy" ar "Swim-Fit-Academy",
-        "Swimming academy digital platform." ar "منصة أكاديمية سباحة رقمية.",
-        ProjectCategory.SPECIALIZED, "Web" ar "ويب",
+        "swim-fit", Copy(R.string.k_swim_fit_academy),
+        Copy(R.string.k_swimming_academy_digital_platform),
+        ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
         ProjectStatus.CLIENT_WORK, Mark.HEART, Cyan, "Swim-Fit-Academy"
     ),
     KnouxProject(
-        "united-olympics", "United-Olympics-Sports" ar "United-Olympics-Sports",
-        "Bilingual sports development platform." ar "منصة تطوير رياضي ثنائية اللغة.",
-        ProjectCategory.SPECIALIZED, "Web" ar "ويب",
+        "united-olympics", Copy(R.string.k_united_olympics_sports),
+        Copy(R.string.k_bilingual_sports_development_platform),
+        ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
         ProjectStatus.CLIENT_WORK, Mark.TROPHY, Gold, "United-Olympics-Sports"
     ),
     KnouxProject(
-        "daynightdelivery", "DayNightDeliveryServices1" ar "DayNightDeliveryServices1",
-        "Delivery services digital project." ar "مشروع خدمات توصيل رقمي.",
-        ProjectCategory.SPECIALIZED, "Web" ar "ويب",
+        "daynightdelivery", Copy(R.string.k_daynightdeliveryservices1),
+        Copy(R.string.k_delivery_services_digital_project),
+        ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
         ProjectStatus.CLIENT_WORK, Mark.BOLT, Violet, "DayNightDeliveryServices1"
     ),
     KnouxProject(
-        "yarasoolallah", "YaRasoolAllah" ar "YaRasoolAllah",
-        "A dedicated digital project — scope and audience verified from repository." ar "مشروع رقمي متخصص — الهدف موثق من المستودع.",
-        ProjectCategory.SPECIALIZED, "Web" ar "ويب",
+        "yarasoolallah", Copy(R.string.k_yarasoolallah),
+        Copy(R.string.k_a_dedicated_digital_project_scope_and_audience_verified),
+        ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
         ProjectStatus.IN_DEVELOPMENT, Mark.SPARKLE, Gold, "YaRasoolAllah"
     )
 )
@@ -212,7 +212,7 @@ internal fun KnouxUniverseScreen() {
                 )
 
                 Label(
-                    ("Building the Digital Future" ar "نبني المستقبل الرقمي").localized(),
+                    (Copy(R.string.k_building_the_digital_future)).localized(),
                     14, Mist,
                     modifier = Modifier.fillMaxWidth(),
                     align = TextAlign.Center
@@ -238,9 +238,9 @@ internal fun KnouxUniverseScreen() {
                 ) {
                     IconBadge(Mark.PERSON, Gold, diameter = 48)
                     Column(Modifier.weight(1f)) {
-                        Label(("Eng. Sadek Elgazar" ar "م. صادق الجزار").localized(), 16, Chalk, FontWeight.ExtraBold)
-                        Label(("Founder & Software Engineer" ar "المؤسس ومهندس البرمجيات").localized(), 12, Mist)
-                        Label(("Founder of KNOUX" ar "مؤسس KNOUX").localized(), 11, Mist.copy(alpha = .70f))
+                        Label((Copy(R.string.k_eng_sadek_elgazar)).localized(), 16, Chalk, FontWeight.ExtraBold)
+                        Label((Copy(R.string.k_founder_software_engineer)).localized(), 12, Mist)
+                        Label((Copy(R.string.k_founder_of_knoux)).localized(), 11, Mist.copy(alpha = .70f))
                     }
                 }
                 Box(
@@ -274,7 +274,7 @@ internal fun KnouxUniverseScreen() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Label(
-                ("Software Portfolio" ar "محفظة البرامج").localized(),
+                (Copy(R.string.k_software_portfolio)).localized(),
                 18, Chalk, FontWeight.ExtraBold
             )
             NeonPill("${knouxProjects.size}", Cyan)
@@ -314,7 +314,7 @@ internal fun KnouxUniverseScreen() {
 
         // ── Section 4: Browser Extensions Featured Cards ──────────────────
         Label(
-            ("Browser Extensions" ar "إضافات المتصفح").localized(),
+            (Copy(R.string.k_browser_extensions)).localized(),
             18, Chalk, FontWeight.ExtraBold
         )
 
@@ -378,7 +378,7 @@ private fun ProjectCard(project: KnouxProject, openUrl: (String) -> Unit) {
             }
             project.storeUrl?.let { url ->
                 AccentButton(
-                    Action(("View on Store" ar "عرض في المتجر"), Mark.DOWNLOAD),
+                    Action((Copy(R.string.k_view_on_store)), Mark.DOWNLOAD),
                     Modifier.fillMaxWidth(), primary = false
                 ) { openUrl(url) }
             }
@@ -416,7 +416,7 @@ private fun ExtensionCard(project: KnouxProject, openUrl: (String) -> Unit) {
             }
             project.storeUrl?.let { url ->
                 AccentButton(
-                    Action(("View on Edge Add-ons" ar "عرض في إضافات Edge"), Mark.DOWNLOAD),
+                    Action((Copy(R.string.k_view_on_edge_add_ons)), Mark.DOWNLOAD),
                     Modifier.fillMaxWidth(), primary = true
                 ) { openUrl(url) }
             }
@@ -431,21 +431,21 @@ private fun ExtensionCard(project: KnouxProject, openUrl: (String) -> Unit) {
 @Composable
 private fun StatusPill(status: ProjectStatus) {
     val (label, tint) = when (status) {
-        ProjectStatus.ACTIVE -> ("Active" ar "نشط") to Cyan
-        ProjectStatus.IN_DEVELOPMENT -> ("In Development" ar "قيد التطوير") to Violet
-        ProjectStatus.PREVIEW -> ("Preview" ar "معاينة") to Gold
-        ProjectStatus.CLIENT_WORK -> ("Client Work" ar "مشروع عميل") to Pink
+        ProjectStatus.ACTIVE -> (Copy(R.string.k_active)) to Cyan
+        ProjectStatus.IN_DEVELOPMENT -> (Copy(R.string.k_in_development)) to Violet
+        ProjectStatus.PREVIEW -> (Copy(R.string.k_preview)) to Gold
+        ProjectStatus.CLIENT_WORK -> (Copy(R.string.k_client_work)) to Pink
     }
     NeonPill(label.localized(), tint)
 }
 
 private fun categoryLabel(category: ProjectCategory): Copy = when (category) {
-    ProjectCategory.AI_ENGINEERING -> "AI & Engineering" ar "الذكاء الاصطناعي والهندسة"
-    ProjectCategory.SECURITY -> "Security & Privacy" ar "الأمان والخصوصية"
-    ProjectCategory.UTILITIES -> "Utilities & Productivity" ar "الأدوات والإنتاجية"
-    ProjectCategory.BROWSER_WEB -> "Browser & Web" ar "المتصفح والويب"
-    ProjectCategory.CORPORATE -> "Corporate" ar "الشركة"
-    ProjectCategory.SPECIALIZED -> "Specialized Projects" ar "المشاريع المتخصصة"
+    ProjectCategory.AI_ENGINEERING -> Copy(R.string.k_ai_engineering)
+    ProjectCategory.SECURITY -> Copy(R.string.k_security_privacy)
+    ProjectCategory.UTILITIES -> Copy(R.string.k_utilities_productivity)
+    ProjectCategory.BROWSER_WEB -> Copy(R.string.k_browser_web)
+    ProjectCategory.CORPORATE -> Copy(R.string.k_corporate)
+    ProjectCategory.SPECIALIZED -> Copy(R.string.k_specialized_projects)
 }
 
 private fun categoryColor(category: ProjectCategory): Color = when (category) {
