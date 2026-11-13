@@ -166,7 +166,14 @@ class DuplicateRealScreenTest {
                 .config[SemanticsProperties.Text].first().text,
         )
 
-        ui.waitUntil(20_000) { exists("dup-member-${prefix}copy.bin") }
+        // The measured Mirror hero sits above a lazy result list; scroll the list
+        // until the freshly measured fixture group is actually composed.
+        ui.waitUntil(20_000) {
+            runCatching {
+                ui.onNodeWithTag("duplicate-list")
+                    .performScrollToNode(hasTestTag("dup-member-${prefix}copy.bin"))
+            }.isSuccess
+        }
         reveal("dup-keeper-${prefix}original.bin")
         node("dup-keeper-${prefix}original.bin").assertIsDisplayed()
         reveal("dup-member-${prefix}copy.bin")

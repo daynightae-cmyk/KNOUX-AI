@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -116,6 +117,7 @@ internal fun MasterActions(first: Action, second: Action, onFirst: () -> Unit, o
         enabled = true,
         onPrimary = onSecond,
         onSecondary = onFirst,
+        secondaryTag = "review-action",
     )
 }
 
@@ -169,7 +171,22 @@ internal fun SmartCleanScreen(open: (Page) -> Unit) = RealSmartCleanScreen(open)
 // ---------------------------------------------------------------------------
 
 /** One measured row of the device summary. `null` means "no pass has measured it". */
-private data class HubMeasure(val label: Copy, val mark: Mark, val tint: Color, val value: Copy)
+private data class HubMeasure(
+    val label: Copy, val mark: Mark, val tint: Color, val value: Copy, val measured: Boolean,
+)
+
+/** One home service card. `valueIndex` points at the measured summary row it reuses. */
+private data class HubCardSpec(
+    val title: Copy, val body: Copy, val mark: Mark, val tint: Color,
+    val tag: String, val page: Page, val valueIndex: Int? = null, val action: Copy? = null,
+)
+
+private val hubMeasureLabels = listOf(
+    Triple(Copy(R.string.home_clean_potential), Mark.BROOM, KnouxColors.accent),
+    Triple(Copy(R.string.home_residue), Mark.LAYERS, KnouxColors.primary),
+    Triple(Copy(R.string.home_duplicates), Mark.COPY, KnouxColors.primary),
+    Triple(Copy(R.string.home_privacy), Mark.SHIELD, KnouxColors.warning),
+)
 
 @Composable
 private fun readHubMeasures(): List<HubMeasure> {
@@ -194,31 +211,31 @@ private fun readHubMeasures(): List<HubMeasure> {
         clean = cleanScan?.let {
             HubMeasure(
                 Copy(R.string.home_clean_potential), Mark.BROOM, KnouxColors.accent,
-                Copy.runtime(KnouxFormat.bytes(it.candidates.sumOf { candidate -> candidate.bytes })),
+                Copy.runtime(KnouxFormat.bytes(it.candidates.sumOf { candidate -> candidate.bytes })), true,
             )
         }
         residue = residueScan?.let {
             HubMeasure(
                 Copy(R.string.home_residue), Mark.LAYERS, KnouxColors.primary,
-                Copy.runtime(KnouxFormat.bytes(it.bytes)),
+                Copy.runtime(KnouxFormat.bytes(it.bytes)), true,
             )
         }
         duplicates = duplicateScan?.let {
             HubMeasure(
                 Copy(R.string.home_duplicates), Mark.COPY, KnouxColors.primary,
-                Copy.runtime(KnouxFormat.bytes(it.redundantBytes)),
+                Copy.runtime(KnouxFormat.bytes(it.redundantBytes)), true,
             )
         }
         privacy = privacyScan?.let {
             HubMeasure(
                 Copy(R.string.home_privacy), Mark.SHIELD, KnouxColors.warning,
-                Copy.args(R.string.home_privacy_value, it.attention.size, it.rows.size),
+                Copy.args(R.string.home_privacy_value, it.attention.size, it.rows.size), true,
             )
         }
     }
-    return listOf(clean, residue, duplicates, privacy).map {
-        it ?: HubMeasure(Copy(R.string.state_not_measured), Mark.CHECK, KnouxColors.textSecondary,
-            Copy(R.string.state_not_measured))
+    return listOf(clean, residue, duplicates, privacy).mapIndexed { index, measure ->
+        val (label, mark, tint) = hubMeasureLabels[index]
+        measure ?: HubMeasure(label, mark, tint, Copy.runtime("—"), false)
     }
 }
 
@@ -230,20 +247,57 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        NeonHero(Mark.K, motion, Modifier.padding(top = 4.dp, bottom = 6.dp),
-            heightOverride = if (LocalRoomy.current) 88.dp else 96.dp)
+        NeonHero(Mark.K, motion, Modifier.padding(top = 2.dp),
+            heightOverride = if (LocalRoomy.current) 76.dp else 84.dp)
         MasterTitle(
             Copy(R.string.k_smart), Copy(R.string.k_device_hub),
             Copy(R.string.home_subtitle), "screen-home",
         )
+        // The approved home leads with one action, then the three measured
+        // figures. Every value comes from a real pass; a dash is unknown.
+        AccentButton(
+            Action(Copy(R.string.k_start_deep_scan), Mark.RADAR),
+            Modifier.fillMaxWidth().padding(horizontal = 30.dp).padding(top = 10.dp).heightIn(min = 56.dp),
+            primary = true,
+            tag = "start-scan",
+            labelSize = 16,
+        ) { open(Page.SCAN) }
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            SurfaceCard {
-                Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Label(Copy(R.string.home_summary), 15, KnouxColors.textPrimary, FontWeight.Bold)
-                    measures.forEach { measure -> MeasureRow(measure) }
+            HubMeasureStrip(measures)
+
+            // The approved home keeps every service one tap away. Each card shows
+            // its last real measurement, or a dash until a pass has measured it.
+            val cards = listOf(
+                HubCardSpec(Copy(R.string.k_smart_clean), Copy(R.string.home_card_clean_body),
+                    Mark.TRASH, KnouxColors.primary, "open-clean-center", Page.CLEAN, 0, Copy(R.string.k_review)),
+                HubCardSpec(Copy(R.string.k_duplicate_files), Copy(R.string.home_card_duplicates_body),
+                    Mark.COPY, KnouxColors.accent, "hub-duplicates", Page.DUPLICATES, 2, Copy(R.string.k_review)),
+                HubCardSpec(Copy(R.string.k_app_residue_cleanup), Copy(R.string.home_card_residue_body),
+                    Mark.LAYERS, KnouxColors.primary, "hub-residue", Page.RESIDUE, 1, Copy(R.string.k_review)),
+                HubCardSpec(Copy(R.string.k_storage_breakdown), Copy(R.string.home_card_storage_body),
+                    Mark.LAYERS, KnouxColors.accent, "hub-storage-analyzer", Page.STORAGE_BREAKDOWN, action = Copy(R.string.k_open)),
+                HubCardSpec(Copy(R.string.k_privacy_sweep), Copy(R.string.home_card_privacy_body),
+                    Mark.SHIELD, KnouxColors.warning, "hub-privacy-sweep", Page.PRIVACY_INSPECTOR, 3, Copy(R.string.k_review)),
+                HubCardSpec(Copy(R.string.k_ai_optimization), Copy(R.string.home_card_ai_body),
+                    Mark.CHIP, KnouxColors.accent, "hub-ai-optimization", Page.AI_RECOMMENDATIONS, action = Copy(R.string.k_optimize)),
+                HubCardSpec(Copy(R.string.k_app_manager), Copy(R.string.home_card_apps_body),
+                    Mark.GROUP, KnouxColors.primary, "hub-app-manager", Page.APPS_REVIEW, action = Copy(R.string.k_open)),
+                HubCardSpec(Copy(R.string.k_reports_insights), Copy(R.string.home_card_reports_body),
+                    Mark.BARS, KnouxColors.accent, "hub-reports", Page.REPORTS, action = Copy(R.string.k_open)),
+            )
+            val singleColumn = LocalRoomy.current || LocalDensity.current.fontScale > 1.24f
+            if (singleColumn) {
+                cards.forEach { spec -> HubCardFor(spec, measures, open) }
+            } else {
+                cards.chunked(2).forEach { pair ->
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                        pair.forEach { spec ->
+                            Box(Modifier.weight(1f)) { HubCardFor(spec, measures, open) }
+                        }
+                    }
                 }
             }
 
@@ -251,10 +305,10 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
                 Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Label(Copy(R.string.k_quick_actions), 15, KnouxColors.textPrimary, FontWeight.Bold)
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        QuickAction(Modifier.weight(1f), Copy(R.string.k_deep_scan_2), Mark.RADAR,
-                            KnouxColors.accent, "start-scan") { open(Page.SCAN) }
                         QuickAction(Modifier.weight(1f), Copy(R.string.quick_clean), Mark.BROOM,
                             KnouxColors.primary, "quick-clean") { open(Page.CLEAN) }
+                        QuickAction(Modifier.weight(1f), Copy(R.string.k_save_battery), Mark.BATTERY,
+                            KnouxColors.accent, "quick-battery") { open(Page.BATTERY_DIAGNOSTICS) }
                         QuickAction(Modifier.weight(1f), Copy(R.string.k_secure_device), Mark.SHIELD,
                             KnouxColors.primary, "quick-privacy") { open(Page.PRIVACY_INSPECTOR) }
                     }
@@ -262,23 +316,57 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
             }
 
             StateNote(Copy(R.string.home_measured_source))
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(26.dp))
+        }
+    }
+}
+
+/**
+ * The three figures the home can actually measure, in the compact instrument
+ * strip of the approved reference. A dash means the pass has not run.
+ */
+@Composable
+private fun HubMeasureStrip(measures: List<HubMeasure>) {
+    SurfaceCard {
+            Row(Modifier.fillMaxWidth().padding(vertical = 9.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            measures.take(3).forEachIndexed { index, measure ->
+                if (index > 0) {
+                    Box(Modifier.width(1.dp).height(44.dp).background(KnouxColors.border))
+                }
+                Column(
+                    Modifier.weight(1f).padding(horizontal = 4.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(2.dp),
+                ) {
+                    Glyph(measure.mark, Modifier.size(16.dp), measure.tint)
+                    Label(
+                        measure.value.localized(), if (measure.measured) 17 else 22,
+                        if (measure.measured) KnouxColors.textPrimary else KnouxColors.textSecondary,
+                        FontWeight.ExtraBold, align = TextAlign.Center, maxLines = 1,
+                    )
+                    Label(measure.label.localized(), 12, KnouxColors.textSecondary,
+                        align = TextAlign.Center, maxLines = 2)
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun MeasureRow(measure: HubMeasure) {
-    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            Modifier.size(30.dp).clip(RoundedCornerShape(10.dp))
-                .background(measure.tint.copy(alpha = .14f)),
-            contentAlignment = Alignment.Center,
-        ) { Glyph(measure.mark, Modifier.size(16.dp), measure.tint) }
-        Spacer(Modifier.width(10.dp))
-        Label(measure.label, 13, KnouxColors.textSecondary, modifier = Modifier.weight(1f))
-        Label(measure.value, 14, KnouxColors.textPrimary, FontWeight.SemiBold)
-    }
+private fun HubCardFor(spec: HubCardSpec, measures: List<HubMeasure>, open: (Page) -> Unit) {
+    val measure = spec.valueIndex?.let { measures[it] }
+    HubCard(
+        title = spec.title,
+        copy = spec.body,
+        mark = spec.mark,
+        tint = spec.tint,
+        tag = spec.tag,
+        value = measure?.takeIf { it.measured }?.value,
+        action = spec.action,
+        onClick = { open(spec.page) },
+    )
 }
 
 @Composable
@@ -323,7 +411,7 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
                 Mark.CHIP, "open-ai-optimization", "open-ai-optimization") { open(Page.AI_RECOMMENDATIONS) }
 
             if (showPro) ProLine(onDismiss = { showPro = false })
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(18.dp))
         }
     }
 }
@@ -399,20 +487,63 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             val last = measured
-            if (last == null) {
-                StateBlock(UiState.EMPTY, Copy(R.string.reports_empty_body))
+            val hasHistory = history.any {
+                (it.status == OperationStatus.SUCCEEDED || it.status == OperationStatus.PARTIAL) && it.bytes > 0L
+            }
+            if (last == null && !hasHistory) {
+                // One honest empty state instead of two identical "Empty" cards.
+                ReportsEmptyPanel { open(Page.SCAN) }
             } else {
-                SurfaceCard {
-                    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Label(Copy(R.string.reports_last_clean_title), 15, KnouxColors.textPrimary, FontWeight.Bold)
-                        Label(last, 14, KnouxColors.accent, FontWeight.SemiBold)
+                last?.let { value ->
+                    SurfaceCard {
+                        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Label(Copy(R.string.reports_last_clean_title), 15, KnouxColors.textPrimary, FontWeight.Bold)
+                            Label(value, 14, KnouxColors.accent, FontWeight.SemiBold)
+                        }
                     }
                 }
+                CleanupHistoryChart(history, arabic)
             }
-            CleanupHistoryChart(history, arabic)
             StateNote(Copy(R.string.reports_honesty))
             Label(Copy(R.string.reports_chart_note), 11, KnouxColors.textSecondary)
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
+
+/**
+ * No pass has ever been recorded. Three faint, unlabelled bars hold the shape of
+ * the chart without inventing a single value, and the one action starts a real
+ * measured pass.
+ */
+@Composable
+private fun ReportsEmptyPanel(onScan: () -> Unit) {
+    SurfaceCard {
+        Column(
+            Modifier.fillMaxWidth().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            Row(
+                Modifier.fillMaxWidth().height(58.dp),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                listOf(16, 34, 24, 42).forEach { bar ->
+                    Box(
+                        Modifier.weight(1f).height(bar.dp).clip(RoundedCornerShape(6.dp))
+                            .background(KnouxColors.surfaceVariant)
+                    )
+                }
+            }
+            Label(Copy(R.string.reports_no_passes_title), 15, KnouxColors.textPrimary,
+                FontWeight.Bold, align = TextAlign.Center)
+            Label(Copy(R.string.reports_empty_body), 12, KnouxColors.textSecondary,
+                align = TextAlign.Center)
+            AccentButton(
+                Action(Copy(R.string.k_start_deep_scan), Mark.RADAR),
+                Modifier.fillMaxWidth(), primary = true, tag = "reports-start-scan",
+            ) { onScan() }
         }
     }
 }

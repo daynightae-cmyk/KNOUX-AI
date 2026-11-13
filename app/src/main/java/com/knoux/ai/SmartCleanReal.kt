@@ -1217,6 +1217,7 @@ private fun ReviewSheet(
             Label((Copy(R.string.k_filter_2)), 11, Mist, FontWeight.Bold)
             Box(Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(16.dp))
                 .clickable(role = Role.Button) { showMoreFilters = !showMoreFilters }
+                .testTag("more-filters")
                 .padding(horizontal = 8.dp), contentAlignment = Alignment.Center) {
                 Label(
                     (Copy(if (showMoreFilters) R.string.k_fewer_filters else R.string.k_more_filters)).localized(),
@@ -1233,18 +1234,22 @@ private fun ReviewSheet(
             }
         }
         if (showMoreFilters) {
-            Label((Copy(R.string.k_size_filter)), 11, Mist, FontWeight.Bold)
+            Label((Copy(R.string.k_size_filter)), 11, Mist, FontWeight.Bold,
+                modifier = Modifier.testTag("size-filters-label"))
             Row(
-                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
+                    .testTag("size-filters-row"),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 SizeFilter.entries.forEach { filter ->
                     FilterChip(filter.label, state.sizeFilter == filter, "size-${filter.name}") { vm.setSizeFilter(filter) }
                 }
             }
-            Label((Copy(R.string.k_age_filter)), 11, Mist, FontWeight.Bold)
+            Label((Copy(R.string.k_age_filter)), 11, Mist, FontWeight.Bold,
+                modifier = Modifier.testTag("age-filters-label"))
             Row(
-                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
+                    .testTag("age-filters-row"),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 AgeFilter.entries.forEach { filter ->

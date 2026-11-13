@@ -709,21 +709,36 @@ private fun DuplicateSummaryCard(state: DuplicateState) {
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Label(
-                        KnouxFormat.number(state.groups.size),
-                        20, Chalk, FontWeight.Bold,
+                        if (state.measured || state.groups.isNotEmpty()) KnouxFormat.number(state.groups.size) else "—",
+                        20, if (state.measured || state.groups.isNotEmpty()) Chalk else Mist, FontWeight.Bold,
                         modifier = Modifier.testTag("duplicate-group-count"),
                     )
                     Label(Copy(R.string.k_groups), 11, Mist)
                 }
             }
-            GradientBar(
-                if (state.filesHashed > 0) state.filesHashed.toFloat() / state.filesInspected.coerceAtLeast(1) else 0f,
-                thickness = 8,
-            )
+            if (state.measured || state.filesInspected > 0) {
+                GradientBar(
+                    if (state.filesHashed > 0) state.filesHashed.toFloat() / state.filesInspected.coerceAtLeast(1) else 0f,
+                    thickness = 8,
+                )
+            }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Label(Copy.args(R.string.dup_files_inspected, KnouxFormat.number(state.filesInspected)), 11, Mist, modifier = Modifier.weight(1f), maxLines = 2)
-                Label(Copy.args(R.string.dup_files_hashed, KnouxFormat.number(state.filesHashed)), 11, Mist, modifier = Modifier.weight(1f), maxLines = 2)
-                Label(Copy.args(R.string.dup_bytes_read, humanBytes(state.bytesHashed)), 11, Mist, modifier = Modifier.weight(1f), maxLines = 2)
+                val countable = state.measured || state.filesInspected > 0
+                Label(
+                    if (countable) Copy.args(R.string.dup_files_inspected, KnouxFormat.number(state.filesInspected))
+                    else Copy.runtime("—"),
+                    11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
+                )
+                Label(
+                    if (countable) Copy.args(R.string.dup_files_hashed, KnouxFormat.number(state.filesHashed))
+                    else Copy.runtime("—"),
+                    11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
+                )
+                Label(
+                    if (countable) Copy.args(R.string.dup_bytes_read, humanBytes(state.bytesHashed))
+                    else Copy.runtime("—"),
+                    11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
+                )
             }
             state.capturedAt?.let { captured ->
                 Label(

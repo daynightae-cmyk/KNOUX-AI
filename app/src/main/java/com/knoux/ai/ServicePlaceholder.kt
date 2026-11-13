@@ -1,7 +1,6 @@
 package com.knoux.ai
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -24,37 +21,44 @@ import androidx.compose.ui.unit.dp
 /**
  * The honest destination for a service that has no connected engine yet.
  *
- * The old design-preview screens filled this space with sample rows and a
- * "preview" badge. This screen states the truth instead: nothing has been
- * measured, nothing was scanned, and nothing on the device changed.
+ * It keeps the same composition as a real service — hero, title, one state
+ * pill, one explanation and the fixed action rail — so an unavailable tool
+ * still reads as part of the product instead of a blank page.
  */
 @Composable
 internal fun EmptyServiceScreen(page: Page, open: (Page) -> Unit) {
-    Column(
-        Modifier.fillMaxSize().testTag("service-unavailable").padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    val motion = LocalPreviewMotion.current
+    Column(Modifier.fillMaxSize().testTag("service-unavailable")) {
         Column(
             Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Spacer(Modifier.height(24.dp))
-            SurfaceCard(Modifier.size(72.dp).wrapContentSize(), variant = true) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Glyph(page.hero, Modifier.size(36.dp), KnouxColors.accent)
+            NeonHero(page.hero, motion, Modifier.padding(top = 2.dp), heightOverride = 84.dp)
+            Column(
+                Modifier.fillMaxWidth().padding(horizontal = 18.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                Label(
+                    page.title, 24, KnouxColors.textPrimary, FontWeight.Bold,
+                    align = TextAlign.Center, modifier = Modifier.testTag("screen-${page.id}"),
+                )
+                StatePill(Copy(R.string.state_not_measured), KnouxColors.warning, tag = "state-not-measured")
+                Label(
+                    Copy(R.string.service_no_engine), 13, KnouxColors.textSecondary,
+                    align = TextAlign.Center,
+                )
+                SurfaceCard {
+                    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        FactLine(Copy(R.string.technical_status), Copy(R.string.state_unavailable))
+                    }
                 }
+                Label(
+                    Copy(R.string.service_unavailable_footnote), 12,
+                    KnouxColors.textSecondary, align = TextAlign.Center,
+                )
             }
-            Label(page.title, 22, KnouxColors.textPrimary, FontWeight.Bold, align = TextAlign.Center)
-            StatePill(Copy(R.string.state_not_measured), KnouxColors.warning, tag = "state-not-measured")
-            Label(
-                Copy(R.string.service_no_engine), 14, KnouxColors.textSecondary, align = TextAlign.Center
-            )
-            SurfaceCard {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    FactLine(Copy(R.string.state_not_measured), Copy(R.string.state_unavailable))
-                }
-            }
+            Spacer(Modifier.height(18.dp))
         }
         BottomActionBar(
             primary = Action(Copy(R.string.action_open_clean), Mark.BROOM),

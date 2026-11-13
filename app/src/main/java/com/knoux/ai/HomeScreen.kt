@@ -30,28 +30,59 @@ internal fun HomeScreen(open: (Page) -> Unit) {
 }
 
 /**
- * The hub card of the Smart Device Hub reference: title, copy, artwork, chevron.
+ * The hub card of the Smart Device Hub reference: icon, title, copy, chevron and
+ * one measured value with a quiet action chip. Shared with the Tools hub so both
+ * surfaces keep one card language.
  *
- * Shared with the Tools hub so both surfaces keep one card language.
+ * A card without a real measurement shows an em dash, never a fabricated number
+ * and never the same "not measured yet" sentence repeated down the whole grid.
  */
 @Composable
 internal fun HubCard(
-    title: Copy, copy: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit
+    title: Copy, copy: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit,
+    value: Copy? = null, action: Copy? = null,
 ) {
-    // One touch target per service (not a nested arrow button).  This is a
-    // native compact card: clear icon, title and two lines of secondary text.
-    GlassPanel(Modifier.fillMaxWidth().heightIn(min = 96.dp).clip(RoundedCornerShape(18.dp))
+    // One touch target per service (not a nested arrow button).
+    GlassPanel(Modifier.fillMaxWidth().heightIn(min = 118.dp).clip(RoundedCornerShape(18.dp))
         .testTag(tag).clickable(role = Role.Button, onClick = onClick), radius = 18, tint = tint) {
-        Row(Modifier.fillMaxWidth().padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-            MasterIcon(mark, tint, 38)
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Label(title.localized(), 13, weight = FontWeight.ExtraBold, maxLines = 2)
-                Label(copy.localized(), 10, Mist, maxLines = 2)
+        Column(Modifier.fillMaxWidth().heightIn(min = 112.dp).padding(horizontal = 11.dp, vertical = 10.dp),
+            verticalArrangement = Arrangement.SpaceBetween) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                MasterIcon(mark, tint, 36)
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Label(title.localized(), 13, weight = FontWeight.ExtraBold,
+                        align = TextAlign.Start, maxLines = 2)
+                    Label(copy.localized(), 12, Mist, align = TextAlign.Start, maxLines = 2)
+                }
+                Glyph(Mark.NEXT, Modifier.size(12.dp), Mist.copy(alpha = .7f))
+            }
+            if (value != null || action != null) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    if (value != null) {
+                        Label(value.localized(), 12, tint, FontWeight.Bold,
+                            Modifier.weight(1f), TextAlign.Start, 1)
+                    } else {
+                        Spacer(Modifier.weight(1f))
+                    }
+                    action?.let { HubActionChip(it, tint) }
+                }
             }
         }
     }
+}
+
+/** Non-interactive chip: the whole card is the touch target. */
+@Composable
+private fun HubActionChip(text: Copy, tint: Color) {
+    Box(
+        Modifier.clip(RoundedCornerShape(9.dp))
+            .background(tint.copy(alpha = .16f))
+            .border(1.dp, tint.copy(alpha = .55f), RoundedCornerShape(9.dp))
+            .padding(horizontal = 8.dp, vertical = 3.dp),
+        contentAlignment = Alignment.Center,
+    ) { Label(text.localized(), 12, Chalk, FontWeight.Bold, maxLines = 1) }
 }
 
 /**

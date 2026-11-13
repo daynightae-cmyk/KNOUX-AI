@@ -179,7 +179,17 @@ class SmartCleanRealTest {
     private fun filterToExactFixtures(expected: List<File> = seeds) {
         assertExactScannedFixtureScope(expected)
         node("clean-search").performScrollTo().performTextReplacement(prefix)
-        listOf("filter-ALL", "size-ANY", "age-ANY").forEach { click(it, inSheet = true) }
+        // Size and age facets live behind the "more filters" disclosure so the
+        // sheet stays readable on compact phones; open it before using them.
+        if (!exists("size-ANY")) click("more-filters", inSheet = true)
+        click("filter-ALL", inSheet = true)
+        // Each facet chip sits in a horizontal scroller, so performScrollTo on a
+        // chip cannot move the sheet vertically. Scroll the sheet to the facet
+        // row itself, then reset that facet to ANY.
+        listOf("size" to "size-filters-row", "age" to "age-filters-row").forEach { (facet, row) ->
+            ui.onNodeWithTag(row).performScrollTo()
+            click("$facet-ANY", inSheet = true)
+        }
         expected.forEach { seed ->
             node("clean-list").performScrollTo().performScrollToNode(hasTestTag("clean-select-${seed.name}"))
             ui.onNodeWithTag("clean-select-${seed.name}").assertIsDisplayed()

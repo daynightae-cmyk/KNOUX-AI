@@ -229,7 +229,7 @@ internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = tr
 
 @Composable
 internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary: Boolean = true, enabled: Boolean = true,
-    tag: String = "", selected: Boolean? = null, onClick: () -> Unit
+    tag: String = "", selected: Boolean? = null, labelSize: Int = 13, onClick: () -> Unit
 ) {
     val round = RoundedCornerShape(28.dp)
     val interaction = remember { MutableInteractionSource() }
@@ -268,8 +268,8 @@ internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary
     ) {
         val tone = if (enabled) Chalk else Mist.copy(alpha = .64f)
         Glyph(action.icon, Modifier.size(20.dp), tone, primary && enabled)
-        Label(action.label.localized(), if (action.label.localized().length > 20) 11 else 13, tone, FontWeight.Bold,
-            align = TextAlign.Center, maxLines = 2)
+        Label(action.label.localized(), if (action.label.localized().length > 20 && labelSize <= 13) 11 else labelSize,
+            tone, FontWeight.Bold, align = TextAlign.Center, maxLines = 2)
         if (tag == "start-scan" && !LocalRoomy.current) {
             val direction = if (LocalArabic.current) 180f else 0f
             Row(Modifier.rotate(direction).then(if (pulse != null) Modifier.graphicsLayer {

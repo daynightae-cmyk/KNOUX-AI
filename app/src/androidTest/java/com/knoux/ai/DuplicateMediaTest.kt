@@ -109,14 +109,16 @@ class DuplicateMediaTest {
         repository = DuplicateRepository(context, permissions, cleanRepository)
         controller = DuplicateController(repository, database, settings, clean)
 
+        // The OS-mediated removal flow only exists on API 30+. On an older
+        // harness the case is inapplicable and reports as skipped, never passed.
+        org.junit.Assume.assumeTrue(
+            "OS-mediated media removal requires API 30+",
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R,
+        )
         assertEquals(
             "READ_MEDIA_IMAGES must be granted to com.knoux.ai for this run (not skipped)",
             PermissionGrant.GRANTED,
             permissions.mediaGrant(AccessScope.MEDIA_IMAGES),
-        )
-        assertTrue(
-            "OS-mediated media removal requires API 30+",
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R,
         )
     }
 

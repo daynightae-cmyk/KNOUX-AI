@@ -729,22 +729,38 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
                     )
                 }
                 Column(horizontalAlignment = Alignment.End) {
+                    val countable = state.measured || summary.count > 0
                     Label(
-                        KnouxFormat.number(summary.count),
-                        20, Chalk, FontWeight.Bold,
+                        if (countable) KnouxFormat.number(summary.count) else "—",
+                        20, if (countable) Chalk else Mist, FontWeight.Bold,
                         modifier = Modifier.testTag("residue-count"),
                     )
                     Label(Copy(R.string.k_items), 10, Mist)
                 }
             }
-            GradientBar(
-                if (summary.count > 0) summary.ownedCount.toFloat() / summary.count else 0f,
-                thickness = 8,
-            )
+            val countable = state.measured || summary.count > 0
+            if (countable) {
+                GradientBar(
+                    if (summary.count > 0) summary.ownedCount.toFloat() / summary.count else 0f,
+                    thickness = 8,
+                )
+            }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Label(Copy.args(R.string.residue_own_cache, KnouxFormat.number(summary.ownedCount)), 10, Mint, modifier = Modifier.weight(1f))
-                Label(Copy.args(R.string.residue_shared, KnouxFormat.number(summary.sharedCount)), 10, Gold, modifier = Modifier.weight(1f))
-                Label(Copy.args(R.string.residue_inspected, KnouxFormat.number(state.filesInspected)), 10, Mist)
+                Label(
+                    if (countable) Copy.args(R.string.residue_own_cache, KnouxFormat.number(summary.ownedCount))
+                    else Copy.runtime("—"),
+                    10, Mint, modifier = Modifier.weight(1f),
+                )
+                Label(
+                    if (countable) Copy.args(R.string.residue_shared, KnouxFormat.number(summary.sharedCount))
+                    else Copy.runtime("—"),
+                    10, Gold, modifier = Modifier.weight(1f),
+                )
+                Label(
+                    if (countable) Copy.args(R.string.residue_inspected, KnouxFormat.number(state.filesInspected))
+                    else Copy.runtime("—"),
+                    10, Mist,
+                )
             }
             state.capturedAt?.let { captured ->
                 Label(

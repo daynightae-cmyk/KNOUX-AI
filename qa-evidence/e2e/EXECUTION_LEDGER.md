@@ -157,7 +157,7 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
 
 ## Entry 0013 - PC05 Deep Scan implemented; device-E2E externally blocked - 2026-11-13
 
-- **Device:** itel S686LN, Android 15 / API 35, serial `1334825549012211` (transport identifier deliberately not recorded; two USB+Wi-Fi transports may appear, always target explicit serial). Reached over owner-authorized transport.
+- **Device:** itel S686LN, Android 15 / API 35, serial `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL` (transport identifier deliberately not recorded; two USB+Wi-Fi transports may appear, always target explicit serial). Reached over owner-authorized transport.
 - **Starting state:** HEAD = origin/main = `b6cfbb8ee00ccbe8ed476b3f7c1f6d0c1b2a61a5`; PC05 QUEUED, no PC05 code committed. No personal file, other app, clipboard or owner setting was read or changed.
 - **Implemented (all source committed locally as `1b69344`, not pushed):**
   - `DeepScanRepository`: real multi-module scan over granted scopes only — app cache, MediaStore images/video, SAF granted folders, large (>100 MB) and old (>1 year) files, byte-identical duplicates via `DuplicateRepository` full-stream SHA-256 (keeper always protected, aliases collapsed). Cooperative cancel between modules; per-module status; real progress counters; no fabricated numbers. `isModuleGranted() = true` replaced with real `PermissionState.mediaGrant`/`safTrees` checks.
@@ -174,8 +174,8 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
 
 ## Entry 0014 - PC05 device E2E verified on authorized itel S686LN API 35 (wireless ADB) - 2026-11-13
 
-- **Device:** itel S686LN, Android 15 / API 35, serial `1334825549012211`. Wireless ADB at `192.168.70.102:38341` recovered via `adb connect` after USB transport dropped. Serial verified with `getprop ro.product.model` (itel S686LN) and `getprop ro.build.version.sdk` (35).
-- **Connection recovery:** USB ADB transport disconnected after `am force-stop`. Followed recovery contract: `adb kill-server`, `adb start-server`, `adb devices -l` (empty), `adb connect 192.168.70.102:38341` (connected), `adb -s <serial> shell <cmd>` (verified). No pairing code needed; existing authorized transport reused.
+- **Device:** itel S686LN, Android 15 / API 35, serial `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL`. Wireless ADB at `REDACTED_TEST_WLAN_ENDPOINT` recovered via `adb connect` after USB transport dropped. Serial verified with `getprop ro.product.model` (itel S686LN) and `getprop ro.build.version.sdk` (35).
+- **Connection recovery:** USB ADB transport disconnected after `am force-stop`. Followed recovery contract: `adb kill-server`, `adb start-server`, `adb devices -l` (empty), `adb connect REDACTED_TEST_WLAN_ENDPOINT` (connected), `adb -s <serial> shell <cmd>` (verified). No pairing code needed; existing authorized transport reused.
 - **APK:** debug `app-debug.apk`, 16.39 MB, SHA-256 `A23132F65B78062F05000DF3DC08BFFBD148687A090C5C1F2A9A4BDFF8EC457A`. Installed via `adb install -r -t` exit 0 on device, no uninstall/clear of user data. Package `com.knoux.ai`, namespace `com.knoux.ai`.
 - **Launch:** `adb shell am start -n com.knoux.ai/.MainActivity -e knoux.preview.route deep-scan-summary` — Deep Scan screen reached directly, bypassing auth gateway via debug route hook (debug builds only).
 - **Real scan executed on device:** Media permissions granted (`READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEO`). Scan ran over granted scopes (app cache + MediaStore images/video). Found **3400 files** (~4 GB) across 4 measured modules; 1 module (documents/SAF) unmeasured — "No writable folder granted" (correct: no SAF tree granted). Abyss Sonar instrument showed real measured hero value, not fake progress.
@@ -190,7 +190,7 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
 
 ## Entry 0015 - PC02 Mirror implemented; device-E2E blocked by connection - 2026-11-13
 
-- **Device:** itel S686LN, Android 15 / API 35. Wireless ADB at `192.168.70.102:38341` recovered via `adb connect`. USB serial `1334825549012211` (transport identifier deliberately not recorded).
+- **Device:** itel S686LN, Android 15 / API 35. Wireless ADB at `REDACTED_TEST_WLAN_ENDPOINT` recovered via `adb connect`. USB serial `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL` (transport identifier deliberately not recorded).
 - **Connection blocker (external, not a code defect):** After `am force-stop com.knoux.ai`, the USB transport drops between adb commands. Chrome browser intercepts app launches, opening GitHub device authorization pages (`github.com/login/device/*`) instead of the KNOUX app. This appears to be related to the OpenCode desktop app (`ai.sol.opencode`) installed on the device. Multiple recovery attempts (adb kill-server/start-server, adb connect, force-stop Chrome) were made but the device could not be kept in a stable state for KNOUX app testing. PC02 device-E2E is blocked pending a stable connection.
 - **Starting state:** HEAD = `1b69344b594d503f063f99b7aa614127f2fab98e` (PC05 local commit, not pushed). PC02 was already VERIFIED at `59806cad` (29/29 JVM, 36/36 device). No PC02 visual retrofit code committed.
 - **Implemented (committed locally as `5de6131`, not pushed):**
@@ -208,7 +208,7 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
 
 ## Entry 0016 - PC02 Mirror device-E2E attempted; connection/OEM blocker - 2026-11-13
 
-- **Device:** itel S686LN, Android 15 / API 35, wireless ADB at `192.168.70.102:38341`.
+- **Device:** itel S686LN, Android 15 / API 35, wireless ADB at `REDACTED_TEST_WLAN_ENDPOINT`.
 - **APK:** debug `app-debug.apk`, 16.4 MB, SHA-256 `303C93DA143AADBA6DBB0154AE5869891A760BCBF63332B40BAD7BAE5595D300`. Installed `install -r -t` exit 0, no uninstall/clear.
 - **PC02 Mirror visual retrofit implemented and committed** at `5de6131`:
   - `MirrorInstrument.kt`: twin glass orbs on tether, keeper (protected) + copies, tension = real group count, magenta/violet dominant hue, null progress = listening sweep
@@ -230,3 +230,33 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
 - **PC02 status:** IMPLEMENTED_UNVERIFIED (visual retrofit). Underlying PC02 logic remains VERIFIED at `59806cad` (29/29 JVM, 36/36 device). PC02 Mirror device-E2E pending stable connection.
 - **Screenshots:** `pc02_duplicates_idle_wireless.png` captured (idle state with Mirror instrument). Result/review-state screenshots not captured due to blocker.
 - **No personal files, owner settings, or other apps touched.** `READ_MEDIA_IMAGES` granted only for test run.
+
+## Entry 0017 - UI review pass: home/reports/privacy/honesty states, real-chrome proof on API 26 - 2026-11-14
+
+- **Starting state:** HEAD = origin/main = `efa4e56f037a38feb4fd402faa48efd1978c64e6`; the whole pass was uncommitted and is committed by this entry's parent commit.
+- **Device:** `kx_preview` AVD, Android 8.0 / API 26, x86_64, 1080x1920 @ 2.625. The owner-authorized itel S686LN (API 35) was **not attached** during this pass (`adb devices -l` listed only `emulator-5554`), so no API 35 claim is made and no task status moves on that basis.
+- **What changed (product surface):**
+  - `HomeScreen` / `MasterScreens`: hub cards carry one measured value plus a quiet action chip; a card with no real measurement shows an em dash instead of repeating "not measured yet" down the grid; Reports has an explicit empty panel (`review-action` tag).
+  - `DeepScanReal`: primary/secondary action moved to a fixed rail so it stays reachable at every scroll position.
+  - `DuplicateReal` / `ResidueReal`: summary counters render an em dash until a pass has measured them.
+  - `PrivacyReal`: the score card's right-hand counter column is only rendered after a measurement (idle state no longer shows a stray "— checks"); counters and the empty-card paragraph localized EN+AR (`privacy_scored_checks`, `privacy_attention_unmeasurable`, `privacy_empty_body`).
+  - `ServicePlaceholder`: unavailable-service composition states plainly that nothing was read, scanned or changed.
+  - `SmartCleanReal`: `size-filters-row` / `age-filters-row` tags so a harness can scroll the sheet to a nested horizontal facet row.
+- **Test-hardness fixes (harness, not product behaviour):**
+  - `SmartCleanRealTest`: four cases failed with `facet age-ANY failed: The component is not displayed!; bounds=Rect.fromLTRB(0.0, 0.0, 0.0, 0.0)` because the facet chip sits inside a horizontal scroller nested in the sheet's vertical scroll, so `performScrollTo` on the chip could not move the sheet. The harness now scrolls the sheet to the facet row first; leftover screenshot/diagnostic probe code was removed.
+  - `DuplicateMediaTest`: API 30 gate became `Assume.assumeTrue`, so an older harness reports the case skipped instead of failed.
+- **Commands and results (exit code in parentheses):**
+  - `.\gradlew.bat --no-daemon :app:assembleDebug :app:compileDebugAndroidTestKotlin --console=plain` (0) - BUILD SUCCESSFUL.
+  - `.\gradlew.bat --no-daemon :app:testDebugUnitTest --console=plain` (0) - 6 suites, **74 tests, 0 failures, 0 skipped**.
+  - `.\gradlew.bat --no-daemon :app:connectedDebugAndroidTest --console=plain` (0) - `Starting 56 tests`; **53 passed, 3 skipped (`Assume` API < 30), 0 failed**; instrumentation reports 59 finished including the skipped cases.
+  - `.\gradlew.bat --no-daemon :app:connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.class=com.knoux.ai.SmartCleanRealTest"` (0) - 5/5 passed.
+  - `.\gradlew.bat --no-daemon :app:connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.class=com.knoux.ai.PrivacyRealScreenTest"` (0) - 2/2 passed.
+- **APK:** `app\build\outputs\apk\debug\app-debug.apk`, 18,079,744 bytes (17.24 MB), SHA-256 `420A7D9EBE8B412D2153684F152351A2D5BBBDBF344FBA176D761CB8EEE4E123`; installed with `adb -s emulator-5554 install -r -t` before the capture run.
+- **Runtime evidence:** `qa-evidence/ui-review-20261114/final/final-01..10` - home EN, home AR, home reduced-motion EN, reports empty EN, reports empty AR, privacy idle EN, privacy idle AR, tools EN, clean EN, app-manager unavailable EN. Captured from the APK above on the API 26 AVD; reviewed home EN/AR, reports EN, privacy EN/AR, app-manager.
+- **Privacy redaction:** earlier entries in this file contained the owner device's real USB serial and WLAN endpoint. Both were replaced with `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL` and `REDACTED_TEST_WLAN_ENDPOINT`; `git grep` confirms no tracked occurrence remains. Git history still holds the old values - no history rewrite or force-push was performed, and none is authorized.
+- **Task statuses:** unchanged. PC00-PC04 stay VERIFIED, PC05 stays QUEUED in `docs/workflows/PC_E2E_TASK_MANIFEST_20261112.json`, because this entry proves presentation and harness health on API 26, not a new PC05 device E2E. The manifest is stale relative to Entry 0014 (PC05 device-verified, manifest still QUEUED); reconciling it needs an owner decision, so it is deliberately untouched.
+- **Known gaps (not hidden):**
+  - `PrivacySummary.label` in `data/PrivacyRules.kt` and the privacy pass note in `data/PrivacyController.kt` remain English-only; both surface in technical/report copy that this pass did not localize.
+  - Paired home cards can differ in height in Arabic because the AR body copy wraps to a different line count; still readable, not pixel-matched.
+  - API 35 / physical-device visual parity was not re-proven here (device not attached).
+  - The 3 skipped device cases are genuinely inapplicable on API 26 (OS-mediated media removal requires API 30+), not silently passing.

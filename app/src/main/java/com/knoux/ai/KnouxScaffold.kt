@@ -96,6 +96,8 @@ internal fun BottomActionBar(
     enabled: Boolean,
     onPrimary: () -> Unit,
     onSecondary: () -> Unit = {},
+    primaryTag: String = "primary-action",
+    secondaryTag: String = "secondary-action",
 ) {
     val haptics = LocalHapticFeedback.current
     Column(
@@ -103,26 +105,26 @@ internal fun BottomActionBar(
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        PrimaryAction(primary, enabled) {
+        PrimaryAction(primary, enabled, onClick = {
             haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
             onPrimary()
-        }
+        }, tag = primaryTag)
         secondary?.let {
-            SecondaryAction(it) {
+            SecondaryAction(it, {
                 haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 onSecondary()
-            }
+            }, secondaryTag)
         }
     }
 }
 
 @Composable
-internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () -> Unit) {
+internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () -> Unit, tag: String = "primary-action") {
     val shape = RoundedCornerShape(14.dp)
     val tint = if (enabled) KnouxColors.action else KnouxColors.surfaceVariant
     val ink = if (enabled) KnouxColors.onAction else KnouxColors.textSecondary
     Row(
-        Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag("primary-action")
+        Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
             .clip(shape).background(tint)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .padding(horizontal = 18.dp),
@@ -136,10 +138,10 @@ internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () 
 }
 
 @Composable
-internal fun SecondaryAction(action: Action, onClick: () -> Unit) {
+internal fun SecondaryAction(action: Action, onClick: () -> Unit, tag: String = "secondary-action") {
     val shape = RoundedCornerShape(14.dp)
     Row(
-        Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag("secondary-action")
+        Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
             .clip(shape).background(KnouxColors.surface)
             .border(1.dp, KnouxColors.border, shape)
             .clickable(role = Role.Button, onClick = onClick)
@@ -164,7 +166,7 @@ internal enum class UiState { LOADING, EMPTY, ERROR, SUCCESS }
 internal fun StateBlock(state: UiState, detail: Copy, onRetry: (() -> Unit)? = null) {
     val (tint, mark, title) = when (state) {
         UiState.LOADING -> Triple(KnouxColors.accent, Mark.SYNC, Copy(R.string.state_loading))
-        UiState.EMPTY -> Triple(KnouxColors.textSecondary, Mark.CHECK, Copy(R.string.state_empty))
+        UiState.EMPTY -> Triple(KnouxColors.textSecondary, Mark.BOX, Copy(R.string.state_empty))
         UiState.ERROR -> Triple(KnouxColors.danger, Mark.WARN, Copy(R.string.state_error))
         UiState.SUCCESS -> Triple(KnouxColors.success, Mark.CHECK, Copy(R.string.state_success))
     }

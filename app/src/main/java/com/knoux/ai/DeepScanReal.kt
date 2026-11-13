@@ -299,36 +299,6 @@ internal fun RealDeepScanScreen(
                 onEdit = { showModules = true },
             )
 
-            if (running) {
-                OutlinedButton(
-                    onClick = { controller.cancel() },
-                    modifier = Modifier.fillMaxWidth().height(48.dp).testTag("deep-scan-stop"),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Pink),
-                ) {
-                    Label(Copy(R.string.k_stop), 15, Pink, FontWeight.Bold)
-                }
-            } else {
-                Button(
-                    onClick = { startPass() },
-                    enabled = ready,
-                    modifier = Modifier.fillMaxWidth().height(52.dp).testTag("deep-scan-start"),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xff00D4AA),
-                        contentColor = Color(0xff07051A),
-                        disabledContainerColor = Color(0xff1A1642),
-                        disabledContentColor = Muted,
-                    ),
-                ) {
-                    Label(
-                        text = if (outcome == null) Copy(R.string.k_start_deep_scan)
-                        else Copy(R.string.k_scan_again),
-                        size = 15,
-                        tint = if (ready) Color(0xff07051A) else Muted,
-                        weight = FontWeight.ExtraBold,
-                    )
-                }
-            }
-
             error?.let { text ->
                 NoticeCard(text, Pink) { error = null }
             }
@@ -345,6 +315,28 @@ internal fun RealDeepScanScreen(
             }
 
             Spacer(Modifier.height(18.dp))
+        }
+
+        // The one action stays fixed above the global navigation, as in the
+        // reference, so a scan can always be started or stopped without
+        // scrolling past the instrument.
+        Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 4.dp)) {
+            if (running) {
+                AccentButton(
+                    Action(Copy(R.string.k_stop), Mark.PAUSE),
+                    Modifier.fillMaxWidth(), primary = false,
+                    tag = "deep-scan-stop", labelSize = 15,
+                ) { controller.cancel() }
+            } else {
+                AccentButton(
+                    Action(
+                        if (outcome == null) Copy(R.string.k_start_deep_scan) else Copy(R.string.k_scan_again),
+                        Mark.RADAR,
+                    ),
+                    Modifier.fillMaxWidth(), primary = true, enabled = ready,
+                    tag = "deep-scan-start", labelSize = 15,
+                ) { startPass() }
+            }
         }
     }
 

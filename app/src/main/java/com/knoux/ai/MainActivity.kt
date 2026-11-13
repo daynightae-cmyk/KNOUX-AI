@@ -462,7 +462,8 @@ private fun KnouxAppScaffold(
                                     Page.CLEAN -> SmartCleanScreen(open)
                                     Page.TOOLS -> DeviceToolsScreen(open)
                                     Page.REPORTS -> ReportsScreen(open)
-                                    Page.PRIVACY -> PrivacySweepScreen(open)
+                                    // PC04 - the index route opens the real measured sweep.
+                                    Page.PRIVACY -> RealPrivacyScreen(Page.PRIVACY_INSPECTOR)
                                     Page.OPTIMIZE -> AiOptimizationScreen(open)
                                     Page.KNOUX_UNIVERSE -> KnouxUniverseScreen()
                                     // PC02 - real duplicate engine; no design fixture is shown.

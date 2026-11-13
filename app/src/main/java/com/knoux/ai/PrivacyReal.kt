@@ -326,7 +326,7 @@ internal fun RealPrivacyScreen(page: Page) {
             state.error?.let { error ->
                 item { Label(error, 10, Pink, modifier = Modifier.fillMaxWidth().testTag("privacy-error")) }
             }
-            if (!state.measured || state.rows.isEmpty()) {
+            if (state.rows.isEmpty()) {
                 item { PrivacyEmptyCard() }
             }
             items(state.rows, key = { it.check.name }) { row ->
@@ -422,44 +422,58 @@ private fun statusLabel(row: PrivacyObservation): Copy = when (row.status) {
 
 @Composable
 private fun PrivacyScoreCard(state: PrivacyState) {
+    val measured = state.measured
     GlassPanel(Modifier.fillMaxWidth(), tint = Pink) {
         Column(Modifier.fillMaxWidth().padding(13.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Label(
                         state.summary.score?.let { "$it" } ?: "—",
-                        34, if (state.measured) Pink else Mist, FontWeight.ExtraBold,
+                        34, if (measured) Pink else Mist, FontWeight.ExtraBold,
                         modifier = Modifier.testTag("privacy-score"),
                     )
                     Label(
-                        if (state.measured) Copy(R.string.k_knoux_privacy_posture_measured_checks_only)
-                        else Copy(R.string.k_not_measured_yet_3),
+                        if (measured) Copy(R.string.k_knoux_privacy_posture_measured_checks_only)
+                        else Copy(R.string.k_privacy_score),
                         11, Mist,
                     )
                 }
-                Column(horizontalAlignment = Alignment.End) {
-                    Label(
-                        "${state.summary.scoredCount} scored / ${state.rows.size} checks",
-                        11, Chalk, FontWeight.Bold,
-                        modifier = Modifier.testTag("privacy-scored-count"),
-                    )
-                    Label(
-                        "${state.summary.attentionCount} attention · ${state.summary.unmeasurableCount} unmeasurable",
-                        10, Mist,
-                    )
-                    state.capturedAt?.let { at ->
+                if (measured) {
+                    Column(horizontalAlignment = Alignment.End) {
                         Label(
-                            DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(at)),
-                            9, Mist,
+                            Copy.args(R.string.privacy_scored_checks, state.summary.scoredCount, state.rows.size),
+                            11, Chalk, FontWeight.Bold,
+                            modifier = Modifier.testTag("privacy-scored-count"),
                         )
+                        Label(
+                            Copy.args(
+                                R.string.privacy_attention_unmeasurable,
+                                state.summary.attentionCount,
+                                state.summary.unmeasurableCount,
+                            ),
+                            10, Mist,
+                        )
+                        state.capturedAt?.let { at ->
+                            Label(
+                                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(at)),
+                                9, Mist,
+                            )
+                        }
                     }
                 }
             }
-            Label(state.summary.label, 10, Gold, modifier = Modifier.testTag("privacy-attention"))
-            Label(
-                "A score is 100 minus fixed penalties for scored items. It is not a security rating and it never includes checks Android did not expose.",
-                9, Mist,
-            )
+            if (measured) {
+                Label(state.summary.label, 12, Gold, modifier = Modifier.testTag("privacy-attention"))
+                Label(
+                    Copy(R.string.privacy_score_explanation),
+                    11, Mist,
+                )
+            } else {
+                Label(
+                    Copy(R.string.privacy_measure_hint),
+                    12, Mist,
+                )
+            }
         }
     }
 }
@@ -470,7 +484,7 @@ private fun PrivacyEmptyCard() {
         Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
             Label(Copy(R.string.k_this_is_a_real_permission_sweep_not_a_preview), 13, Chalk, FontWeight.ExtraBold)
             Label(
-                "Nothing has been measured in this session yet. Tap Measure now — the pass reads this app's manifest, grants, network policy, backup flag and the live window flag.",
+                Copy(R.string.privacy_empty_body),
                 11, Mist,
             )
         }
