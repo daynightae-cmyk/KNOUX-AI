@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.knoux.ai.RealDataRulesTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-13T11:03:47.791Z" hostname="DESKTOP-VQKU9P8" time="0.011">
+  <properties/>
+  <testcase name="permanent delete additionally requires the irreversible acknowledgement" classname="com.knoux.ai.RealDataRulesTest" time="0.001"/>
+  <testcase name="a plan containing one protected item is rejected wholesale" classname="com.knoux.ai.RealDataRulesTest" time="0.001"/>
+  <testcase name="an empty plan is never executable" classname="com.knoux.ai.RealDataRulesTest" time="0.0"/>
+  <testcase name="unselectable and zero-byte candidates are never selectable" classname="com.knoux.ai.RealDataRulesTest" time="0.0"/>
+  <testcase name="media always needs the OS dialog while SAF only needs it for permanent delete" classname="com.knoux.ai.RealDataRulesTest" time="0.0"/>
+  <testcase name="a plan cannot run before the customer confirms it" classname="com.knoux.ai.RealDataRulesTest" time="0.0"/>
+  <testcase name="trash runs after confirmation without an irreversible warning" classname="com.knoux.ai.RealDataRulesTest" time="0.0"/>
+  <testcase name="ANY age retains unknown-date files including negative dates" classname="com.knoux.ai.RealDataRulesTest" time="0.003"/>
+  <testcase name="restore requires confirmed media only and never an irreversible warning" classname="com.knoux.ai.RealDataRulesTest" time="0.0"/>
+  <testcase name="trash requires a nonempty selection consisting entirely of media" classname="com.knoux.ai.RealDataRulesTest" time="0.001"/>
+  <testcase name="plan totals use Long and do not overflow on large libraries" classname="com.knoux.ai.RealDataRulesTest" time="0.0"/>
+  <testcase name="only measured and verified statuses count as real data" classname="com.knoux.ai.RealDataRulesTest" time="0.0"/>
+  <testcase name="specific age filters reject unknown dates but retain genuinely old files" classname="com.knoux.ai.RealDataRulesTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

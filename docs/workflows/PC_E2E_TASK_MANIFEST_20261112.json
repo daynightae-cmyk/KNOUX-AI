@@ -3,14 +3,14 @@
     "repo":  "D:\\KNOUX-AI",
     "independent_mobile_repo":  "/root/workspace/KNOUX-AI",
     "do_not_mix_repos":  true,
-    "observed_at":  "2026-11-13T13:50:00+04:00",
-    "observed_head":  "c1b1c2e57cfc8ed665e616fca1132a9fbd9d9278",
-    "observed_origin_main":  "c1b1c2e57cfc8ed665e616fca1132a9fbd9d9278",
+    "observed_at":  "2026-11-13T15:05:00+04:00",
+    "observed_head":  "54d694137c9445ab6c97292e46c5c3f5420faad3",
+    "observed_origin_main":  "54d694137c9445ab6c97292e46c5c3f5420faad3",
     "observed_branch":  "main; PC03 source integrated at c1b1c2e, evidence commit being pushed after it",
     "writer_conflict_warning":  "At 2026-11-13 00:10+04 Qoder.exe was not running. Recheck active agents before any Kotlin edit; Kiro clean-profile GUI can remain open and must not be assumed writing.",
-    "current_task_id":  "PC04",
+    "current_task_id":  "PC05",
     "current_task_status":  "QUEUED",
-    "next_safe_action":  "Start PC04 (Privacy Sweep) on the verified PC00 foundation: assess real app/device permissions through Android APIs, link only to OS-owned controls, never claim to fix another app's privacy, require explicit customer action for anything KNOUX changes, verify before/after state and Room history, run JVM + on-device tests, then await independent review before marking VERIFIED.",
+    "next_safe_action":  "Start PC05 (Deep Scan) on the verified PC00/PC02 foundation: run a real deep scan through granted Android scopes, label every item by measured provenance, never fabricate or preview a scan result, persist append-only evidence in Room, verify before/after state, run JVM + on-device tests, then await independent review before marking VERIFIED.",
     "states":  [
                    "QUEUED",
                    "PREFLIGHT",
@@ -162,19 +162,39 @@
                       "depends_on":  [
                                          "PC00"
                                      ],
-                      "status":  "QUEUED",
-                      "owner":  null,
+                      "status":  "VERIFIED",
+                      "owner":  "controller: implementation + device verification",
                       "files":  [
-
+                                    "app/src/main/java/com/knoux/ai/PrivacyReal.kt",
+                                    "app/src/main/java/com/knoux/ai/data/PrivacyRules.kt",
+                                    "app/src/main/java/com/knoux/ai/data/PrivacyRepository.kt",
+                                    "app/src/main/java/com/knoux/ai/data/PrivacyController.kt",
+                                    "app/src/main/java/com/knoux/ai/data/KnouxDatabase.kt",
+                                    "app/src/main/java/com/knoux/ai/data/KnouxData.kt",
+                                    "app/src/main/java/com/knoux/ai/data/SettingsStore.kt",
+                                    "app/src/main/java/com/knoux/ai/MainActivity.kt",
+                                    "app/schemas/com.knoux.ai.data.KnouxDatabase/4.json"
                                 ],
                       "tests":  [
-
+                                    "PrivacyRulesTest 16/16 JVM",
+                                    "PrivacyStorageTest 5/5 on device",
+                                    "PrivacyMigrationTest 1/1 on device",
+                                    "PrivacyRealScreenTest 2/2 on device",
+                                    "PreviewNavigationTest 7/7 on device",
+                                    "full device suite 51/53; the 2 failures are DuplicateMediaTest and MediaConsentDiagnosticTest, blocked by an OEM android.process.media/libmtp crash, documented in the evidence"
                                 ],
                       "runtime_evidence":  [
-
+                                               "measured sweep of 12 checks from this package: score 92 with FLAG_SECURE clear, 100 with it set (4 scored checks)",
+                                               "toggling screenshot protection set the real WindowManager FLAG_SECURE, was re-read from window.attributes.flags and journalled SETTING_APPLIED -> SETTING_VERIFIED",
+                                               "Room 3 -> 4 migration kept scan_sessions/residue history, created the three privacy tables, user_version=4 and PRAGMA integrity_check=ok on the installed app database",
+                                               "12 privacy_scans and 144 append-only findings persisted; OTHER_APP_PRIVACY stored UNMEASURABLE/NOT_POSSIBLE in every pass",
+                                               "aggregate MEASURED/REVIEWED audit rows were being dropped by the enum mapper and are now kept with check=null"
                                            ],
-                      "verified_sha":  null,
-                      "blocking_reason":  null
+                      "verified_sha":  "54d694137c9445ab6c97292e46c5c3f5420faad3",
+                      "blocking_reason":  null,
+                      "latest_evidence":  "PC04 VERIFIED at 54d6941: 61/61 JVM and 6/6 + 2/2 privacy device tests; the real window flag, its verified journal and the 3 -> 4 migration were proved on itel S686LN API 35",
+                      "next_check":  "PC05 Deep Scan can reuse the permission scanner and measured-screen pattern; never call an unmeasured or preview value a result",
+                      "evidence_20261113":  "See qa-evidence/e2e/pc04/PC04_EVIDENCE_20261113.md; READ_MEDIA_IMAGES revoked, all KNOUX_QA fixtures removed, owner Pictures/KNOUX REC untouched, two media classes left unproved because of the OEM media-provider crash"
                   },
                   {
                       "task_id":  "PC05",

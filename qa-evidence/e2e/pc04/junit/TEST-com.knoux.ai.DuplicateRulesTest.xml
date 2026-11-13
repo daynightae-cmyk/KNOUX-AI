@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.knoux.ai.DuplicateRulesTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-13T11:03:47.679Z" hostname="DESKTOP-VQKU9P8" time="0.07">
+  <properties/>
+  <testcase name="selectionNeverContainsTheProtectedOriginal" classname="com.knoux.ai.DuplicateRulesTest" time="0.06"/>
+  <testcase name="mediaAndSafAliasesOfOneFileAreNeverTwoCopies" classname="com.knoux.ai.DuplicateRulesTest" time="0.001"/>
+  <testcase name="exactHashPairsBecomeOneGroupWithOneProtectedOriginal" classname="com.knoux.ai.DuplicateRulesTest" time="0.0"/>
+  <testcase name="distinctPhysicalFilesWithTheSameContentStillFormARealGroup" classname="com.knoux.ai.DuplicateRulesTest" time="0.0"/>
+  <testcase name="progressSummaryAgreesWithTheRealGrouping" classname="com.knoux.ai.DuplicateRulesTest" time="0.001"/>
+  <testcase name="equalTimestampsChooseTheLowerUriSoTheKeeperNeverFlips" classname="com.knoux.ai.DuplicateRulesTest" time="0.001"/>
+  <testcase name="groupsAreOrderedByRecoverableSpace" classname="com.knoux.ai.DuplicateRulesTest" time="0.0"/>
+  <testcase name="measuredBytesOnlyCountSelectedVerifiableCopies" classname="com.knoux.ai.DuplicateRulesTest" time="0.0"/>
+  <testcase name="trashRequiresEverySelectedCopyToBeSharedMedia" classname="com.knoux.ai.DuplicateRulesTest" time="0.0"/>
+  <testcase name="equalHashWithDifferentSizesIsRejectedDefensively" classname="com.knoux.ai.DuplicateRulesTest" time="0.001"/>
+  <testcase name="unselectableCopyIsListedButCannotEnterAPlan" classname="com.knoux.ai.DuplicateRulesTest" time="0.0"/>
+  <testcase name="verifiedRemovalDropsSingletonGroupAndPromotesTheOldestSurvivor" classname="com.knoux.ai.DuplicateRulesTest" time="0.002"/>
+  <testcase name="aSingleFileOrAnInvalidHashNeverCreatesAGroup" classname="com.knoux.ai.DuplicateRulesTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

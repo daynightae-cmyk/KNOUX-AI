@@ -1,0 +1,10 @@
+OS media-provider crashes observed during the PC04 session (sanitized, no transport id)
+
+11-13 14:42:19.811 19249 19681 F libc    : FORTIFY: pthread_mutex_lock called on a destroyed mutex
+11-13 14:42:20.351 19685 19685 F DEBUG   : Cmdline: android.process.media
+11-13 14:42:20.351 19685 19685 F DEBUG   : Abort message: 'FORTIFY: pthread_mutex_lock called on a destroyed mutex'
+11-13 14:42:20.351 19685 19685 F DEBUG   :       #05 pc 000000000002894c  /system/lib64/libmtp.so (android::MtpFfsHandle::doSendEvent(mtp_event)+124)
+
+Earlier identical aborts in the same buffer: 14:06:19, 14:13:09, 14:17:58, 14:22:46.
+This is an OEM MTP/MediaProvider crash, not com.knoux.ai; the media-dependent regression tests could not
+complete while it recurred. No owner file was involved.

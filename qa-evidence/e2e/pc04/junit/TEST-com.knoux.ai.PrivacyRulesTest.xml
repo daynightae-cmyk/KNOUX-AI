@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.knoux.ai.PrivacyRulesTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-11-13T11:03:47.769Z" hostname="DESKTOP-VQKU9P8" time="0.018">
+  <properties/>
+  <testcase name="aDebugBuildIsInformationalAndNeverChangesTheScore" classname="com.knoux.ai.PrivacyRulesTest" time="0.007"/>
+  <testcase name="aDuplicateCheckIsCountedOnce" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="aHighAttentionItemCostsMoreThanALowOne" classname="com.knoux.ai.PrivacyRulesTest" time="0.001"/>
+  <testcase name="theScoreStaysInsideItsBoundsWithManyFindings" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="validateRejectsAnIncoherentPass" classname="com.knoux.ai.PrivacyRulesTest" time="0.003"/>
+  <testcase name="anUnmeasurableRowCannotBeMarkedAsFixable" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="unmeasurableRowsNeverCountAsAPassOrAsAPenalty" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="anAttentionRowWithoutARealRemedyIsNotPresentedAsActionable" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="oneHundredRequiresEveryScoredCheckToPass" classname="com.knoux.ai.PrivacyRulesTest" time="0.001"/>
+  <testcase name="summaryCountsDescribeOnlyObservedRows" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="onlyAnAppOwnedSettingIsOfferedAsAKnouxAction" classname="com.knoux.ai.PrivacyRulesTest" time="0.001"/>
+  <testcase name="anEmptyObservationListIsHonestRatherThanPerfect" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="aBlankObservationIsDowngradedInsteadOfShownAsAPass" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="scoreIsNullWhenNothingScorableWasMeasured" classname="com.knoux.ai.PrivacyRulesTest" time="0.001"/>
+  <testcase name="aScoredAttentionItemKeepsTheScoreBelowOneHundred" classname="com.knoux.ai.PrivacyRulesTest" time="0.0"/>
+  <testcase name="informationalRowsNeverChangeTheScore" classname="com.knoux.ai.PrivacyRulesTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,44 @@
+KNOUX PC04 regression suite (manual m instrument, full runner)
+Run: 2026-11-13, single physical device itel S686LN / Android 15 / API 35
+Result: Tests run: 53, Failures: 2, INSTRUMENTATION_CODE: -1
+Passed: 51 of 53.
+
+Failures (both in media-provider-dependent regression classes, not in PC04 privacy code):
+
+There were 2 failures:
+1) identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(com.knoux.ai.DuplicateMediaTest)
+java.lang.NullPointerException: Cannot run onActivity since Activity has been destroyed already
+	at androidx.test.internal.util.Checks.checkNotNull(Checks.java:50)
+	at androidx.test.core.app.ActivityScenario.lambda$onActivity$2$androidx-test-core-app-ActivityScenario(ActivityScenario.java:792)
+	at androidx.test.core.app.ActivityScenario$$ExternalSyntheticLambda2.run(D8$$SyntheticClass:0)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:520)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:328)
+	at android.app.Instrumentation$SyncRunnable.run(Instrumentation.java:2632)
+	at android.os.Handler.handleCallback(Handler.java:959)
+	at android.os.Handler.dispatchMessage(Handler.java:100)
+	at android.os.Looper.loopOnce(Looper.java:311)
+	at android.os.Looper.loop(Looper.java:408)
+	at android.app.ActivityThread.main(ActivityThread.java:9169)
+	at java.lang.reflect.Method.invoke(Native Method)
+	at com.android.internal.os.RuntimeInit$MethodAndArgsCaller.run(RuntimeInit.java:692)
+	at com.android.internal.os.ZygoteInit.main(ZygoteInit.java:945)
+2) observeRealRestoreConsentWithoutApprovingIt(com.knoux.ai.MediaConsentDiagnosticTest)
+java.lang.AssertionError: A dismissed restore dialog must not silently mutate the fixture expected:<TRASHED> but was:<PRESENT>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.knoux.ai.MediaConsentDiagnosticTest.observeRealRestoreConsentWithoutApprovingIt(MediaConsentDiagnosticTest.kt:214)
+
+FAILURES!!!
+Tests run: 53,  Failures: 2
+
+
+INSTRUMENTATION_CODE: -1
+
+Context: android.process.media (which hosts MediaProvider) aborted repeatedly with
+FORTIFY: pthread_mutex_lock called on a destroyed mutex in libmtp.so (MtpFfsHandle::doSendEvent).
+Crash timestamps during this session: 14:06, 14:13, 14:17, 14:22, 14:42. That OS crash interrupts
+MediaStore createTrashRequest/createDeleteRequest and leaves the provider unable to report the
+requested state. The same classes passed earlier today in PC02/PC03 evidence when the provider was stable.
+
+PC04 own classes in the same run: PrivacyMigrationTest 1/1, PrivacyStorageTest 5/5, PrivacyRealScreenTest 2/2.
