@@ -63,7 +63,9 @@ import com.knoux.ai.data.PrivacySummary
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 /**
  * PC04 — Privacy Sweep, wired to real Android state.
@@ -170,7 +172,7 @@ internal class PrivacyViewModel(private val controller: PrivacyController) : Vie
                     _state.value = _state.value.copy(
                         phase = PrivacyPhase.ERROR,
                         busy = false,
-                        error = failure.message ?: "The privacy pass could not be measured",
+                        error = failure.message ?: KnouxStrings.get(R.string.privacy_pass_failed, false),
                     )
                 },
             )
@@ -307,7 +309,7 @@ internal fun RealPrivacyScreen(page: Page) {
             Copy(R.string.k_real_android_state_for_this_app_knoux_cannot_read_anothe),
             "screen-${page.id}"
         )
-        MasterPreviewPill(pill)
+        ServiceStatePill(pill)
 
         LazyColumn(
             Modifier.fillMaxWidth().weight(1f).testTag("privacy-list"),
@@ -557,21 +559,21 @@ private fun SwitchIndicator(checked: Boolean) {
 
 @Composable
 private fun PrivacyAuditCard(audit: List<PrivacyAuditEntry>) {
+    val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.US) }
     GlassPanel(Modifier.fillMaxWidth().testTag("privacy-audit"), tint = Violet) {
         Column(Modifier.fillMaxWidth().padding(11.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Label(Copy(R.string.k_action_history), 12, Chalk, FontWeight.ExtraBold)
             audit.take(4).forEach { entry ->
-                val time = DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(entry.createdAtMillis))
+                val check = entry.check?.let { checkTitle(it).localized() }
+                    ?: (Copy(R.string.privacy_all_checks)).localized()
                 Label(
-                    "$time · ${entry.action.name.lowercase().replace('_', ' ')} · " +
-                        "${entry.check?.tag() ?: "all checks"} · ${entry.outcome}",
-                    9, Mist,
+                    timeFormat.format(Date(entry.createdAtMillis)) + " · " +
+                        actionTitle(entry.action).localized() + " · " + check + " · " +
+                        outcomeTitle(entry.outcome).localized(),
+                    11, Mist,
                 )
             }
-            Label(
-                "Opening an Android screen is recorded as OPENED, not as a fix. Only a re-read flag is recorded as VERIFIED.",
-                9, Mist,
-            )
+            Label((Copy(R.string.privacy_audit_note)).localized(), 11, Mist)
         }
     }
 }
@@ -587,3 +589,21 @@ private fun Pill(label: Copy, tint: Color) {
 }
 
 private fun PrivacyCheck.tag(): String = name.lowercase().replace('_', '-')
+
+private fun actionTitle(action: PrivacyAction): Copy = when (action) {
+    PrivacyAction.MEASURED -> Copy(R.string.privacy_action_measured)
+    PrivacyAction.REVIEWED -> Copy(R.string.privacy_action_reviewed)
+    PrivacyAction.OS_SCREEN_OPENED -> Copy(R.string.privacy_action_opened)
+    PrivacyAction.SETTING_APPLIED -> Copy(R.string.privacy_action_applied)
+    PrivacyAction.SETTING_VERIFIED -> Copy(R.string.privacy_action_verified)
+}
+
+private fun outcomeTitle(outcome: String): Copy = when (outcome) {
+    "RECORDED" -> Copy(R.string.privacy_outcome_recorded)
+    "OPENED" -> Copy(R.string.privacy_outcome_opened)
+    "UNAVAILABLE" -> Copy(R.string.privacy_outcome_unavailable)
+    "REQUESTED" -> Copy(R.string.privacy_outcome_requested)
+    "VERIFIED" -> Copy(R.string.privacy_outcome_verified)
+    "MISMATCH" -> Copy(R.string.privacy_outcome_mismatch)
+    else -> Copy.runtime(outcome)
+}

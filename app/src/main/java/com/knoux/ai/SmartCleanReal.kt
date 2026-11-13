@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -83,14 +84,16 @@ internal fun humanBytes(bytes: Long): String {
     else "%.2f %s".format(value, units[unit])
 }
 
-private fun agoLabel(millis: Long): String {
+private fun agoLabel(millis: Long, arabic: Boolean = false): String {
     if (millis <= 0L) return ""
     val delta = System.currentTimeMillis() - millis
+    fun say(@androidx.annotation.StringRes id: Int, value: Long): String =
+        KnouxStrings.get(id, arabic, arrayOf<Any?>(KnouxFormat.number(value)))
     return when {
-        delta < 60_000L -> "just now"
-        delta < 3_600_000L -> "${delta / 60_000L} min ago"
-        delta < 86_400_000L -> "${delta / 3_600_000L} h ago"
-        else -> "${delta / 86_400_000L} d ago"
+        delta < 60_000L -> KnouxStrings.get(R.string.time_just_now, arabic)
+        delta < 3_600_000L -> say(R.string.time_minutes_ago, delta / 60_000L)
+        delta < 86_400_000L -> say(R.string.time_hours_ago, delta / 3_600_000L)
+        else -> say(R.string.time_days_ago, delta / 86_400_000L)
     }
 }
 
@@ -142,6 +145,10 @@ internal data class CleanState(
     val history: List<CleanupHistory> = emptyList(),
     val message: String? = null,
     val error: String? = null,
+    /** A customer-facing sentence in the active language; [message] is engine prose. */
+    val notice: Copy? = null,
+    /** The file the customer chose to keep; the UI turns it into a friendly name. */
+    val keptName: String? = null,
     val busy: Boolean = false,
     val mediaGrant: PermissionGrant = PermissionGrant.DENIED,
     val safTrees: Int = 0,
@@ -268,7 +275,7 @@ internal class SmartCleanViewModel(
         )
     }
 
-    fun scopeDescription(scope: AccessScope): String = permissions.describe(scope)
+    fun scopeDescription(scope: AccessScope): Copy = permissions.describe(scope)
 
     fun requestableMediaPermissions(): Array<String> = permissions.mediaPermissions()
 
@@ -422,7 +429,8 @@ internal class SmartCleanViewModel(
             _state.value = _state.value.copy(
                 candidates = _state.value.candidates.filterNot { it.uri == candidate.uri },
                 selected = _state.value.selected - candidate.uri,
-                message = "Kept ${candidate.displayName} — it will not be offered again"
+                message = "Kept ${candidate.displayName} — it will not be offered again",
+                keptName = candidate.displayName,
             )
         }
     }
@@ -566,7 +574,8 @@ internal class SmartCleanViewModel(
             settings.setSchedule(true, minutes)
             ScanWorker.schedule(app, minutes)
             _state.value = _state.value.copy(
-                message = "Scheduled scan every $minutes min — scans only, never deletes"
+                message = "Scheduled scan every $minutes min — scans only, never deletes",
+                notice = Copy.args(R.string.clean_schedule_message, KnouxFormat.number(minutes)),
             )
         }
     }
@@ -575,7 +584,10 @@ internal class SmartCleanViewModel(
         viewModelScope.launch {
             settings.setSchedule(false, 0L)
             ScanWorker.cancel(app)
-            _state.value = _state.value.copy(message = "Scheduled scan cancelled")
+            _state.value = _state.value.copy(
+                message = "Scheduled scan cancelled",
+                notice = Copy(R.string.clean_schedule_cancelled),
+            )
         }
     }
 
@@ -607,7 +619,6 @@ internal fun RealSmartCleanScreen(open: (Page) -> Unit) {
     val context = LocalContext.current
 
     var sheet by rememberSaveable { mutableStateOf<String?>(null) }
-    var showProGate by remember { mutableStateOf(false) }
     var confirmPermanent by rememberSaveable { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -675,8 +686,7 @@ internal fun RealSmartCleanScreen(open: (Page) -> Unit) {
             Copy(R.string.k_review_real_files_before_any_cleanup),
             "screen-clean"
         )
-        MasterPreviewPill(pill)
-        ProBannerCard { showProGate = true }
+        ServiceStatePill(pill)
 
         Column(
             Modifier.fillMaxWidth().weight(1f)
@@ -814,54 +824,9 @@ internal fun RealSmartCleanScreen(open: (Page) -> Unit) {
             onDismiss = { sheet = null }
         )
     }
-
-    if (showProGate) {
-        ProGateDialog(
-            section = ProSection.SMART_CLEAN,
-            onDismiss = { showProGate = false },
-            onActivate = { showProGate = false }
-        )
-    }
 }
 
 // ── Pieces ───────────────────────────────────────────────────────────────────
-
-@Composable
-private fun ProBannerCard(onClick: () -> Unit) {
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 11.dp, vertical = 4.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                Brush.linearGradient(listOf(Color(0xff1a0050), Color(0xff002040))),
-                RoundedCornerShape(16.dp)
-            )
-            .border(
-                1.5.dp,
-                Brush.horizontalGradient(listOf(Gold.copy(alpha = 0.6f), Cyan.copy(alpha = 0.4f))),
-                RoundedCornerShape(16.dp)
-            )
-            .clickable(role = Role.Button, onClick = onClick)
-            .padding(12.dp)
-    ) {
-        Row(
-            Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            Glyph(Mark.CROWN, Modifier.size(32.dp), Gold, true)
-            Column(Modifier.weight(1f)) {
-                Label((Copy(R.string.k_unlock_ai_smart_clean_pro)).localized(), 13, Gold, FontWeight.ExtraBold)
-                Label(
-                    (Copy(R.string.k_scheduling_deep_analysis_priority_recovery_ledger)).localized(),
-                    10, Mist.copy(alpha = 0.7f)
-                )
-            }
-            Glyph(Mark.RIGHT, Modifier.size(20.dp), Gold, true)
-        }
-    }
-}
 
 /**
  * The donut card. When nothing was measured it says so instead of drawing a
@@ -883,7 +848,7 @@ private fun MeasuredSummaryCard(state: CleanState) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Box(Modifier.size(118.dp), contentAlignment = Alignment.Center) {
+            Box(Modifier.size(104.dp), contentAlignment = Alignment.Center) {
                 ProgressDonut(
                     percent,
                     when {
@@ -891,7 +856,7 @@ private fun MeasuredSummaryCard(state: CleanState) {
                         measured -> (Copy(R.string.k_selected_share)).localized()
                         else -> (Copy(R.string.k_not_measured)).localized()
                     },
-                    diameter = 118,
+                    diameter = 104,
                     displayValue = if (measured || scanning) "$percent%" else "—"
                 )
             }
@@ -903,10 +868,10 @@ private fun MeasuredSummaryCard(state: CleanState) {
                 Label(
                     when {
                         scanning -> (Copy.args(R.string.k_items_progress_summary, state.progressCount, humanBytes(state.progressBytes))).localized()
-                        measured -> (Copy.args(R.string.k_candidates_summary, state.candidates.size, agoLabel(state.scannedAt))).localized()
+                        measured -> (Copy.args(R.string.k_candidates_summary, state.candidates.size, agoLabel(state.scannedAt, LocalArabic.current))).localized()
                         else -> (Copy(R.string.k_tap_scan_device_to_measure)).localized()
                     },
-                    10, Mist
+                    11, Mist
                 )
             }
         }
@@ -949,8 +914,9 @@ private fun CleanGroupRow(
                 Column(Modifier.weight(1f)) {
                     Label(title.localized(), 14, weight = FontWeight.Bold)
                     Label(
-                        if (available) "$count item(s) · ${subtitle.localized()}" else subtitle.localized(),
-                        10, Mist
+                        if (available) (Copy.args(R.string.clean_group_count, count, subtitle.localized())).localized()
+                        else subtitle.localized(),
+                        11, Mist
                     )
                 }
             }
@@ -976,23 +942,23 @@ private fun CleanGroupRow(
  */
 @Composable
 private fun StatusStrip(state: CleanState) {
+    val arabic = LocalArabic.current
     val text = when {
-        state.error != null -> Copy(state.error ?: "", state.error ?: "")
-        state.message != null -> Copy(state.message ?: "", state.message ?: "")
-        state.phase == CleanPhase.SCANNING -> Copy(
-            "Scanning… ${state.progressCount} items found so far",
-            "جارٍ الفحص… ${state.progressCount} عنصر حتى الآن"
+        state.error != null -> Copy(R.string.status_action_failed)
+        state.keptName != null -> Copy.args(
+            R.string.clean_kept_message,
+            KnouxNames.friendly(state.keptName, arabic),
         )
-        state.candidates.isNotEmpty() -> Copy(
-            "Measured on this device ${agoLabel(state.scannedAt)}. Nothing was removed.",
-            "قِيس على هذا الجهاز ${agoLabel(state.scannedAt)}. لم يُحذف أي شيء."
+        state.notice != null -> state.notice!!
+        state.phase == CleanPhase.SCANNING -> Copy.args(
+            R.string.clean_scanning_progress, KnouxFormat.number(state.progressCount)
         )
-        else -> Copy(
-            "Nothing has been scanned yet. KNOUX only reads what you allow.",
-            "لم يُفحص شيء بعد. KNOUX يقرأ فقط ما تسمح به."
+        state.candidates.isNotEmpty() -> Copy.args(
+            R.string.clean_measured_at, agoLabel(state.scannedAt, arabic)
         )
+        else -> Copy(R.string.clean_nothing_scanned_yet)
     }
-    PreviewNote(text, Modifier.testTag("clean-status"))
+    StateNote(text, Modifier.testTag("clean-status"))
 }
 
 // ── Access sheet ─────────────────────────────────────────────────────────────
@@ -1024,9 +990,10 @@ private fun AccessSheet(
             mark = Mark.PICTURES,
             title = Copy(R.string.k_photos_videos),
             detail = when (state.mediaGrant) {
-                PermissionGrant.GRANTED -> "Granted — library visible"
-                PermissionGrant.PARTIAL_SELECTED -> "Partial — only selected items are visible"
-                else -> "Not granted"
+                PermissionGrant.GRANTED -> Copy(R.string.grant_granted)
+                PermissionGrant.PARTIAL_SELECTED -> Copy(R.string.grant_partial)
+                PermissionGrant.REVOKED -> Copy(R.string.grant_revoked)
+                else -> Copy(R.string.grant_denied)
             },
             action = when (state.mediaGrant) {
                 PermissionGrant.GRANTED -> Copy(R.string.k_manage_in_settings)
@@ -1039,7 +1006,8 @@ private fun AccessSheet(
         ScopeRow(
             mark = Mark.FOLDER,
             title = Copy(R.string.k_folders_you_granted),
-            detail = if (state.safTrees == 0) "No folder added" else "${state.safTrees} folder(s) granted",
+            detail = if (state.safTrees == 0) Copy(R.string.scope_no_folder)
+            else Copy.args(R.string.scope_folders_granted, KnouxFormat.number(state.safTrees)),
             action = Copy(R.string.k_add_folder),
             tag = "scope-saf",
             onAction = onAddFolder
@@ -1047,12 +1015,7 @@ private fun AccessSheet(
 
         Label((Copy(R.string.k_include_in_the_next_scan)), 13, Cyan, FontWeight.Bold)
         AccessScope.entries.forEach { scope ->
-            val title = when (scope) {
-                AccessScope.APP_CACHE -> Copy(R.string.k_knoux_cache)
-                AccessScope.MEDIA_IMAGES -> Copy(R.string.k_photos_2)
-                AccessScope.MEDIA_VIDEO -> Copy(R.string.k_videos_3)
-                AccessScope.SAF_TREE -> Copy(R.string.k_granted_folders)
-            }
+            val title = scopeLabel(scope)
             Row(
                 Modifier.fillMaxWidth().heightIn(min = 48.dp)
                     .toggleable(scope in state.scopes, enabled = !state.busy && state.phase != CleanPhase.SCANNING,
@@ -1077,7 +1040,7 @@ private fun AccessSheet(
             LazyColumn(Modifier.fillMaxWidth().heightIn(max = 180.dp)) {
                 itemsIndexed(state.exclusions, key = { _, item -> item.uri }) { _, item ->
                     Row(Modifier.fillMaxWidth().heightIn(min = 48.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Label(item.displayName, 12, Mist, modifier = Modifier.weight(1f), maxLines = 2)
+                        Label(KnouxNames.friendly(item.displayName, LocalArabic.current), 12, Mist, modifier = Modifier.weight(1f), maxLines = 2)
                         AccentButton(Action(Copy(R.string.k_include_again), Mark.SYNC), primary = false,
                             enabled = !state.busy, tag = "unkeep-${item.uri}") { vm.unkeep(item.uri) }
                     }
@@ -1086,28 +1049,36 @@ private fun AccessSheet(
         }
 
         if (state.snapshots.isNotEmpty()) {
-            Label((Copy(R.string.k_measured_sources)), 13, Cyan, FontWeight.Bold)
-            state.snapshots.forEach { snapshot ->
-                Label(
-                    "${snapshot.scope.name.lowercase().replace('_', ' ')} · " +
-                        "${snapshot.itemCount} item(s) · ${humanBytes(snapshot.totalBytes)} · ${snapshot.status.name}",
-                    11, Mist
-                )
-            }
+            val arabic = LocalArabic.current
+            TechnicalDetails(
+                tag = "clean-technical",
+                rows = state.snapshots.map { snapshot ->
+                    scopeLabel(snapshot.scope) to buildString {
+                        append(KnouxFormat.number(snapshot.itemCount))
+                        append(" · ")
+                        append(humanBytes(snapshot.totalBytes))
+                        append(" · ")
+                        append(dataStatusLabel(snapshot.status).text(arabic))
+                    }
+                },
+            )
         }
 
-        Label((Copy(R.string.k_recent_operations)), 13, Cyan, FontWeight.Bold)
-        if (state.history.isEmpty()) {
-            Label((Copy(R.string.k_no_operation_has_run_on_this_device_yet)), 11, Mist)
-        } else {
-            state.history.take(5).forEach { entry ->
+        if (state.history.isNotEmpty()) {
+            Label((Copy(R.string.technical_history)), 13, Cyan, FontWeight.Bold)
+            val arabic = LocalArabic.current
+            state.history.take(3).forEach { entry ->
                 Label(
-                    "${entry.kind.name.lowercase().replace('_', ' ')} · ${entry.status.name.lowercase()} · " +
-                        "${entry.itemCount} item(s) · ${humanBytes(entry.bytes)} · ${agoLabel(entry.completedAtMillis)}",
-                    11, Mist, modifier = Modifier.testTag("clean-history")
+                    operationStatusLabel(entry.status).text(arabic) + " · " +
+                        KnouxFormat.number(entry.itemCount) + " · " + humanBytes(entry.bytes) + " · " +
+                        agoLabel(entry.completedAtMillis, arabic),
+                    12, Mist, modifier = Modifier.testTag("clean-history")
                 )
-                entry.note?.let { Label(it, 10, Mist) }
             }
+            val notes = state.history.take(3).mapNotNull { entry ->
+                entry.note?.let { Copy(R.string.technical_note) to it }
+            }
+            if (notes.isNotEmpty()) TechnicalDetails(rows = notes, tag = "clean-history-note")
         }
         AccentButton(Action(Copy(R.string.k_restore_last_recoverable_trash), Mark.SYNC),
             Modifier.fillMaxWidth(), primary = false, enabled = !state.busy,
@@ -1144,7 +1115,7 @@ private fun AccessSheet(
 private fun ScopeRow(
     mark: Mark,
     title: Copy,
-    detail: String,
+    detail: Copy,
     action: Copy?,
     tag: String,
     onAction: (() -> Unit)? = null
@@ -1157,7 +1128,7 @@ private fun ScopeRow(
         MasterIcon(mark, Cyan, 30)
         Column(Modifier.weight(1f)) {
             Label(title.localized(), 13, weight = FontWeight.Bold)
-            Label(detail, 10, Mist)
+            Label(detail, 11, Mist)
         }
         if (action != null && onAction != null) {
             AccentButton(Action(action, Mark.CHECK), primary = false, tag = "$tag-action", onClick = onAction)
@@ -1179,9 +1150,14 @@ private fun ReviewSheet(
     onDismiss: () -> Unit
 ) {
     InfoSheet(Copy(R.string.k_review_cleanup), onDismiss) {
-        state.message?.let { Label(it, 12, Mint, modifier = Modifier.testTag("clean-result")) }
-        state.error?.let { Label(it, 12, Gold, modifier = Modifier.testTag("clean-error")) }
+        var showMoreFilters by rememberSaveable { mutableStateOf(false) }
         if (state.busy) Label((Copy(R.string.k_working)), 12, Cyan, modifier = Modifier.testTag("clean-busy"))
+        state.notice?.let { Label(it, 12, Cyan, modifier = Modifier.testTag("clean-result")) }
+        val technical = buildList {
+            state.message?.let { add(Copy(R.string.technical_history) to it) }
+            state.error?.let { add(Copy(R.string.technical_status) to it) }
+        }
+        if (technical.isNotEmpty()) TechnicalDetails(rows = technical, tag = "clean-result-technical")
         when (state.phase) {
             CleanPhase.SCANNING -> {
                 Label(
@@ -1202,7 +1178,7 @@ private fun ReviewSheet(
                 return@InfoSheet
             }
             CleanPhase.ERROR -> {
-                Label(state.error ?: "Scan failed", 13, Gold)
+                Label(Copy(R.string.status_action_failed), 13, Gold)
                 AccentButton(Action(Copy(R.string.k_try_again), Mark.SYNC), Modifier.fillMaxWidth(),
                     tag = "retry-scan") { vm.scan() }
                 return@InfoSheet
@@ -1236,25 +1212,44 @@ private fun ReviewSheet(
             }
         }
 
-        Label((Copy(R.string.k_filter_2)), 11, Mist, FontWeight.Bold)
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            CleanFilter.entries.take(4).forEach { filter ->
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween) {
+            Label((Copy(R.string.k_filter_2)), 11, Mist, FontWeight.Bold)
+            Box(Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(16.dp))
+                .clickable(role = Role.Button) { showMoreFilters = !showMoreFilters }
+                .padding(horizontal = 8.dp), contentAlignment = Alignment.Center) {
+                Label(
+                    (Copy(if (showMoreFilters) R.string.k_fewer_filters else R.string.k_more_filters)).localized(),
+                    12, Cyan, FontWeight.Medium
+                )
+            }
+        }
+        Row(
+            Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            CleanFilter.entries.forEach { filter ->
                 FilterChip(filter.label, state.filter == filter, "filter-${filter.name}") { vm.setFilter(filter) }
             }
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            CleanFilter.entries.drop(4).forEach { filter ->
-                FilterChip(filter.label, state.filter == filter, "filter-${filter.name}") { vm.setFilter(filter) }
+        if (showMoreFilters) {
+            Label((Copy(R.string.k_size_filter)), 11, Mist, FontWeight.Bold)
+            Row(
+                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                SizeFilter.entries.forEach { filter ->
+                    FilterChip(filter.label, state.sizeFilter == filter, "size-${filter.name}") { vm.setSizeFilter(filter) }
+                }
             }
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            SizeFilter.entries.forEach { filter ->
-                FilterChip(filter.label, state.sizeFilter == filter, "size-${filter.name}") { vm.setSizeFilter(filter) }
-            }
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            AgeFilter.entries.forEach { filter ->
-                FilterChip(filter.label, state.ageFilter == filter, "age-${filter.name}") { vm.setAgeFilter(filter) }
+            Label((Copy(R.string.k_age_filter)), 11, Mist, FontWeight.Bold)
+            Row(
+                Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                AgeFilter.entries.forEach { filter ->
+                    FilterChip(filter.label, state.ageFilter == filter, "age-${filter.name}") { vm.setAgeFilter(filter) }
+                }
             }
         }
 
@@ -1281,22 +1276,25 @@ private fun ReviewSheet(
             }
         }
 
-        if (state.message != null) {
-            Label(state.message, 11, Mint, modifier = Modifier.testTag("clean-result"))
+        if (state.notice != null) {
+            Label(state.notice!!, 11, Cyan, modifier = Modifier.testTag("clean-result"))
         }
         if (state.error != null) {
-            Label(state.error, 11, Gold, modifier = Modifier.testTag("clean-error"))
+            Label(Copy(R.string.status_action_failed), 11, Gold, modifier = Modifier.testTag("clean-error"))
         }
 
         AccentButton(
-            Action(Copy.args(R.string.k_move_to_trash, state.selectedCandidates.size), Mark.TRASH),
+            Action(Copy.args(R.string.k_move_to_trash, KnouxFormat.number(state.selectedCandidates.size)), Mark.TRASH),
             Modifier.fillMaxWidth(), primary = false, enabled = state.selectedCandidates.isNotEmpty() && state.trashSupported,
             tag = "action-trash", onClick = onTrash
         )
-        if (!state.trashSupported) {
+        if (state.selectedCandidates.isEmpty()) {
+            Label((Copy(R.string.clean_select_one_reason)), 11, Mist,
+                modifier = Modifier.testTag("trash-disabled-reason"))
+        } else if (!state.trashSupported) {
             Label(
                 (Copy(R.string.k_trash_keeps_photos_and_videos_recoverable_cache_and_fold)),
-                10, Gold
+                11, Gold, modifier = Modifier.testTag("trash-unsupported-reason")
             )
         }
 
@@ -1305,11 +1303,15 @@ private fun ReviewSheet(
             Modifier.fillMaxWidth(), primary = true, enabled = state.selectedCandidates.isNotEmpty(),
             tag = "action-delete"
         ) { onConfirmPermanentChange(!confirmPermanent) }
+        if (state.selectedCandidates.isEmpty()) {
+            Label((Copy(R.string.clean_select_one_reason)), 11, Mist,
+                modifier = Modifier.testTag("delete-disabled-reason"))
+        }
 
         if (confirmPermanent) {
             Label(
                 (Copy(R.string.k_permanent_deletion_cannot_be_undone_android_will_ask_you)),
-                11, Gold, FontWeight.Bold
+                12, Gold, FontWeight.Bold
             )
             Row(
                 Modifier.fillMaxWidth().heightIn(min = 48.dp)
@@ -1327,6 +1329,10 @@ private fun ReviewSheet(
                 enabled = state.irreversibleAck && state.selectedCandidates.isNotEmpty() && !state.busy,
                 tag = "confirm-delete", onClick = onPermanent
             )
+            if (!state.irreversibleAck) {
+                Label((Copy(R.string.clean_ack_reason)), 11, Mist,
+                    modifier = Modifier.testTag("ack-disabled-reason"))
+            }
         }
 
         if (state.busy) {
@@ -1334,7 +1340,7 @@ private fun ReviewSheet(
         }
         Label(
             (Copy(R.string.k_trash_keeps_recovery_where_android_supports_it_permanent)),
-            10, Mist
+            11, Mist
         )
     }
 }
@@ -1415,14 +1421,21 @@ private fun CandidateRow(
             ) { SelectionIndicator(checked, Cyan) }
 
             Column(Modifier.weight(1f)) {
-                Label(candidate.displayName, 12, weight = FontWeight.Bold, maxLines = 1)
-                Label(candidate.reason.localizedOrSelf(), 9, Mist, maxLines = 1)
+                Label(KnouxNames.friendly(candidate.displayName, LocalArabic.current), 12, weight = FontWeight.Bold, maxLines = 1)
+                Label(
+                    when (candidate.provenance) {
+                        DataProvenance.APP_OWNED_CACHE -> Copy(R.string.dup_own_cache)
+                        DataProvenance.MEDIASTORE -> Copy(R.string.dup_shared_media)
+                        else -> Copy(R.string.dup_granted_folder)
+                    },
+                    9, Mist, maxLines = 1,
+                )
             }
 
             Column(horizontalAlignment = Alignment.End) {
                 Label(humanBytes(candidate.bytes), 11, Chalk, FontWeight.Bold)
                 Label(
-                    if (candidate.lastModifiedMillis > 0L) agoLabel(candidate.lastModifiedMillis) else "—",
+                    if (candidate.lastModifiedMillis > 0L) agoLabel(candidate.lastModifiedMillis, LocalArabic.current) else "—",
                     9, Mist
                 )
             }
@@ -1444,6 +1457,3 @@ private fun CandidateRow(
         }
     }
 }
-
-/** The engine's `reason` is plain English; it is shown as-is rather than faked. */
-private fun String.localizedOrSelf(): String = this

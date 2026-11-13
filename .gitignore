@@ -13,3 +13,8 @@
 
 # Ignore an unrelated empty nested clone scaffold; preserve it locally.
 /KNOUX-AI/
+
+# Release signing secrets never enter the repository
+keystore.properties
+*.jks
+*.keystore

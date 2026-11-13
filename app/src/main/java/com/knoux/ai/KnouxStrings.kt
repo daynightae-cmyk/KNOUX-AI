@@ -141,3 +141,64 @@ internal object KnouxNames {
         return name
     }
 }
+
+/** The readable name of one source the customer allowed KNOUX to read. */
+internal fun scopeLabel(scope: com.knoux.ai.data.AccessScope): Copy = when (scope) {
+    com.knoux.ai.data.AccessScope.APP_CACHE -> Copy(R.string.k_knoux_cache)
+    com.knoux.ai.data.AccessScope.MEDIA_IMAGES -> Copy(R.string.k_photos_2)
+    com.knoux.ai.data.AccessScope.MEDIA_VIDEO -> Copy(R.string.k_videos_3)
+    com.knoux.ai.data.AccessScope.SAF_TREE -> Copy(R.string.k_granted_folders)
+}
+
+/**
+ * How a stored measurement describes itself. The enum is honest data, but a
+ * customer reads a word in their own language, never `PARTIAL` in Latin caps.
+ */
+internal fun dataStatusLabel(status: com.knoux.ai.data.DataStatus): Copy = when (status) {
+    com.knoux.ai.data.DataStatus.MEASURED -> Copy(R.string.status_measured)
+    com.knoux.ai.data.DataStatus.ESTIMATED -> Copy(R.string.status_estimated)
+    com.knoux.ai.data.DataStatus.PREVIEW -> Copy(R.string.status_preview)
+    com.knoux.ai.data.DataStatus.UNAVAILABLE -> Copy(R.string.status_unavailable)
+    com.knoux.ai.data.DataStatus.PARTIAL -> Copy(R.string.status_partial)
+    com.knoux.ai.data.DataStatus.VERIFIED -> Copy(R.string.status_verified)
+}
+
+/** How one cleanup or restore operation ended, in the customer's language. */
+internal fun operationStatusLabel(status: com.knoux.ai.data.OperationStatus): Copy = when (status) {
+    com.knoux.ai.data.OperationStatus.PLANNED -> Copy(R.string.op_planned)
+    com.knoux.ai.data.OperationStatus.AWAITING_USER_CONFIRMATION -> Copy(R.string.op_awaiting)
+    com.knoux.ai.data.OperationStatus.RUNNING -> Copy(R.string.op_running)
+    com.knoux.ai.data.OperationStatus.SUCCEEDED -> Copy(R.string.op_succeeded)
+    com.knoux.ai.data.OperationStatus.PARTIAL -> Copy(R.string.status_partial)
+    com.knoux.ai.data.OperationStatus.FAILED -> Copy(R.string.op_failed)
+    com.knoux.ai.data.OperationStatus.CANCELLED -> Copy(R.string.op_cancelled)
+    com.knoux.ai.data.OperationStatus.REJECTED_BY_OS -> Copy(R.string.op_rejected_os)
+}
+
+/** Why a file looked like residue: the filename pattern, in plain words. */
+internal fun residuePatternLabel(pattern: com.knoux.ai.data.ResiduePattern): Copy = when (pattern) {
+    com.knoux.ai.data.ResiduePattern.CACHE_FILE -> Copy(R.string.residue_pattern_cache_file)
+    com.knoux.ai.data.ResiduePattern.TEMP_FILE -> Copy(R.string.residue_pattern_temp_file)
+    com.knoux.ai.data.ResiduePattern.PARTIAL_DOWNLOAD -> Copy(R.string.residue_pattern_partial_download)
+    com.knoux.ai.data.ResiduePattern.INTERRUPTED_TRASH -> Copy(R.string.residue_pattern_interrupted_trash)
+    com.knoux.ai.data.ResiduePattern.PENDING_DELETE -> Copy(R.string.residue_pattern_pending_delete)
+    com.knoux.ai.data.ResiduePattern.EDITOR_BACKUP -> Copy(R.string.residue_pattern_editor_backup)
+    com.knoux.ai.data.ResiduePattern.LOG_FILE -> Copy(R.string.residue_pattern_log_file)
+    com.knoux.ai.data.ResiduePattern.THUMBNAIL -> Copy(R.string.residue_pattern_thumbnail)
+}
+
+/** How much the filename evidence actually proves. */
+internal fun residueConfidenceLabel(confidence: com.knoux.ai.data.ResidueConfidence): Copy = when (confidence) {
+    com.knoux.ai.data.ResidueConfidence.OWNED -> Copy(R.string.residue_confidence_owned)
+    com.knoux.ai.data.ResidueConfidence.STRONG -> Copy(R.string.residue_confidence_strong)
+    com.knoux.ai.data.ResidueConfidence.WEAK -> Copy(R.string.residue_confidence_weak)
+}
+
+/** What the customer did with a residue item. */
+internal fun residueActionLabel(action: com.knoux.ai.data.ResidueAction): Copy = when (action) {
+    com.knoux.ai.data.ResidueAction.REVIEWED -> Copy(R.string.residue_action_reviewed)
+    com.knoux.ai.data.ResidueAction.DRY_RUN -> Copy(R.string.residue_action_dry_run)
+    com.knoux.ai.data.ResidueAction.SKIPPED -> Copy(R.string.residue_action_skipped)
+    com.knoux.ai.data.ResidueAction.ATTEMPTED -> Copy(R.string.residue_action_attempted)
+    com.knoux.ai.data.ResidueAction.VERIFIED -> Copy(R.string.residue_action_verified)
+}

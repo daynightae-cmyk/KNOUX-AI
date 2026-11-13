@@ -88,7 +88,8 @@ private val symbol = mapOf(
     Mark.HISTORY to "M12 8V12L14.5 14.5 M21 12A9 9 0 1 1 6 6 M4 6L8 6L8 2",
     Mark.COPY to "M8 4H16Q20 4 20 8V16Q20 20 16 20H8Q4 20 4 16V8Q4 4 8 4 M14 4L14 8L20 8",
     Mark.CHART to "M3 3V21H21 M7 11V18 M12 7V18 M17 10V18",
-    Mark.RIGHT to "M9 6L15 12L9 18"
+    Mark.RIGHT to "M9 6L15 12L9 18",
+    Mark.MAIL to "M3 5H21V19H3Z M3 6L12 13L21 6"
 ).mapValues { (_, svg) -> path(svg) }
 
 // Brand K traced from the owner logo (design/brand/knoux-logo-owner.png),
@@ -170,7 +171,7 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
     val homeTall = LocalTall.current
     // Reduced hero heights to match references (22-26% of viewport instead of 30-40%)
     // Reference analysis: hero should be ~400-480px on 1846px screen = 140-160dp equivalent
-    val height = heightOverride ?: if (home) (if (homeTall) 155.dp else 135.dp) else 110.dp
+    val height = heightOverride ?: if (home) (if (homeTall) 148.dp else 128.dp) else 96.dp
     val unitDivisor = if (home) (if (homeTall) 150f else 140f) else 120f
     val tone = heroTone(mark)
     val points = rememberGlobePoints(if (home) 760 else 460)
@@ -201,7 +202,7 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
                 scale(unit, unit, Offset.Zero) {
                     val radius = if (home) 64f else 58f
                     val pedestalY = if (home) 70f else 60f
-                    bloom(Offset.Zero, radius * 1.78f, tone, .78f)
+                    bloom(Offset.Zero, radius * 1.78f, tone, .58f)
                     lightPedestal(radius * .92f, pedestalY, if (home) Light.magenta else tone)
                     heroArcs(radius * 1.00f, 0f)
                     if (!home) {

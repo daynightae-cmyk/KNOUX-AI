@@ -267,10 +267,17 @@ internal fun ProGateDialog(
     
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val context = LocalContext.current
-    var generatedCode by remember { mutableStateOf<String?>(null) }
-    
-    val whatsappNumber = "+971503281920"
-    val waLink = "https://wa.me/971503281920?text=${Uri.encode("مرحباً، أريد تفعيل ${section.title.localized()}")}"
+    val arabic = LocalArabic.current
+
+    val whatsappNumber = BuildConfig.PRO_CONTACT_WHATSAPP
+    val waDigits = whatsappNumber.filter { it.isDigit() }
+    val waLink = if (waDigits.isBlank()) "" else
+        "https://wa.me/$waDigits?text=" + Uri.encode(
+            KnouxStrings.get(
+                R.string.pro_whatsapp_message, arabic,
+                arrayOf(section.title.text(arabic)),
+            )
+        )
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -296,23 +303,20 @@ internal fun ProGateDialog(
                 ProFeatureCard(feature)
             }
 
-            // Pricing & Activation
-            ProPricingCard(section)
+            // Honest activation notice: no billing is connected, no code can
+            // unlock Pro, and the contact channel is optional build config.
+            ProActivationCard()
 
-            // Code Generator
-            ProCodeGenerator(
-                sectionId = section.id,
-                generatedCode = generatedCode,
-                onGenerateCode = { code -> generatedCode = code }
-            )
-
-            // WhatsApp Activation Button
-            ProWhatsAppButton(
-                whatsappNumber = whatsappNumber,
-                waLink = waLink,
-                sectionName = section.title.localized(),
-                context = context
-            )
+            if (waDigits.isNotBlank()) {
+                ProWhatsAppButton(
+                    whatsappNumber = whatsappNumber,
+                    waLink = waLink,
+                    sectionName = section.title.localized(),
+                    context = context
+                )
+            } else {
+                ProContactMissing()
+            }
 
             Spacer(Modifier.height(8.dp))
         }
@@ -471,184 +475,64 @@ private fun ProFeatureCard(feature: ProFeature) {
 }
 
 @Composable
-private fun ProPricingCard(section: ProSection) {
+private fun ProActivationCard() {
     Box(
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
-            .background(
-                Brush.linearGradient(
-                    listOf(
-                        Color(0xff1a003a),
-                        Color(0xff0d0028),
-                        Color(0xff001a30)
-                    )
-                ),
-                RoundedCornerShape(18.dp)
-            )
-            .border(
-                2.dp,
-                Brush.horizontalGradient(
-                    listOf(
-                        Gold.copy(alpha = 0.6f),
-                        section.themeColor.copy(alpha = 0.4f),
-                        Gold.copy(alpha = 0.6f)
-                    )
-                ),
-                RoundedCornerShape(18.dp)
-            )
-            .padding(20.dp)
+            .background(Color(0xff140a2a), RoundedCornerShape(18.dp))
+            .border(1.dp, Violet.copy(alpha = 0.45f), RoundedCornerShape(18.dp))
+            .padding(18.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Label(
-                (Copy(R.string.k_premium_pricing)).localized(),
-                16,
-                Gold,
-                FontWeight.ExtraBold
-            )
-
+        Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
             Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Monthly
-                PriceOption(
-                    period = Copy(R.string.k_monthly),
-                    price = "29 AED",
-                    color = Cyan
-                )
-
-                Box(
-                    Modifier
-                        .width(1.dp)
-                        .height(40.dp)
-                        .background(Mist.copy(alpha = 0.2f))
-                )
-
-                // Yearly
-                PriceOption(
-                    period = Copy(R.string.k_yearly),
-                    price = "249 AED",
-                    color = Gold,
-                    badge = "-30%"
+                Glyph(Mark.LOCK, Modifier.size(18.dp), Gold, true)
+                Label(
+                    (Copy(R.string.pro_activation_title)).localized(),
+                    15,
+                    Chalk,
+                    FontWeight.Bold
                 )
             }
-
             Label(
-                (Copy(R.string.k_all_pro_features_included_cancel_anytime)).localized(),
+                (Copy(R.string.pro_activation_body)).localized(),
+                12,
+                Mist.copy(alpha = 0.88f)
+            )
+            Label(
+                (Copy(R.string.pro_activation_build_note)).localized(),
                 11,
-                Mist.copy(alpha = 0.6f),
-                align = TextAlign.Center
+                Gold.copy(alpha = 0.9f)
             )
         }
     }
 }
 
 @Composable
-private fun PriceOption(period: Copy, price: String, color: Color, badge: String? = null) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        if (badge != null) {
-            Box(
-                Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(color.copy(alpha = 0.25f), RoundedCornerShape(8.dp))
-                    .border(1.dp, color.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
-                    .padding(horizontal = 8.dp, vertical = 2.dp)
-            ) {
-                Label(badge, 10, color, FontWeight.Bold)
-            }
-        }
-        Label(period.localized(), 12, Mist)
-        Label(price, 22, color, FontWeight.ExtraBold)
-    }
-}
-
-@Composable
-private fun ProCodeGenerator(
-    sectionId: String,
-    generatedCode: String?,
-    onGenerateCode: (String) -> Unit
-) {
+private fun ProContactMissing() {
     Box(
         Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(
-                Brush.linearGradient(
-                    listOf(Color(0xff0d0030), Color(0xff001520))
-                ),
-                RoundedCornerShape(16.dp)
-            )
-            .border(1.dp, Violet.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
+            .background(Color(0xff0a1020), RoundedCornerShape(16.dp))
+            .border(1.dp, Mist.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
             .padding(16.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            Glyph(Mark.CHAT, Modifier.size(22.dp), Mist.copy(alpha = 0.7f))
             Label(
-                (Copy(R.string.k_get_a_free_trial_code_2)).localized(),
-                14,
-                Chalk,
-                FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth(),
-                align = TextAlign.Center
+                (Copy(R.string.pro_contact_not_configured)).localized(),
+                12,
+                Mist.copy(alpha = 0.86f),
+                modifier = Modifier.weight(1f)
             )
-
-            if (generatedCode != null) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xff001a10), RoundedCornerShape(12.dp))
-                        .border(1.5.dp, Mint.copy(alpha = 0.8f), RoundedCornerShape(12.dp))
-                        .padding(vertical = 12.dp, horizontal = 16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Label(
-                            (Copy(R.string.k_your_trial_code_2)).localized(),
-                            11,
-                            Mist.copy(alpha = 0.7f)
-                        )
-                        Spacer(Modifier.height(4.dp))
-                        Label(
-                            generatedCode,
-                            20,
-                            Mint,
-                            FontWeight.ExtraBold,
-                            align = TextAlign.Center
-                        )
-                        Spacer(Modifier.height(4.dp))
-                        Label(
-                            (Copy(R.string.k_send_this_code_to_activate_pro)).localized(),
-                            11,
-                            Mist.copy(alpha = 0.6f)
-                        )
-                    }
-                }
-            }
-
-            AccentButton(
-                Action((Copy(R.string.k_generate_trial_code)), Mark.SPARKLE),
-                Modifier.fillMaxWidth(),
-                primary = true,
-                tag = "gen-code-$sectionId"
-            ) {
-                val sectionPrefix = sectionId.take(3).uppercase()
-                val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                val randomPart = (1..8).map { chars.random() }.joinToString("")
-                onGenerateCode("KX-$sectionPrefix-$randomPart")
-            }
         }
     }
 }

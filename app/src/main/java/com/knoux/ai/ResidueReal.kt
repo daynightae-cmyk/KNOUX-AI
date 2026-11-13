@@ -76,6 +76,8 @@ internal data class ResidueState(
     val previousScan: Boolean = false,
     val message: String? = null,
     val error: String? = null,
+    /** A customer-facing sentence in the active language; [message] is engine prose. */
+    val notice: Copy? = null,
     val pendingSender: Pair<String, IntentSender>? = null,
 ) {
     val measured: Boolean get() = phase == ResiduePhase.READY
@@ -162,6 +164,11 @@ internal class ResidueViewModel(
                 } else {
                     "Verified ${verified.size} removal(s) that completed before the app was interrupted"
                 },
+                notice = if (verified.isEmpty()) {
+                    Copy(R.string.recover_none_verified)
+                } else {
+                    Copy.args(R.string.recover_some_verified, KnouxFormat.number(verified.size))
+                },
             )
         } catch (cancelled: CancellationException) {
             throw cancelled
@@ -180,7 +187,7 @@ internal class ResidueViewModel(
         )
     }
 
-    fun scopeDescription(scope: AccessScope): String = controller.describeScope(scope)
+    fun scopeDescription(scope: AccessScope): Copy = controller.describeScope(scope)
 
     fun requestableMediaPermissions(): Array<String> = permissions.mediaPermissions()
 
@@ -281,6 +288,7 @@ internal class ResidueViewModel(
         _state.value = _state.value.copy(
             phase = ResiduePhase.IDLE,
             message = "Scan cancelled — incomplete results are not treated as measured",
+            notice = Copy(R.string.scan_cancelled_measured),
             progressLabel = "",
         )
         viewModelScope.launch { reload(fromSavedSnapshot = true) }
@@ -596,7 +604,7 @@ internal fun RealResidueScreen(page: Page, open: (Page) -> Unit) {
             Copy(R.string.k_leftovers_are_matched_by_filename_only_knoux_s_own_cache),
             "screen-${page.id}"
         )
-        MasterPreviewPill(pill)
+        ServiceStatePill(pill)
 
         LazyColumn(
             Modifier.fillMaxWidth().weight(1f).testTag("residue-list"),
@@ -722,7 +730,7 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Label(
-                        "${summary.count}",
+                        KnouxFormat.number(summary.count),
                         20, Chalk, FontWeight.Bold,
                         modifier = Modifier.testTag("residue-count"),
                     )
@@ -734,13 +742,17 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
                 thickness = 8,
             )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Label("${summary.ownedCount} own cache", 10, Mint, modifier = Modifier.weight(1f))
-                Label("${summary.sharedCount} shared · name only", 10, Gold, modifier = Modifier.weight(1f))
-                Label("${state.filesInspected} inspected", 10, Mist)
+                Label(Copy.args(R.string.residue_own_cache, KnouxFormat.number(summary.ownedCount)), 10, Mint, modifier = Modifier.weight(1f))
+                Label(Copy.args(R.string.residue_shared, KnouxFormat.number(summary.sharedCount)), 10, Gold, modifier = Modifier.weight(1f))
+                Label(Copy.args(R.string.residue_inspected, KnouxFormat.number(state.filesInspected)), 10, Mist)
             }
             state.capturedAt?.let { captured ->
                 Label(
-                    (if (state.previousScan) "Previous pass " else "Measured ") + residueAgo(captured),
+                    if (state.previousScan) {
+                        Copy.args(R.string.residue_previous_pass, residueAgo(captured, LocalArabic.current))
+                    } else {
+                        Copy.args(R.string.residue_measured_when, residueAgo(captured, LocalArabic.current))
+                    },
                     10, Cyan,
                     modifier = Modifier.testTag("residue-captured"),
                 )
@@ -765,7 +777,7 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
             }
             if (scanning) {
                 Label(
-                    Copy.args(R.string.k_items_found_progress, state.progressLabel, summary.count),
+                    Copy.args(R.string.residue_groups_found, KnouxFormat.number(summary.count)),
                     11, Cyan, FontWeight.Bold,
                     modifier = Modifier.testTag("residue-progress"),
                 )
@@ -799,7 +811,11 @@ private fun ResidueAgeCard(state: ResidueState, onAge: (Int) -> Unit) {
                             .testTag("residue-age-$days"),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Label(if (days == 0) Copy(R.string.k_any_age) else Copy("$days d", "$days d"), 10, if (active) Cyan else Mist, FontWeight.Bold)
+                        Label(
+                            if (days == 0) Copy(R.string.k_any_age)
+                            else Copy.args(R.string.age_days_short, KnouxFormat.number(days)),
+                            10, if (active) Cyan else Mist, FontWeight.Bold,
+                        )
                     }
                 }
             }
@@ -850,14 +866,11 @@ private fun ResidueItemCard(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Column(Modifier.weight(1f)) {
-                Label(candidate.displayName, 12, Chalk, FontWeight.Bold, maxLines = 2)
+                Label(KnouxNames.friendly(candidate.displayName, LocalArabic.current), 12, Chalk, FontWeight.Bold, maxLines = 2)
                 Label(
-                    "${humanBytes(candidate.bytes)} · ${item.pattern.name.lowercase()} · " +
-                        when (item.confidence) {
-                            ResidueConfidence.OWNED -> "own cache"
-                            ResidueConfidence.STRONG -> "OS-named leftover"
-                            ResidueConfidence.WEAK -> "generic leftover name"
-                        },
+                    humanBytes(candidate.bytes) + " · " +
+                        residuePatternLabel(item.pattern).text(LocalArabic.current) + " · " +
+                        residueConfidenceLabel(item.confidence).text(LocalArabic.current),
                     10, tint,
                 )
                 Label(item.matchedOn, 9, Mist, maxLines = 1)
@@ -885,8 +898,14 @@ private fun ResidueItemCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Label(item.candidate.reason, 9, Mist, modifier = Modifier.weight(1f), maxLines = 2)
-            Label("open", 9, Cyan, modifier = Modifier.clip(RoundedCornerShape(8.dp))
+            Label(
+                when (candidate.provenance) {
+                    DataProvenance.APP_OWNED_CACHE -> Copy(R.string.residue_confidence_owned)
+                    else -> Copy(R.string.residue_evidence_only)
+                },
+                9, Mist, modifier = Modifier.weight(1f), maxLines = 2,
+            )
+            Label(Copy(R.string.action_open_file), 9, Cyan, modifier = Modifier.clip(RoundedCornerShape(8.dp))
                 .clickable { onOpen(candidate) }.padding(4.dp))
         }
     }
@@ -902,7 +921,12 @@ private fun ResidueAuditCard(state: ResidueState) {
             }
             state.audit.take(3).forEach { entry ->
                 Label(
-                    "${entry.action.name.lowercase().replace('_', ' ')} · ${entry.itemCount} item(s) · ${humanBytes(entry.bytes)}",
+                    Copy.args(
+                        R.string.residue_audit_line,
+                        residueActionLabel(entry.action).text(LocalArabic.current),
+                        KnouxFormat.number(entry.itemCount),
+                        humanBytes(entry.bytes),
+                    ),
                     10, Mist, maxLines = 1,
                 )
             }
@@ -913,26 +937,20 @@ private fun ResidueAuditCard(state: ResidueState) {
 @Composable
 private fun ResidueStatusStrip(state: ResidueState) {
     val text = when {
-        state.error != null -> Copy(state.error ?: "", state.error ?: "")
-        state.message != null -> Copy(state.message ?: "", state.message ?: "")
-        state.phase == ResiduePhase.SCANNING -> Copy(
-            "${state.filesInspected} file(s) inspected · ${state.progressLabel}",
-            "${state.filesInspected} ملفًا · ${state.progressLabel}",
+        state.error != null -> Copy(R.string.status_action_failed)
+        state.notice != null -> state.notice!!
+        state.phase == ResiduePhase.SCANNING -> Copy.args(
+            R.string.residue_inspected,
+            KnouxFormat.number(state.filesInspected),
         )
-        state.measured && state.selected.isNotEmpty() -> Copy(
-            "${state.selectedItems.size} item(s) · ${humanBytes(state.selectedBytes)} selected",
-            "${state.selectedItems.size} عنصرًا · ${humanBytes(state.selectedBytes)} محددة",
+        state.measured && state.selected.isNotEmpty() -> Copy.args(
+            R.string.residue_selected_summary,
+            KnouxFormat.number(state.selectedItems.size),
+            humanBytes(state.selectedBytes),
         )
-        else -> Copy(
-            "Nothing is selected until you choose it.",
-            "لا شيء محدد حتى تختاره بنفسك.",
-        )
+        else -> Copy(R.string.residue_nothing_selected)
     }
-    val tint = when {
-        state.error != null -> Gold
-        state.message != null -> Mint
-        else -> Mist
-    }
+    val tint = if (state.error != null) Gold else Mist
     Label(
         text, 11, tint,
         modifier = Modifier.fillMaxWidth().padding(top = 5.dp)
@@ -960,7 +978,7 @@ private fun ResidueSourcesSheet(
         ResidueScopeRow(
             mark = Mark.BOX,
             title = Copy(R.string.k_knoux_own_cache),
-            detail = "Always available — only KNOUX's cache, never another app",
+            detail = Copy(R.string.scope_cache_detail),
             checked = AccessScope.APP_CACHE in state.scopes,
             tag = "residue-scope-cache",
             onToggle = { vm.includeScope(AccessScope.APP_CACHE, it) },
@@ -968,7 +986,8 @@ private fun ResidueSourcesSheet(
         ResidueScopeRow(
             mark = Mark.FOLDER,
             title = Copy(R.string.k_folders_you_granted),
-            detail = if (state.safTrees == 0) "No folder added" else "${state.safTrees} folder(s) granted",
+            detail = if (state.safTrees == 0) Copy(R.string.scope_no_folder)
+            else Copy.args(R.string.scope_folders_granted, KnouxFormat.number(state.safTrees)),
             checked = AccessScope.SAF_TREE in state.scopes,
             tag = "residue-scope-saf",
             onToggle = { vm.includeScope(AccessScope.SAF_TREE, it) },
@@ -979,9 +998,9 @@ private fun ResidueSourcesSheet(
             mark = Mark.PICTURES,
             title = Copy(R.string.k_shared_media_names),
             detail = when (state.mediaGrant) {
-                PermissionGrant.GRANTED -> "Granted — MediaStore rows visible"
-                PermissionGrant.PARTIAL_SELECTED -> "Partial — only selected items are visible"
-                else -> "Not granted"
+                PermissionGrant.GRANTED -> Copy(R.string.grant_granted)
+                PermissionGrant.PARTIAL_SELECTED -> Copy(R.string.grant_partial)
+                else -> Copy(R.string.grant_denied)
             },
             checked = AccessScope.MEDIA_IMAGES in state.scopes,
             tag = "residue-scope-media",
@@ -1007,7 +1026,7 @@ private fun ResidueSourcesSheet(
 private fun ResidueScopeRow(
     mark: Mark,
     title: Copy,
-    detail: String,
+    detail: Copy,
     checked: Boolean,
     tag: String,
     onToggle: (Boolean) -> Unit,
@@ -1048,9 +1067,13 @@ private fun ResidueReviewSheet(
     onDismiss: () -> Unit,
 ) {
     InfoSheet(Copy(R.string.k_review_residue_removal), onDismiss) {
-        state.message?.let { Label(it, 12, Mint, modifier = Modifier.testTag("residue-result")) }
-        state.error?.let { Label(it, 12, Gold, modifier = Modifier.testTag("residue-review-error")) }
         if (state.busy) Label((Copy(R.string.k_working)), 12, Cyan)
+        state.notice?.let { Label(it, 12, Cyan, modifier = Modifier.testTag("residue-result")) }
+        val technical = buildList {
+            state.message?.let { add(Copy(R.string.technical_history) to it) }
+            state.error?.let { add(Copy(R.string.technical_status) to it) }
+        }
+        if (technical.isNotEmpty()) TechnicalDetails(rows = technical, tag = "residue-result-technical")
 
         val run = ResidueRules.dryRun(state.items, state.selected)
         if (run.items.isEmpty()) {
@@ -1060,37 +1083,36 @@ private fun ResidueReviewSheet(
             )
         } else {
             Label(
-                Copy.args(R.string.k_items_bytes_summary, run.items.size, humanBytes(run.bytes)),
+                Copy.args(R.string.k_items_bytes_summary, KnouxFormat.number(run.items.size), humanBytes(run.bytes)),
                 15, Pink, FontWeight.Bold,
             )
             Label(
-                run.patternSummary.ifBlank { "selected items" }, 10, Mist,
+                run.patternSummary.ifBlank { Copy(R.string.residue_selected_items).text(LocalArabic.current) },
+                10, Mist,
                 modifier = Modifier.testTag("residue-dry-run"),
             )
             run.items.take(30).forEach { item ->
                 Label(
-                    "${item.candidate.displayName} · ${humanBytes(item.candidate.bytes)} · ${item.confidence.name.lowercase()}",
+                    KnouxNames.friendly(item.candidate.displayName, LocalArabic.current) + " · " +
+                        humanBytes(item.candidate.bytes) + " · " +
+                        residueConfidenceLabel(item.confidence).text(LocalArabic.current),
                     11, Mist, maxLines = 1,
                 )
             }
         }
 
-        run.warnings.forEach { warning -> Label("• $warning", 10, Gold) }
+        if (run.warnings.isNotEmpty()) {
+            TechnicalDetails(
+                rows = run.warnings.map { Copy(R.string.technical_note) to it },
+                tag = "residue-warnings",
+            )
+        }
 
         Label(
             when {
-                run.sharedCount == 0 -> Copy(
-                    "These items are inside KNOUX's own cache and are removed directly; no Android dialog is involved.",
-                    "هذه العناصر داخل ذاكرة KNOUX المؤقتة وتُزال مباشرة؛ لا يظهر حوار أندرويد.",
-                )
-                run.ownedCount == 0 -> Copy(
-                    "Android shows its own confirmation for shared media. Cancelling there means nothing was removed.",
-                    "يعرض أندرويد تأكيده الخاص للوسائط المشتركة. الإلغاء هناك يعني عدم إزالة أي شيء.",
-                )
-                else -> Copy(
-                    "KNOUX cache items are removed immediately. Android's dialog covers only the shared media; cancelling it leaves that media untouched.",
-                    "تُزال عناصر ذاكرة KNOUX فورًا. حوار أندرويد يغطي الوسائط المشتركة فقط؛ إلغاؤه يتركها دون تغيير.",
-                )
+                run.sharedCount == 0 -> Copy(R.string.residue_cache_note)
+                run.ownedCount == 0 -> Copy(R.string.dup_shared_note)
+                else -> Copy(R.string.residue_mixed_note)
             },
             11, Gold,
         )
@@ -1131,13 +1153,15 @@ private fun ResidueReviewSheet(
     }
 }
 
-private fun residueAgo(millis: Long): String {
+private fun residueAgo(millis: Long, arabic: Boolean): String {
     if (millis <= 0L) return ""
     val delta = System.currentTimeMillis() - millis
+    fun say(@androidx.annotation.StringRes id: Int, value: Long): String =
+        KnouxStrings.get(id, arabic, arrayOf<Any?>(KnouxFormat.number(value)))
     return when {
-        delta < 60_000L -> "just now"
-        delta < 3_600_000L -> "${delta / 60_000L} min ago"
-        delta < 86_400_000L -> "${delta / 3_600_000L} h ago"
-        else -> "${delta / 86_400_000L} d ago"
+        delta < 60_000L -> KnouxStrings.get(R.string.time_just_now, arabic)
+        delta < 3_600_000L -> say(R.string.time_minutes_ago, delta / 60_000L)
+        delta < 86_400_000L -> say(R.string.time_hours_ago, delta / 3_600_000L)
+        else -> say(R.string.time_days_ago, delta / 86_400_000L)
     }
 }

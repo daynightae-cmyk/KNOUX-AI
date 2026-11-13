@@ -81,7 +81,7 @@ class ResidueController(
         rows.map { it.toDomain() }
     }
 
-    fun describeScope(scope: AccessScope): String = clean.describeScope(scope)
+    internal fun describeScope(scope: AccessScope): com.knoux.ai.Copy = clean.describeScope(scope)
     fun trashCapability(): FeatureCapability = repository.trashCapability()
 
     suspend fun setScopes(scopes: Set<AccessScope>) = settings.setResidueScopes(scopes)

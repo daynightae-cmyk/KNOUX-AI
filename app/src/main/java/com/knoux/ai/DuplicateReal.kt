@@ -81,6 +81,8 @@ internal data class DuplicateState(
     val previousScan: Boolean = false,
     val message: String? = null,
     val error: String? = null,
+    /** A customer-facing sentence in the active language; [message] is engine prose. */
+    val notice: Copy? = null,
     val pendingSender: Pair<String, IntentSender>? = null,
 ) {
     val measured: Boolean get() = phase == DuplicatePhase.READY
@@ -163,6 +165,11 @@ internal class DuplicateViewModel(
                 } else {
                     "Verified ${verified.size} removal(s) that completed before the app was interrupted"
                 },
+                notice = if (verified.isEmpty()) {
+                    Copy(R.string.recover_none_verified)
+                } else {
+                    Copy.args(R.string.recover_some_verified, KnouxFormat.number(verified.size))
+                },
             )
         } catch (cancelled: CancellationException) {
             throw cancelled
@@ -181,7 +188,7 @@ internal class DuplicateViewModel(
         )
     }
 
-    fun scopeDescription(scope: AccessScope): String = controller.describeScope(scope)
+    fun scopeDescription(scope: AccessScope): Copy = controller.describeScope(scope)
 
     fun requestableMediaPermissions(): Array<String> = permissions.mediaPermissions()
 
@@ -267,6 +274,7 @@ internal class DuplicateViewModel(
         _state.value = _state.value.copy(
             phase = DuplicatePhase.IDLE,
             message = "Scan cancelled — incomplete results are not treated as verified",
+            notice = Copy(R.string.scan_cancelled_verified),
             progressLabel = "",
             groupsFound = 0,
         )
@@ -543,7 +551,7 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
             Copy(R.string.k_only_byte_identical_copies_are_shown_one_original_per_gr),
             "screen-${page.id}"
         )
-        MasterPreviewPill(pill)
+        ServiceStatePill(pill)
 
         // ── Mirror instrument: twin orbs joined by a tether ──────────────────
         val mirrorPhase = when (state.phase) {
@@ -584,13 +592,13 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                 )
             }
-            state.note?.let { note ->
-                item {
-                    Label(
-                        note, 10, Gold,
-                        modifier = Modifier.fillMaxWidth().testTag("duplicate-note"),
-                    )
-                }
+            val technical = buildList {
+                state.note?.let { add(Copy(R.string.technical_note) to it) }
+                state.error?.let { add(Copy(R.string.technical_status) to it) }
+                state.message?.let { add(Copy(R.string.technical_history) to it) }
+            }
+            if (technical.isNotEmpty()) {
+                item { TechnicalDetails(rows = technical, tag = "duplicate-technical") }
             }
             if (state.phase == DuplicatePhase.IDLE && state.groups.isEmpty()) {
                 item { DuplicateEmptyCard(state) }
@@ -701,11 +709,11 @@ private fun DuplicateSummaryCard(state: DuplicateState) {
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Label(
-                        "${state.groups.size}",
+                        KnouxFormat.number(state.groups.size),
                         20, Chalk, FontWeight.Bold,
                         modifier = Modifier.testTag("duplicate-group-count"),
                     )
-                    Label(Copy(R.string.k_groups), 10, Mist)
+                    Label(Copy(R.string.k_groups), 11, Mist)
                 }
             }
             GradientBar(
@@ -713,20 +721,24 @@ private fun DuplicateSummaryCard(state: DuplicateState) {
                 thickness = 8,
             )
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Label("${state.filesInspected} files inspected", 10, Mist, modifier = Modifier.weight(1f))
-                Label("${state.filesHashed} hashed", 10, Mist, modifier = Modifier.weight(1f))
-                Label(humanBytes(state.bytesHashed) + " read", 10, Mist)
+                Label(Copy.args(R.string.dup_files_inspected, KnouxFormat.number(state.filesInspected)), 11, Mist, modifier = Modifier.weight(1f), maxLines = 2)
+                Label(Copy.args(R.string.dup_files_hashed, KnouxFormat.number(state.filesHashed)), 11, Mist, modifier = Modifier.weight(1f), maxLines = 2)
+                Label(Copy.args(R.string.dup_bytes_read, humanBytes(state.bytesHashed)), 11, Mist, modifier = Modifier.weight(1f), maxLines = 2)
             }
             state.capturedAt?.let { captured ->
                 Label(
-                    (if (state.previousScan) "Previous pass " else "Measured ") + dupAgo(captured),
-                    10, Cyan,
+                    if (state.previousScan) {
+                        Copy.args(R.string.dup_previous_pass, dupAgo(captured, LocalArabic.current))
+                    } else {
+                        Copy.args(R.string.dup_measured_when, dupAgo(captured, LocalArabic.current))
+                    },
+                    11, Cyan,
                     modifier = Modifier.testTag("duplicate-captured"),
                 )
             }
             if (scanning) {
                 Label(
-                    Copy.args(R.string.k_groups_found_progress, state.progressLabel, state.groupsFound),
+                    Copy.args(R.string.dup_groups_found, KnouxFormat.number(state.groupsFound)),
                     11, Cyan, FontWeight.Bold,
                     modifier = Modifier.testTag("duplicate-progress"),
                 )
@@ -782,10 +794,15 @@ private fun DuplicateGroupCard(
                 Spacer(Modifier.width(8.dp))
                 Column(Modifier.weight(1f)) {
                     Label(
-                        "${group.memberCount} identical copies", 13, Chalk, FontWeight.Bold,
+                        Copy.args(R.string.dup_identical_copies, KnouxFormat.number(group.memberCount)),
+                        13, Chalk, FontWeight.Bold,
                     )
                     Label(
-                        "${humanBytes(group.bytes)} each · ${humanBytes(group.redundantBytes)} recoverable",
+                        Copy.args(
+                            R.string.dup_group_detail,
+                            humanBytes(group.bytes),
+                            humanBytes(group.redundantBytes),
+                        ),
                         10, Mist,
                     )
                 }
@@ -813,8 +830,8 @@ private fun DuplicateGroupCard(
             ) {
                 Glyph(Mark.LOCK, Modifier.size(16.dp), Mint, true)
                 Column(Modifier.weight(1f)) {
-                    Label(group.keeper.displayName, 12, Mint, FontWeight.Bold, maxLines = 2)
-                    Label("Original — kept", 10, Mint)
+                    Label(KnouxNames.friendly(group.keeper.displayName, LocalArabic.current), 12, Mint, FontWeight.Bold, maxLines = 2)
+                    Label(Copy(R.string.dup_original_kept), 10, Mint)
                 }
                 Label(humanBytes(group.keeper.bytes), 11, Mint, FontWeight.Bold)
             }
@@ -865,17 +882,17 @@ private fun DuplicateGroupCard(
                         SelectionIndicator(candidate.uri in selected, Cyan)
 
                         Column(Modifier.weight(1f)) {
-                            Label(candidate.displayName, 12, Chalk, maxLines = 2)
+                            Label(KnouxNames.friendly(candidate.displayName, LocalArabic.current), 12, Chalk, maxLines = 2)
                             Label(
                                 when {
-                                    !removable -> "This provider does not allow removal"
+                                    !removable -> Copy(R.string.dup_cannot_remove)
                                     candidate.provenance == DataProvenance.MEDIASTORE ->
-                                        "Shared media — Android confirms removal"
+                                        Copy(R.string.dup_shared_media)
                                     candidate.provenance == DataProvenance.APP_OWNED_CACHE ->
-                                        "KNOUX cache copy — removed directly"
-                                    else -> "Inside a folder you granted"
+                                        Copy(R.string.dup_own_cache)
+                                    else -> Copy(R.string.dup_granted_folder)
                                 },
-                                10, Mist,
+                                11, Mist,
                             )
                         }
                         Label(
@@ -892,27 +909,28 @@ private fun DuplicateGroupCard(
 
 @Composable
 private fun DuplicateStatusStrip(state: DuplicateState) {
+    val arabic = LocalArabic.current
     val text = when {
-        state.error != null -> Copy(state.error ?: "", state.error ?: "")
-        state.message != null -> Copy(state.message ?: "", state.message ?: "")
-        state.phase == DuplicatePhase.SCANNING -> Copy(
-            "Hashing ${state.filesHashed}/${state.filesInspected} · ${humanBytes(state.bytesHashed)}",
-            "حساب البصمات ${state.filesHashed}/${state.filesInspected} · ${humanBytes(state.bytesHashed)}",
+        state.error != null -> Copy(R.string.status_action_failed)
+        state.notice != null -> state.notice!!
+        state.phase == DuplicatePhase.SCANNING -> Copy.args(
+            R.string.dup_scanning_count,
+            KnouxFormat.number(state.filesHashed),
+            KnouxFormat.number(state.filesInspected),
+            humanBytes(state.bytesHashed),
         )
-        state.measured && state.selected.isNotEmpty() -> Copy(
-            "${state.selectedCandidates.size} copy(ies) · ${humanBytes(state.selectedBytes)} selected",
-            "${state.selectedCandidates.size} نسخة · ${humanBytes(state.selectedBytes)} محددة",
+        state.measured && state.selected.isNotEmpty() -> Copy.args(
+            R.string.dup_selected_summary,
+            KnouxFormat.number(state.selectedCandidates.size),
+            humanBytes(state.selectedBytes),
         )
-        else -> Copy(
-            "One original per group is always protected.",
-            "يُحمى أصل واحد في كل مجموعة دائمًا.",
+        state.measured -> Copy.args(
+            R.string.dup_measured_when,
+            dupAgo(state.capturedAt ?: 0L, arabic),
         )
+        else -> Copy(R.string.dup_one_original)
     }
-    val tint = when {
-        state.error != null -> Gold
-        state.message != null -> Mint
-        else -> Mist
-    }
+    val tint = if (state.error != null) Gold else Mist
     Label(
         text, 11, tint,
         modifier = Modifier.fillMaxWidth().padding(top = 5.dp)
@@ -941,9 +959,9 @@ private fun DuplicateSourcesSheet(
             mark = Mark.PICTURES,
             title = Copy(R.string.k_photos_videos),
             detail = when (state.mediaGrant) {
-                PermissionGrant.GRANTED -> "Granted — library visible"
-                PermissionGrant.PARTIAL_SELECTED -> "Partial — only selected items are visible"
-                else -> "Not granted"
+                PermissionGrant.GRANTED -> Copy(R.string.grant_granted)
+                PermissionGrant.PARTIAL_SELECTED -> Copy(R.string.grant_partial)
+                else -> Copy(R.string.grant_denied)
             },
             action = if (state.mediaGrant == PermissionGrant.GRANTED)
                 Copy(R.string.k_manage_in_settings) else Copy(R.string.k_grant_access),
@@ -953,7 +971,8 @@ private fun DuplicateSourcesSheet(
         DuplicateScopeRow(
             mark = Mark.FOLDER,
             title = Copy(R.string.k_folders_you_granted),
-            detail = if (state.safTrees == 0) "No folder added" else "${state.safTrees} folder(s) granted",
+            detail = if (state.safTrees == 0) Copy(R.string.scope_no_folder)
+            else Copy.args(R.string.scope_folders_granted, KnouxFormat.number(state.safTrees)),
             action = Copy(R.string.k_add_folder),
             tag = "dup-scope-saf",
             onAction = onAddFolder,
@@ -997,7 +1016,7 @@ private fun DuplicateSourcesSheet(
 private fun DuplicateScopeRow(
     mark: Mark,
     title: Copy,
-    detail: String,
+    detail: Copy,
     action: Copy?,
     tag: String,
     onAction: (() -> Unit)?,
@@ -1025,13 +1044,13 @@ private fun DuplicateReviewSheet(
     onDismiss: () -> Unit,
 ) {
     InfoSheet(Copy(R.string.k_review_duplicate_removal), onDismiss) {
-        state.message?.let {
-            Label(it, 12, Mint, modifier = Modifier.testTag("duplicate-result"))
-        }
-        state.error?.let {
-            Label(it, 12, Gold, modifier = Modifier.testTag("duplicate-review-error"))
-        }
         if (state.busy) Label((Copy(R.string.k_working)), 12, Cyan)
+        state.notice?.let { Label(it, 12, Cyan, modifier = Modifier.testTag("duplicate-result")) }
+        val technical = buildList {
+            state.message?.let { add(Copy(R.string.technical_history) to it) }
+            state.error?.let { add(Copy(R.string.technical_status) to it) }
+        }
+        if (technical.isNotEmpty()) TechnicalDetails(rows = technical, tag = "duplicate-result-technical")
 
         val copies = state.selectedCandidates
         val hasLocalCopies = copies.any { it.provenance != DataProvenance.MEDIASTORE }
@@ -1049,7 +1068,13 @@ private fun DuplicateReviewSheet(
             copies.take(40).forEach { copy ->
                 val group = state.groups.firstOrNull { g -> g.duplicates.any { it.uri == copy.uri } }
                 Label(
-                    "${copy.displayName} · ${humanBytes(copy.bytes)} · original: ${group?.keeper?.displayName ?: "kept"}",
+                    Copy.args(
+                        R.string.dup_summary_line,
+                        KnouxNames.friendly(copy.displayName, LocalArabic.current),
+                        humanBytes(copy.bytes),
+                        group?.keeper?.displayName?.let { KnouxNames.friendly(it, LocalArabic.current) }
+                            ?: Copy(R.string.dup_kept_word).text(LocalArabic.current),
+                    ),
                     11, Mist, maxLines = 2,
                 )
             }
@@ -1057,22 +1082,10 @@ private fun DuplicateReviewSheet(
 
         Label(
             when {
-                copies.isEmpty() -> Copy(
-                    "One original per group is always preserved. Trash is recoverable; permanent delete is not.",
-                    "يُحفظ أصل واحد في كل مجموعة دائمًا. السلة قابلة للاستعادة؛ الحذف النهائي لا.",
-                )
-                hasLocalCopies && hasSharedMedia -> Copy(
-                    "KNOUX cache copies are deleted immediately. Android's dialog covers only the shared media; cancelling it leaves that media untouched.",
-                    "تُحذف نسخ ذاكرة KNOUX المؤقتة فورًا. حوار أندرويد يغطي الوسائط المشتركة فقط؛ إلغاؤه يترك تلك الوسائط دون تغيير.",
-                )
-                hasSharedMedia -> Copy(
-                    "Android shows its own confirmation for shared media. Cancelling there means nothing was removed.",
-                    "يعرض أندرويد تأكيده الخاص للوسائط المشتركة. الإلغاء هناك يعني عدم إزالة أي شيء.",
-                )
-                else -> Copy(
-                    "These copies are inside KNOUX's own cache and are deleted directly; no Android dialog is involved.",
-                    "هذه النسخ داخل ذاكرة KNOUX المؤقتة وتُحذف مباشرة؛ لا يظهر حوار أندرويد.",
-                )
+                copies.isEmpty() -> Copy(R.string.dup_one_original)
+                hasLocalCopies && hasSharedMedia -> Copy(R.string.dup_mixed_note)
+                hasSharedMedia -> Copy(R.string.dup_shared_note)
+                else -> Copy(R.string.dup_cache_note)
             },
             11, Gold,
         )
@@ -1083,6 +1096,10 @@ private fun DuplicateReviewSheet(
             enabled = state.trashAvailable && !state.busy,
             tag = "duplicate-action-trash",
         ) { onTrash() }
+        if (!state.trashAvailable) {
+            Label((Copy(R.string.dup_trash_reason)), 11, Gold,
+                modifier = Modifier.testTag("duplicate-trash-reason"))
+        }
 
         Row(
             Modifier.fillMaxWidth().heightIn(min = 48.dp)
@@ -1105,20 +1122,26 @@ private fun DuplicateReviewSheet(
             enabled = confirmPermanent && copies.isNotEmpty() && !state.busy,
             tag = "duplicate-action-delete",
         ) { onPermanent() }
+        if (!confirmPermanent) {
+            Label((Copy(R.string.clean_ack_reason)), 11, Mist,
+                modifier = Modifier.testTag("duplicate-ack-reason"))
+        }
         Label(
             (Copy(R.string.k_local_cache_copies_are_removed_immediately_shared_media)),
-            10, Mist,
+            12, Mist,
         )
     }
 }
 
-private fun dupAgo(millis: Long): String {
+private fun dupAgo(millis: Long, arabic: Boolean): String {
     if (millis <= 0L) return ""
     val delta = System.currentTimeMillis() - millis
+    fun say(@androidx.annotation.StringRes id: Int, value: Long): String =
+        KnouxStrings.get(id, arabic, arrayOf<Any?>(KnouxFormat.number(value)))
     return when {
-        delta < 60_000L -> "just now"
-        delta < 3_600_000L -> "${delta / 60_000L} min ago"
-        delta < 86_400_000L -> "${delta / 3_600_000L} h ago"
-        else -> "${delta / 86_400_000L} d ago"
+        delta < 60_000L -> KnouxStrings.get(R.string.time_just_now, arabic)
+        delta < 3_600_000L -> say(R.string.time_minutes_ago, delta / 60_000L)
+        delta < 86_400_000L -> say(R.string.time_hours_ago, delta / 3_600_000L)
+        else -> say(R.string.time_days_ago, delta / 86_400_000L)
     }
 }

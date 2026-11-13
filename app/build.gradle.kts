@@ -1,9 +1,30 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
 }
+
+// Release signing material never lives in source. Read a local, ignored
+// keystore.properties first, then the documented environment variables.
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) keystorePropertiesFile.inputStream().use { load(it) }
+}
+
+fun releaseSecret(property: String, environment: String): String? =
+    keystoreProperties.getProperty(property)?.takeIf { it.isNotBlank() }
+        ?: System.getenv(environment)?.takeIf { it.isNotBlank() }
+
+val releaseStorePath = releaseSecret("storeFile", "KNOUX_RELEASE_STORE_FILE")
+val releaseStorePassword = releaseSecret("storePassword", "KNOUX_RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = releaseSecret("keyAlias", "KNOUX_RELEASE_KEY_ALIAS")
+val releaseKeyPassword = releaseSecret("keyPassword", "KNOUX_RELEASE_KEY_PASSWORD")
+val hasReleaseSigning = listOf(
+    releaseStorePath, releaseStorePassword, releaseKeyAlias, releaseKeyPassword,
+).all { !it.isNullOrBlank() }
 
 android {
     namespace = "com.knoux.ai"
@@ -17,16 +38,41 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures { compose = true; buildConfig = true }
+
+    // A release APK must never be signed with the debug key.
+    if (hasReleaseSigning) {
+        signingConfigs {
+            create("release") {
+                storeFile = rootProject.file(releaseStorePath!!)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         getByName("debug") {
             isDebuggable = true
+            // Contact details are build configuration, never source. Pass
+            // -PknouxProContact=... locally; the repository stays free of a
+            // personal number, and the UI states honestly when it is absent.
+            buildConfigField(
+                "String", "PRO_CONTACT_WHATSAPP",
+                "\"${providers.gradleProperty("knouxProContact").getOrElse("")}\"",
+            )
         }
         getByName("release") {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Self-signed for testing — replace with your keystore for Play Store
-            signingConfig = signingConfigs.getByName("debug")
+            buildConfigField(
+                "String", "PRO_CONTACT_WHATSAPP",
+                "\"${providers.gradleProperty("knouxProContact").getOrElse("")}\"",
+            )
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     compileOptions {
@@ -37,6 +83,22 @@ android {
     // this they live only on the build machine and the test cannot validate 2 → 3.
     sourceSets.getByName("androidTest").assets.srcDir("$projectDir/schemas")
 }
+
+// Release hygiene is enforced only when a release task is requested; a debug
+// build must never be blocked by the absence of production signing material.
+val releaseRequested = gradle.startParameter.taskNames.any { it.contains("release", ignoreCase = true) }
+if (releaseRequested && !hasReleaseSigning &&
+    project.findProperty("knouxAllowUnsignedRelease")?.toString()?.toBoolean() != true
+) {
+    error(
+        "Release builds need a production signing config. Create " +
+            "keystore.properties (storeFile, storePassword, keyAlias, keyPassword) " +
+            "at the repository root, set KNOUX_RELEASE_* environment variables, or pass " +
+            "-PknouxAllowUnsignedRelease=true to build an unsigned release. " +
+            "KNOUX never signs a release with the debug key."
+    )
+}
+
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
 
 // Room schema export keeps every migration reviewable and makes destructive

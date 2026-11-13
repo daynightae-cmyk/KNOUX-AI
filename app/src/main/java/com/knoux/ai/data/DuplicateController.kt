@@ -54,7 +54,7 @@ class DuplicateController(
 ) {
     val selectedScopes: Flow<Set<AccessScope>> get() = settings.selectedScopes
 
-    fun describeScope(scope: AccessScope): String = clean.describeScope(scope)
+    internal fun describeScope(scope: AccessScope): com.knoux.ai.Copy = clean.describeScope(scope)
 
     suspend fun setScopes(scopes: Set<AccessScope>) = settings.setSelectedScopes(scopes)
 

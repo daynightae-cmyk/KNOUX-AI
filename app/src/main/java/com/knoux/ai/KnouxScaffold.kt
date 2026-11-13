@@ -25,9 +25,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -206,3 +211,58 @@ internal fun Shimmer() {
 /** An icon that is the only content of its control must describe itself. */
 internal fun Modifier.iconLabel(description: String): Modifier =
     semantics { contentDescription = description }
+
+/**
+ * A collapsed panel for engine-level detail.
+ *
+ * A customer sees one honest sentence on the surface. Raw identifiers, scope
+ * enums and byte counts live here, one tap away, so the screen stays readable
+ * without hiding anything and without moving debug text into the primary view.
+ */
+@Composable
+internal fun TechnicalDetails(
+    rows: List<Pair<Copy, String>>,
+    modifier: Modifier = Modifier,
+    tag: String = "technical-details",
+) {
+    var open by rememberSaveable { mutableStateOf(false) }
+    val shape = RoundedCornerShape(16.dp)
+    Column(
+        modifier.fillMaxWidth().clip(shape).background(KnouxColors.surface)
+            .border(1.dp, KnouxColors.border, shape),
+    ) {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET)
+                .clickable(role = Role.Button) { open = !open }
+                .testTag(tag).padding(horizontal = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Glyph(Mark.GEAR, Modifier.size(16.dp), KnouxColors.textSecondary)
+            Label(
+                Copy(R.string.technical_details), 13, KnouxColors.textSecondary, FontWeight.SemiBold,
+                modifier = Modifier.weight(1f),
+            )
+            Glyph(
+                Mark.NEXT, Modifier.size(14.dp).rotate(if (open) 90f else 0f),
+                KnouxColors.textSecondary,
+            )
+        }
+        if (open) {
+            Column(
+                Modifier.padding(start = 14.dp, end = 14.dp, bottom = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                rows.forEach { (label, value) ->
+                    Row(Modifier.fillMaxWidth()) {
+                        Label(label, 12, KnouxColors.textSecondary, modifier = Modifier.weight(.42f))
+                        Label(
+                            Copy.runtime(value), 12, KnouxColors.textPrimary,
+                            modifier = Modifier.weight(.58f), maxLines = 3,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}

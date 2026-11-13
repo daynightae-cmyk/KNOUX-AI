@@ -116,19 +116,19 @@ internal fun Modifier.glass(radius: Int, active: Boolean = false, ghost: Boolean
         drawRoundRect(Brush.verticalGradient(listOf(edge[0], edge[1], edge[2], edge[1]),
             startY = 0f, endY = height), cornerRadius = rad)
         // Directional sheen across the upper half.
-        drawRoundRect(Brush.linearGradient(listOf(Color.White.copy(alpha = if (active) .24f else .13f), Color.Transparent),
+        drawRoundRect(Brush.linearGradient(listOf(Color.White.copy(alpha = if (active) .18f else .09f), Color.Transparent),
             start = Offset(0f, 0f), end = Offset(width * .9f, height * .8f)), cornerRadius = rad)
         // Distinct top-edge highlight: the polished lip of the glass.
-        drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = if (active) .34f else .19f),
+        drawRoundRect(Brush.verticalGradient(listOf(Color.White.copy(alpha = if (active) .26f else .14f),
             Color.Transparent), startY = 0f, endY = height * .36f), cornerRadius = rad)
         // Localised light concentration where the content starts.
         val flash = tint ?: if (active) Color(0xffff5cff) else Color(0xffad72ff)
-        val flashAlpha = if (active) .74f else .24f
+        val flashAlpha = if (active) .55f else .16f
         drawRoundRect(Brush.radialGradient(listOf(flash.copy(alpha = flashAlpha), Color.Transparent),
             Offset(width * .10f, -height * .06f), width * .62f), cornerRadius = rad)
         // Cool bounce light from the opposite side.
         val bounce = if (active && !tab) Light.cyan else tint ?: Light.violet
-        drawRoundRect(Brush.radialGradient(listOf(bounce.copy(alpha = if (active) .66f else .23f), Color.Transparent),
+        drawRoundRect(Brush.radialGradient(listOf(bounce.copy(alpha = if (active) .45f else .16f), Color.Transparent),
             Offset(width * .97f, height * 1.02f), width * .38f), cornerRadius = rad)
         // Border: bright where the light hits, quiet on the shadow side.
         val stroke = when {
@@ -145,7 +145,7 @@ internal fun Modifier.glass(radius: Int, active: Boolean = false, ghost: Boolean
             start = Offset.Zero, end = Offset(width, height)
         )
         val rimAlpha = if (active) 1f else .92f
-        drawRoundRect(rim, cornerRadius = rad, alpha = rimAlpha * .30f, style = Stroke(3.dp.toPx()))
+        drawRoundRect(rim, cornerRadius = rad, alpha = rimAlpha * .18f, style = Stroke(3.dp.toPx()))
         drawRoundRect(rim, cornerRadius = rad, alpha = rimAlpha, style = Stroke(1.05.dp.toPx()))
     }
 
@@ -154,7 +154,7 @@ internal fun Modifier.buttonBloom(primary: Boolean, pulse: State<Float>? = null)
     val breath = pulse?.value ?: 0f
     for ((index, dp) in listOf(14, 9, 5).withIndex()) {
         val delta = dp.dp.toPx() * (1f + breath * .10f)
-        val base = listOf(.16f, .21f, .19f)[index]
+        val base = listOf(.12f, .15f, .13f)[index]
         drawRoundRect(Brush.horizontalGradient(listOf(Light.magenta.copy(alpha = base * (1f + breath * .35f)),
             Color(0xff5a2bf0).copy(alpha = base * 1.08f), Light.cyan.copy(alpha = base * (1f + breath * .30f)))),
             topLeft = Offset(-delta, -delta * .60f), size = Size(size.width + delta * 2, size.height + delta * 1.20f),
@@ -586,45 +586,6 @@ internal fun StatusSummaryPanel(screen: PreviewScreen, page: Page) {
             }
             Separator(Modifier.width(1.dp).height(57.dp))
             Facts(Modifier.weight(.63f))
-        }
-    }
-}
-
-/** Gold capsule used by the master references to mark every sample metric. */
-@Composable
-internal fun DesignPreviewPill(modifier: Modifier = Modifier,
-    label: Copy = (Copy(R.string.k_design_preview)),
-    onClick: (() -> Unit)? = null
-) {
-    val shape = RoundedCornerShape(14.dp)
-    val click = if (onClick != null) Modifier.clickable(role = Role.Button, onClick = onClick) else Modifier
-    Row(modifier.heightIn(min = 30.dp).testTag("design-preview").clip(shape)
-        .background(Brush.horizontalGradient(listOf(Color(0xff24163f), Color(0xff160d2c))), shape)
-        .border(1.dp, Gold.copy(alpha = .82f), shape).then(click)
-        .padding(horizontal = 10.dp, vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-        Box(Modifier.size(6.dp).background(Gold, RoundedCornerShape(3.dp)))
-        Label(label.localized(), 9, Gold, FontWeight.Bold)
-    }
-}
-
-@Composable
-internal fun PreviewModeDisclosure(onClick: () -> Unit) {
-    val label = (Copy(R.string.k_design_preview_2)).localized()
-    val shape = RoundedCornerShape(16.dp)
-    val pulse = if (LocalPreviewMotion.current) {
-        val transition = rememberInfiniteTransition(label = "preview dot")
-        transition.animateFloat(0f, 1f, infiniteRepeatable(tween(1700, easing = FastOutSlowInEasing),
-            RepeatMode.Reverse), label = "preview dot")
-    } else null
-    Box(Modifier.heightIn(min = 48.dp).testTag("design-preview").clip(RoundedCornerShape(18.dp))
-        .clickable(role = Role.Button, onClick = onClick).padding(horizontal = 4.dp), contentAlignment = Alignment.Center) {
-        Row(Modifier.border(1.dp, Brush.horizontalGradient(listOf(Light.ice.copy(alpha = .85f), Cyan)),
-            shape).background(Brush.horizontalGradient(listOf(Color(0xff172a68), Color(0xff1c185c))), shape)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-            Box(Modifier.size(6.dp).background(Cyan.copy(alpha = .35f + .65f * (pulse?.value ?: 1f)), RoundedCornerShape(3.dp)))
-            Label(label, 10, Color(0xffc9f8ff), FontWeight.Bold, align = TextAlign.Center)
         }
     }
 }

@@ -42,7 +42,7 @@ class SmartCleanController(
 
     val selectedScopes: Flow<Set<AccessScope>> get() = settings.selectedScopes
     val lastScanAt: Flow<Long> get() = settings.lastScanAt
-    fun describeScope(scope: AccessScope): String = permissions.describe(scope)
+    internal fun describeScope(scope: AccessScope): com.knoux.ai.Copy = permissions.describe(scope)
     suspend fun setScopes(scopes: Set<AccessScope>) = settings.setSelectedScopes(scopes)
     fun newPlanId(): String = UUID.randomUUID().toString()
 

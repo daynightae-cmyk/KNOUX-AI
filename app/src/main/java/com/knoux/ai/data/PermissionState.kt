@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.content.ContextCompat
+import com.knoux.ai.R
 
 /**
  * Observes what the platform will actually let us read *right now*.
@@ -87,15 +88,19 @@ class PermissionState(private val context: Context) {
             .filter { it.isReadPermission && (!requireWrite || it.isWritePermission) }
             .map { it.uri }
 
-    /** A truthful one-line description for the UI. */
-    fun describe(scope: AccessScope): String = when (scope) {
-        AccessScope.APP_CACHE -> "Always available — KNOUX's own cache only"
+    /** A truthful one-line description for the UI, in the customer's language. */
+    internal fun describe(scope: AccessScope): com.knoux.ai.Copy = when (scope) {
+        AccessScope.APP_CACHE -> com.knoux.ai.Copy(R.string.scope_cache_detail)
         AccessScope.MEDIA_IMAGES, AccessScope.MEDIA_VIDEO -> when (mediaGrant(scope)) {
-            PermissionGrant.GRANTED -> "Granted — library visible"
-            PermissionGrant.PARTIAL_SELECTED -> "Partial — only selected items are visible"
-            PermissionGrant.REVOKED -> "Revoked — re-grant to scan"
-            else -> "Not granted"
+            PermissionGrant.GRANTED -> com.knoux.ai.Copy(R.string.grant_granted)
+            PermissionGrant.PARTIAL_SELECTED -> com.knoux.ai.Copy(R.string.grant_partial)
+            PermissionGrant.REVOKED -> com.knoux.ai.Copy(R.string.grant_revoked)
+            else -> com.knoux.ai.Copy(R.string.grant_denied)
         }
-        AccessScope.SAF_TREE -> if (safTrees().isEmpty()) "No folder added" else "${safTrees().size} folder(s) granted"
+        AccessScope.SAF_TREE -> if (safTrees().isEmpty()) com.knoux.ai.Copy(R.string.scope_no_folder)
+        else com.knoux.ai.Copy.args(
+            R.string.scope_folders_granted,
+            com.knoux.ai.KnouxFormat.number(safTrees().size),
+        )
     }
 }

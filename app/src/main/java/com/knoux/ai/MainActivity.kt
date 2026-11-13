@@ -89,8 +89,6 @@ import kotlin.math.PI
 import kotlin.math.exp
 import kotlin.math.sin
 
-internal val Disclosure = Copy(R.string.k_all_figures_are_sample_data_from_the_design_nothing_on_y)
-internal val NoChange = Copy(R.string.k_no_action_performed_ui_preview_only)
 internal val Close = Copy(R.string.k_close)
 
 internal data class DebugVisit(val page: Page, val number: Int, val still: Boolean)
@@ -283,7 +281,7 @@ private fun tabTitle(page: Page) = when (page) {
     Page.REPORTS -> Copy(R.string.k_reports)
     else -> page.title
 }
-private enum class HeaderSheet { MENU, PRO, SETTINGS, DISCLOSURE }
+private enum class HeaderSheet { MENU, PRO, SETTINGS }
 
 // ── Notification badge system ─────────────────────────────────────────────
 /** Per-tab notification counts. Incremented when the user visits a section. */
@@ -294,20 +292,13 @@ internal object SectionNotifier {
     private val _messages = mutableStateOf(mapOf<Page, String>())
     val messages: Map<Page, String> get() = _messages.value
 
-    // Seed with onboarding notices so the user sees something on first open
-    init { seed() }
+    // No seeded notices: a badge may only appear after a real pass reports
+    // something. Inventing "2 items ready" on first open would be a fake result.
+    init { clear() }
 
-    private fun seed() {
-        _counts.value = mapOf(
-            Page.CLEAN to 2,
-            Page.TOOLS to 1,
-            Page.REPORTS to 3
-        )
-        _messages.value = mapOf(
-            Page.CLEAN to "2 items ready to clean",
-            Page.TOOLS to "App analysis available",
-            Page.REPORTS to "3 new insights"
-        )
+    private fun clear() {
+        _counts.value = emptyMap()
+        _messages.value = emptyMap()
     }
 
     fun markSeen(page: Page) {
@@ -329,8 +320,8 @@ internal object TouchFeedback {
     fun init(context: Context) {
         if (initialized) return
         initialized = true
-        vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // VibratorManager added in API 28; API 26 emulator has no such class
+        vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // VibratorManager is API 31; older devices use the deprecated service.
             try {
                 val vm = context.getSystemService(VibratorManager::class.java)
                 vm.defaultVibrator
@@ -443,7 +434,7 @@ private fun KnouxAppScaffold(
             CompositionLocalProvider(LocalRoomy provides roomy, LocalTall provides (maxHeight >= 800.dp && !roomy)) {
                 Column(Modifier.fillMaxSize()) {
                     KnouxTopBar(page, { headerSheet = HeaderSheet.MENU }, back, { headerSheet = HeaderSheet.PRO },
-                        { headerSheet = HeaderSheet.SETTINGS }, { headerSheet = HeaderSheet.DISCLOSURE })
+                        { headerSheet = HeaderSheet.SETTINGS })
                     NavHost(navController = nav, startDestination = Page.HOME.id, modifier = Modifier.weight(1f),
                         enterTransition = {
                             if (!navMotion) EnterTransition.None
@@ -500,12 +491,10 @@ private fun KnouxAppScaffold(
                     val title = when (shown) {
                         HeaderSheet.MENU -> Copy(R.string.k_explore_knoux_ai)
                         HeaderSheet.PRO -> Copy(R.string.k_knoux_ai_pro)
-                        HeaderSheet.SETTINGS -> Copy(R.string.k_preview_settings)
-                        HeaderSheet.DISCLOSURE -> Copy(R.string.k_design_preview_2)
+                        HeaderSheet.SETTINGS -> Copy(R.string.k_settings)
                     }
                     InfoSheet(title, { headerSheet = null }) {
                         when (shown) {
-                            HeaderSheet.DISCLOSURE -> Label(Disclosure.localized(), 14, Mist)
                             HeaderSheet.PRO -> ProSheet()
                             HeaderSheet.MENU -> {
                                 val choices = if (BuildConfig.DEBUG) Page.references else tabs.map { it.first }
@@ -533,13 +522,13 @@ private fun KnouxAppScaffold(
                                         horizontalArrangement = Arrangement.SpaceBetween) {
                                         Column {
                                             Label((Copy(R.string.k_knoux_ai)).localized(), 16, Chalk, FontWeight.Bold)
-                                            Label((Copy(R.string.k_version_1_0_phase_1_preview)).localized(), 11, Mist.copy(alpha = 0.7f))
+                                            Label(Copy(R.string.app_version_line), 11, Mist.copy(alpha = 0.7f))
                                         }
                                         Box(Modifier.clip(RoundedCornerShape(10.dp))
                                             .background(Brush.horizontalGradient(listOf(Color(0xff2a1c08), Color(0xff1a0d2a))), RoundedCornerShape(10.dp))
                                             .border(1.dp, Gold.copy(alpha = .9f), RoundedCornerShape(10.dp))
                                             .padding(horizontal = 10.dp, vertical = 4.dp)) {
-                                            Label("PRO", 10, Gold, FontWeight.Bold)
+                                            Label(Copy(R.string.pro_badge), 10, Gold, FontWeight.Bold)
                                         }
                                     }
                                 }
@@ -559,8 +548,6 @@ private fun KnouxAppScaffold(
                                 AccentButton(
                                     Action(if (reduced) Copy(R.string.k_enable_animations) else Copy(R.string.k_reduce_motion_2), Mark.RADAR),
                                     Modifier.fillMaxWidth(), primary = false, tag = "motion-toggle") { reduceMotion(!reduced) }
-                                // Disclosure
-                                Label(Disclosure.localized(), 11, Mist.copy(alpha = 0.6f))
                             }
                         }
                     }
@@ -573,9 +560,16 @@ private fun KnouxAppScaffold(
 @Composable
 private fun ProSheet() {
     val context = LocalContext.current
-    var generatedCode by remember { mutableStateOf<String?>(null) }
-    val whatsappNumber = "+971503281920"
-    val waLink = "https://wa.me/971503281920"
+    val arabic = LocalArabic.current
+    val whatsappNumber = BuildConfig.PRO_CONTACT_WHATSAPP
+    val waDigits = whatsappNumber.filter { it.isDigit() }
+    val waLink = if (waDigits.isBlank()) "" else
+        "https://wa.me/$waDigits?text=" + Uri.encode(
+            KnouxStrings.get(
+                R.string.pro_whatsapp_message, arabic,
+                arrayOf(KnouxStrings.get(R.string.k_knoux_ai_pro, arabic)),
+            )
+        )
 
     // Header banner
     Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
@@ -613,63 +607,62 @@ private fun ProSheet() {
         }
     }
 
-    // Code generator
+    // Honest activation notice. This build has no billing, and a locally
+    // generated string could never unlock anything, so the sheet says so
+    // instead of handing the customer a fake code.
     Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
-        .background(Brush.linearGradient(listOf(Color(0xff0d0030), Color(0xff001520))), RoundedCornerShape(16.dp))
-        .border(1.dp, Violet.copy(alpha = .6f), RoundedCornerShape(16.dp))
+        .background(Brush.linearGradient(listOf(Color(0xff160a2e), Color(0xff081626))), RoundedCornerShape(16.dp))
+        .border(1.dp, Violet.copy(alpha = .45f), RoundedCornerShape(16.dp))
         .padding(16.dp)) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.fillMaxWidth()) {
-            Label(("🎁  " + (Copy(R.string.k_get_a_free_trial_code)).localized()), 14, Chalk, FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth(), align = TextAlign.Center)
-            if (generatedCode != null) {
-                Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xff001a10), RoundedCornerShape(12.dp))
-                    .border(1.5.dp, Mint.copy(alpha = .8f), RoundedCornerShape(12.dp))
-                    .padding(vertical = 12.dp, horizontal = 16.dp), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Label((Copy(R.string.k_your_trial_code)).localized(), 11, Mist.copy(alpha = 0.7f))
-                        Spacer(Modifier.height(4.dp))
-                        Label(generatedCode!!, 24, Mint, FontWeight.ExtraBold, align = TextAlign.Center)
-                        Spacer(Modifier.height(4.dp))
-                        Label((Copy(R.string.k_send_this_code_to_activate_pro)).localized(), 11, Mist.copy(alpha = 0.6f))
-                    }
-                }
+        Column(verticalArrangement = Arrangement.spacedBy(7.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Glyph(Mark.LOCK, Modifier.size(18.dp), Gold, true)
+                Label((Copy(R.string.pro_activation_title)).localized(), 15, Chalk, FontWeight.Bold)
             }
-            AccentButton(
-                Action((Copy(R.string.k_generate_trial_code)), Mark.SPARKLE),
-                Modifier.fillMaxWidth(), primary = true, tag = "gen-code"
-            ) {
-                val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-                generatedCode = "KX-" + (1..8).map { chars.random() }.joinToString("")
-            }
+            Label((Copy(R.string.pro_activation_body)).localized(), 12, Mist.copy(alpha = .88f))
+            Label((Copy(R.string.pro_activation_build_note)).localized(), 11, Gold.copy(alpha = .9f))
         }
     }
 
-    // WhatsApp contact
-    Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
-        .background(Brush.linearGradient(listOf(Color(0xff003010), Color(0xff001a08))), RoundedCornerShape(16.dp))
-        .border(1.5.dp, Color(0xff25D366).copy(alpha = .8f), RoundedCornerShape(16.dp))
-        .clickable(role = Role.Button) {
-            runCatching {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(waLink))
-                context.startActivity(intent)
+    // Contact channel: shown only when the build actually configures one.
+    if (waDigits.isNotBlank()) {
+        Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
+            .background(Brush.linearGradient(listOf(Color(0xff003010), Color(0xff001a08))), RoundedCornerShape(16.dp))
+            .border(1.5.dp, Color(0xff25D366).copy(alpha = .8f), RoundedCornerShape(16.dp))
+            .clickable(role = Role.Button) {
+                runCatching {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(waLink))
+                    context.startActivity(intent)
+                }
+            }
+            .padding(16.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                Box(Modifier.size(48.dp).clip(RoundedCornerShape(24.dp))
+                    .background(Color(0xff25D366), RoundedCornerShape(24.dp)),
+                    contentAlignment = Alignment.Center) {
+                    Glyph(Mark.CHAT, Modifier.size(26.dp), Chalk, true)
+                }
+                Column(Modifier.weight(1f)) {
+                    Label((Copy(R.string.k_contact_on_whatsapp)).localized(), 15, Chalk, FontWeight.Bold)
+                    Label(whatsappNumber, 13, Color(0xff25D366), FontWeight.Medium)
+                    Label((Copy(R.string.pro_opens_whatsapp)).localized(), 11, Mist.copy(alpha = .72f))
+                }
+                Glyph(Mark.NEXT, Modifier.size(20.dp), Color(0xff25D366))
             }
         }
-        .padding(16.dp)) {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-            Box(Modifier.size(48.dp).clip(RoundedCornerShape(24.dp))
-                .background(Color(0xff25D366), RoundedCornerShape(24.dp)),
-                contentAlignment = Alignment.Center) {
-                Glyph(Mark.CHAT, Modifier.size(26.dp), Chalk, true)
+    } else {
+        Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp))
+            .background(Color(0xff0a1020), RoundedCornerShape(16.dp))
+            .border(1.dp, Mist.copy(alpha = .3f), RoundedCornerShape(16.dp))
+            .padding(16.dp)) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                Glyph(Mark.CHAT, Modifier.size(22.dp), Mist.copy(alpha = .7f))
+                Label((Copy(R.string.pro_contact_not_configured)).localized(), 12, Mist.copy(alpha = .86f),
+                    modifier = Modifier.weight(1f))
             }
-            Column(Modifier.weight(1f)) {
-                Label((Copy(R.string.k_contact_on_whatsapp)).localized(), 15, Chalk, FontWeight.Bold)
-                Label(whatsappNumber, 13, Color(0xff25D366), FontWeight.Medium)
-                Label((Copy(R.string.k_tap_to_activate_pro_subscription)).localized(), 11, Mist.copy(alpha = 0.6f))
-            }
-            Glyph(Mark.NEXT, Modifier.size(20.dp), Color(0xff25D366))
         }
     }
 }
@@ -694,10 +687,11 @@ internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> 
 }
 
 @Composable
-private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () -> Unit, settings: () -> Unit, disclose: () -> Unit) {
+private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () -> Unit, settings: () -> Unit) {
     var logoTapCount by remember { mutableIntStateOf(0) }
     var showDevAccess by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val arabic = LocalArabic.current
 
     LaunchedEffect(Unit) { TouchFeedback.init(context) }
     
@@ -771,25 +765,14 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
             }
         }
         if (compactHeader) {
-            Box(
-                Modifier.size(44.dp).testTag("design-preview")
-                    .clip(RoundedCornerShape(16.dp))
-                    .clickable(role = Role.Button, onClick = disclose)
-                    .semantics { contentDescription = "Design preview" },
-                contentAlignment = Alignment.Center
-            ) {
-                Glyph(Mark.EYE, Modifier.size(19.dp), Cyan)
-            }
-        } else {
-            PreviewModeDisclosure(disclose)
-        }
-        if (compactHeader) {
-            IconControl(Mark.CROWN, "KNOUX AI Pro", "pro", pro)
+            IconControl(Mark.CROWN, (Copy(R.string.k_knoux_ai_pro)).localized(), "pro", pro)
         } else if (!LocalRoomy.current) {
             Box(Modifier.heightIn(min = 48.dp).testTag("pro")
                 .clickable(role = Role.Button, onClick = {
                     TouchFeedback.tap(context); pro()
-                }).semantics { contentDescription = "KNOUX AI Pro" },
+                }).semantics {
+                    contentDescription = KnouxStrings.get(R.string.k_knoux_ai_pro, arabic)
+                },
                 contentAlignment = Alignment.Center) {
                 Row(Modifier.clip(RoundedCornerShape(20.dp))
                     .border(1.dp, Gold.copy(alpha = .85f), RoundedCornerShape(20.dp))

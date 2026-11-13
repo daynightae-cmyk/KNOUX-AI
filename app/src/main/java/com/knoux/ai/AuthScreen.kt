@@ -91,6 +91,7 @@ internal fun AuthGateway(forcedStage: AuthStage? = null,
     reduced: Boolean
 ) {
     val context = LocalContext.current
+    val arabic = LocalArabic.current
     val motion = LocalPreviewMotion.current && !reducedMotion
     var stage by remember { mutableStateOf(forcedStage ?: AuthStage.WELCOME) }
     var sheet by remember { mutableStateOf<String?>(null) }
@@ -123,9 +124,9 @@ internal fun AuthGateway(forcedStage: AuthStage? = null,
                 }
             })
         val info = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Verify your identity")
-            .setSubtitle("Unlock KNOUX AI with your fingerprint")
-            .setNegativeButtonText("Cancel")
+            .setTitle(KnouxStrings.get(R.string.auth_biometric_title, arabic))
+            .setSubtitle(KnouxStrings.get(R.string.auth_biometric_subtitle, arabic))
+            .setNegativeButtonText(KnouxStrings.get(R.string.k_cancel, arabic))
             .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
             .build()
         runCatching { prompt.authenticate(info) }.onFailure { stage = AuthStage.UNAVAILABLE }
@@ -204,7 +205,7 @@ internal fun AuthGateway(forcedStage: AuthStage? = null,
                     Label((Copy(R.string.k_no_account_profile_or_entitlement_is_created_by_this_scr)).localized(), 13, Mist)
                 }
                 "settings" -> {
-                    Label(Disclosure.localized(), 13, Mist)
+                    Label(Copy(R.string.auth_local_note), 13, Mist)
                     val ar = LocalArabic.current
                     AdaptiveActions(Action(Copy(R.string.k_english), Mark.CHECK),
                         Action(Copy(R.string.k_text_26b1b2), Mark.CHECK),
@@ -217,7 +218,7 @@ internal fun AuthGateway(forcedStage: AuthStage? = null,
                     Label(Copy(R.string.k_auth_permission_note), 13, Mist)
                 }
             }
-            Label(Disclosure.localized(), 12, Mist)
+            Label(Copy(R.string.auth_local_note), 12, Mist)
         }
     }
 }
@@ -309,26 +310,13 @@ private fun AuthBackdrop(content: @Composable () -> Unit) {
 
 /** Brand lockup used by the welcome and verified states. */
 @Composable
-private fun AuthBrandLockup(previewBadge: Boolean) {
+private fun AuthBrandLockup() {
     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
         horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
         Glyph(Mark.K, Modifier.size(30.dp))
         Spacer(Modifier.width(4.dp))
         Label("knoux", 20, weight = FontWeight.ExtraBold)
         Label(" ai", 20, Pink, FontWeight.ExtraBold)
-        if (previewBadge) {
-            Spacer(Modifier.width(12.dp))
-            Box(Modifier.width(1.dp).height(22.dp).background(Color.White.copy(alpha = .28f)))
-            Spacer(Modifier.width(12.dp))
-            Row(Modifier.heightIn(min = 28.dp).clip(RoundedCornerShape(14.dp))
-                .background(Brush.horizontalGradient(listOf(Color(0xff2a1c08), Color(0xff150d24))), RoundedCornerShape(14.dp))
-                .border(1.dp, Gold.copy(alpha = .85f), RoundedCornerShape(14.dp))
-                .padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Box(Modifier.size(7.dp).background(Gold, RoundedCornerShape(4.dp)))
-                Label("PREVIEW", 10, Gold, FontWeight.Bold)
-            }
-        }
     }
 }
 
@@ -883,33 +871,14 @@ private fun WelcomeStage(motion: Boolean, onUnlock: () -> Unit, onPasskey: () ->
 
         Spacer(Modifier.height(10.dp))
 
-        // ── Secure access strip ────────────────────────────────────────────
-        Row(Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(18.dp))
-                .background(Brush.horizontalGradient(listOf(Color(0xff4a1f8f).copy(alpha = .55f), Color(0xff1b1050).copy(alpha = .80f), Color(0xff123a6b).copy(alpha = .60f))
-                    ),
-                    RoundedCornerShape(18.dp)
-                )
-                .border(1.dp,
-                    Brush.horizontalGradient(listOf(Violet.copy(alpha = .85f), Cyan.copy(alpha = .70f))),
-                    RoundedCornerShape(18.dp)
-                )
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+        // Quiet reassurance line: no filled banner competing with the form.
+        Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Box(Modifier
-                    .size(34.dp)
-                    .clip(RoundedCornerShape(11.dp))
-                    .background(Brush.verticalGradient(listOf(Color(0xff8a4bff), Color(0xff5a1fd0))),
-                        RoundedCornerShape(11.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) { Glyph(Mark.SHIELD, Modifier.size(20.dp), Chalk, true) }
-            Box(Modifier.width(1.dp).height(28.dp).background(Chalk.copy(alpha = .30f)))
-            Label((Copy(R.string.k_secure_access_your_data_stays_private_on_your_device)).localized(),
-                11, Chalk.copy(alpha = .92f), FontWeight.Medium,
+            Glyph(Mark.SHIELD, Modifier.size(16.dp), Mint.copy(alpha = .9f))
+            Label((Copy(R.string.auth_secure_access_note)).localized(),
+                12, Mist.copy(alpha = .9f), FontWeight.Medium,
                 modifier = Modifier.weight(1f), maxLines = 2
             )
         }
@@ -919,7 +888,7 @@ private fun WelcomeStage(motion: Boolean, onUnlock: () -> Unit, onPasskey: () ->
         // ── Credentials ────────────────────────────────────────────────────
         GlassField(value = email,
             onValueChange = { email = it },
-            mark = Mark.CHAT,
+            mark = Mark.MAIL,
             placeholder = (Copy(R.string.k_email_address)).localized(),
             tag = "auth-email",
             keyboard = KeyboardType.Email
@@ -1002,7 +971,7 @@ private fun WelcomeStage(motion: Boolean, onUnlock: () -> Unit, onPasskey: () ->
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Label((Copy(R.string.k_sign_in_with_biometrics)).localized(), 12, Mist.copy(alpha = .82f), FontWeight.Medium)
+            Label((Copy(R.string.k_sign_in_with_biometrics)).localized(), 13, Chalk.copy(alpha = .92f), FontWeight.Medium)
         }
 
         Spacer(Modifier.height(6.dp))
@@ -1027,14 +996,19 @@ private fun WelcomeStage(motion: Boolean, onUnlock: () -> Unit, onPasskey: () ->
         Spacer(Modifier.height(2.dp))
 
         Box(Modifier
-                .heightIn(min = 44.dp)
+                .heightIn(min = 48.dp)
                 .clip(RoundedCornerShape(22.dp))
                 .clickable(role = Role.Button, onClick = onGuest)
                 .testTag("auth-guest")
                 .padding(horizontal = 14.dp),
             contentAlignment = Alignment.Center
         ) {
-            Label((Copy(R.string.k_continue_as_guest)).localized(), 11, Mist.copy(alpha = .55f), maxLines = 1)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Label((Copy(R.string.k_continue_as_guest)).localized(), 13, Chalk.copy(alpha = .9f),
+                    FontWeight.Medium, maxLines = 1)
+                Label((Copy(R.string.auth_guest_note)).localized(), 11, Mist.copy(alpha = .78f),
+                    align = TextAlign.Center, maxLines = 2)
+            }
         }
 
         Spacer(Modifier.height(8.dp))
@@ -1418,6 +1392,7 @@ private fun OtpStage(motion: Boolean, onBack: () -> Unit, onPasskey: () -> Unit,
  */
 @Composable
 private fun OtpSlots(code: String, active: Int, onCode: (String) -> Unit) {
+    val arabic = LocalArabic.current
     Box(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -1461,7 +1436,9 @@ private fun OtpSlots(code: String, active: Int, onCode: (String) -> Unit) {
                 .matchParentSize()
                 .testTag("otp-input")
                 .semantics {
-                    contentDescription = "Verification code, six digits"
+                    contentDescription = KnouxStrings.get(
+                        R.string.auth_otp_description, arabic,
+                    )
                 },
             singleLine = true,
             textStyle = TextStyle(color = Color.Transparent, fontSize = 1.sp),
@@ -1534,7 +1511,7 @@ private fun VerifyStage(motion: Boolean, onCancel: () -> Unit) {
 private fun VerifiedStage(motion: Boolean) {
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(Modifier.height(24.dp))
-        AuthBrandLockup(previewBadge = false)
+        AuthBrandLockup()
         Spacer(Modifier.height(30.dp))
         Box(Modifier.size(262.dp), contentAlignment = Alignment.Center) {
             FingerprintOrb(252, AuthStage.VERIFIED, motion, Modifier.testTag("auth-verified-orb"))
