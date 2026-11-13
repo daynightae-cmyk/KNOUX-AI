@@ -1,0 +1,9 @@
+KNOUX PC04 regression suite - full runner re-run after the OEM media provider stabilized
+Run: 2026-11-13 ~15:20 +04, itel S686LN / Android 15 / API 35, debug-signed test builds
+Command: adb shell am instrument -w -r com.knoux.ai.test/androidx.test.runner.AndroidJUnitRunner
+Temporary grant: READ_MEDIA_IMAGES granted only for this run, revoked immediately afterwards
+Result: OK (53 tests)
+Duration: 195.085 s
+Failures: 0 (the previous 51/53 run and its OEM libmtp crash are kept in 20-full-suite-summary.txt for the record)
+Classes exercised: all 53 instrumented tests, including DuplicateMediaTest, MediaConsentDiagnosticTest,
+PrivacyMigrationTest, PrivacyStorageTest, PrivacyRealScreenTest and PreviewNavigationTest.

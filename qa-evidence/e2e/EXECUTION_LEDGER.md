@@ -131,3 +131,15 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
 - **Integration:** source + tests committed as `54d694137c9445ab6c97292e46c5c3f5420faad3` (`feat(pc04): real privacy sweep with verified screenshot protection`) and pushed fast-forward `40d6ea4..54d6941`; `git ls-remote` returns the same SHA. APKs: debug `BBDF3443F62A6B97FEA434D42FB3E399CFF5E4CAD4B7E3B4933E82BEDDEACEE4`, androidTest `1E59B28917E0830108DB4967FAF97F78052CCE1E6E3748B1421F03F78C6658FB` (debug-signed test builds, not release artefacts).
 - **Task state:** PC04 QUEUED -> VERIFIED with `verified_sha=54d6941`; PC05 (Deep Scan) is the next dependency-satisfied task (depends on PC00 and PC02). PC06..PC13 remain QUEUED. Workflow validator is rerun after this entry.
 - **Known limits, stated plainly:** one physical API 35 device, debug-signed build; the privacy score covers four scored checks and is a KNOUX posture indicator, not a security rating, and other apps' permissions are never read. No release APK, Play Billing, Supabase deployment or owner visual re-acceptance is claimed.
+
+## Entry 0011 - PC04 media classes re-proved; full device suite 53/53 - 2026-11-13 15:25+04
+
+- **Why this entry exists:** Entry 0010 reported the full runner at 51/53 because `DuplicateMediaTest` and `MediaConsentDiagnosticTest` could not complete while `android.process.media` was aborting in `libmtp.so`. This entry closes that gap instead of leaving it as an assumption.
+- **Condition at retry:** the OEM media provider had been up since 14:42 with no further `FORTIFY: pthread_mutex_lock called on a destroyed mutex` abort for over 25 minutes; the screen was awake and `READ_MEDIA_IMAGES` was granted only for the run.
+- **Results (all `am instrument`, exit 0):**
+  - `-e class com.knoux.ai.DuplicateMediaTest` -> `OK (1 test)`, 60.719 s (`logs/23-duplicate-media-alone-2.txt`). The synthetic duplicate pair was trashed, restored and permanently deleted through the real MediaStore consent requests.
+  - `-e class com.knoux.ai.MediaConsentDiagnosticTest` -> `OK (1 test)`, 11.409 s (`logs/24-media-consent-alone.txt`). The diagnostic observed the restore consent flow and never approved it.
+  - full runner -> **`OK (53 tests)`, 0 failures, 195.085 s** (`logs/25-full-suite-pass.txt`, raw command output kept out of Git).
+- **State after the retry:** 7 empty `KNOUX_QA_*` directories left by the passing media classes were removed after verifying they were empty; no `KNOUX_QA` MediaStore row remains; `READ_MEDIA_IMAGES` is `granted=false` with appops `ignore`; the owner's `Pictures/KNOUX REC` still holds 13 files.
+- **Correction to Entry 0010:** the sentence saying the two media classes were "NOT re-proved in this session" is superseded by this entry. The OEM crash explanation remains factual; it delayed verification, it did not hide a product defect.
+- **Task state:** PC04 stays VERIFIED with `verified_sha=54d6941`; the evidence/manifest docs carry a follow-up commit. PC05 remains the next QUEUED task.

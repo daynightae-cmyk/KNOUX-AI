@@ -181,7 +181,7 @@
                                     "PrivacyMigrationTest 1/1 on device",
                                     "PrivacyRealScreenTest 2/2 on device",
                                     "PreviewNavigationTest 7/7 on device",
-                                    "full device suite 51/53; the 2 failures are DuplicateMediaTest and MediaConsentDiagnosticTest, blocked by an OEM android.process.media/libmtp crash, documented in the evidence"
+                                    "full device suite 53/53 on device (0 failures, 195.085 s) after the temporary media grant; the earlier 51/53 OEM media-provider crash is recorded in the evidence"
                                 ],
                       "runtime_evidence":  [
                                                "measured sweep of 12 checks from this package: score 92 with FLAG_SECURE clear, 100 with it set (4 scored checks)",
@@ -192,9 +192,9 @@
                                            ],
                       "verified_sha":  "54d694137c9445ab6c97292e46c5c3f5420faad3",
                       "blocking_reason":  null,
-                      "latest_evidence":  "PC04 VERIFIED at 54d6941: 61/61 JVM and 6/6 + 2/2 privacy device tests; the real window flag, its verified journal and the 3 -> 4 migration were proved on itel S686LN API 35",
+                      "latest_evidence":  "PC04 VERIFIED at 54d6941: 61/61 JVM and 53/53 on-device tests (0 failures, 195.085 s) after the OEM media provider stabilized; the real window flag, its verified journal and the 3 -> 4 migration were proved on itel S686LN API 35",
                       "next_check":  "PC05 Deep Scan can reuse the permission scanner and measured-screen pattern; never call an unmeasured or preview value a result",
-                      "evidence_20261113":  "See qa-evidence/e2e/pc04/PC04_EVIDENCE_20261113.md; READ_MEDIA_IMAGES revoked, all KNOUX_QA fixtures removed, owner Pictures/KNOUX REC untouched, two media classes left unproved because of the OEM media-provider crash"
+                      "evidence_20261113":  "See qa-evidence/e2e/pc04/PC04_EVIDENCE_20261113.md; READ_MEDIA_IMAGES revoked, all KNOUX_QA fixtures removed, owner Pictures/KNOUX REC untouched, and the two media classes were re-proved after the OEM media-provider crash cleared"
                   },
                   {
                       "task_id":  "PC05",
