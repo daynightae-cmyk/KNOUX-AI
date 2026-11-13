@@ -1,0 +1,1156 @@
+package com.knoux.ai
+
+import android.content.Intent
+import android.content.IntentSender
+import android.net.Uri
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.createSavedStateHandle
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.knoux.ai.data.*
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+
+/**
+ * PC03 — App Residue, wired to real content.
+ *
+ * The approved visual language is preserved. Every number below the hero comes from
+ * a filesystem read of KNOUX's own cache, a provider walk inside a folder the
+ * customer granted, or the proven MediaStore enumerator. Filename evidence is shown
+ * next to each item; nothing is called "verified leftover" unless it is our cache.
+ */
+
+// ── State ────────────────────────────────────────────────────────────────────
+
+internal enum class ResiduePhase { IDLE, SCANNING, READY, ERROR }
+
+internal data class ResidueState(
+    val phase: ResiduePhase = ResiduePhase.IDLE,
+    val items: List<ResidueItem> = emptyList(),
+    val selected: Set<String> = emptySet(),
+    val scopes: Set<AccessScope> = setOf(AccessScope.APP_CACHE),
+    val ageDays: Int = ResidueRules.DEFAULT_MIN_AGE_DAYS,
+    val mediaGrant: PermissionGrant = PermissionGrant.DENIED,
+    val safTrees: Int = 0,
+    val audit: List<ResidueAuditEntry> = emptyList(),
+    val busy: Boolean = false,
+    val irreversibleAck: Boolean = false,
+    val filesInspected: Int = 0,
+    val progressLabel: String = "",
+    val scopesDone: Int = 0,
+    val scopesTotal: Int = 0,
+    val capturedAt: Long? = null,
+    val scanId: String? = null,
+    val scannedScopes: Set<AccessScope> = emptySet(),
+    val status: DataStatus? = null,
+    val note: String? = null,
+    val previousScan: Boolean = false,
+    val message: String? = null,
+    val error: String? = null,
+    val pendingSender: Pair<String, IntentSender>? = null,
+) {
+    val measured: Boolean get() = phase == ResiduePhase.READY
+    val summary: ResidueRules.Summary get() = ResidueRules.summarize(items)
+    val selectedItems: List<ResidueItem> get() = ResidueRules.selectedItems(items, selected)
+    val selectedBytes: Long get() = selectedItems.sumOf { it.candidate.bytes }
+    val safeSelection: Set<String> get() = ResidueRules.safeSelection(items)
+    val trashAvailable: Boolean get() = ResidueRules.canTrash(items, selected)
+    val dryRun: ResidueDryRun get() = ResidueRules.dryRun(items, selected)
+}
+
+// ── ViewModel ────────────────────────────────────────────────────────────────
+
+internal class ResidueViewModel(
+    private val controller: ResidueController,
+    private val permissions: PermissionState,
+    private val savedState: SavedStateHandle,
+) : ViewModel() {
+
+    private val _state = mutableStateOf(ResidueState())
+    val state: State<ResidueState> get() = _state
+
+    private val progress = MutableStateFlow<ResidueRepository.Progress?>(null)
+    private var scanJob: Job? = null
+    private var localResultMessage: String? = null
+    private val pendingPlanId: String? get() = savedState.get<String>("residue-pending-plan")
+
+    init {
+        viewModelScope.launch {
+            try {
+                controller.selectedScopes.collect { scopes -> _state.value = _state.value.copy(scopes = scopes) }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                // Scope observation failing must not take down a measured screen.
+            }
+        }
+        viewModelScope.launch {
+            try {
+                controller.minAgeDays.collect { days -> _state.value = _state.value.copy(ageDays = days) }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+            }
+        }
+        viewModelScope.launch {
+            try {
+                controller.observeAudit().collect { entries -> _state.value = _state.value.copy(audit = entries) }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+            }
+        }
+        viewModelScope.launch {
+            progress.collect { value ->
+                if (value != null && _state.value.phase == ResiduePhase.SCANNING) {
+                    _state.value = _state.value.copy(
+                        progressLabel = value.label,
+                        filesInspected = value.filesInspected,
+                        scopesDone = value.scopesDone,
+                        scopesTotal = value.scopesTotal,
+                    )
+                }
+            }
+        }
+        refreshGrants()
+        viewModelScope.launch {
+            recoverRememberedPlan()
+            reload(fromSavedSnapshot = true)
+        }
+    }
+
+    private suspend fun recoverRememberedPlan() {
+        val planId = pendingPlanId ?: return
+        _state.value = _state.value.copy(busy = true, message = null, error = null)
+        try {
+            controller.recoverInterrupted(exceptPlanId = null)
+            val verified = controller.reconcileRemoved(planId)
+            savedState["residue-pending-plan"] = null
+            _state.value = _state.value.copy(
+                busy = false,
+                message = if (verified.isEmpty()) {
+                    "The previous Android confirmation was never verified — nothing is reported as removed"
+                } else {
+                    "Verified ${verified.size} removal(s) that completed before the app was interrupted"
+                },
+            )
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (t: Exception) {
+            _state.value = _state.value.copy(
+                busy = false,
+                error = "The previous request could not be resolved: ${t.message}. Check history before retrying.",
+            )
+        }
+    }
+
+    fun refreshGrants() {
+        _state.value = _state.value.copy(
+            mediaGrant = permissions.mediaGrant(AccessScope.MEDIA_IMAGES),
+            safTrees = permissions.safTrees(requireWrite = true).size,
+        )
+    }
+
+    fun scopeDescription(scope: AccessScope): String = controller.describeScope(scope)
+
+    fun requestableMediaPermissions(): Array<String> = permissions.mediaPermissions()
+
+    fun afterMediaGrant() {
+        refreshGrants()
+        val add = if (permissions.mediaGrant(AccessScope.MEDIA_IMAGES) in
+            setOf(PermissionGrant.GRANTED, PermissionGrant.PARTIAL_SELECTED)
+        ) setOf(AccessScope.MEDIA_IMAGES) else emptySet()
+        setScopes(_state.value.scopes + add, scanAfter = true)
+    }
+
+    fun afterFolderGrant() {
+        refreshGrants()
+        setScopes(_state.value.scopes + AccessScope.SAF_TREE, scanAfter = true)
+    }
+
+    fun setScopes(scopes: Set<AccessScope>, scanAfter: Boolean = false) {
+        if (_state.value.busy || _state.value.phase == ResiduePhase.SCANNING) return
+        _state.value = _state.value.copy(scopes = scopes, selected = emptySet(), irreversibleAck = false)
+        viewModelScope.launch {
+            try {
+                controller.setScopes(scopes)
+                if (scanAfter) scan()
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (t: Exception) {
+                _state.value = _state.value.copy(error = "Scope change failed: ${t.message}")
+            }
+        }
+    }
+
+    fun includeScope(scope: AccessScope, included: Boolean) =
+        setScopes(if (included) _state.value.scopes + scope else _state.value.scopes - scope)
+
+    /** Own cache is the only scope that needs no grant, so it is never silently dropped. */
+    fun setAgeDays(days: Int) {
+        if (days !in ResidueRules.AGE_CHOICES) return
+        _state.value = _state.value.copy(ageDays = days, selected = emptySet(), irreversibleAck = false)
+        viewModelScope.launch {
+            try {
+                controller.setMinAgeDays(days)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (t: Exception) {
+                _state.value = _state.value.copy(error = "Age rule could not be saved: ${t.message}")
+            }
+        }
+    }
+
+    /** Residue discovery is explicit: no silent background read on screen entry. */
+    fun scan() {
+        val state = _state.value
+        if (state.busy || state.phase == ResiduePhase.SCANNING) return
+        if (state.scopes.isEmpty()) {
+            _state.value = state.copy(error = "Choose at least one source before scanning")
+            return
+        }
+        _state.value = state.copy(
+            phase = ResiduePhase.SCANNING, items = emptyList(), selected = emptySet(),
+            irreversibleAck = false, message = null, error = null, note = null,
+            filesInspected = 0, progressLabel = "Starting", scopesDone = 0,
+            scopesTotal = state.scopes.size,
+        )
+        scanJob = viewModelScope.launch {
+            controller.scan(state.scopes, state.ageDays) { value -> progress.value = value }
+                .onSuccess { snapshot ->
+                    _state.value = _state.value.copy(
+                        phase = ResiduePhase.READY,
+                        items = snapshot.items,
+                        selected = emptySet(),
+                        capturedAt = snapshot.capturedAtMillis,
+                        scanId = snapshot.scanId,
+                        scannedScopes = snapshot.scopes,
+                        filesInspected = snapshot.fileCount,
+                        status = snapshot.status,
+                        note = snapshot.note,
+                        previousScan = false,
+                        busy = false,
+                        message = if (snapshot.items.isEmpty()) {
+                            "No residue matched the current sources and age rule"
+                        } else null,
+                        error = null,
+                    )
+                }
+                .onFailure { failure ->
+                    if (failure is CancellationException) throw failure
+                    _state.value = _state.value.copy(
+                        phase = ResiduePhase.ERROR, busy = false,
+                        error = "Residue scan failed: ${failure.message ?: failure.javaClass.simpleName}",
+                    )
+                }
+        }
+    }
+
+    fun cancelScan() {
+        scanJob?.cancel()
+        scanJob = null
+        _state.value = _state.value.copy(
+            phase = ResiduePhase.IDLE,
+            message = "Scan cancelled — incomplete results are not treated as measured",
+            progressLabel = "",
+        )
+        viewModelScope.launch { reload(fromSavedSnapshot = true) }
+    }
+
+    fun toggle(uri: String) {
+        val state = _state.value
+        if (state.busy || state.phase == ResiduePhase.SCANNING) return
+        val item = state.items.firstOrNull { it.candidate.uri == uri } ?: return
+        if (!ResidueRules.canSelect(item)) {
+            _state.value = state.copy(error = "This item cannot be removed with the current access")
+            return
+        }
+        _state.value = state.copy(
+            selected = ResidueRules.toggle(state.items, state.selected, uri),
+            irreversibleAck = false,
+        )
+    }
+
+    fun selectSafe() {
+        if (_state.value.busy || _state.value.phase == ResiduePhase.SCANNING) return
+        _state.value = _state.value.copy(
+            selected = _state.value.safeSelection,
+            irreversibleAck = false,
+            message = null,
+            error = null,
+        )
+        record(ResidueAction.REVIEWED, _state.value.selectedItems, "safe cache selection")
+    }
+
+    fun clearSelection() {
+        if (_state.value.selected.isNotEmpty()) {
+            record(ResidueAction.SKIPPED, _state.value.selectedItems, "selection cleared")
+        }
+        _state.value = _state.value.copy(selected = emptySet(), irreversibleAck = false)
+    }
+
+    fun acknowledgeIrreversible(value: Boolean) {
+        _state.value = _state.value.copy(irreversibleAck = value)
+    }
+
+    fun clearMessage() {
+        _state.value = _state.value.copy(message = null, error = null)
+    }
+
+    /** Records what the customer was shown when the review opens. */
+    fun reviewOpened() {
+        val state = _state.value
+        val run = state.dryRun
+        record(ResidueAction.REVIEWED, run.items, "review opened · ${run.warnings.size} warning(s)")
+    }
+
+    /**
+     * The dry run is recorded before anything is touched, so the audit shows the
+     * exact plan that was confirmed — including a plan that Android later rejects.
+     */
+    fun confirmDryRun(kind: OperationKind) {
+        val state = _state.value
+        val run = state.dryRun
+        if (!run.canExecute) {
+            _state.value = state.copy(error = "Select at least one residue item first")
+            return
+        }
+        record(ResidueAction.DRY_RUN, run.items, kind.name.lowercase())
+    }
+
+    private fun record(action: ResidueAction, items: List<ResidueItem>, note: String?) {
+        if (items.isEmpty()) return
+        viewModelScope.launch {
+            try {
+                controller.recordDecision(action, _state.value.scanId, items, note)
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (_: Exception) {
+                // An audit write failing must not turn a measured screen into an error.
+            }
+        }
+    }
+
+    fun execute(kind: OperationKind) {
+        val state = _state.value
+        if (state.busy || state.phase == ResiduePhase.SCANNING) return
+        val items = state.selectedItems
+        if (items.isEmpty()) {
+            _state.value = state.copy(error = "Select at least one residue item first")
+            return
+        }
+        if (kind == OperationKind.PERMANENT_DELETE && !state.irreversibleAck) {
+            _state.value = state.copy(error = "Acknowledge permanent deletion first")
+            return
+        }
+        if (kind == OperationKind.MOVE_TO_TRASH && !state.trashAvailable) {
+            _state.value = state.copy(error = "Trash is available only when every selected item is shared media")
+            return
+        }
+        record(ResidueAction.ATTEMPTED, items, kind.name.lowercase())
+        _state.value = state.copy(busy = true, error = null, message = null)
+        localResultMessage = null
+        viewModelScope.launch {
+            try {
+                val local = items.filter { it.candidate.provenance != DataProvenance.MEDIASTORE }
+                if (local.isNotEmpty()) {
+                    val plan = OperationPlan(
+                        id = controller.newPlanId(),
+                        kind = kind,
+                        candidates = local.map { it.candidate },
+                        requiresSystemConfirmation = false,
+                        confirmedByUser = true,
+                    )
+                    localResultMessage = describe(controller.executeLocal(plan, state.irreversibleAck))
+                    record(ResidueAction.VERIFIED, local, localResultMessage)
+                    reload()
+                }
+                val media = items.filter { it.candidate.provenance == DataProvenance.MEDIASTORE }
+                if (media.isNotEmpty()) {
+                    val plan = OperationPlan(
+                        id = controller.newPlanId(),
+                        kind = kind,
+                        candidates = media.map { it.candidate },
+                        requiresSystemConfirmation = true,
+                        confirmedByUser = true,
+                    )
+                    val sender = controller.prepareMedia(plan, state.irreversibleAck)
+                    if (sender == null) {
+                        reload()
+                        _state.value = _state.value.copy(
+                            busy = false, irreversibleAck = false, message = localResultMessage,
+                            error = "Android request unavailable — shared media was not changed; retry after checking access",
+                        )
+                    } else {
+                        savedState["residue-pending-plan"] = plan.id
+                        _state.value = _state.value.copy(pendingSender = plan.id to sender)
+                    }
+                } else {
+                    reload()
+                    _state.value = _state.value.copy(
+                        busy = false, irreversibleAck = false, message = localResultMessage,
+                    )
+                }
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (t: Exception) {
+                reload()
+                _state.value = _state.value.copy(
+                    busy = false, irreversibleAck = false, message = localResultMessage,
+                    error = "Operation interrupted: ${t.message}. Check history before retrying.",
+                )
+            }
+        }
+    }
+
+    fun senderLaunched(id: String) {
+        if (_state.value.pendingSender?.first == id) {
+            _state.value = _state.value.copy(pendingSender = null)
+        }
+    }
+
+    fun completeMedia(approved: Boolean) {
+        val id = _state.value.pendingSender?.first ?: savedState.get<String>("residue-pending-plan") ?: return
+        savedState["residue-pending-plan"] = null
+        _state.value = _state.value.copy(busy = true, pendingSender = null)
+        viewModelScope.launch {
+            try {
+                val result = controller.completeMedia(id, approved)
+                reload()
+                _state.value = _state.value.copy(
+                    busy = false, irreversibleAck = false,
+                    message = listOfNotNull(localResultMessage, describe(result)).joinToString(" · "),
+                )
+            } catch (cancelled: CancellationException) {
+                throw cancelled
+            } catch (t: Exception) {
+                reload()
+                _state.value = _state.value.copy(
+                    busy = false, irreversibleAck = false,
+                    error = "Result could not be verified: ${t.message}. Check history; do not assume success.",
+                )
+            }
+        }
+    }
+
+    fun scanId(): String? = null
+
+    private suspend fun reload(fromSavedSnapshot: Boolean = false) {
+        if (_state.value.phase == ResiduePhase.SCANNING) return
+        val snapshot = try {
+            controller.latest()
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            null
+        } ?: return
+        val selectable = snapshot.items.map { it.candidate.uri }.toSet()
+        _state.value = _state.value.copy(
+            phase = ResiduePhase.READY,
+            items = snapshot.items,
+            selected = _state.value.selected.intersect(selectable),
+            capturedAt = snapshot.capturedAtMillis,
+            scanId = snapshot.scanId,
+            scannedScopes = snapshot.scopes,
+            ageDays = snapshot.minAgeDays,
+            filesInspected = snapshot.fileCount,
+            status = snapshot.status,
+            note = snapshot.note,
+            previousScan = fromSavedSnapshot || _state.value.previousScan,
+        )
+    }
+
+    private fun describe(result: OperationResult): String = buildString {
+        when (result.status) {
+            OperationStatus.SUCCEEDED -> if (result.kind == OperationKind.RESTORE_FROM_TRASH) {
+                append("Restored ${result.removedCount} item(s) — verified present")
+            } else {
+                append("Removed ${result.removedCount} residue item(s) — verified by the provider")
+            }
+            OperationStatus.PARTIAL -> append("Partially removed: ${result.removedCount} verified, ${result.failedCount} not")
+            OperationStatus.REJECTED_BY_OS -> append("Android rejected the request — nothing removed")
+            OperationStatus.CANCELLED -> append("Cancelled — nothing removed")
+            else -> append("Failed — ${result.errors.firstOrNull() ?: "no removal could be verified"}")
+        }
+        result.observed?.let { observed ->
+            if (observed.deltaBytes > 0) append(" · volume free +${humanBytes(observed.deltaBytes)} (observation)")
+        }
+        result.errors.firstOrNull { it.isNotBlank() }?.let { append(" · ${it.take(160)}") }
+    }
+}
+
+@Composable
+internal fun rememberResidueViewModel(): ResidueViewModel = viewModel(
+    factory = viewModelFactory {
+        initializer {
+            ResidueViewModel(
+                controller = KnouxData.residue,
+                permissions = KnouxData.permissions,
+                savedState = createSavedStateHandle(),
+            )
+        }
+    }
+)
+
+// ── Screen ───────────────────────────────────────────────────────────────────
+
+@Composable
+internal fun RealResidueScreen(page: Page, open: (Page) -> Unit) {
+    val motion = LocalPreviewMotion.current
+    val vm = rememberResidueViewModel()
+    val state by vm.state
+    val context = LocalContext.current
+
+    var sheet by rememberSaveable { mutableStateOf<String?>(null) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { vm.afterMediaGrant() }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) vm.refreshGrants()
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    val treeLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocumentTree()
+    ) { uri ->
+        if (uri != null) {
+            val flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            try {
+                context.contentResolver.takePersistableUriPermission(uri, flags)
+            } catch (_: SecurityException) {
+                runCatching {
+                    context.contentResolver.takePersistableUriPermission(
+                        uri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                }
+            }
+            vm.afterFolderGrant()
+        }
+    }
+
+    val mediaLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        vm.completeMedia(result.resultCode == android.app.Activity.RESULT_OK)
+    }
+
+    LaunchedEffect(state.pendingSender?.first) {
+        state.pendingSender?.let { (id, sender) ->
+            vm.senderLaunched(id)
+            try {
+                mediaLauncher.launch(IntentSenderRequest.Builder(sender).build())
+            } catch (_: Exception) {
+                vm.completeMedia(false)
+            }
+        }
+    }
+
+    val pill = when {
+        state.phase == ResiduePhase.SCANNING -> "MEASURING RESIDUE" ar "جارٍ قياس البقايا"
+        state.measured && state.previousScan -> "PREVIOUS PASS — SCAN AGAIN TO VERIFY" ar "فحص سابق — أعد الفحص للتحقق"
+        state.measured && state.status == DataStatus.PARTIAL -> "PARTIAL — SOME SOURCES NOT READ" ar "جزئي — بعض المصادر لم تُقرأ"
+        state.measured -> "MEASURED ON DEVICE" ar "مقيس على الجهاز"
+        state.phase == ResiduePhase.ERROR -> "PASS FAILED" ar "فشل الفحص"
+        else -> "NOT MEASURED YET" ar "لم يُقس بعد"
+    }
+
+    Column(Modifier.fillMaxSize()) {
+        NeonHero(Mark.LAYERS, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
+        MasterTitle(
+            "App" ar "بقايا", "Residue" ar "التطبيقات",
+            "Leftovers are matched by filename. Only KNOUX's own cache is ever pre-selected." ar
+                "تُطابق البقايا بالاسم فقط. ولا تُحدَّد مسبقًا إلا ذاكرة KNOUX المؤقتة.",
+            "screen-${page.id}"
+        )
+        MasterPreviewPill(pill)
+
+        LazyColumn(
+            Modifier.fillMaxWidth().weight(1f).testTag("residue-list"),
+            contentPadding = PaddingValues(horizontal = 11.dp, vertical = 7.dp),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
+        ) {
+            item { ResidueSummaryCard(state, vm::selectSafe, vm::clearSelection) }
+            item { ResidueAgeCard(state, vm::setAgeDays) }
+            state.note?.let { note ->
+                item {
+                    Label(
+                        note, 10, Gold,
+                        modifier = Modifier.fillMaxWidth().testTag("residue-note"),
+                    )
+                }
+            }
+            if (!state.measured || state.items.isEmpty()) {
+                item { ResidueEmptyCard(state) }
+            }
+            items(state.items, key = { it.candidate.uri }) { item ->
+                ResidueItemCard(
+                    item = item,
+                    checked = item.candidate.uri in state.selected,
+                    enabled = !state.busy && state.phase != ResiduePhase.SCANNING,
+                    onToggle = { vm.toggle(item.candidate.uri) },
+                    onOpen = { candidate ->
+                        runCatching {
+                            context.startActivity(
+                                Intent(Intent.ACTION_VIEW)
+                                    .setData(Uri.parse(candidate.uri))
+                                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            )
+                        }
+                    },
+                )
+            }
+            if (state.measured && state.items.isNotEmpty()) {
+                item { ResidueAuditCard(state) }
+            }
+        }
+
+        Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 7.dp)) {
+            MasterActions(
+                Action("Sources & Rules" ar "المصادر والقواعد", Mark.SHIELD),
+                when {
+                    state.phase == ResiduePhase.SCANNING -> Action("Cancel Scan" ar "إلغاء الفحص", Mark.PAUSE)
+                    state.measured -> Action("Review Leftovers" ar "مراجعة البقايا", Mark.TRASH)
+                    else -> Action("Measure Residue" ar "قياس البقايا", Mark.RADAR)
+                },
+                onFirst = { sheet = "sources" },
+                onSecond = {
+                    when {
+                        state.phase == ResiduePhase.SCANNING -> vm.cancelScan()
+                        state.measured -> {
+                            vm.acknowledgeIrreversible(false)
+                            vm.reviewOpened()
+                            sheet = "review"
+                        }
+                        else -> vm.scan()
+                    }
+                },
+            )
+            ResidueStatusStrip(state)
+        }
+    }
+
+    if (sheet == "sources") {
+        ResidueSourcesSheet(
+            state = state,
+            vm = vm,
+            onRequestMedia = { permissionLauncher.launch(vm.requestableMediaPermissions()) },
+            onAddFolder = { treeLauncher.launch(null) },
+            onOpenSettings = {
+                runCatching {
+                    context.startActivity(
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            .setData(Uri.fromParts("package", context.packageName, null))
+                    )
+                }
+            },
+            onDismiss = { sheet = null },
+        )
+    }
+
+    if (sheet == "review") {
+        ResidueReviewSheet(
+            state = state,
+            confirmPermanent = state.irreversibleAck,
+            onConfirmPermanentChange = { vm.acknowledgeIrreversible(it) },
+            onTrash = { vm.confirmDryRun(OperationKind.MOVE_TO_TRASH); vm.execute(OperationKind.MOVE_TO_TRASH) },
+            onPermanent = { vm.confirmDryRun(OperationKind.PERMANENT_DELETE); vm.execute(OperationKind.PERMANENT_DELETE) },
+            onDismiss = {
+                if (state.selected.isNotEmpty()) vm.clearSelection()
+                sheet = null
+            },
+        )
+    }
+}
+
+// ── Pieces ───────────────────────────────────────────────────────────────────
+
+@Composable
+private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, onClear: () -> Unit) {
+    val scanning = state.phase == ResiduePhase.SCANNING
+    val summary = state.summary
+    GlassPanel(Modifier.fillMaxWidth(), tint = Pink) {
+        Column(
+            Modifier.fillMaxWidth().padding(13.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Label(
+                        if (state.measured) humanBytes(summary.bytes) else "—",
+                        30, if (state.measured) Pink else Mist, FontWeight.ExtraBold,
+                        modifier = Modifier.testTag("residue-total"),
+                    )
+                    Label(
+                        if (state.measured) "measured residue" ar "بقايا مقيسة"
+                        else "not measured yet" ar "لم يُقس بعد",
+                        11, Mist,
+                    )
+                }
+                Column(horizontalAlignment = Alignment.End) {
+                    Label(
+                        "${summary.count}",
+                        20, Chalk, FontWeight.Bold,
+                        modifier = Modifier.testTag("residue-count"),
+                    )
+                    Label("items" ar "عناصر", 10, Mist)
+                }
+            }
+            GradientBar(
+                if (summary.count > 0) summary.ownedCount.toFloat() / summary.count else 0f,
+                thickness = 8,
+            )
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Label("${summary.ownedCount} own cache", 10, Mint, modifier = Modifier.weight(1f))
+                Label("${summary.sharedCount} shared · name only", 10, Gold, modifier = Modifier.weight(1f))
+                Label("${state.filesInspected} inspected", 10, Mist)
+            }
+            state.capturedAt?.let { captured ->
+                Label(
+                    (if (state.previousScan) "Previous pass " else "Measured ") + residueAgo(captured),
+                    10, Cyan,
+                    modifier = Modifier.testTag("residue-captured"),
+                )
+            }
+            if (state.measured && state.items.isNotEmpty()) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Label(
+                        "Select cache items" ar "تحديد عناصر الذاكرة",
+                        10, Mint, FontWeight.Bold,
+                        modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                            .clickable { onSelectSafe() }.padding(6.dp)
+                            .testTag("residue-select-safe"),
+                    )
+                    Label(
+                        "Clear selection" ar "مسح التحديد",
+                        10, Mist,
+                        modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                            .clickable { onClear() }.padding(6.dp)
+                            .testTag("residue-clear"),
+                    )
+                }
+            }
+            if (scanning) {
+                Label(
+                    "${state.progressLabel}… ${summary.count} item(s) so far" ar
+                        "${state.progressLabel}… ${summary.count} عنصرًا",
+                    11, Cyan, FontWeight.Bold,
+                    modifier = Modifier.testTag("residue-progress"),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ResidueAgeCard(state: ResidueState, onAge: (Int) -> Unit) {
+    GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
+        Column(
+            Modifier.fillMaxWidth().padding(11.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Label(
+                "Shared-folder age rule" ar "قاعدة عمر المجلدات المشتركة", 12, Chalk, FontWeight.Bold,
+            )
+            Label(
+                "Own cache is always in scope. Shared files must be at least ${state.ageDays} day(s) old." ar
+                    "ذاكرة KNOUX دائمًا ضمن النطاق. الملفات المشتركة يجب أن يمضي عليها ${state.ageDays} يوم على الأقل.",
+                10, Mist,
+            )
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                ResidueRules.AGE_CHOICES.forEach { days ->
+                    val active = days == state.ageDays
+                    Box(
+                        Modifier.weight(1f).heightIn(min = 44.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(if (active) Cyan.copy(alpha = 0.22f) else Chalk.copy(alpha = 0.05f))
+                            .toggleable(value = active, role = Role.RadioButton) { onAge(days) }
+                            .testTag("residue-age-$days"),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Label(if (days == 0) "any age" ar "أي عمر" else Copy("$days d", "$days d"), 10, if (active) Cyan else Mist, FontWeight.Bold)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ResidueEmptyCard(state: ResidueState) {
+    GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
+        Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Label(
+                when {
+                    state.phase == ResiduePhase.SCANNING -> "Reading cache and granted folders…"
+                    state.measured -> "No residue matched the ${state.scannedScopes.size} source(s) you included."
+                    else -> "No residue pass has run yet."
+                } ar when {
+                    state.phase == ResiduePhase.SCANNING -> "جارٍ قراءة الذاكرة والمجلدات الممنوحة…"
+                    state.measured -> "لا توجد بقايا في ${state.scannedScopes.size} مصدرًا ضمنتها."
+                    else -> "لم يُشغّل فحص البقايا بعد."
+                },
+                13, Chalk, FontWeight.Bold,
+                modifier = Modifier.testTag("residue-empty"),
+            )
+            Label(
+                ("Only filenames are matched. A file is never called abandoned because of its location alone."
+                    ar "تُطابق الأسماء فقط. ولا يُوصف ملف بأنه متروك بسبب موقعه وحده."),
+                11, Mist,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ResidueItemCard(
+    item: ResidueItem,
+    checked: Boolean,
+    enabled: Boolean,
+    onToggle: () -> Unit,
+    onOpen: (FileCandidate) -> Unit,
+) {
+    val candidate = item.candidate
+    val selectable = ResidueRules.canSelect(item)
+    val tint = if (item.confidence == ResidueConfidence.OWNED) Mint else Gold
+    GlassPanel(
+        Modifier.fillMaxWidth().testTag("residue-item-${candidate.displayName}"),
+        radius = 16,
+        tint = if (checked) Pink else tint,
+    ) {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 10.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Column(Modifier.weight(1f)) {
+                Label(candidate.displayName, 12, Chalk, FontWeight.Bold, maxLines = 2)
+                Label(
+                    "${humanBytes(candidate.bytes)} · ${item.pattern.name.lowercase()} · " +
+                        when (item.confidence) {
+                            ResidueConfidence.OWNED -> "own cache"
+                            ResidueConfidence.STRONG -> "OS-named leftover"
+                            ResidueConfidence.WEAK -> "generic leftover name"
+                        },
+                    10, tint,
+                )
+                Label(item.matchedOn, 9, Mist, maxLines = 1)
+            }
+            Box(
+                Modifier.heightIn(min = 48.dp).widthIn(min = 48.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .toggleable(
+                        value = checked,
+                        enabled = enabled && selectable,
+                        role = Role.Checkbox,
+                    ) { onToggle() }
+                    .testTag("residue-select-${candidate.displayName}"),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (selectable) {
+                    SelectionIndicator(checked, if (item.confidence == ResidueConfidence.OWNED) Mint else Gold)
+                } else {
+                    Glyph(Mark.LOCK, Modifier.size(15.dp), Mist, true)
+                }
+            }
+        }
+        Row(
+            Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            Label(item.candidate.reason, 9, Mist, modifier = Modifier.weight(1f), maxLines = 2)
+            Label("open", 9, Cyan, modifier = Modifier.clip(RoundedCornerShape(8.dp))
+                .clickable { onOpen(candidate) }.padding(4.dp))
+        }
+    }
+}
+
+@Composable
+private fun ResidueAuditCard(state: ResidueState) {
+    GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
+        Column(Modifier.fillMaxWidth().padding(11.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Label("Decision history (on this device)" ar "سجل القرارات (على هذا الجهاز)", 11, Chalk, FontWeight.Bold)
+            if (state.audit.isEmpty()) {
+                Label("No decision recorded yet." ar "لم يُسجل أي قرار بعد.", 10, Mist)
+            }
+            state.audit.take(3).forEach { entry ->
+                Label(
+                    "${entry.action.name.lowercase().replace('_', ' ')} · ${entry.itemCount} item(s) · ${humanBytes(entry.bytes)}",
+                    10, Mist, maxLines = 1,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ResidueStatusStrip(state: ResidueState) {
+    val text = when {
+        state.error != null -> Copy(state.error ?: "", state.error ?: "")
+        state.message != null -> Copy(state.message ?: "", state.message ?: "")
+        state.phase == ResiduePhase.SCANNING -> Copy(
+            "${state.filesInspected} file(s) inspected · ${state.progressLabel}",
+            "${state.filesInspected} ملفًا · ${state.progressLabel}",
+        )
+        state.measured && state.selected.isNotEmpty() -> Copy(
+            "${state.selectedItems.size} item(s) · ${humanBytes(state.selectedBytes)} selected",
+            "${state.selectedItems.size} عنصرًا · ${humanBytes(state.selectedBytes)} محددة",
+        )
+        else -> Copy(
+            "Nothing is selected until you choose it.",
+            "لا شيء محدد حتى تختاره بنفسك.",
+        )
+    }
+    val tint = when {
+        state.error != null -> Gold
+        state.message != null -> Mint
+        else -> Mist
+    }
+    Label(
+        text, 11, tint,
+        modifier = Modifier.fillMaxWidth().padding(top = 5.dp)
+            .testTag(if (state.error != null) "residue-error" else "residue-status"),
+        align = androidx.compose.ui.text.style.TextAlign.Center,
+    )
+}
+
+// ── Sheets ───────────────────────────────────────────────────────────────────
+
+@Composable
+private fun ResidueSourcesSheet(
+    state: ResidueState,
+    vm: ResidueViewModel,
+    onRequestMedia: () -> Unit,
+    onAddFolder: () -> Unit,
+    onOpenSettings: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    InfoSheet("Residue sources & rules" ar "مصادر البقايا وقواعدها", onDismiss) {
+        Label(
+            ("KNOUX reads only the sources you include. A source that is not granted is reported as not read."
+                ar "KNOUX يقرأ فقط المصادر التي تضمّنها. المصدر غير الممنوح يُعرض كغير مقروء."),
+            12, Mist,
+        )
+        ResidueScopeRow(
+            mark = Mark.BOX,
+            title = "KNOUX own cache" ar "ذاكرة KNOUX المؤقتة",
+            detail = "Always available — only KNOUX's cache, never another app",
+            checked = AccessScope.APP_CACHE in state.scopes,
+            tag = "residue-scope-cache",
+            onToggle = { vm.includeScope(AccessScope.APP_CACHE, it) },
+        )
+        ResidueScopeRow(
+            mark = Mark.FOLDER,
+            title = "Folders you granted" ar "مجلدات منحتها",
+            detail = if (state.safTrees == 0) "No folder added" else "${state.safTrees} folder(s) granted",
+            checked = AccessScope.SAF_TREE in state.scopes,
+            tag = "residue-scope-saf",
+            onToggle = { vm.includeScope(AccessScope.SAF_TREE, it) },
+            action = "Add folder" ar "إضافة مجلد",
+            onAction = onAddFolder,
+        )
+        ResidueScopeRow(
+            mark = Mark.PICTURES,
+            title = "Shared media names" ar "أسماء الوسائط المشتركة",
+            detail = when (state.mediaGrant) {
+                PermissionGrant.GRANTED -> "Granted — MediaStore rows visible"
+                PermissionGrant.PARTIAL_SELECTED -> "Partial — only selected items are visible"
+                else -> "Not granted"
+            },
+            checked = AccessScope.MEDIA_IMAGES in state.scopes,
+            tag = "residue-scope-media",
+            onToggle = { vm.includeScope(AccessScope.MEDIA_IMAGES, it) },
+            action = if (state.mediaGrant == PermissionGrant.GRANTED)
+                "Manage in Settings" ar "الإدارة من الإعدادات" else "Grant access" ar "منح الوصول",
+            onAction = if (state.mediaGrant == PermissionGrant.GRANTED) onOpenSettings else onRequestMedia,
+        )
+        Label(
+            ("Shared media can only be moved to Android's trash. KNOUX never claims a file is abandoned because of where it sits."
+                ar "الوسائط المشتركة تُنقل إلى سلة أندرويد فقط. ولا يدّعي KNOUX أن ملفًا متروك بسبب موقعه."),
+            10, Gold,
+        )
+        AccentButton(
+            Action("Measure selected sources" ar "قياس المصادر المحددة", Mark.RADAR),
+            Modifier.fillMaxWidth(),
+            tag = "residue-scope-scan",
+            enabled = state.scopes.isNotEmpty() && state.phase != ResiduePhase.SCANNING,
+        ) { onDismiss(); vm.scan() }
+    }
+}
+
+@Composable
+private fun ResidueScopeRow(
+    mark: Mark,
+    title: Copy,
+    detail: String,
+    checked: Boolean,
+    tag: String,
+    onToggle: (Boolean) -> Unit,
+    action: Copy? = null,
+    onAction: (() -> Unit)? = null,
+) {
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = 60.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .toggleable(checked, role = Role.Checkbox) { onToggle(it) }
+            .testTag(tag)
+            .padding(vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        IconBadge(mark, if (checked) Cyan else Mist, diameter = 30)
+        Column(Modifier.weight(1f)) {
+            Label(title.localized(), 12, Chalk, FontWeight.Bold)
+            Label(detail, 10, Mist, maxLines = 2)
+        }
+        if (action != null && onAction != null) {
+            Label(
+                action.localized(), 10, Cyan,
+                modifier = Modifier.clip(RoundedCornerShape(10.dp)).clickable { onAction() }.padding(6.dp),
+            )
+        }
+        SelectionIndicator(checked, Cyan)
+    }
+}
+
+@Composable
+private fun ResidueReviewSheet(
+    state: ResidueState,
+    confirmPermanent: Boolean,
+    onConfirmPermanentChange: (Boolean) -> Unit,
+    onTrash: () -> Unit,
+    onPermanent: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    InfoSheet("Review residue removal" ar "مراجعة إزالة البقايا", onDismiss) {
+        state.message?.let { Label(it, 12, Mint, modifier = Modifier.testTag("residue-result")) }
+        state.error?.let { Label(it, 12, Gold, modifier = Modifier.testTag("residue-review-error")) }
+        if (state.busy) Label(("Working…" ar "جارٍ التنفيذ…"), 12, Cyan)
+
+        val run = ResidueRules.dryRun(state.items, state.selected)
+        if (run.items.isEmpty()) {
+            Label(
+                ("Select at least one residue item. Nothing is pre-selected in shared folders."
+                    ar "اختر عنصر بقايا واحدًا على الأقل. لا شيء محدد مسبقًا في المجلدات المشتركة."),
+                13, Mist, modifier = Modifier.testTag("residue-no-selection"),
+            )
+        } else {
+            Label(
+                "${run.items.size} item(s) · ${humanBytes(run.bytes)}" ar
+                    "${run.items.size} عنصرًا · ${humanBytes(run.bytes)}",
+                15, Pink, FontWeight.Bold,
+            )
+            Label(
+                run.patternSummary.ifBlank { "selected items" }, 10, Mist,
+                modifier = Modifier.testTag("residue-dry-run"),
+            )
+            run.items.take(30).forEach { item ->
+                Label(
+                    "${item.candidate.displayName} · ${humanBytes(item.candidate.bytes)} · ${item.confidence.name.lowercase()}",
+                    11, Mist, maxLines = 1,
+                )
+            }
+        }
+
+        run.warnings.forEach { warning -> Label("• $warning", 10, Gold) }
+
+        Label(
+            when {
+                run.sharedCount == 0 -> Copy(
+                    "These items are inside KNOUX's own cache and are removed directly; no Android dialog is involved.",
+                    "هذه العناصر داخل ذاكرة KNOUX المؤقتة وتُزال مباشرة؛ لا يظهر حوار أندرويد.",
+                )
+                run.ownedCount == 0 -> Copy(
+                    "Android shows its own confirmation for shared media. Cancelling there means nothing was removed.",
+                    "يعرض أندرويد تأكيده الخاص للوسائط المشتركة. الإلغاء هناك يعني عدم إزالة أي شيء.",
+                )
+                else -> Copy(
+                    "KNOUX cache items are removed immediately. Android's dialog covers only the shared media; cancelling it leaves that media untouched.",
+                    "تُزال عناصر ذاكرة KNOUX فورًا. حوار أندرويد يغطي الوسائط المشتركة فقط؛ إلغاؤه يتركها دون تغيير.",
+                )
+            },
+            11, Gold,
+        )
+
+        AccentButton(
+            Action("Move media to Trash" ar "نقل الوسائط إلى السلة", Mark.TRASH),
+            Modifier.fillMaxWidth(),
+            primary = false,
+            enabled = state.trashAvailable && !state.busy,
+            tag = "residue-action-trash",
+        ) { onTrash() }
+
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                .toggleable(confirmPermanent, enabled = !state.busy, role = Role.Checkbox) {
+                    onConfirmPermanentChange(it)
+                }
+                .testTag("residue-ack-irreversible"),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            SelectionIndicator(confirmPermanent, Gold)
+            Label(
+                ("I understand permanent deletion cannot be undone" ar "أفهم أن الحذف النهائي لا يمكن التراجع عنه"),
+                12, Chalk,
+            )
+        }
+        AccentButton(
+            Action("Delete selected permanently" ar "حذف المحدد نهائيًا", Mark.WARN),
+            Modifier.fillMaxWidth(),
+            enabled = confirmPermanent && run.items.isNotEmpty() && !state.busy,
+            tag = "residue-action-delete",
+        ) { onPermanent() }
+        Label(
+            ("Own-cache items are removed immediately; shared media only after Android's confirmation."
+                ar "تُزال عناصر ذاكرة KNOUX فورًا؛ والوسائط المشتركة فقط بعد تأكيد أندرويد."),
+            10, Mist,
+        )
+    }
+}
+
+private fun residueAgo(millis: Long): String {
+    if (millis <= 0L) return ""
+    val delta = System.currentTimeMillis() - millis
+    return when {
+        delta < 60_000L -> "just now"
+        delta < 3_600_000L -> "${delta / 60_000L} min ago"
+        delta < 86_400_000L -> "${delta / 3_600_000L} h ago"
+        else -> "${delta / 86_400_000L} d ago"
+    }
+}

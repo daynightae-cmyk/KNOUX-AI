@@ -23,6 +23,10 @@ object KnouxData {
     private val duplicateControllerRef = lazy {
         DuplicateController(duplicateRepository, database, settings, smartClean)
     }
+    private val residueRepositoryRef = lazy { ResidueRepository(requireContext(), permissions) }
+    private val residueControllerRef = lazy {
+        ResidueController(residueRepository, database, settings, permissions, smartClean)
+    }
 
     fun init(context: Context) {
         if (appContext == null) appContext = context.applicationContext
@@ -41,4 +45,6 @@ object KnouxData {
     val smartClean: SmartCleanController get() = controllerRef.value
     val duplicateRepository: DuplicateRepository get() = duplicateRepositoryRef.value
     val duplicates: DuplicateController get() = duplicateControllerRef.value
+    val residueRepository: ResidueRepository get() = residueRepositoryRef.value
+    val residue: ResidueController get() = residueControllerRef.value
 }

@@ -159,6 +159,83 @@ data class DuplicateMemberEntity(
     val isKeeper: Boolean,
 )
 
+// ── PC03 residue evidence ────────────────────────────────────────────────────
+
+/**
+ * One residue pass. [fileCount] is how many files were actually inspected, so a
+ * pass that hit its entry ceiling cannot be mistaken for a complete library read.
+ */
+@Entity(tableName = "residue_scans")
+data class ResidueScanEntity(
+    @PrimaryKey val id: String,
+    val startedAt: Long,
+    val finishedAt: Long?,
+    val status: String,
+    /** Comma-separated AccessScope names actually included. */
+    val scopes: String,
+    /** Age threshold applied to shared folders/media; own cache ignores it. */
+    val minAgeDays: Int,
+    val fileCount: Int,
+    val itemCount: Int,
+    val bytes: Long,
+    val note: String?,
+)
+
+/**
+ * One measured residue candidate. The composite key keeps every pass append-only:
+ * a later pass cannot overwrite the evidence of an earlier one.
+ */
+@Entity(tableName = "residue_items", primaryKeys = ["scanId", "uri"])
+data class ResidueItemEntity(
+    val scanId: String,
+    val uri: String,
+    val displayName: String,
+    val mimeType: String?,
+    val bytes: Long,
+    val lastModified: Long,
+    val category: String,
+    val provenance: String,
+    val eligibility: String,
+    val pattern: String,
+    val confidence: String,
+    val matchedOn: String,
+    val reason: String,
+)
+
+/**
+ * What the customer decided, including the decisions that removed nothing.
+ *
+ * A "reviewed, kept everything" entry is evidence too: without it the history
+ * would imply that only removals ever happened.
+ */
+@Entity(tableName = "residue_decisions", indices = [Index("createdAt")])
+data class ResidueDecisionEntity(
+    @PrimaryKey val id: String,
+    val scanId: String?,
+    val action: String,
+    val itemCount: Int,
+    val bytes: Long,
+    val createdAt: Long,
+    val note: String?,
+)
+
+/**
+ * A saved rule for one granted folder.
+ *
+ * The SAF grant itself lives in the OS; this row stores only the customer's rules
+ * for it, and is deleted when the folder stops being granted.
+ */
+@Entity(tableName = "residue_profiles")
+data class ResidueProfileEntity(
+    @PrimaryKey val treeUri: String,
+    val label: String,
+    val minAgeDays: Int,
+    /** Comma-separated ResiduePattern names; empty means "every pattern". */
+    val patterns: String,
+    val createdAt: Long,
+    val updatedAt: Long,
+)
+
 /** Items the customer asked us to keep, so a later scan cannot re-offer them. */
 @Entity(tableName = "exclusions")
 data class ExclusionEntity(
@@ -347,6 +424,62 @@ interface DuplicateDao {
 }
 
 @Dao
+interface ResidueDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertScan(scan: ResidueScanEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertItems(items: List<ResidueItemEntity>)
+
+    @Query("SELECT * FROM residue_items WHERE scanId = :scanId ORDER BY bytes DESC, displayName")
+    suspend fun items(scanId: String): List<ResidueItemEntity>
+
+    @Query("DELETE FROM residue_items WHERE scanId = :scanId")
+    suspend fun clearItems(scanId: String)
+
+    @Query("SELECT * FROM residue_scans WHERE status IN ('MEASURED', 'PARTIAL') ORDER BY startedAt DESC, id DESC LIMIT 1")
+    suspend fun latestFinishedScan(): ResidueScanEntity?
+
+    @Query("SELECT * FROM residue_scans ORDER BY startedAt DESC, id DESC LIMIT 20")
+    fun observeScans(): Flow<List<ResidueScanEntity>>
+
+    @Query("DELETE FROM residue_items WHERE uri = :uri")
+    suspend fun removeItem(uri: String)
+
+    @Query("""
+        UPDATE residue_scans SET
+            itemCount = (SELECT COUNT(*) FROM residue_items WHERE scanId = residue_scans.id),
+            bytes = COALESCE((SELECT SUM(bytes) FROM residue_items WHERE scanId = residue_scans.id), 0)
+        WHERE id = :scanId
+    """)
+    suspend fun refreshTotals(scanId: String)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun putDecision(decision: ResidueDecisionEntity)
+
+    @Query("SELECT * FROM residue_decisions ORDER BY createdAt DESC LIMIT 50")
+    fun observeDecisions(): Flow<List<ResidueDecisionEntity>>
+
+    @Query("SELECT * FROM residue_decisions WHERE scanId = :scanId ORDER BY createdAt DESC")
+    suspend fun decisions(scanId: String): List<ResidueDecisionEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun putProfile(profile: ResidueProfileEntity)
+
+    @Query("DELETE FROM residue_profiles WHERE treeUri = :treeUri")
+    suspend fun removeProfile(treeUri: String)
+
+    @Query("SELECT * FROM residue_profiles ORDER BY updatedAt DESC, treeUri")
+    fun observeProfiles(): Flow<List<ResidueProfileEntity>>
+
+    @Query("SELECT * FROM residue_profiles ORDER BY updatedAt DESC, treeUri")
+    suspend fun profiles(): List<ResidueProfileEntity>
+
+    @Query("SELECT * FROM residue_profiles WHERE treeUri = :treeUri")
+    suspend fun profile(treeUri: String): ResidueProfileEntity?
+}
+
+@Dao
 interface ScheduleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun put(schedule: ScheduleEntity)
@@ -370,8 +503,12 @@ interface ScheduleDao {
         DuplicateMemberEntity::class,
         ExclusionEntity::class,
         ScheduleEntity::class,
+        ResidueScanEntity::class,
+        ResidueItemEntity::class,
+        ResidueDecisionEntity::class,
+        ResidueProfileEntity::class,
     ],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 abstract class KnouxDatabase : RoomDatabase() {
@@ -380,13 +517,10 @@ abstract class KnouxDatabase : RoomDatabase() {
     abstract fun duplicateDao(): DuplicateDao
     abstract fun exclusionDao(): ExclusionDao
     abstract fun scheduleDao(): ScheduleDao
+    abstract fun residueDao(): ResidueDao
 
     companion object {
-        /**
-         * Additive migration only: PC02 duplicates get their own tables and the
-         * proven PC00/PC01 tables are untouched. There is intentionally no
-         * destructive fallback; losing history is never an acceptable migration.
-         */
+        /** PC02 duplicates: new tables only, proven PC00/PC01 tables untouched. */
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL(
@@ -419,9 +553,46 @@ abstract class KnouxDatabase : RoomDatabase() {
                 )
             }
         }
+
+        /**
+         * PC03 residue: four new tables, no change to any existing column.
+         *
+         * A residue profile is a customer rule for one SAF tree, not a copy of the
+         * OS grant, so deleting the app's rows never revives a revoked folder.
+         */
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `residue_scans` (`id` TEXT NOT NULL, " +
+                        "`startedAt` INTEGER NOT NULL, `finishedAt` INTEGER, `status` TEXT NOT NULL, " +
+                        "`scopes` TEXT NOT NULL, `minAgeDays` INTEGER NOT NULL, `fileCount` INTEGER NOT NULL, " +
+                        "`itemCount` INTEGER NOT NULL, `bytes` INTEGER NOT NULL, `note` TEXT, PRIMARY KEY(`id`))"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `residue_items` (`scanId` TEXT NOT NULL, `uri` TEXT NOT NULL, " +
+                        "`displayName` TEXT NOT NULL, `mimeType` TEXT, `bytes` INTEGER NOT NULL, " +
+                        "`lastModified` INTEGER NOT NULL, `category` TEXT NOT NULL, `provenance` TEXT NOT NULL, " +
+                        "`eligibility` TEXT NOT NULL, `pattern` TEXT NOT NULL, `confidence` TEXT NOT NULL, " +
+                        "`matchedOn` TEXT NOT NULL, `reason` TEXT NOT NULL, PRIMARY KEY(`scanId`, `uri`))"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `residue_decisions` (`id` TEXT NOT NULL, `scanId` TEXT, " +
+                        "`action` TEXT NOT NULL, `itemCount` INTEGER NOT NULL, `bytes` INTEGER NOT NULL, " +
+                        "`createdAt` INTEGER NOT NULL, `note` TEXT, PRIMARY KEY(`id`))"
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_residue_decisions_createdAt` " +
+                        "ON `residue_decisions` (`createdAt`)"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `residue_profiles` (`treeUri` TEXT NOT NULL, `label` TEXT NOT NULL, " +
+                        "`minAgeDays` INTEGER NOT NULL, `patterns` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, " +
+                        "`updatedAt` INTEGER NOT NULL, PRIMARY KEY(`treeUri`))"
+                )
+            }
+        }
         @Volatile
         private var instance: KnouxDatabase? = null
-
         /**
          * Single process-wide instance. Reusing it is non-negotiable here: two
          * Room instances over the same file would each keep their own connection
@@ -437,7 +608,7 @@ abstract class KnouxDatabase : RoomDatabase() {
                 )
                     // No fallbackToDestructiveMigration(): losing customer history
                     // is never an acceptable response to a schema change.
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                     .also { instance = it }
             }

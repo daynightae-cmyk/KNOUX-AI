@@ -33,6 +33,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    // Exported Room schemas are the input of the on-device migration test; without
+    // this they live only on the build machine and the test cannot validate 2 → 3.
+    sourceSets.getByName("androidTest").assets.srcDir("$projectDir/schemas")
 }
 kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
 

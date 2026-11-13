@@ -2,11 +2,14 @@ package com.knoux.ai
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.knoux.ai.data.KnouxData
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -63,6 +66,17 @@ class PreviewNavigationTest {
         showing("duplicate-redundant")
     }
 
+    /**
+     * PC03 turned Residue into a measured screen too, but it has no fixed summary
+     * tag: the total may be unavailable until the customer runs a pass, so the
+     * list and the total are the honest markers here.
+     */
+    private fun residueScreen() {
+        node("screen-residue").assertExists()
+        showing("residue-list")
+        showing("residue-total")
+    }
+
     /** Detail routes render a service workspace plus a scrollable detail body. */
     private fun detailScreen(page: String) {
         showing("screen-$page")
@@ -80,19 +94,22 @@ class PreviewNavigationTest {
 
     private fun back() { click("back") }
 
+    private val instrumentation = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+
     /**
      * The splash composes the dashboard underneath it while it fades out, so the
      * shell can be visible before it is live; interacting then lets the identity
      * gateway replace the screen mid-test. Wait for the splash to leave, then walk
      * the first-run surfaces that actually apply to this device.
      */
-    @Before fun enterTheShell() {
-        val intent = Intent(ApplicationProvider.getApplicationContext<Context>(), MainActivity::class.java)
-            .putExtra("knoux.preview.english", true)
-        scenario = ActivityScenario.launch(intent)
+    private fun present(tag: String) = ui.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
 
-        fun present(tag: String) = ui.onAllNodesWithTag(tag).fetchSemanticsNodes().isNotEmpty()
-
+    /**
+     * Walks the first-run surfaces that actually apply to this device. A relaunch
+     * with FLAG_ACTIVITY_CLEAR_TASK can land on onboarding or the identity gateway
+     * again, so every launch uses the same walk instead of assuming the shell.
+     */
+    private fun waitForTheShell() {
         ui.waitUntil(30_000) { !present("knoux-splash") }
         ui.waitUntil(20_000) {
             present("onboarding-skip") || present("auth-guest") || present("tab-home")
@@ -106,6 +123,13 @@ class PreviewNavigationTest {
         ui.waitUntil(20_000) { present("tab-home") }
     }
 
+    @Before fun enterTheShell() {
+        val intent = Intent(ApplicationProvider.getApplicationContext<Context>(), MainActivity::class.java)
+            .putExtra("knoux.preview.english", true)
+        scenario = ActivityScenario.launch(intent)
+        waitForTheShell()
+    }
+
     @After fun closeShell() {
         if (::scenario.isInitialized) scenario.close()
     }
@@ -113,12 +137,15 @@ class PreviewNavigationTest {
     @Test fun tabsReachAllTenScreensAndDetailBackReturnsToTheIndex() {
         screen("home")
         click("tab-clean"); screen("clean")
-        for (page in listOf("deep-scan", "residue")) {
-            scrollClick("open-$page")
-            screen(page)
-            node("tab-clean").assertIsSelected()
-            back(); screen("clean")
-        }
+        scrollClick("open-deep-scan")
+        screen("deep-scan")
+        node("tab-clean").assertIsSelected()
+        back(); screen("clean")
+        // App Residue is a measured screen since PC03, not a design fixture.
+        scrollClick("open-residue")
+        residueScreen()
+        node("tab-clean").assertIsSelected()
+        back(); screen("clean")
         // Duplicates is a measured screen since PC02, not a design fixture.
         scrollClick("open-duplicates")
         measuredScreen("duplicates")
@@ -157,30 +184,57 @@ class PreviewNavigationTest {
         node("primary-action").assertIsNotEnabled()
     }
 
-    @Test fun residueSelectionUpdatesTotalAndConfirmationDoesNotClean() {
+    /**
+     * PC03 replaced the residue fixture with a measured screen. The total it shows
+     * must be the persisted measurement (or an explicit dash before the first
+     * pass), and opening the review with nothing selected must offer no removal.
+     */
+    @Test fun residueScreenShowsOnlyPersistedDataAndNeverPreselects() {
         click("tab-clean")
         scrollClick("open-residue")
-        node("select-all").performScrollTo().assertIsOn()
-        node("row-0").performScrollTo().assertIsOn().performClick().assertIsOff()
-        node("select-all").performScrollTo().assertTextContains("568 MB", substring = true)
-        node("select-all").performClick().assertIsOn()
-        node("select-all").performClick().assertIsOff()
-        node("primary-action").assertIsNotEnabled()
-        node("row-1").performScrollTo().performClick().assertIsOn()
-        scrollClick("primary-action")
-        scrollClick("close-sheet")
-        node("row-1").assertIsOn()
-        scrollClick("primary-action")
-        scrollClick("confirm-preview")
-        node("preview-only-result").assertTextContains("No cleanup performed", substring = true)
+        residueScreen()
+
+        val stored = runBlocking { KnouxData.residue.latest() }
+        val expectedTotal = stored?.let { humanBytes(it.bytes) } ?: "\u2014"
+        ui.waitUntil(20_000) {
+            runCatching {
+                node("residue-total").fetchSemanticsNode().config[SemanticsProperties.Text].first().text
+            }.getOrNull() == expectedTotal
+        }
+
+        if (stored != null && stored.items.isNotEmpty()) {
+            // A measured pass never carries a pre-selection: with nothing chosen by
+            // hand, the review sheet states that and keeps deletion disabled.
+            scrollClick("primary-action")
+            node("residue-no-selection").assertIsDisplayed()
+            node("residue-action-delete").assertIsNotEnabled()
+            scrollClick("close-sheet")
+        }
+
+        back()
+        screen("clean")
     }
 
+    /**
+     * RTL mirroring must not depend on the settings sheet being open.
+     *
+     * The Arabic surface is reached through the app's own debug capture hook
+     * (`--ez knoux.preview.arabic true`), which is the same switch its reference
+     * screenshots use. That keeps this case about layout mirroring rather than
+     * about which settings row happened to be visible.
+     */
     @Test fun arabicSwitchMirrorsTabOrderAndPreservesNavigation() {
-        click("settings")
-        // The settings sheet's second action is Arabic; the second action of the
-        // language row mirrors every tab and the whole layout direction.
-        scrollClick("primary-action")
-        scrollClick("close-sheet")
+        scenario.close()
+        val arabic = Intent(Intent.ACTION_MAIN).apply {
+            // Resolve through the target package, not the instrumentation context,
+            // otherwise the class name lands on the test package.
+            setClassName(instrumentation.targetContext.packageName, MainActivity::class.java.name)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            putExtra("knoux.preview.arabic", true)
+        }
+        scenario = ActivityScenario.launch<MainActivity>(arabic)
+        waitForTheShell()
+
         node("tab-home").assertTextContains("الرئيسية")
         val home = node("tab-home").fetchSemanticsNode().boundsInRoot
         val reports = node("tab-reports").fetchSemanticsNode().boundsInRoot

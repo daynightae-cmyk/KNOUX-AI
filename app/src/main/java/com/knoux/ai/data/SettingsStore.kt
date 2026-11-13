@@ -43,6 +43,8 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
         val CONSENT_RECORDED = booleanPreferencesKey("history_consent")
         val SCHEDULE_ENABLED = booleanPreferencesKey("schedule_enabled")
         val SCHEDULE_MINUTES = longPreferencesKey("schedule_minutes")
+        val RESIDUE_SCOPES = stringSetPreferencesKey("residue_scopes")
+        val RESIDUE_MIN_AGE = longPreferencesKey("residue_min_age_days")
     }
 
     /** Scopes the customer last chose. Defaults to the only always-available one. */
@@ -79,6 +81,33 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
         dataStore.edit { prefs ->
             prefs[Keys.SCHEDULE_ENABLED] = enabled
             prefs[Keys.SCHEDULE_MINUTES] = minutes
+        }
+    }
+
+    /**
+     * Residue scopes are kept separate from the Smart Clean scopes: turning on a
+     * folder for leftover review must not silently widen the next Smart Clean pass.
+     */
+    val residueScopes: Flow<Set<AccessScope>> = dataStore.data.map { prefs ->
+        val raw = prefs[Keys.RESIDUE_SCOPES] ?: return@map setOf(AccessScope.APP_CACHE)
+        raw.mapNotNull { name -> AccessScope.entries.firstOrNull { it.name == name } }.toSet()
+            .ifEmpty { setOf(AccessScope.APP_CACHE) }
+    }
+
+    suspend fun setResidueScopes(scopes: Set<AccessScope>) {
+        dataStore.edit { prefs -> prefs[Keys.RESIDUE_SCOPES] = scopes.map { it.name }.toSet() }
+    }
+
+    /** Shared-folder residue age gate; own cache is always in scope regardless. */
+    val residueMinAgeDays: Flow<Int> = dataStore.data.map { prefs ->
+        (prefs[Keys.RESIDUE_MIN_AGE] ?: ResidueRules.DEFAULT_MIN_AGE_DAYS.toLong()).toInt()
+            .takeIf { it in ResidueRules.AGE_CHOICES } ?: ResidueRules.DEFAULT_MIN_AGE_DAYS
+    }
+
+    suspend fun setResidueMinAgeDays(days: Int) {
+        dataStore.edit { prefs ->
+            prefs[Keys.RESIDUE_MIN_AGE] = (days.takeIf { it in ResidueRules.AGE_CHOICES }
+                ?: ResidueRules.DEFAULT_MIN_AGE_DAYS).toLong()
         }
     }
 }

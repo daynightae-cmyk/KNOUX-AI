@@ -465,8 +465,10 @@ private fun KnouxAppScaffold(
                                     Page.PRIVACY -> PrivacySweepScreen(open)
                                     Page.OPTIMIZE -> AiOptimizationScreen(open)
                                     Page.KNOUX_UNIVERSE -> KnouxUniverseScreen()
-                                    // PC02 — real duplicate engine; no design fixture is shown.
+                                    // PC02 - real duplicate engine; no design fixture is shown.
                                     Page.DUPLICATES, Page.DUPLICATE_REVIEW -> RealDuplicateScreen(target, open)
+                                    // PC03 - real residue engine; no design fixture is shown.
+                                    Page.RESIDUE, Page.RESIDUE_REVIEW -> RealResidueScreen(target, open)
                                     in Page.detailRoutes -> DetailPreview(target)
                                     else -> ReferenceScreen(target, openReview = open)
                                 }
