@@ -8,6 +8,7 @@ import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioTrack
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.VibrationEffect
@@ -329,10 +330,16 @@ internal object TouchFeedback {
     fun init(context: Context) {
         if (initialized) return
         initialized = true
-        vibrator = try {
-            val vm = context.getSystemService(VibratorManager::class.java)
-            vm.defaultVibrator
-        } catch (_: Exception) {
+        vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // VibratorManager added in API 28; API 26 emulator has no such class
+            try {
+                val vm = context.getSystemService(VibratorManager::class.java)
+                vm.defaultVibrator
+            } catch (_: Throwable) {
+                @Suppress("DEPRECATION")
+                context.getSystemService(Vibrator::class.java)
+            }
+        } else {
             @Suppress("DEPRECATION")
             context.getSystemService(Vibrator::class.java)
         }

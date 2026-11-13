@@ -167,6 +167,27 @@ class PreviewNavigationTest {
         ui.onAllNodesWithTag("design-preview").onFirst().assertIsDisplayed()
     }
 
+    /** P0: compact native header actions must not visually collide at phone width. */
+    @Test fun compactHeaderControlsDoNotOverlapOnDevice() {
+        val ids = listOf("menu", "design-preview", "pro", "settings")
+        val rectangles = ids.map { tag ->
+            val bounds = ui.onAllNodesWithTag(tag).onFirst().fetchSemanticsNode().boundsInRoot
+            org.junit.Assert.assertTrue("$tag must have real bounds", bounds.width > 0f && bounds.height > 0f)
+            tag to bounds
+        }
+        for (i in rectangles.indices) {
+            for (j in i + 1 until rectangles.size) {
+                val (leftName, left) = rectangles[i]
+                val (rightName, right) = rectangles[j]
+                val separated = left.right <= right.left || right.right <= left.left ||
+                    left.bottom <= right.top || right.bottom <= left.top
+                org.junit.Assert.assertTrue(
+                    "Header controls $leftName and $rightName overlap", separated
+                )
+            }
+        }
+    }
+
     @Test fun tabsReachAllTenScreensAndDetailBackReturnsToTheIndex() {
         screen("home")
         click("tab-clean"); screen("clean")
