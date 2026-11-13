@@ -325,7 +325,12 @@ class SmartCleanStorageTest {
         assertEquals(first.session.scopes, rehydrated.session.scopes)
         assertEquals(first.session.itemCount, rehydrated.session.itemCount)
         assertEquals(first.session.totalBytes, rehydrated.session.totalBytes)
-        assertEquals(first.candidates.associateBy { it.uri }, rehydrated.candidates.associateBy { it.uri })
+        val rehydratedByUri = rehydrated.candidates.associateBy { it.uri }
+        assertEquals(first.candidates.size, rehydratedByUri.size)
+        first.candidates.forEach { scanned ->
+            // `physicalKey` is a scan-time alias aid and is intentionally not persisted.
+            assertEquals(scanned.copy(physicalKey = null), rehydratedByUri.getValue(scanned.uri))
+        }
         assertEquals(first.session.snapshots.toSet(), rehydrated.session.snapshots.toSet())
         val second = controller.scan(setOf(AccessScope.APP_CACHE)).getOrThrow()
         assertFalse(first.session.id == second.session.id)

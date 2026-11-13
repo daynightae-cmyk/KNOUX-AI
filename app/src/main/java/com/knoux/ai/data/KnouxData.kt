@@ -19,6 +19,10 @@ object KnouxData {
     private val settingsRef = lazy { SettingsStore.create(requireContext()) }
     private val repositoryRef = lazy { SmartCleanRepository(requireContext(), permissions) }
     private val controllerRef = lazy { SmartCleanController(repository, database, settings, permissions) }
+    private val duplicateRepositoryRef = lazy { DuplicateRepository(requireContext(), permissions) }
+    private val duplicateControllerRef = lazy {
+        DuplicateController(duplicateRepository, database, settings, smartClean)
+    }
 
     fun init(context: Context) {
         if (appContext == null) appContext = context.applicationContext
@@ -35,4 +39,6 @@ object KnouxData {
     val settings: SettingsStore get() = settingsRef.value
     val repository: SmartCleanRepository get() = repositoryRef.value
     val smartClean: SmartCleanController get() = controllerRef.value
+    val duplicateRepository: DuplicateRepository get() = duplicateRepositoryRef.value
+    val duplicates: DuplicateController get() = duplicateControllerRef.value
 }

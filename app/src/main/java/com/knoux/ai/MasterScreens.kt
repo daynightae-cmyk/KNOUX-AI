@@ -592,8 +592,14 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                 ar "📊 تصدير PDF • سجل ٩٠ يوماً • تنبؤات ذكية • تقارير أسبوعية"),
             onClick = { showProGate = true }
         )
-        Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp),
-            verticalArrangement = Arrangement.spacedBy(7.dp)) {
+        Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp)) {
+            // The cards overflow on short screens (360x812dp), which used to clip
+            // the whole action row out of the window. Scroll the evidence and pin
+            // the actions so they are always reachable.
+            Column(
+                Modifier.fillMaxWidth().weight(1f).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(7.dp),
+            ) {
             RangeTabs(range) { range = it }
             MasterCard(radius = 20, tint = Violet) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -655,7 +661,7 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                     Glyph(Mark.NEXT, Modifier.size(14.dp), Mist)
                 }
             }
-            Spacer(Modifier.weight(1f))
+            }
             MasterActions(
                 Action("View History" ar "عرض السجل", Mark.CALENDAR),
                 Action("View Report Details" ar "عرض تفاصيل التقرير", Mark.BARS),

@@ -11,6 +11,8 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -95,6 +97,66 @@ data class OperationItemEntity(
     val bytes: Long,
     val outcome: String,
     val error: String?,
+)
+
+// ── PC02 duplicate evidence ──────────────────────────────────────────────────
+
+/**
+ * One duplicate pass. Counts are the measured outcome of that pass, so a stale
+ * row is still labelled with when it was captured rather than treated as live.
+ */
+@Entity(tableName = "duplicate_scans")
+data class DuplicateScanEntity(
+    @PrimaryKey val id: String,
+    val startedAt: Long,
+    val finishedAt: Long?,
+    val status: String,
+    /** Comma-separated AccessScope names actually included. */
+    val scopes: String,
+    val fileCount: Int,
+    val hashedCount: Int,
+    val bytesHashed: Long,
+    val groupCount: Int,
+    val redundantBytes: Long,
+    val statusNote: String?,
+)
+
+/**
+ * One SHA-256 group. The primary key is (scanId, id) so a later pass can never
+ * overwrite an earlier pass's evidence: history is append-only by construction.
+ */
+@Entity(tableName = "duplicate_groups", primaryKeys = ["scanId", "id"])
+data class DuplicateGroupEntity(
+    val scanId: String,
+    /** Content hash — unique within one scan. */
+    val id: String,
+    val contentHash: String,
+    val bytes: Long,
+    val keeperUri: String,
+    val keeperName: String,
+    val keeperModified: Long,
+    val memberCount: Int,
+    val redundantBytes: Long,
+)
+
+@Entity(
+    tableName = "duplicate_members",
+    indices = [Index(value = ["scanId", "uri"], unique = true), Index("groupId")]
+)
+data class DuplicateMemberEntity(
+    @PrimaryKey(autoGenerate = true) val rowId: Long = 0,
+    val scanId: String,
+    val groupId: String,
+    val uri: String,
+    val displayName: String,
+    val mimeType: String?,
+    val bytes: Long,
+    val lastModified: Long,
+    val category: String,
+    val provenance: String,
+    val eligibility: String,
+    val reason: String,
+    val isKeeper: Boolean,
 )
 
 /** Items the customer asked us to keep, so a later scan cannot re-offer them. */
@@ -248,6 +310,43 @@ interface ExclusionDao {
 }
 
 @Dao
+interface DuplicateDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertScan(scan: DuplicateScanEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertGroups(groups: List<DuplicateGroupEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMembers(members: List<DuplicateMemberEntity>)
+
+    @Query("SELECT * FROM duplicate_scans WHERE status IN ('MEASURED', 'PARTIAL') ORDER BY startedAt DESC, id DESC LIMIT 1")
+    suspend fun latestFinishedScan(): DuplicateScanEntity?
+
+    @Query("SELECT * FROM duplicate_scans ORDER BY startedAt DESC, id DESC LIMIT 20")
+    fun observeScans(): Flow<List<DuplicateScanEntity>>
+
+    @Query("SELECT * FROM duplicate_groups WHERE scanId = :scanId ORDER BY redundantBytes DESC, id")
+    suspend fun groups(scanId: String): List<DuplicateGroupEntity>
+
+    @Query("SELECT * FROM duplicate_members WHERE scanId = :scanId")
+    suspend fun members(scanId: String): List<DuplicateMemberEntity>
+
+    @Query("DELETE FROM duplicate_groups WHERE scanId = :scanId")
+    suspend fun clearGroups(scanId: String)
+
+    @Query("DELETE FROM duplicate_members WHERE scanId = :scanId")
+    suspend fun clearMembers(scanId: String)
+
+    @Query("""
+        UPDATE duplicate_scans SET
+            fileCount = :fileCount, groupCount = :groupCount, redundantBytes = :redundantBytes
+        WHERE id = :scanId
+    """)
+    suspend fun updateSummary(scanId: String, fileCount: Int, groupCount: Int, redundantBytes: Long)
+}
+
+@Dao
 interface ScheduleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun put(schedule: ScheduleEntity)
@@ -266,19 +365,60 @@ interface ScheduleDao {
         CandidateEntity::class,
         OperationEntity::class,
         OperationItemEntity::class,
+        DuplicateScanEntity::class,
+        DuplicateGroupEntity::class,
+        DuplicateMemberEntity::class,
         ExclusionEntity::class,
         ScheduleEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 abstract class KnouxDatabase : RoomDatabase() {
     abstract fun scanDao(): ScanDao
     abstract fun operationDao(): OperationDao
+    abstract fun duplicateDao(): DuplicateDao
     abstract fun exclusionDao(): ExclusionDao
     abstract fun scheduleDao(): ScheduleDao
 
     companion object {
+        /**
+         * Additive migration only: PC02 duplicates get their own tables and the
+         * proven PC00/PC01 tables are untouched. There is intentionally no
+         * destructive fallback; losing history is never an acceptable migration.
+         */
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `duplicate_scans` (`id` TEXT NOT NULL, " +
+                        "`startedAt` INTEGER NOT NULL, `finishedAt` INTEGER, `status` TEXT NOT NULL, " +
+                        "`scopes` TEXT NOT NULL, `fileCount` INTEGER NOT NULL, `hashedCount` INTEGER NOT NULL, " +
+                        "`bytesHashed` INTEGER NOT NULL, `groupCount` INTEGER NOT NULL, " +
+                        "`redundantBytes` INTEGER NOT NULL, `statusNote` TEXT, PRIMARY KEY(`id`))"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `duplicate_groups` (`scanId` TEXT NOT NULL, " +
+                        "`id` TEXT NOT NULL, `contentHash` TEXT NOT NULL, `bytes` INTEGER NOT NULL, " +
+                        "`keeperUri` TEXT NOT NULL, `keeperName` TEXT NOT NULL, `keeperModified` INTEGER NOT NULL, " +
+                        "`memberCount` INTEGER NOT NULL, `redundantBytes` INTEGER NOT NULL, " +
+                        "PRIMARY KEY(`scanId`, `id`))"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `duplicate_members` (`rowId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                        "`scanId` TEXT NOT NULL, `groupId` TEXT NOT NULL, `uri` TEXT NOT NULL, " +
+                        "`displayName` TEXT NOT NULL, `mimeType` TEXT, `bytes` INTEGER NOT NULL, " +
+                        "`lastModified` INTEGER NOT NULL, `category` TEXT NOT NULL, `provenance` TEXT NOT NULL, " +
+                        "`eligibility` TEXT NOT NULL, `reason` TEXT NOT NULL, `isKeeper` INTEGER NOT NULL)"
+                )
+                db.execSQL(
+                    "CREATE UNIQUE INDEX IF NOT EXISTS `index_duplicate_members_scanId_uri` " +
+                        "ON `duplicate_members` (`scanId`, `uri`)"
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_duplicate_members_groupId` ON `duplicate_members` (`groupId`)"
+                )
+            }
+        }
         @Volatile
         private var instance: KnouxDatabase? = null
 
@@ -297,6 +437,7 @@ abstract class KnouxDatabase : RoomDatabase() {
                 )
                     // No fallbackToDestructiveMigration(): losing customer history
                     // is never an acceptable response to a schema change.
+                    .addMigrations(MIGRATION_1_2)
                     .build()
                     .also { instance = it }
             }

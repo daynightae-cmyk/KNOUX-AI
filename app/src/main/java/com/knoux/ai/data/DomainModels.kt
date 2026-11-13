@@ -120,6 +120,15 @@ data class FileCandidate(
     /** Human-readable justification shown in the review sheet. */
     val reason: String,
     val status: DataStatus = DataStatus.MEASURED,
+    /**
+     * Best-effort identity of the physical file behind this URI.
+     *
+     * The same file can be visible through MediaStore and through a granted SAF
+     * folder at the same time. Those are two URIs for one file, not two copies;
+     * removing the "copy" would remove the file the group calls its original.
+     * Equal non-null keys are therefore collapsed before duplicate grouping.
+     */
+    val physicalKey: String? = null,
 )
 
 /** Volume deltas are observations, not a guarantee of freed space. */

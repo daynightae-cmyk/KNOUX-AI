@@ -39,7 +39,8 @@ import kotlin.math.sin
 internal fun ServiceWorld(page: Page, selectedCount: Int, totalCount: Int, selectedMb: Int) {
     when (page) {
         Page.CLEAN_CENTER -> CleanWorld(selectedCount, totalCount, selectedMb)
-        Page.DUPLICATE_REVIEW -> DuplicateWorld()
+        // PC02 Duplicate Finder is a real measured screen (RealDuplicateScreen);
+        // its design-preview studio was replaced rather than shown beside real data.
         Page.PRIVACY_INSPECTOR -> PrivacyWorld()
         Page.SCAN_SUMMARY -> ScanWorld()
         Page.REPORT_DETAIL -> ReportsWorld()
@@ -169,52 +170,6 @@ private fun CleanWorld(selected: Int, total: Int, mb: Int) {
             listOf("يمكنك التحكم في مجموعات المهملات.",
                 "الملفات المؤقتة المعروضة أمثلة فقط.",
                 "المعاينة لا تلمس ملفات التحميل.")[focus], 12, Mist)
-    }
-}
-
-@Composable
-private fun DuplicateWorld() {
-    var group by rememberSaveable { mutableIntStateOf(0) }
-    var comparison by rememberSaveable { mutableStateOf(false) }
-    Studio(Page.DUPLICATE_REVIEW, "Mirror lab", "معمل الصور المتطابقة", Pink) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-            repeat(2) { side ->
-                Box(Modifier.weight(1f).height(92.dp).clip(RoundedCornerShape(17.dp))
-                    .background(Brush.linearGradient(if (side == 0)
-                        listOf(Color(0xffb932e5), Color(0xff221359), Color(0xff14a5c9))
-                    else listOf(Color(0xff1444a3), Color(0xff44195e), Color(0xffd64ba6)))))
-                {
-                    Canvas(Modifier.fillMaxSize()) {
-                        val c = if (side == 0) Pink else Cyan
-                        repeat(6) { index ->
-                            val w = size.width * .48f
-                            drawCircle(c.copy(alpha = .08f + index * .035f),
-                                radius = w * (1f - index * .12f),
-                                center = Offset(size.width * .56f, size.height * .48f))
-                        }
-                        drawLine(Color.White.copy(alpha = .5f),
-                            Offset(size.width * .18f, size.height * .78f),
-                            Offset(size.width * .78f, size.height * .2f), 2.dp.toPx())
-                    }
-                    WT(if (side == 0) "ORIGINAL" else if (comparison) "DIFFERENCE" else "MATCH",
-                        if (side == 0) "الأصل" else if (comparison) "الاختلاف" else "المطابق",
-                        10, Color.White, FontWeight.ExtraBold,
-                        Modifier.align(Alignment.BottomStart).padding(10.dp))
-                }
-            }
-        }
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                SceneTitle("98.7%", "Visual similarity / sample",
-                    "٩٨٫٧٪", "التشابه المرئي / مثال", Pink)
-            }
-            WT(if (comparison) "DIFF ON" else "PAIR VIEW",
-                if (comparison) "إظهار الفرق" else "عرض الزوج", 11, Cyan, FontWeight.Bold,
-                Modifier.clip(RoundedCornerShape(12.dp)).clickable { comparison = !comparison }
-                    .padding(12.dp).testTag("studio-duplicate-compare"))
-        }
-        ChoiceBar(listOf("Photos" to "الصور", "Videos" to "الفيديو", "Docs" to "المستندات"),
-            group, Pink) { group = it }
     }
 }
 
