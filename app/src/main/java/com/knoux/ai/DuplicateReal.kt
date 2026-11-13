@@ -569,17 +569,22 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
             widthDp = 340f,
             lastResultAgeMillis = state.capturedAt,
         )
-        MirrorInstrument(
-            frame = mirrorFrame,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 8.dp),
-        )
-
+        // P0 layout repair: the 320dp instrument used to consume the entire
+        // viewport above this weighted results list on 360dp phones.
+        // Keep the signature artwork, but place it INSIDE the list so real
+        // result cards remain reachable and the action rail stays fixed.
         LazyColumn(
             Modifier.fillMaxWidth().weight(1f).testTag("duplicate-list"),
             contentPadding = PaddingValues(horizontal = 11.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
             item { DuplicateSummaryCard(state) }
+            item {
+                MirrorInstrument(
+                    frame = mirrorFrame,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                )
+            }
             state.note?.let { note ->
                 item {
                     Label(

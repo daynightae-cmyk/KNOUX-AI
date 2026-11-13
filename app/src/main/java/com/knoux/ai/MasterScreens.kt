@@ -371,19 +371,21 @@ private data class HubCardSpec(
 internal fun SmartHubScreen(open: (Page) -> Unit) {
     val roomy = LocalRoomy.current
     val motion = LocalPreviewMotion.current
-    // FIXED VIEWPORT: No root scrolling, BoxWithConstraints for measured layout
+    // Native dashboard: content scrolls INSIDE the persistent top/bottom app shell.
+    // The previous fixed viewport clipped Quick Actions on real 360dp phones.
     BoxWithConstraints(Modifier.fillMaxSize()) {
-        val availableHeight = maxHeight
-        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally) {
             // Hero section - now reduced height from Pass 3
-            NeonHero(Mark.K, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
+            NeonHero(Mark.K, motion, Modifier.padding(top = 4.dp, bottom = 6.dp),
+                heightOverride = if (roomy) 96.dp else 112.dp)
             MasterTitle("Smart" ar "مركز", "Device Hub" ar "الجهاز الذكي",
                 "Device intelligence, optimization and cleanup — with a clear preview before any changes."
                     ar "ذكاء الجهاز والتحسين والتنظيف — مع معاينة واضحة قبل أي تغيير.",
                 "screen-home")
             
-            // Content area with weight fills remaining space
-            Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 6.dp),
+            // Natural height prevents service rows and Quick Actions being cropped.
+            Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 6.dp),
                 verticalArrangement = Arrangement.spacedBy(7.dp)) {
                 val cards = listOf(
                     HubCardSpec("Smart Clean" ar "التنظيف الذكي",
@@ -422,8 +424,8 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
                     }
                 }
                 
-                Spacer(Modifier.weight(1f))
-                
+                Spacer(Modifier.height(6.dp))
+
                 // Quick Actions row
                 Label(("Quick Actions" ar "إجراءات سريعة").localized(), 15, weight = FontWeight.ExtraBold,
                     modifier = Modifier.fillMaxWidth().padding(start = 2.dp, top = 2.dp, bottom = 3.dp))

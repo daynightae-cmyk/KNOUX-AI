@@ -706,8 +706,12 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
         }
     }
     
-    Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
-        .height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+    // A real phone cannot fit the wordmark, DEV, preview, Pro and Settings
+    // all as full-width chips. Compact mode keeps every action accessible.
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val compactHeader = maxWidth < 460.dp || LocalDensity.current.fontScale > 1.18f
+        Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
+            .height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         if (page == Page.HOME) IconControl(Mark.MENU, ("Menu" ar "القائمة").localized(), "menu", menu)
         else IconControl(Mark.BACK, ("Back" ar "رجوع").localized(), "back", back)
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
@@ -738,7 +742,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                         }
                     }
                     // Dev mode badge — inline after name, styled like auth chip
-                    if (DevAccessManager.isDevModeActive) {
+                    if (BuildConfig.DEBUG && DevAccessManager.isDevModeActive && !compactHeader) {
                         Box(
                             Modifier
                                 .clip(RoundedCornerShape(10.dp))
@@ -761,8 +765,22 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                 }
             }
         }
-        PreviewModeDisclosure(disclose)
-        if (!LocalRoomy.current) {
+        if (compactHeader) {
+            Box(
+                Modifier.size(44.dp).testTag("design-preview")
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable(role = Role.Button, onClick = disclose)
+                    .semantics { contentDescription = "Design preview" },
+                contentAlignment = Alignment.Center
+            ) {
+                Glyph(Mark.EYE, Modifier.size(19.dp), Cyan)
+            }
+        } else {
+            PreviewModeDisclosure(disclose)
+        }
+        if (compactHeader) {
+            IconControl(Mark.CROWN, "KNOUX AI Pro", "pro", pro)
+        } else if (!LocalRoomy.current) {
             Box(Modifier.heightIn(min = 48.dp).testTag("pro")
                 .clickable(role = Role.Button, onClick = {
                     TouchFeedback.tap(context); pro()
@@ -778,6 +796,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
             }
         }
         IconControl(Mark.GEAR, ("Settings" ar "الإعدادات").localized(), "settings", settings)
+        }
     }
 
     // Dev Access Dialog - triggered by 5 quick taps on the logo

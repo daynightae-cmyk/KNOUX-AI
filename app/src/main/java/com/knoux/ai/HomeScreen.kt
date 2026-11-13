@@ -38,21 +38,17 @@ internal fun HomeScreen(open: (Page) -> Unit) {
 internal fun HubCard(
     title: Copy, copy: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit
 ) {
-    GlassPanel(Modifier.fillMaxWidth().heightIn(min = 112.dp).clip(RoundedCornerShape(18.dp))
+    // One touch target per service (not a nested arrow button).  This is a
+    // native compact card: clear icon, title and two lines of secondary text.
+    GlassPanel(Modifier.fillMaxWidth().heightIn(min = 96.dp).clip(RoundedCornerShape(18.dp))
         .testTag(tag).clickable(role = Role.Button, onClick = onClick), radius = 18, tint = tint) {
-        Column(Modifier.fillMaxWidth().padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Label(title.localized(), 14, weight = FontWeight.ExtraBold)
-            Label(copy.localized(), 10, Mist, maxLines = 2)
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween) {
-                Box(Modifier.size(28.dp).clip(RoundedCornerShape(14.dp))
-                    .background(Brush.horizontalGradient(listOf(tint.copy(alpha = .30f), tint.copy(alpha = .12f))),
-                        RoundedCornerShape(14.dp))
-                    .border(1.dp, tint.copy(alpha = .55f), RoundedCornerShape(14.dp))
-                    .clickable(role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
-                    Glyph(Mark.NEXT, Modifier.size(12.dp), tint, true)
-                }
-                MasterIcon(mark, tint, 44)
+        Row(Modifier.fillMaxWidth().padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+            MasterIcon(mark, tint, 38)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Label(title.localized(), 13, weight = FontWeight.ExtraBold, maxLines = 2)
+                Label(copy.localized(), 10, Mist, maxLines = 2)
             }
         }
     }

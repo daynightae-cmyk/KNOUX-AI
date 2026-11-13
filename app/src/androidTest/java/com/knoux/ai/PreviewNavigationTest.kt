@@ -66,6 +66,12 @@ class PreviewNavigationTest {
         showing("duplicate-redundant")
     }
 
+    /** PC05 is a real measured scan, not the retired design-preview screen. */
+    private fun deepScanScreen() {
+        showing("deep-scan-modules")
+        showing("deep-scan-start")
+    }
+
     /**
      * PC03 turned Residue into a measured screen too, but it has no fixed summary
      * tag: the total may be unavailable until the customer runs a pass, so the
@@ -144,11 +150,28 @@ class PreviewNavigationTest {
         if (::scenario.isInitialized) scenario.close()
     }
 
+    /** Regression: the native home scroll must not bury customer services or Quick Actions. */
+    @Test fun nativeHomeShowsAllServicesAndReachableQuickActions() {
+        screen("home")
+        for (tag in listOf(
+            "open-clean-center", "hub-ai-optimization", "hub-privacy-sweep",
+            "hub-storage-analyzer", "hub-app-manager", "hub-reports",
+            "start-scan", "quick-battery", "quick-privacy"
+        )) {
+            showing(tag)
+        }
+        node("tab-home").assertIsDisplayed()
+        node("menu").assertIsDisplayed()
+        node("settings").assertIsDisplayed()
+        // The compact disclosure remains an actual action, not hidden by the brand.
+        ui.onAllNodesWithTag("design-preview").onFirst().assertIsDisplayed()
+    }
+
     @Test fun tabsReachAllTenScreensAndDetailBackReturnsToTheIndex() {
         screen("home")
         click("tab-clean"); screen("clean")
         scrollClick("open-deep-scan")
-        screen("deep-scan")
+        deepScanScreen()
         node("tab-clean").assertIsSelected()
         back(); screen("clean")
         // App Residue is a measured screen since PC03, not a design fixture.
@@ -177,21 +200,16 @@ class PreviewNavigationTest {
         click("tab-home"); screen("home")
     }
 
-    @Test fun scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation() {
+    @Test fun realDeepScanEntrySurvivesRecreationWithoutStartingADelete() {
         click("tab-clean")
         scrollClick("open-deep-scan")
-        screen("deep-scan")
-        node("review-action").assertIsEnabled()
-        node("primary-action").assertIsNotEnabled()
-        scrollClick("review-action")
-        node("scan-state").assertTextContains("Preview paused")
-        node("review-action").assertIsNotEnabled()
-        node("primary-action").assertIsEnabled()
+        deepScanScreen()
+        // The original preview pause/resume test is obsolete: PC05 now has an
+        // actual scanner. Recreate the Activity without starting a pass or
+        // asking Android to modify personal user data.
         scenario.recreate()
-        node("primary-action").assertIsEnabled()
-        scrollClick("primary-action")
-        node("review-action").assertIsEnabled()
-        node("primary-action").assertIsNotEnabled()
+        deepScanScreen()
+        node("deep-scan-start").assertExists()
     }
 
     /**
