@@ -1,0 +1,243 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.PreviewNavigationTest:
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:228)
+
+INSTRUMENTATION_STATUS: stream=
+Error in outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:228)
+
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-battery')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:49)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:179)
+
+INSTRUMENTATION_STATUS: stream=
+Error in arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-battery')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:49)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:179)
+
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:135)
+
+INSTRUMENTATION_STATUS: stream=
+Error in scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:135)
+
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-storage')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:49)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:187)
+
+INSTRUMENTATION_STATUS: stream=
+Error in everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-storage')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:49)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:187)
+
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:104)
+
+INSTRUMENTATION_STATUS: stream=
+Error in tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:104)
+
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ñ┘ª┘½┘ñ┘ª┘ú
+There were 5 failures:
+1) outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:228)
+2) arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-battery')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:49)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:179)
+3) scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:135)
+4) everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-storage')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:49)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:187)
+5) tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:43)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:50)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:104)
+
+FAILURES!!!
+Tests run: 7,  Failures: 5
+
+
+INSTRUMENTATION_CODE: -1

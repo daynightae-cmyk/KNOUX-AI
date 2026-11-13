@@ -1,0 +1,667 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.AuthGatewayTest:
+INSTRUMENTATION_STATUS: test=welcomeStageOffersTheThreeDocumentedProviders
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: stream=
+Error in welcomeStageOffersTheThreeDocumentedProviders(com.knoux.ai.AuthGatewayTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: test=welcomeStageOffersTheThreeDocumentedProviders
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=passkeyProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stack=java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: stream=
+Error in passkeyProviderReportsAnHonestSetupPendingState(com.knoux.ai.AuthGatewayTest):
+java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: test=passkeyProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=googleProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stack=java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: stream=
+Error in googleProviderReportsAnHonestSetupPendingState(com.knoux.ai.AuthGatewayTest):
+java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: test=googleProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=guestEntryOpensTheApplicationShell
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stack=java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: stream=
+Error in guestEntryOpensTheApplicationShell(com.knoux.ai.AuthGatewayTest):
+java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: test=guestEntryOpensTheApplicationShell
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: stream=
+Error in theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback(com.knoux.ai.AuthGatewayTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+INSTRUMENTATION_STATUS: test=theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateMediaTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.DuplicateMediaTest:
+INSTRUMENTATION_STATUS: test=identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateMediaTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealScreenTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.DuplicateRealScreenTest:
+INSTRUMENTATION_STATUS: test=realFinderShowsTheProtectedOriginalAndDeletesOnlyTheSelectedCopy
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealScreenTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=realFinderShowsTheProtectedOriginalAndDeletesOnlyTheSelectedCopy
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.DuplicateRealTest:
+INSTRUMENTATION_STATUS: test=keptCopyIsExcludedFromLaterPassesAndASnapshotSurvivesANewController
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=keptCopyIsExcludedFromLaterPassesAndASnapshotSurvivesANewController
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=identicalContentIsGroupedPersistedAndDeletedWithoutTheOriginal
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=identicalContentIsGroupedPersistedAndDeletedWithoutTheOriginal
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=emptyScopeSetMeasuresNothingAndCreatesNoFabricatedGroup
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=emptyScopeSetMeasuresNothingAndCreatesNoFabricatedGroup
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.MediaConsentDiagnosticTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.MediaConsentDiagnosticTest:
+INSTRUMENTATION_STATUS: test=observeRealRestoreConsentWithoutApprovingIt
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.MediaConsentDiagnosticTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=observeRealRestoreConsentWithoutApprovingIt
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.PreviewNavigationTest:
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=15
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=15
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=16
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=16
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=17
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=17
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=18
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=18
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.ServiceWorldsTest
+INSTRUMENTATION_STATUS: current=19
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.ServiceWorldsTest:
+INSTRUMENTATION_STATUS: test=tenIndependentServiceStudiosRenderWithInteraction
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.ServiceWorldsTest
+INSTRUMENTATION_STATUS: current=19
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=tenIndependentServiceStudiosRenderWithInteraction
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=20
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanRealTest:
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=20
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=21
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=21
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=22
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=22
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=23
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=23
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=24
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=24
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=25
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanStorageTest:
+INSTRUMENTATION_STATUS: test=persistedKeepExclusionBlocksEvenAPreviouslyPreparedPlanUntilRemoved
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=25
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=persistedKeepExclusionBlocksEvenAPreviouslyPreparedPlanUntilRemoved
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=26
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=26
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=27
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=freshControllerRehydratesPersistedLatestScanAndExactHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=27
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=freshControllerRehydratesPersistedLatestScanAndExactHistory
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=28
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=unconfirmedAndUnacknowledgedPlansNeverDeleteAnyFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=28
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=unconfirmedAndUnacknowledgedPlansNeverDeleteAnyFixture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=29
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=concurrentSamePlanHasExactlyOneAtomicDurableClaim
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=29
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=concurrentSamePlanHasExactlyOneAtomicDurableClaim
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=30
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=staleUriIsAlreadyGoneAndDoesNotInflateRemovedCountOrBytes
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=30
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=staleUriIsAlreadyGoneAndDoesNotInflateRemovedCountOrBytes
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=31
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=interruptedRecoveryNeverDeletesAndPreservesTheExceptedPendingPlan
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=31
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=interruptedRecoveryNeverDeletesAndPreservesTheExceptedPendingPlan
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=32
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actualCacheScanDeletionAndHistoryUseOnlyExactFreshUris
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=32
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=actualCacheScanDeletionAndHistoryUseOnlyExactFreshUris
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=33
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=forgedCacheCandidateInTargetFilesDirIsRefusedWithoutTouchingIt
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=33
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=forgedCacheCandidateInTargetFilesDirIsRefusedWithoutTouchingIt
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=34
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SplashSequenceTest:
+INSTRUMENTATION_STATUS: test=liveSmileCuesOnceAtCompletionThenFinishes
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=34
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=liveSmileCuesOnceAtCompletionThenFinishes
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=35
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=frozenDebugFrameStaysVisibleForCapture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=35
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=frozenDebugFrameStaysVisibleForCapture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=36
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=reducedMotionShowsStaticBrandAndFinishesQuickly
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=36
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=reducedMotionShowsStaticBrandAndFinishesQuickly
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ó┘Ñ┘º┘½┘ª┘í┘ª
+There were 5 failures:
+1) welcomeStageOffersTheThreeDocumentedProviders(com.knoux.ai.AuthGatewayTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+2) passkeyProviderReportsAnHonestSetupPendingState(com.knoux.ai.AuthGatewayTest)
+java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+3) googleProviderReportsAnHonestSetupPendingState(com.knoux.ai.AuthGatewayTest)
+java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+4) guestEntryOpensTheApplicationShell(com.knoux.ai.AuthGatewayTest)
+java.lang.IllegalStateException: No compose hierarchies found in the app. Possible reasons include: (1) the Activity that calls setContent did not launch; (2) setContent was not called; (3) setContent was called before the ComposeTestRule ran. If setContent is called by the Activity, make sure the Activity is launched after the ComposeTestRule runs
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes(TestOwner.kt:82)
+	at androidx.compose.ui.test.TestOwnerKt.getAllSemanticsNodes$default(TestOwner.kt:74)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes(SemanticsNodeInteraction.kt:249)
+	at androidx.compose.ui.test.SemanticsNodeInteractionCollection.fetchSemanticsNodes$default(SemanticsNodeInteraction.kt:245)
+	at com.knoux.ai.AuthGatewayTest.openGateway$lambda$0(AuthGatewayTest.kt:31)
+	at com.knoux.ai.AuthGatewayTest.$r8$lambda$tUrSNPVmV9RVUh_kW78Pz7v29cI(AuthGatewayTest.kt:0)
+	at com.knoux.ai.AuthGatewayTest$$ExternalSyntheticLambda1.invoke(D8$$SyntheticClass:0)
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:497)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+5) theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback(com.knoux.ai.AuthGatewayTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.openGateway(AuthGatewayTest.kt:30)
+
+FAILURES!!!
+Tests run: 36,  Failures: 5
+
+
+INSTRUMENTATION_CODE: -1

@@ -1,0 +1,516 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.PreviewNavigationTest:
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:33)
+
+INSTRUMENTATION_STATUS: stream=
+Error in outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:33)
+
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #1305 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:91)
+
+INSTRUMENTATION_STATUS: stream=
+Error in residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #1305 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:91)
+
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.ServiceWorldsTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.ServiceWorldsTest:
+INSTRUMENTATION_STATUS: test=tenIndependentServiceStudiosRenderWithInteraction
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.ServiceWorldsTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=tenIndependentServiceStudiosRenderWithInteraction
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanRealTest:
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanStorageTest:
+INSTRUMENTATION_STATUS: test=persistedKeepExclusionBlocksEvenAPreviouslyPreparedPlanUntilRemoved
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=persistedKeepExclusionBlocksEvenAPreviouslyPreparedPlanUntilRemoved
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=15
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=15
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Provider must verify the exact requested state (GONE); observed={content://media/external_primary/images/media/55679=UNKNOWN, content://media/external_primary/images/media/55680=UNKNOWN}
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.SmartCleanStorageTest.launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:565)
+	at com.knoux.ai.SmartCleanStorageTest.access$launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:66)
+	at com.knoux.ai.SmartCleanStorageTest$syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs$1.invokeSuspend(SmartCleanStorageTest.kt:618)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:270)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+INSTRUMENTATION_STATUS: stream=
+Error in syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs(com.knoux.ai.SmartCleanStorageTest):
+java.lang.AssertionError: Provider must verify the exact requested state (GONE); observed={content://media/external_primary/images/media/55679=UNKNOWN, content://media/external_primary/images/media/55680=UNKNOWN}
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.SmartCleanStorageTest.launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:565)
+	at com.knoux.ai.SmartCleanStorageTest.access$launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:66)
+	at com.knoux.ai.SmartCleanStorageTest$syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs$1.invokeSuspend(SmartCleanStorageTest.kt:618)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:270)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+INSTRUMENTATION_STATUS: test=syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=16
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=freshControllerRehydratesPersistedLatestScanAndExactHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=16
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=freshControllerRehydratesPersistedLatestScanAndExactHistory
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=17
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=unconfirmedAndUnacknowledgedPlansNeverDeleteAnyFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=17
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=unconfirmedAndUnacknowledgedPlansNeverDeleteAnyFixture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=18
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=concurrentSamePlanHasExactlyOneAtomicDurableClaim
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=18
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=concurrentSamePlanHasExactlyOneAtomicDurableClaim
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=19
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=staleUriIsAlreadyGoneAndDoesNotInflateRemovedCountOrBytes
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=19
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=staleUriIsAlreadyGoneAndDoesNotInflateRemovedCountOrBytes
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=20
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=interruptedRecoveryNeverDeletesAndPreservesTheExceptedPendingPlan
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=20
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=interruptedRecoveryNeverDeletesAndPreservesTheExceptedPendingPlan
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=21
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actualCacheScanDeletionAndHistoryUseOnlyExactFreshUris
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=21
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=actualCacheScanDeletionAndHistoryUseOnlyExactFreshUris
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=22
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=forgedCacheCandidateInTargetFilesDirIsRefusedWithoutTouchingIt
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=22
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=22
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=forgedCacheCandidateInTargetFilesDirIsRefusedWithoutTouchingIt
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘í┘⌐┘ª┘½┘ñ┘ñ
+There were 8 failures:
+1) outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:33)
+2) arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+3) scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+4) everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+5) tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+6) cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+7) residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #1305 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:91)
+8) syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs(com.knoux.ai.SmartCleanStorageTest)
+java.lang.AssertionError: Provider must verify the exact requested state (GONE); observed={content://media/external_primary/images/media/55679=UNKNOWN, content://media/external_primary/images/media/55680=UNKNOWN}
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.SmartCleanStorageTest.launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:565)
+	at com.knoux.ai.SmartCleanStorageTest.access$launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:66)
+	at com.knoux.ai.SmartCleanStorageTest$syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs$1.invokeSuspend(SmartCleanStorageTest.kt:618)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:270)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+FAILURES!!!
+Tests run: 22,  Failures: 8
+
+
+INSTRUMENTATION_CODE: -1

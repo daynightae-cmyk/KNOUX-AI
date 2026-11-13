@@ -1,0 +1,142 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.AuthGatewayTest:
+INSTRUMENTATION_STATUS: test=welcomeStageOffersTheThreeDocumentedProviders
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.AuthGatewayTest.welcomeStageOffersTheThreeDocumentedProviders(AuthGatewayTest.kt:68)
+
+INSTRUMENTATION_STATUS: stream=
+Error in welcomeStageOffersTheThreeDocumentedProviders(com.knoux.ai.AuthGatewayTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.AuthGatewayTest.welcomeStageOffersTheThreeDocumentedProviders(AuthGatewayTest.kt:68)
+
+INSTRUMENTATION_STATUS: test=welcomeStageOffersTheThreeDocumentedProviders
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=passkeyProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Passkey sheet must state that no provider is configured
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.AuthGatewayTest.passkeyProviderReportsAnHonestSetupPendingState(AuthGatewayTest.kt:74)
+
+INSTRUMENTATION_STATUS: stream=
+Error in passkeyProviderReportsAnHonestSetupPendingState(com.knoux.ai.AuthGatewayTest):
+java.lang.AssertionError: Passkey sheet must state that no provider is configured
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.AuthGatewayTest.passkeyProviderReportsAnHonestSetupPendingState(AuthGatewayTest.kt:74)
+
+INSTRUMENTATION_STATUS: test=passkeyProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=googleProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Google sheet must state that no provider is configured
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.AuthGatewayTest.googleProviderReportsAnHonestSetupPendingState(AuthGatewayTest.kt:80)
+
+INSTRUMENTATION_STATUS: stream=
+Error in googleProviderReportsAnHonestSetupPendingState(com.knoux.ai.AuthGatewayTest):
+java.lang.AssertionError: Google sheet must state that no provider is configured
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.AuthGatewayTest.googleProviderReportsAnHonestSetupPendingState(AuthGatewayTest.kt:80)
+
+INSTRUMENTATION_STATUS: test=googleProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=guestEntryOpensTheApplicationShell
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.guestEntryOpensTheApplicationShell(AuthGatewayTest.kt:85)
+
+INSTRUMENTATION_STATUS: stream=
+Error in guestEntryOpensTheApplicationShell(com.knoux.ai.AuthGatewayTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.guestEntryOpensTheApplicationShell(AuthGatewayTest.kt:85)
+
+INSTRUMENTATION_STATUS: test=guestEntryOpensTheApplicationShell
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ó┘¿┘½┘á┘ñ┘Ñ
+There were 4 failures:
+1) welcomeStageOffersTheThreeDocumentedProviders(com.knoux.ai.AuthGatewayTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.AuthGatewayTest.welcomeStageOffersTheThreeDocumentedProviders(AuthGatewayTest.kt:68)
+2) passkeyProviderReportsAnHonestSetupPendingState(com.knoux.ai.AuthGatewayTest)
+java.lang.AssertionError: Passkey sheet must state that no provider is configured
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.AuthGatewayTest.passkeyProviderReportsAnHonestSetupPendingState(AuthGatewayTest.kt:74)
+3) googleProviderReportsAnHonestSetupPendingState(com.knoux.ai.AuthGatewayTest)
+java.lang.AssertionError: Google sheet must state that no provider is configured
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.AuthGatewayTest.googleProviderReportsAnHonestSetupPendingState(AuthGatewayTest.kt:80)
+4) guestEntryOpensTheApplicationShell(com.knoux.ai.AuthGatewayTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 20000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.AuthGatewayTest.guestEntryOpensTheApplicationShell(AuthGatewayTest.kt:85)
+
+FAILURES!!!
+Tests run: 5,  Failures: 4
+
+
+INSTRUMENTATION_CODE: -1

@@ -1,0 +1,35 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateMediaTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.DuplicateMediaTest:
+INSTRUMENTATION_STATUS: test=identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateMediaTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.util.NoSuchElementException: Collection contains no element matching the predicate.
+	at com.knoux.ai.DuplicateMediaTest.identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(DuplicateMediaTest.kt:552)
+
+INSTRUMENTATION_STATUS: stream=
+Error in identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(com.knoux.ai.DuplicateMediaTest):
+java.util.NoSuchElementException: Collection contains no element matching the predicate.
+	at com.knoux.ai.DuplicateMediaTest.identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(DuplicateMediaTest.kt:552)
+
+INSTRUMENTATION_STATUS: test=identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘Ñ┘á┘½┘⌐┘¿┘⌐
+There was 1 failure:
+1) identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(com.knoux.ai.DuplicateMediaTest)
+java.util.NoSuchElementException: Collection contains no element matching the predicate.
+	at com.knoux.ai.DuplicateMediaTest.identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(DuplicateMediaTest.kt:552)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

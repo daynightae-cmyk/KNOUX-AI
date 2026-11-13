@@ -1,0 +1,221 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.PreviewNavigationTest:
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:33)
+
+INSTRUMENTATION_STATUS: stream=
+Error in outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:33)
+
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: stream=
+Error in residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘í┘í┘ñ┘½┘ó┘Ñ┘⌐
+There were 7 failures:
+1) outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:33)
+2) arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+3) scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+4) everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+5) tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+6) cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+7) residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 15000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.PreviewNavigationTest.passIdentityGateway(PreviewNavigationTest.kt:35)
+
+FAILURES!!!
+Tests run: 7,  Failures: 7
+
+
+INSTRUMENTATION_CODE: -1

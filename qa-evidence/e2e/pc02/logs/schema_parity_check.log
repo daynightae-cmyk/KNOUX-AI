@@ -1,0 +1,17 @@
+extracted 5 DDL statement(s) from MIGRATION_1_2
+  DDL: CREATE TABLE IF NOT EXISTS `duplicate_scans` (`id` TEXT NOT NULL, `startedAt` INTEGER NOT NULL, `finishedAt` I...
+  DDL: CREATE TABLE IF NOT EXISTS `duplicate_groups` (`scanId` TEXT NOT NULL, `id` TEXT NOT NULL, `contentHash` TEXT ...
+  DDL: CREATE TABLE IF NOT EXISTS `duplicate_members` (`rowId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `scanId` T...
+  DDL: CREATE UNIQUE INDEX IF NOT EXISTS `index_duplicate_members_scanId_uri` ON `duplicate_members` (`scanId`, `uri`...
+  DDL: CREATE INDEX IF NOT EXISTS `index_duplicate_members_groupId` ON `duplicate_members` (`groupId`)
+OK: all migration statements executed against SQLite
+OK: duplicate_scans matches Room schema 2 exactly
+OK: duplicate_groups matches Room schema 2 exactly
+OK: duplicate_members matches Room schema 2 exactly
+OK: index index_duplicate_members_scanId_uri matches Room schema 2 exactly
+OK: index index_duplicate_members_groupId matches Room schema 2 exactly
+OK: same content hash in two scans is preserved as two rows
+OK: the same URI is allowed once per scan
+OK: a repeated URI inside one scan is rejected by the unique index
+
+PASS: migration 1->2 and Room schema 2 are identical; keys are append-only

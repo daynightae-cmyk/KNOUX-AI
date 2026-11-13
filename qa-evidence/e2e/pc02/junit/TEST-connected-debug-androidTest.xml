@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.knoux.ai.AuthGatewayTest" tests="36" failures="0" errors="0" skipped="0" time="186.196" timestamp="2026-11-13T06:20:32" hostname="localhost">
+  <properties>
+    <property name="device" value="itel S686LN - 15" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="welcomeStageOffersTheThreeDocumentedProviders" classname="com.knoux.ai.AuthGatewayTest" time="2.688" />
+  <testcase name="passkeyProviderReportsAnHonestSetupPendingState" classname="com.knoux.ai.AuthGatewayTest" time="1.905" />
+  <testcase name="googleProviderReportsAnHonestSetupPendingState" classname="com.knoux.ai.AuthGatewayTest" time="2.04" />
+  <testcase name="guestEntryOpensTheApplicationShell" classname="com.knoux.ai.AuthGatewayTest" time="2.245" />
+  <testcase name="theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback" classname="com.knoux.ai.AuthGatewayTest" time="1.133" />
+  <testcase name="identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs" classname="com.knoux.ai.DuplicateMediaTest" time="44.304" />
+  <testcase name="realFinderShowsTheProtectedOriginalAndDeletesOnlyTheSelectedCopy" classname="com.knoux.ai.DuplicateRealScreenTest" time="8.34" />
+  <testcase name="keptCopyIsExcludedFromLaterPassesAndASnapshotSurvivesANewController" classname="com.knoux.ai.DuplicateRealTest" time="0.163" />
+  <testcase name="identicalContentIsGroupedPersistedAndDeletedWithoutTheOriginal" classname="com.knoux.ai.DuplicateRealTest" time="0.222" />
+  <testcase name="emptyScopeSetMeasuresNothingAndCreatesNoFabricatedGroup" classname="com.knoux.ai.DuplicateRealTest" time="0.068" />
+  <testcase name="observeRealRestoreConsentWithoutApprovingIt" classname="com.knoux.ai.MediaConsentDiagnosticTest" time="9.611" />
+  <testcase name="outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin" classname="com.knoux.ai.PreviewNavigationTest" time="4.179" />
+  <testcase name="arabicSwitchMirrorsTabOrderAndPreservesNavigation" classname="com.knoux.ai.PreviewNavigationTest" time="4.855" />
+  <testcase name="scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation" classname="com.knoux.ai.PreviewNavigationTest" time="4.614" />
+  <testcase name="everyRemainingPrimaryActionOpensAReversiblePreview" classname="com.knoux.ai.PreviewNavigationTest" time="14.113" />
+  <testcase name="tabsReachAllTenScreensAndDetailBackReturnsToTheIndex" classname="com.knoux.ai.PreviewNavigationTest" time="14.947" />
+  <testcase name="cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean" classname="com.knoux.ai.PreviewNavigationTest" time="3.579" />
+  <testcase name="residueSelectionUpdatesTotalAndConfirmationDoesNotClean" classname="com.knoux.ai.PreviewNavigationTest" time="6.81" />
+  <testcase name="tenIndependentServiceStudiosRenderWithInteraction" classname="com.knoux.ai.ServiceWorldsTest" time="2.685" />
+  <testcase name="permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory" classname="com.knoux.ai.SmartCleanRealTest" time="9.0" />
+  <testcase name="realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed" classname="com.knoux.ai.SmartCleanRealTest" time="7.575" />
+  <testcase name="cancelledPermanentConfirmationPreservesEveryFixture" classname="com.knoux.ai.SmartCleanRealTest" time="7.948" />
+  <testcase name="actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing" classname="com.knoux.ai.SmartCleanRealTest" time="3.166" />
+  <testcase name="keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain" classname="com.knoux.ai.SmartCleanRealTest" time="10.002" />
+  <testcase name="persistedKeepExclusionBlocksEvenAPreviouslyPreparedPlanUntilRemoved" classname="com.knoux.ai.SmartCleanStorageTest" time="0.4" />
+  <testcase name="syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs" classname="com.knoux.ai.SmartCleanStorageTest" time="11.769" />
+  <testcase name="freshControllerRehydratesPersistedLatestScanAndExactHistory" classname="com.knoux.ai.SmartCleanStorageTest" time="0.291" />
+  <testcase name="unconfirmedAndUnacknowledgedPlansNeverDeleteAnyFixture" classname="com.knoux.ai.SmartCleanStorageTest" time="0.13" />
+  <testcase name="concurrentSamePlanHasExactlyOneAtomicDurableClaim" classname="com.knoux.ai.SmartCleanStorageTest" time="0.284" />
+  <testcase name="staleUriIsAlreadyGoneAndDoesNotInflateRemovedCountOrBytes" classname="com.knoux.ai.SmartCleanStorageTest" time="0.259" />
+  <testcase name="interruptedRecoveryNeverDeletesAndPreservesTheExceptedPendingPlan" classname="com.knoux.ai.SmartCleanStorageTest" time="0.26" />
+  <testcase name="actualCacheScanDeletionAndHistoryUseOnlyExactFreshUris" classname="com.knoux.ai.SmartCleanStorageTest" time="0.373" />
+  <testcase name="forgedCacheCandidateInTargetFilesDirIsRefusedWithoutTouchingIt" classname="com.knoux.ai.SmartCleanStorageTest" time="0.184" />
+  <testcase name="liveSmileCuesOnceAtCompletionThenFinishes" classname="com.knoux.ai.SplashSequenceTest" time="1.132" />
+  <testcase name="frozenDebugFrameStaysVisibleForCapture" classname="com.knoux.ai.SplashSequenceTest" time="0.906" />
+  <testcase name="reducedMotionShowsStaticBrandAndFinishesQuickly" classname="com.knoux.ai.SplashSequenceTest" time="0.981" />
+</testsuite>

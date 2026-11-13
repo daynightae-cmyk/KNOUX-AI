@@ -1,0 +1,44 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateMediaTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.DuplicateMediaTest:
+INSTRUMENTATION_STATUS: test=identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateMediaTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: the provider must prepare a permanent delete request
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertNotNull(Assert.java:713)
+	at com.knoux.ai.DuplicateMediaTest.identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(DuplicateMediaTest.kt:421)
+
+INSTRUMENTATION_STATUS: stream=
+Error in identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(com.knoux.ai.DuplicateMediaTest):
+java.lang.AssertionError: the provider must prepare a permanent delete request
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertNotNull(Assert.java:713)
+	at com.knoux.ai.DuplicateMediaTest.identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(DuplicateMediaTest.kt:421)
+
+INSTRUMENTATION_STATUS: test=identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ú┘⌐┘í┘½┘⌐┘⌐
+There was 1 failure:
+1) identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(com.knoux.ai.DuplicateMediaTest)
+java.lang.AssertionError: the provider must prepare a permanent delete request
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at org.junit.Assert.assertNotNull(Assert.java:713)
+	at com.knoux.ai.DuplicateMediaTest.identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(DuplicateMediaTest.kt:421)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

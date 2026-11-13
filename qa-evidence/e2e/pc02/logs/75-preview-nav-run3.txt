@@ -1,0 +1,377 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.PreviewNavigationTest:
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Action performScrollTo() failed.
+The node is no longer in the tree, last known semantics:
+Node #240 at (l=200.84999, t=1766.686, r=1028.85, b=1920.686)px, Tag: 'open-duplicates'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪▒╪┤╪¡╪º╪¬ ╪º┘ä╪¬┘â╪▒╪º╪▒, ┘ä╪º ┘è┘é┘è╪│┘ç╪º ╪º┘ä╪¬┘å╪╕┘è┘ü ╪º┘ä╪░┘â┘è]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 16 siblings
+Original selector: TestTag = 'open-duplicates'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:26)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:193)
+
+INSTRUMENTATION_STATUS: stream=
+Error in outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+The node is no longer in the tree, last known semantics:
+Node #240 at (l=200.84999, t=1766.686, r=1028.85, b=1920.686)px, Tag: 'open-duplicates'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪▒╪┤╪¡╪º╪¬ ╪º┘ä╪¬┘â╪▒╪º╪▒, ┘ä╪º ┘è┘é┘è╪│┘ç╪º ╪º┘ä╪¬┘å╪╕┘è┘ü ╪º┘ä╪░┘â┘è]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 16 siblings
+Original selector: TestTag = 'open-duplicates'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:26)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:193)
+
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains '╪¬┘ê┘ü┘è╪▒ ╪º┘ä╪¿╪╖╪º╪▒┘è╪⌐' (ignoreCase: false))
+Semantics of the node:
+Node #779 at (l=424.0, t=383.0, r=1044.0, b=496.0)px, Tag: 'screen-battery-diagnostics'
+Text = '[╪¬╪┤╪«┘è╪╡ ╪º┘ä╪¿╪╖╪º╪▒┘è╪⌐]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 39 siblings
+Selector used: (TestTag = 'screen-battery-diagnostics')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:154)
+
+INSTRUMENTATION_STATUS: stream=
+Error in arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains '╪¬┘ê┘ü┘è╪▒ ╪º┘ä╪¿╪╖╪º╪▒┘è╪⌐' (ignoreCase: false))
+Semantics of the node:
+Node #779 at (l=424.0, t=383.0, r=1044.0, b=496.0)px, Tag: 'screen-battery-diagnostics'
+Text = '[╪¬╪┤╪«┘è╪╡ ╪º┘ä╪¿╪╖╪º╪▒┘è╪⌐]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 39 siblings
+Selector used: (TestTag = 'screen-battery-diagnostics')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:154)
+
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:26)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:113)
+
+INSTRUMENTATION_STATUS: stream=
+Error in scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:26)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:113)
+
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No action performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #1990 at (l=288.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'detail-preview-result'
+Text = '[┘ä┘à ┘è┘Å┘å┘ü┘æ╪░ ╪ú┘è ╪Ñ╪¼╪▒╪º╪í ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖.]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'detail-preview-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:172)
+
+INSTRUMENTATION_STATUS: stream=
+Error in everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No action performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #1990 at (l=288.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'detail-preview-result'
+Text = '[┘ä┘à ┘è┘Å┘å┘ü┘æ╪░ ╪ú┘è ╪Ñ╪¼╪▒╪º╪í ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖.]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'detail-preview-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:172)
+
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:32)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:38)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:89)
+
+INSTRUMENTATION_STATUS: stream=
+Error in tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:32)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:38)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:89)
+
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains '4 of 5 selected' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #2672 at (l=30.0, t=2007.0, r=185.0, b=2059.0)px, Tag: 'detail-selection-total'
+Text = '[4 ┘à┘å 5 ┘à╪¡╪»╪»]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 30 siblings
+Selector used: (TestTag = 'detail-selection-total')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(PreviewNavigationTest.kt:181)
+
+INSTRUMENTATION_STATUS: stream=
+Error in cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains '4 of 5 selected' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #2672 at (l=30.0, t=2007.0, r=185.0, b=2059.0)px, Tag: 'detail-selection-total'
+Text = '[4 ┘à┘å 5 ┘à╪¡╪»╪»]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 30 siblings
+Selector used: (TestTag = 'detail-selection-total')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(PreviewNavigationTest.kt:181)
+
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #3348 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:140)
+
+INSTRUMENTATION_STATUS: stream=
+Error in residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #3348 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:140)
+
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ú┘ó┘½┘Ñ┘ó┘ñ
+There were 7 failures:
+1) outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+The node is no longer in the tree, last known semantics:
+Node #240 at (l=200.84999, t=1766.686, r=1028.85, b=1920.686)px, Tag: 'open-duplicates'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪▒╪┤╪¡╪º╪¬ ╪º┘ä╪¬┘â╪▒╪º╪▒, ┘ä╪º ┘è┘é┘è╪│┘ç╪º ╪º┘ä╪¬┘å╪╕┘è┘ü ╪º┘ä╪░┘â┘è]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 16 siblings
+Original selector: TestTag = 'open-duplicates'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:26)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:193)
+2) arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains '╪¬┘ê┘ü┘è╪▒ ╪º┘ä╪¿╪╖╪º╪▒┘è╪⌐' (ignoreCase: false))
+Semantics of the node:
+Node #779 at (l=424.0, t=383.0, r=1044.0, b=496.0)px, Tag: 'screen-battery-diagnostics'
+Text = '[╪¬╪┤╪«┘è╪╡ ╪º┘ä╪¿╪╖╪º╪▒┘è╪⌐]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 39 siblings
+Selector used: (TestTag = 'screen-battery-diagnostics')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:154)
+3) scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:26)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:113)
+4) everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No action performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #1990 at (l=288.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'detail-preview-result'
+Text = '[┘ä┘à ┘è┘Å┘å┘ü┘æ╪░ ╪ú┘è ╪Ñ╪¼╪▒╪º╪í ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖.]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'detail-preview-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:172)
+5) tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to perform checkIsDisplayed check: Expected at most 1 node but found 2 nodes that satisfy (TestTag = 'design-preview')
+	at androidx.compose.ui.test.AndroidAssertions_androidKt.checkIsDisplayed(AndroidAssertions.android.kt:35)
+	at androidx.compose.ui.test.AssertionsKt.isDisplayed(Assertions.kt:347)
+	at com.knoux.ai.PreviewNavigationTest.showing(PreviewNavigationTest.kt:32)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:38)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:89)
+6) cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains '4 of 5 selected' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #2672 at (l=30.0, t=2007.0, r=185.0, b=2059.0)px, Tag: 'detail-selection-total'
+Text = '[4 ┘à┘å 5 ┘à╪¡╪»╪»]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 30 siblings
+Selector used: (TestTag = 'detail-selection-total')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(PreviewNavigationTest.kt:181)
+7) residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #3348 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:140)
+
+FAILURES!!!
+Tests run: 7,  Failures: 7
+
+
+INSTRUMENTATION_CODE: -1

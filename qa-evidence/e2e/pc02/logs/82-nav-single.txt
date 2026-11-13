@@ -1,0 +1,44 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.PreviewNavigationTest:
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:36)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:136)
+
+INSTRUMENTATION_STATUS: stream=
+Error in tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:36)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:136)
+
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ó┘ª┘½┘ñ┘ó┘ñ
+There was 1 failure:
+1) tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:36)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:136)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

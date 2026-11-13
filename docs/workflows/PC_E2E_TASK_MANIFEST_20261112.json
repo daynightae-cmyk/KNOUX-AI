@@ -3,14 +3,14 @@
     "repo":  "D:\\KNOUX-AI",
     "independent_mobile_repo":  "/root/workspace/KNOUX-AI",
     "do_not_mix_repos":  true,
-    "observed_at":  "2026-11-13T06:35:00+04:00",
-    "observed_head":  "722af86ec8a8dbb7463e67d6413cc1dbfaa65909",
-    "observed_origin_main":  "722af86ec8a8dbb7463e67d6413cc1dbfaa65909",
-    "observed_branch":  "main; PC00/PC01 source integrated and pushed, evidence files pending commit",
+    "observed_at":  "2026-11-13T10:30:00+04:00",
+    "observed_head":  "59806cad7c33f41deb39a78513c23c883b76a8a1",
+    "observed_origin_main":  "59806cad7c33f41deb39a78513c23c883b76a8a1",
+    "observed_branch":  "main; PC00/PC01/PC02 source integrated, PC02 evidence pending docs commit",
     "writer_conflict_warning":  "At 2026-11-13 00:10+04 Qoder.exe was not running. Recheck active agents before any Kotlin edit; Kiro clean-profile GUI can remain open and must not be assumed writing.",
-    "current_task_id":  "PC02",
+    "current_task_id":  "PC03",
     "current_task_status":  "QUEUED",
-    "next_safe_action":  "Start PC02 (Duplicates) as a real vertical slice on top of the verified PC00 foundation: real MediaStore/file duplicate grouping, customer-controlled keep/delete, Trash and permanent delete with post-operation requery, Room history, JVM + instrumentation tests, then on-device runtime verification before any completion claim.",
+    "next_safe_action":  "Start PC03 (App Residue) on the verified PC00/PC01 foundation as a real vertical slice: enumerate app-owned residue that Android actually permits, require explicit customer selection and irreversible acknowledgement for deletion, verify post-operation state and Room history, run JVM + on-device tests, then await independent review before marking VERIFIED. Do not touch other apps' private data.",
     "states":  [
                    "QUEUED",
                    "PREFLIGHT",
@@ -85,19 +85,39 @@
                                          "PC00",
                                          "PC01"
                                      ],
-                      "status":  "QUEUED",
-                      "owner":  null,
+                      "status":  "VERIFIED",
+                      "owner":  "OpenCode agent + independent review pass",
                       "files":  [
-
+                                    "app/src/main/java/com/knoux/ai/data/DuplicateRules.kt",
+                                    "app/src/main/java/com/knoux/ai/data/DuplicateRepository.kt",
+                                    "app/src/main/java/com/knoux/ai/data/DuplicateController.kt",
+                                    "app/src/main/java/com/knoux/ai/DuplicateReal.kt",
+                                    "app/src/main/java/com/knoux/ai/data/KnouxDatabase.kt",
+                                    "app/src/main/java/com/knoux/ai/data/SmartCleanRepository.kt",
+                                    "app/schemas/com.knoux.ai.data.KnouxDatabase/2.json",
+                                    "app/src/test/java/com/knoux/ai/DuplicateRulesTest.kt",
+                                    "app/src/androidTest/java/com/knoux/ai/DuplicateRealTest.kt",
+                                    "app/src/androidTest/java/com/knoux/ai/DuplicateRealScreenTest.kt",
+                                    "app/src/androidTest/java/com/knoux/ai/DuplicateMediaTest.kt",
+                                    "qa-evidence/e2e/pc02/PC02_EVIDENCE_20261113.md"
                                 ],
                       "tests":  [
-
+                                    "JVM: :app:testDebugUnitTest = 29/29 PASS (DuplicateRulesTest 13, PreviewFixturesTest 3, RealDataRulesTest 13), 0 failures/errors/skips; qa-evidence/e2e/pc02/junit",
+                                    "Device: :app:connectedDebugAndroidTest = 36/36 PASS, 0 failures/errors/skips, 186.196s on itel S686LN API 35; qa-evidence/e2e/pc02/junit/TEST-connected-debug-androidTest.xml",
+                                    "Device raw: am instrument = OK (36 tests), exit 0; qa-evidence/e2e/pc02/logs/103-full-suite-alias-fix-fixed.txt"
                                 ],
                       "runtime_evidence":  [
-
+                                               "Real SHA-256 grouping and permanent delete of exact synthetic cache copies with verified after-state and Room history (DuplicateRealTest 3/3).",
+                                               "Protected original shown and excluded; only the selected copy deleted in the measured Compose screen (DuplicateRealScreenTest 1/1).",
+                                               "MediaStore Trash -> Restore -> permanent delete through the OS provider for new synthetic PNG fixtures (DuplicateMediaTest 1/1, 44.304s).",
+                                               "Same-file MediaStore/SAF alias regression covered by JVM tests before hashing; aliases are never offered as copies.",
+                                               "READ_MEDIA_IMAGES granted only for the media run and revoked; 12 empty synthetic fixture dirs and 16 stale synthetic MediaStore rows removed; database restored to user_version=2; owner files untouched."
                                            ],
-                      "verified_sha":  null,
-                      "blocking_reason":  null
+                      "verified_sha":  "59806cad7c33f41deb39a78513c23c883b76a8a1",
+                      "blocking_reason":  null,
+                      "latest_evidence":  "PC02 VERIFIED at 59806cad: 29/29 JVM and 36/36 on-device tests, including real duplicate grouping/delete, protected original, MediaStore+SAF alias collapse and OS Trash/Restore/Delete on itel S686LN API 35",
+                      "next_check":  "PC05 Deep Scan can reuse DuplicateRules/Repository; keep physicalKey alias collapse and the customer-controlled keep/trash/permanent-delete contract",
+                      "evidence_20261113":  "See qa-evidence/e2e/pc02/PC02_EVIDENCE_20261113.md; two independent-review blockers (physical alias, false consent text) fixed and regression-tested before verification"
                   },
                   {
                       "task_id":  "PC03",

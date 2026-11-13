@@ -1,0 +1,579 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.AuthGatewayTest:
+INSTRUMENTATION_STATUS: test=welcomeStageOffersTheThreeDocumentedProviders
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=welcomeStageOffersTheThreeDocumentedProviders
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=passkeyProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=passkeyProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=googleProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=googleProviderReportsAnHonestSetupPendingState
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=guestEntryOpensTheApplicationShell
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=guestEntryOpensTheApplicationShell
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.AuthGatewayTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=theGatewayNeverShowsAVerifiedStateWithoutABiometricCallback
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateMediaTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.DuplicateMediaTest:
+INSTRUMENTATION_STATUS: test=identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateMediaTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealScreenTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.DuplicateRealScreenTest:
+INSTRUMENTATION_STATUS: test=realFinderShowsTheProtectedOriginalAndDeletesOnlyTheSelectedCopy
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealScreenTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=realFinderShowsTheProtectedOriginalAndDeletesOnlyTheSelectedCopy
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.DuplicateRealTest:
+INSTRUMENTATION_STATUS: test=keptCopyIsExcludedFromLaterPassesAndASnapshotSurvivesANewController
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=8
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=keptCopyIsExcludedFromLaterPassesAndASnapshotSurvivesANewController
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=identicalContentIsGroupedPersistedAndDeletedWithoutTheOriginal
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=9
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=identicalContentIsGroupedPersistedAndDeletedWithoutTheOriginal
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=emptyScopeSetMeasuresNothingAndCreatesNoFabricatedGroup
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.DuplicateRealTest
+INSTRUMENTATION_STATUS: current=10
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=emptyScopeSetMeasuresNothingAndCreatesNoFabricatedGroup
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.MediaConsentDiagnosticTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.MediaConsentDiagnosticTest:
+INSTRUMENTATION_STATUS: test=observeRealRestoreConsentWithoutApprovingIt
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.MediaConsentDiagnosticTest
+INSTRUMENTATION_STATUS: current=11
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=observeRealRestoreConsentWithoutApprovingIt
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.PreviewNavigationTest:
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=12
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=13
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=14
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=15
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=15
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=16
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=16
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=17
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=17
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=18
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=18
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.ServiceWorldsTest
+INSTRUMENTATION_STATUS: current=19
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.ServiceWorldsTest:
+INSTRUMENTATION_STATUS: test=tenIndependentServiceStudiosRenderWithInteraction
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.ServiceWorldsTest
+INSTRUMENTATION_STATUS: current=19
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=tenIndependentServiceStudiosRenderWithInteraction
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=20
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanRealTest:
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=20
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=21
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=21
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=22
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=22
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=23
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=23
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=24
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=24
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=25
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanStorageTest:
+INSTRUMENTATION_STATUS: test=persistedKeepExclusionBlocksEvenAPreviouslyPreparedPlanUntilRemoved
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=25
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=persistedKeepExclusionBlocksEvenAPreviouslyPreparedPlanUntilRemoved
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=26
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=26
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=27
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=freshControllerRehydratesPersistedLatestScanAndExactHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=27
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: expected:<{file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml, displayName=knoux_restore_window.xml, mimeType=null, bytes=28165, lastModifiedMillis=1794550109362, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/knoux_restore_window.xml), file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png, displayName=knoux_restore_window.png, mimeType=image/png, bytes=456381, lastModifiedMillis=1794550109850, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/knoux_restore_window.png), file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, displayName=knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, mimeType=null, bytes=4096, lastModifiedMillis=1794550221758, category=TEMP_FILE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=Temporary file left in KNOUX's cache, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp)}> but was:<{file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png, displayName=knoux_restore_window.png, mimeType=image/png, bytes=456381, lastModifiedMillis=1794550109850, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=null), file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml, displayName=knoux_restore_window.xml, mimeType=null, bytes=28165, lastModifiedMillis=1794550109362, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=null), file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, displayName=knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, mimeType=null, bytes=4096, lastModifiedMillis=1794550221758, category=TEMP_FILE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=Temporary file left in KNOUX's cache, status=MEASURED, physicalKey=null)}>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at com.knoux.ai.SmartCleanStorageTest$freshControllerRehydratesPersistedLatestScanAndExactHistory$1.invokeSuspend(SmartCleanStorageTest.kt:328)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:270)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+INSTRUMENTATION_STATUS: stream=
+Error in freshControllerRehydratesPersistedLatestScanAndExactHistory(com.knoux.ai.SmartCleanStorageTest):
+java.lang.AssertionError: expected:<{file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml, displayName=knoux_restore_window.xml, mimeType=null, bytes=28165, lastModifiedMillis=1794550109362, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/knoux_restore_window.xml), file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png, displayName=knoux_restore_window.png, mimeType=image/png, bytes=456381, lastModifiedMillis=1794550109850, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/knoux_restore_window.png), file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, displayName=knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, mimeType=null, bytes=4096, lastModifiedMillis=1794550221758, category=TEMP_FILE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=Temporary file left in KNOUX's cache, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp)}> but was:<{file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png, displayName=knoux_restore_window.png, mimeType=image/png, bytes=456381, lastModifiedMillis=1794550109850, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=null), file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml, displayName=knoux_restore_window.xml, mimeType=null, bytes=28165, lastModifiedMillis=1794550109362, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=null), file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, displayName=knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, mimeType=null, bytes=4096, lastModifiedMillis=1794550221758, category=TEMP_FILE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=Temporary file left in KNOUX's cache, status=MEASURED, physicalKey=null)}>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at com.knoux.ai.SmartCleanStorageTest$freshControllerRehydratesPersistedLatestScanAndExactHistory$1.invokeSuspend(SmartCleanStorageTest.kt:328)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:270)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+INSTRUMENTATION_STATUS: test=freshControllerRehydratesPersistedLatestScanAndExactHistory
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=28
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=unconfirmedAndUnacknowledgedPlansNeverDeleteAnyFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=28
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=unconfirmedAndUnacknowledgedPlansNeverDeleteAnyFixture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=29
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=concurrentSamePlanHasExactlyOneAtomicDurableClaim
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=29
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=concurrentSamePlanHasExactlyOneAtomicDurableClaim
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=30
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=staleUriIsAlreadyGoneAndDoesNotInflateRemovedCountOrBytes
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=30
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=staleUriIsAlreadyGoneAndDoesNotInflateRemovedCountOrBytes
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=31
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=interruptedRecoveryNeverDeletesAndPreservesTheExceptedPendingPlan
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=31
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=interruptedRecoveryNeverDeletesAndPreservesTheExceptedPendingPlan
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=32
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actualCacheScanDeletionAndHistoryUseOnlyExactFreshUris
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=32
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=actualCacheScanDeletionAndHistoryUseOnlyExactFreshUris
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=33
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=forgedCacheCandidateInTargetFilesDirIsRefusedWithoutTouchingIt
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanStorageTest
+INSTRUMENTATION_STATUS: current=33
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=forgedCacheCandidateInTargetFilesDirIsRefusedWithoutTouchingIt
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=34
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SplashSequenceTest:
+INSTRUMENTATION_STATUS: test=liveSmileCuesOnceAtCompletionThenFinishes
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=34
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=liveSmileCuesOnceAtCompletionThenFinishes
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=35
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=frozenDebugFrameStaysVisibleForCapture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=35
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=frozenDebugFrameStaysVisibleForCapture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=36
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=reducedMotionShowsStaticBrandAndFinishesQuickly
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SplashSequenceTest
+INSTRUMENTATION_STATUS: current=36
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=36
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=reducedMotionShowsStaticBrandAndFinishesQuickly
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ó┘á┘í┘½┘ó┘ª┘í
+There was 1 failure:
+1) freshControllerRehydratesPersistedLatestScanAndExactHistory(com.knoux.ai.SmartCleanStorageTest)
+java.lang.AssertionError: expected:<{file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml, displayName=knoux_restore_window.xml, mimeType=null, bytes=28165, lastModifiedMillis=1794550109362, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/knoux_restore_window.xml), file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png, displayName=knoux_restore_window.png, mimeType=image/png, bytes=456381, lastModifiedMillis=1794550109850, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/knoux_restore_window.png), file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, displayName=knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, mimeType=null, bytes=4096, lastModifiedMillis=1794550221758, category=TEMP_FILE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=Temporary file left in KNOUX's cache, status=MEASURED, physicalKey=file:/data/data/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp)}> but was:<{file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.png, displayName=knoux_restore_window.png, mimeType=image/png, bytes=456381, lastModifiedMillis=1794550109850, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=null), file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/knoux_restore_window.xml, displayName=knoux_restore_window.xml, mimeType=null, bytes=28165, lastModifiedMillis=1794550109362, category=APP_CACHE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=File inside KNOUX's own cache directory, status=MEASURED, physicalKey=null), file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp=FileCandidate(uri=file:///data/user/0/com.knoux.ai/cache/KNOUX_QA_830af580-80c3-4be5-9c3a-61ba5a6f2cb5/knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, displayName=knoux_storage_8c14c395-1036-4f20-90be-b28138580c75_persisted.tmp, mimeType=null, bytes=4096, lastModifiedMillis=1794550221758, category=TEMP_FILE, provenance=APP_OWNED_CACHE, eligibility=ELIGIBLE, reason=Temporary file left in KNOUX's cache, status=MEASURED, physicalKey=null)}>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at com.knoux.ai.SmartCleanStorageTest$freshControllerRehydratesPersistedLatestScanAndExactHistory$1.invokeSuspend(SmartCleanStorageTest.kt:328)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:270)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+FAILURES!!!
+Tests run: 36,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

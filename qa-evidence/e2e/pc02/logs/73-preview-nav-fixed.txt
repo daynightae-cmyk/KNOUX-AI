@@ -1,0 +1,368 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.PreviewNavigationTest:
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Action performScrollTo() failed.
+The node is no longer in the tree, last known semantics:
+Node #240 at (l=200.84999, t=1766.686, r=1028.85, b=1920.686)px, Tag: 'open-duplicates'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪▒╪┤╪¡╪º╪¬ ╪º┘ä╪¬┘â╪▒╪º╪▒, ┘ä╪º ┘è┘é┘è╪│┘ç╪º ╪º┘ä╪¬┘å╪╕┘è┘ü ╪º┘ä╪░┘â┘è]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 16 siblings
+Original selector: TestTag = 'open-duplicates'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:167)
+
+INSTRUMENTATION_STATUS: stream=
+Error in outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+The node is no longer in the tree, last known semantics:
+Node #240 at (l=200.84999, t=1766.686, r=1028.85, b=1920.686)px, Tag: 'open-duplicates'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪▒╪┤╪¡╪º╪¬ ╪º┘ä╪¬┘â╪▒╪º╪▒, ┘ä╪º ┘è┘é┘è╪│┘ç╪º ╪º┘ä╪¬┘å╪╕┘è┘ü ╪º┘ä╪░┘â┘è]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 16 siblings
+Original selector: TestTag = 'open-duplicates'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:167)
+
+INSTRUMENTATION_STATUS: test=outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-battery')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:23)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:125)
+
+INSTRUMENTATION_STATUS: stream=
+Error in arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-battery')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:23)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:125)
+
+INSTRUMENTATION_STATUS: test=arabicSwitchMirrorsTabOrderAndPreservesNavigation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:85)
+
+INSTRUMENTATION_STATUS: stream=
+Error in scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:85)
+
+INSTRUMENTATION_STATUS: test=scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'open-category-0')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:139)
+
+INSTRUMENTATION_STATUS: stream=
+Error in everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'open-category-0')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:139)
+
+INSTRUMENTATION_STATUS: test=everyRemainingPrimaryActionOpensAReversiblePreview
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:23)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:60)
+
+INSTRUMENTATION_STATUS: stream=
+Error in tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:23)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:60)
+
+INSTRUMENTATION_STATUS: test=tabsReachAllTenScreensAndDetailBackReturnsToTheIndex
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=6
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but found '2' nodes that satisfy: (TestTag = 'design-preview')
+Nodes found:
+1) Node #2320 at (l=336.0, t=132.0, r=614.0, b=276.0)px, Tag: 'design-preview'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪╣╪º┘è┘å╪⌐ ╪º┘ä╪¬╪╡┘à┘è┘à]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 6 siblings
+2) Node #2481 at (l=30.0, t=679.0, r=143.0, b=749.0)px, Tag: 'design-preview'
+Has 1 child, 12 siblings
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:24)
+	at com.knoux.ai.PreviewNavigationTest.cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(PreviewNavigationTest.kt:154)
+
+INSTRUMENTATION_STATUS: stream=
+Error in cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but found '2' nodes that satisfy: (TestTag = 'design-preview')
+Nodes found:
+1) Node #2320 at (l=336.0, t=132.0, r=614.0, b=276.0)px, Tag: 'design-preview'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪╣╪º┘è┘å╪⌐ ╪º┘ä╪¬╪╡┘à┘è┘à]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 6 siblings
+2) Node #2481 at (l=30.0, t=679.0, r=143.0, b=749.0)px, Tag: 'design-preview'
+Has 1 child, 12 siblings
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:24)
+	at com.knoux.ai.PreviewNavigationTest.cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(PreviewNavigationTest.kt:154)
+
+INSTRUMENTATION_STATUS: test=cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.PreviewNavigationTest
+INSTRUMENTATION_STATUS: current=7
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=7
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #3214 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:112)
+
+INSTRUMENTATION_STATUS: stream=
+Error in residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #3214 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:112)
+
+INSTRUMENTATION_STATUS: test=residueSelectionUpdatesTotalAndConfirmationDoesNotClean
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ú┘ó┘½┘⌐┘ó┘º
+There were 7 failures:
+1) outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+The node is no longer in the tree, last known semantics:
+Node #240 at (l=200.84999, t=1766.686, r=1028.85, b=1920.686)px, Tag: 'open-duplicates'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪▒╪┤╪¡╪º╪¬ ╪º┘ä╪¬┘â╪▒╪º╪▒, ┘ä╪º ┘è┘é┘è╪│┘ç╪º ╪º┘ä╪¬┘å╪╕┘è┘ü ╪º┘ä╪░┘â┘è]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 16 siblings
+Original selector: TestTag = 'open-duplicates'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.outerReviewOpensTheMeasuredDuplicateScreenAndBackReturnsToItsOrigin(PreviewNavigationTest.kt:167)
+2) arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'screen-battery')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:23)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:125)
+3) scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.scanPauseAndResumeOnlyChangePreviewStateAndSurviveRecreation(PreviewNavigationTest.kt:85)
+4) everyRemainingPrimaryActionOpensAReversiblePreview(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'open-category-0')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.scrollClick(PreviewNavigationTest.kt:19)
+	at com.knoux.ai.PreviewNavigationTest.everyRemainingPrimaryActionOpensAReversiblePreview(PreviewNavigationTest.kt:139)
+5) tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Semantic Node has no parent layout with a Scroll SemanticsAction
+	at androidx.compose.ui.test.ActionsKt.scrollToNode(Actions.kt:98)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:83)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:23)
+	at com.knoux.ai.PreviewNavigationTest.tabsReachAllTenScreensAndDetailBackReturnsToTheIndex(PreviewNavigationTest.kt:60)
+6) cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but found '2' nodes that satisfy: (TestTag = 'design-preview')
+Nodes found:
+1) Node #2320 at (l=336.0, t=132.0, r=614.0, b=276.0)px, Tag: 'design-preview'
+Focused = 'false'
+Role = 'Button'
+Text = '[┘à╪╣╪º┘è┘å╪⌐ ╪º┘ä╪¬╪╡┘à┘è┘à]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, OnClick, RequestFocus, SetTextSubstitution, ShowTextSubstitution]
+MergeDescendants = 'true'
+Has 6 siblings
+2) Node #2481 at (l=30.0, t=679.0, r=143.0, b=749.0)px, Tag: 'design-preview'
+Has 1 child, 12 siblings
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.screen(PreviewNavigationTest.kt:24)
+	at com.knoux.ai.PreviewNavigationTest.cleanCenterSelectionChangesThePreviewTotalAndDoesNotClean(PreviewNavigationTest.kt:154)
+7) residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Failed to assert the following: (Text + InputText + EditableText contains 'No cleanup performed' (ignoreCase: false) as substring)
+Semantics of the node:
+Node #3214 at (l=243.0, t=1939.0, r=1020.0, b=2020.0)px, Tag: 'preview-only-result'
+Text = '[┘ä┘à ┘è╪¡╪»╪½ ╪ú┘è ╪¬┘å╪╕┘è┘ü ΓÇö ┘à╪╣╪º┘è┘å╪⌐ ┘ä┘ä┘ê╪º╪¼┘ç╪⌐ ┘ü┘é╪╖]'
+Actions = [ClearTextSubstitution, GetTextLayoutResult, SetTextSubstitution, ShowTextSubstitution]
+Has 3 siblings
+Selector used: (TestTag = 'preview-only-result')
+
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:260)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains(Assertions.kt:204)
+	at androidx.compose.ui.test.AssertionsKt.assertTextContains$default(Assertions.kt:200)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:112)
+
+FAILURES!!!
+Tests run: 7,  Failures: 7
+
+
+INSTRUMENTATION_CODE: -1
