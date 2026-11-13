@@ -1,11 +1,12 @@
 param(
-    [string]$Serial = "1334825549012211",
+    [string]$Serial = $env:KNOUX_TEST_DEVICE_SERIAL,
     [string]$Apk = "D:\KNOUX-AI\app\build\outputs\apk\debug\app-debug.apk",
     [string]$Out = "D:\KNOUX-AI\qa-evidence\final-visual-gate\runtime"
 )
 
 $ErrorActionPreference = "Stop"
 $adb = "D:\Android\sdk\platform-tools\adb.exe"
+if ([string]::IsNullOrWhiteSpace($Serial)) { throw "Specify -Serial explicitly or set KNOUX_TEST_DEVICE_SERIAL locally; do not hardcode device identifiers." }
 New-Item -ItemType Directory -Force -Path $Out | Out-Null
 
 Write-Host "== device =="

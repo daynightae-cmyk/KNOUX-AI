@@ -10,7 +10,7 @@ Owner uploaded kiro-session-sess_76ae4392-8a79-4a73-85b5-658d38915723.zip. ZIP C
 - Source changes remain modified or untracked, not committed or pushed: app/src/main/java/com/knoux/ai/SmartCleanReal.kt, data/ files, ProSystem.kt, two androidTest classes, RealDataRulesTest, Gradle/Manifest/UI changes and QA/docs.
 - One worktree, no stash shown. Protect ALL unique work.
 - Free space: C ~9.40 GB, D ~2.38 GB, K ~5.52 GB.
-- Connected device: itel S686LN, ADB 1334825549012211, Android API35 (from Kiro/test logs and device inspection).
+- Connected device: itel S686LN, ADB REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL, Android API35 (from Kiro/test logs and device inspection).
 - Android test APK: app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk, 1,473,828 bytes, 2026-11-13 02:06:10+04. Debug APK: 15,889,357 bytes. These are TEST artifacts, not Play release.
 
 ## Session execution and limitations

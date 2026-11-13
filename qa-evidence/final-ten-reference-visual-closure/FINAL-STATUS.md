@@ -141,7 +141,7 @@ acceptance items, listed here so nothing is concealed.
    *ENGINEERING VERIFIED — OWNER VISUAL ACCEPTANCE PENDING*.
 2. **Install on the connected handset.** The owner asked for the debug APK to
    be installed and tested on the physical phone. The handset
-   (`1334825549012211`, itel S686LN, API 35, 1080 × 2436, fingerprint hardware
+   (`REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL`, itel S686LN, API 35, 1080 × 2436, fingerprint hardware
    present) was enumerated at the start of the session but **disconnected from
    USB partway through**; `Get-PnpDevice -PresentOnly` now shows no Android
    device on the bus, and the remaining `itel` entries are stale cached
@@ -150,8 +150,8 @@ acceptance items, listed here so nothing is concealed.
 
    ```
    adb devices -l
-   adb -s 1334825549012211 install -r -t app\build\outputs\apk\debug\app-debug.apk
-   adb -s 1334825549012211 shell am start -n com.knoux.ai/.MainActivity
+   adb -s REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL install -r -t app\build\outputs\apk\debug\app-debug.apk
+   adb -s REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL shell am start -n com.knoux.ai/.MainActivity
    ```
 
    The instrumentation APK was deliberately **not** installed on the handset.

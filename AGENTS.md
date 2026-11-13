@@ -35,7 +35,7 @@ The owner has explicitly instructed the transition from Phase 1 UI preview to re
 This is the newest authoritative project directive for the WINDOWS repo D:\KNOUX-AI. It supersedes earlier historical UI-only stop and emulator-only instructions while preserving accepted visuals and all existing unique work.
 
 1. The owner's accepted visual work is preserved; the active milestone is FULL FUNCTIONALITY: PC00 real data foundation and PC01 Smart Clean, followed by PC02–PC13 automatically after verification.
-2. The owner EXPLICITLY AUTHORIZES testing on the connected physical phone itel S686LN, API 35, ADB serial 1334825549012211, since D: disk is constrained. Reconfirm live serial/API before use. This authorization DOES NOT allow deleting pre-existing photos/files, factory resets, data wipes, removal of unrelated apps or accessing personal profiles. Destructive tests MUST target only newly created, verified synthetic fixtures with explicit scope/confirmation.
+2. The owner EXPLICITLY AUTHORIZES testing on the connected physical phone itel S686LN, API 35, ADB serial REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL, since D: disk is constrained. Reconfirm live serial/API before use. This authorization DOES NOT allow deleting pre-existing photos/files, factory resets, data wipes, removal of unrelated apps or accessing personal profiles. Destructive tests MUST target only newly created, verified synthetic fixtures with explicit scope/confirmation.
 3. Existing new instrumentation classes SmartCleanStorageTest.kt and SmartCleanRealTest.kt have NOT been proven on the latest source. Earlier 12/12 JVM pass and androidTest compile success occurred before Qoder's last Kotlin edits at 23:57 on Nov 12. Do not assert PC00/PC01 VERIFIED based on stale test results.
 4. Qoder's new Room, repository, controller, storage/permission and Compose work is uncommitted UNIQUE work. KEEP every tracked/untracked file; no reset, clean, force-push, blind restore, duplicate repo, redundant SDK/emulator/download or race with a second source writer.
 5. Primary takeover file: prompts/e2e/PC_QODER_TO_NEXT_AGENT_AUTONOMOUS_WORKFLOW_20261113.md. Workflow source of truth: docs/workflows/PC_E2E_TASK_MANIFEST_20261112.json and append-only qa-evidence/e2e/EXECUTION_LEDGER.md. Transition task statuses only with exact command/test/runtime/remote SHA evidence.
@@ -44,10 +44,15 @@ This is the newest authoritative project directive for the WINDOWS repo D:\KNOUX
 ---
 ## LATEST OWNER OVERRIDE 2026-11-13 — VERIFIED PHYSICAL PHONE TESTING ALLOWED
 
-The owner explicitly authorizes testing the WINDOWS-PC KNOUX AI Android application on his currently connected personal itel S686LN (ADB serial 1334825549012211, API 35), rather than the emulator, because the PC lacks sufficient free storage. This NEW owner directive overrides the earlier "emulator only" constraint and the previous safety addendum's restriction on physical APK installation.
+The owner explicitly authorizes testing the WINDOWS-PC KNOUX AI Android application on his currently connected personal itel S686LN (ADB serial REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL, API 35), rather than the emulator, because the PC lacks sufficient free storage. This NEW owner directive overrides the earlier "emulator only" constraint and the previous safety addendum's restriction on physical APK installation.
 
 **Read the complete latest authorization BEFORE tests:** prompts/e2e/PC_OWNER_PHYSICAL_DEVICE_TEST_AUTHORIZATION_20261113.md
 
 Within that scope, proceed with real targeted on-device installation, runtime, UI, permission, Room, and Smart Clean instrumentation tests, including real Trash/Restore/Permanent Delete ONLY of newly created, uniquely identifiable synthetic test fixtures approved by Android OS prompts. Verify their ownership before every file mutation. Do not touch pre-existing user files, app data, accounts, unrelated apps or device state. Do not uninstall/clear the production app or erase phone data to resolve signing conflicts. Recheck serial and API before every install/test. Capture actual test exit codes, after-state and redacted QA evidence. No new emulator images.
 
 All other instructions regarding unique-work protection, approved designs, nonfake claims, safe Git integration and autonomous E2E continuation remain fully active.
+
+
+## PUBLIC REPOSITORY DEVICE IDENTIFIER HYGIENE — 2026-11-13
+
+Never store, commit, or paste the real ADB device serial/transport identifier, WLAN pairing endpoint, or personally identifying device metadata in this public repository, prompts, code defaults, QA reports or GitHub Actions logs. Refer to the authorized test target as `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL`; supply the real serial only through a local environment variable `KNOUX_TEST_DEVICE_SERIAL` or an explicit local `-Serial` argument after verifying the user's authorization and `adb devices -l`. Screenshots/logcat must be sanitized before publication. This does not change authorization to test the owner's phone using isolated synthetic fixtures. Do not publish historical or new raw on-device logs. Protect all concurrent uncommitted product implementation.

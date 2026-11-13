@@ -1,5 +1,6 @@
-param([string]$Serial = "1334825549012211")
+param([string]$Serial = $env:KNOUX_TEST_DEVICE_SERIAL)
 $adb     = "D:\Android\sdk\platform-tools\adb.exe"
+if ([string]::IsNullOrWhiteSpace($Serial)) { throw "Specify -Serial explicitly or set KNOUX_TEST_DEVICE_SERIAL locally; do not hardcode device identifiers." }
 $pkg     = "com.knoux.ai"
 $runner  = "androidx.test.runner.AndroidJUnitRunner"
 $class   = "com.knoux.ai.PreviewNavigationTest"

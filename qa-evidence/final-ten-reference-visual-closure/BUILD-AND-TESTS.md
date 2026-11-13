@@ -151,6 +151,6 @@ failure had been observed once earlier in the session and cleared by the same
 
 | Item | Reason |
 |------|--------|
-| Instrumentation on a physical handset | The connected handset (`1334825549012211`, itel S686LN, API 35, 1080 × 2436, fingerprint hardware present) disconnected from USB partway through the session and did not reappear. The emulator carried the full verification. |
+| Instrumentation on a physical handset | The connected handset (`REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL`, itel S686LN, API 35, 1080 × 2436, fingerprint hardware present) disconnected from USB partway through the session and did not reappear. The emulator carried the full verification. |
 | Instrumentation on a device with an **enrolled** fingerprint | Neither available device has an enrolled fingerprint, so the biometric **success** path could not be exercised end to end. The success callback is wired to the real `BiometricPrompt` and is asserted to be the only route into the VERIFIED state. See `AUTH-AND-HEADER-QA.md`. |
 | Release build / Play Store packaging | Phase 1 is a UI-only preview; signing, shrinking and release variants belong to the pre-production stage and are not authorised yet. |

@@ -55,7 +55,7 @@ CHECKPOINT 2 — CURRENT COMPILATION/JVM:
 Run serially; capture exits and exact JUnit pass/fail/skip. Fix actual compile/test errors. Avoid endless build loops.
 
 CHECKPOINT 3 — PHYSICAL DEVICE INSTRUMENTATION:
-Owner explicitly authorizes testing the connected itel S686LN, ADB serial 1334825549012211, API35. Reverify serial and device before any install.
+Owner explicitly authorizes testing the connected itel S686LN, ADB serial REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL, API35. Reverify serial and device before any install.
 Before running SmartCleanStorageTest.kt and SmartCleanRealTest.kt, inspect every @Before/@After, delete, trash, restore, MediaStore, SAF action, approval dialog and test fixture. Remove risks to existing personal photos/data/apps. Destructive tests ONLY on fresh UUID-named, test-created, verified synthetic items; no user-data wipe or unrelated uninstall. Do not run the full unknown test suite on the personal device. Run targeted audited tests only.
 Actual customer task: discover real scoped files → inspect/filter/search → select/exclude → authorize → Trash/Permanent Delete where OS supports → requery exact URI → verify change → persist Room history → cancel/retry/restore where supported.
 Screenshots, device logs, permissions, current APK SHA, test cases, real executed outcome required. A skipped test is NOT proof of functionality.

@@ -85,7 +85,7 @@ pedestal, outline subtitle capsule, chapter 2 radial ten-service orbit around th
 
 ---
 
-## VG05 — Runtime capture, iteration 1 (device `1334825549012211`, itel S686LN, API 35)
+## VG05 — Runtime capture, iteration 1 (device `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL`, itel S686LN, API 35)
 
 First capture pass produced 8 portrait PNGs (1080×2436, density 480) in
 `qa-evidence/final-visual-gate/runtime/`. Screens inspected at full resolution,
@@ -110,13 +110,13 @@ including 2× nearest-neighbour crops of suspicious regions.
 ## Checkpoints still open
 - VG03 Login primary (ref 08) + conditional 05/06/07
 - VG04 OTP (ref 12 primary, 09/10/11 conditional)
-- VG05 Runtime capture on the owner-authorized handset `1334825549012211` (debug APK, visual QA only)
+- VG05 Runtime capture on the owner-authorized handset `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL` (debug APK, visual QA only)
 - VG06 Safe convergence + owner visual acceptance
 
 ## Owner authorization — physical device (2026-11-12)
 The owner messaged that the handset was connected, then, when asked to choose the QA target,
 selected the option **«أصرّح بتنصيب نسخة الاختبار على هاتفي»** — an explicit, separate
-authorization to install the **debug** test APK on `1334825549012211` (itel S686LN) for visual QA.
+authorization to install the **debug** test APK on `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL` (itel S686LN) for visual QA.
 Scope of that authorization:
 - debug/test build only; never a Play production-release claim;
 - visual QA only, not end-to-end service verification;
@@ -135,7 +135,7 @@ authorized handset is the active capture target.
 | APK SHA-256 | `4559EE0FF34B7CD6CCCED97347FFCA5CA7781E2E92A227050CA826ED54D6A61C` |
 | APK size | 15,912,598 bytes |
 | Signing | `CN=Android Debug` (cert SHA-256 `c07168d4…7c085e`) — **debug/test only, not a Play release** |
-| Device | `1334825549012211` itel S686LN, API 35, 1080×2436 @480dpi, portrait forced |
+| Device | `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL` itel S686LN, API 35, 1080×2436 @480dpi, portrait forced |
 | Captures | 8 PNG, `qa-evidence/final-visual-gate/runtime/` |
 
 ### Repository

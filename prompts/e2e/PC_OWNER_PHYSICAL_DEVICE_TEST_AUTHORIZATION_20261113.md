@@ -5,7 +5,7 @@ Priority: LATEST OWNER DIRECTIVE — supersedes every older "emulator only" mand
 The owner explicitly approves testing the WINDOWS PC Android app at D:\KNOUX-AI on his own connected PHYSICAL PHONE to avoid Android emulator downloads consuming disk space.
 
 ## Verified hardware at authorization
-- Serial: 1334825549012211
+- Serial: REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL
 - Model: itel S686LN
 - Android API: 35
 - State: ADB authorized (device) as of 2026-11-13 00:37+04
@@ -14,7 +14,7 @@ The owner explicitly approves testing the WINDOWS PC Android app at D:\KNOUX-AI 
 Recheck all changing facts before every relevant action.
 
 ## The owner NOW ALLOWS
-1. Build and install/reinstall the KNOUX AI app on the verified phone using explicit adb -s 1334825549012211 install -r <test apk> if signing is compatible; retain app data.
+1. Build and install/reinstall the KNOUX AI app on the verified phone using explicit adb -s REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL install -r <test apk> if signing is compatible; retain app data.
 2. Targeted reviewed Android instrumentation, UI, screenshot, real device integration, connectivity, permissions, app-owned storage and service tests.
 3. Actual user-approved MediaStore Trash, Restore and Permanent Delete, SAF operations, and KNOUX app-cache cleanup on ONLY small uniquely named fresh synthetic fixture files that the running tests themselves create; verify URI ownership, path and fixture identity, use Android real OS confirmation, requery result and journal.
 4. Real authorized Android APIs, real permissions, filters, selection, navigation, retry, error states, persisted history and biometric UI interactions with user presence where needed.

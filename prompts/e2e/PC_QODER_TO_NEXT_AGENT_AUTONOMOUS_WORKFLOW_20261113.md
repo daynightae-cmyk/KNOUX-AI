@@ -24,7 +24,7 @@ Never git reset --hard, git clean, force-push, blind restore, mass-stage unknown
 - NEW UNVERIFIED instrumentation classes: SmartCleanStorageTest.kt (9 @Test methods, 33265 bytes, modified 23:57) and SmartCleanRealTest.kt (5 @Test methods, 13554 bytes, modified 23:54). Neither has a final successful current-source compile or on-device test report.
 - SmartCleanReal.kt 64958 bytes; SmartCleanController.kt 35592 bytes; SmartCleanRepository.kt 38543 bytes. KEEP THEM; no rewrite-from-zero.
 - ZERO confirmed successful connectedDebugAndroidTest executions on the latest source; no witnessed real trash/restore/permanent-delete workflow or current APK hash after 23:57.
-- Physical ADB device currently connected: serial 1334825549012211, itel S686LN, API 35. Reconfirm exact serial immediately before any installation/test. Existing com.knoux.ai and com.knoux.ai.debug packages were seen. A separate user-999 access error was observed, so never assume work-profile access or wipe profiles.
+- Physical ADB device currently connected: serial REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL, itel S686LN, API 35. Reconfirm exact serial immediately before any installation/test. Existing com.knoux.ai and com.knoux.ai.debug packages were seen. A separate user-999 access error was observed, so never assume work-profile access or wipe profiles.
 - Disk free near audit: C 9.44 GB / D 2.50 GB / K 5.54 GB. Qoder task output showed an approximately 720MB emulator image download attempt; DO NOT download or create another emulator image.
 - Root git has one worktree, no stash shown. No local commit from Qoder was observed. No Kiro/Qoder source writer confirmed active during this audit.
 
@@ -54,7 +54,7 @@ C. PHYSICAL DEVICE SAFETY AUDIT, BEFORE running instrumentation:
 - Never blindly approve a system dialog of unknown origin. Never reset phone, delete app data, uninstall unrelated apps, revoke personal permissions, clear account/profile storage, or delete preexisting photos/docs.
 - Do not run full unknown Android instrumentation suite on a personal device. Only run targeted audited SmartCleanRealTest and SmartCleanStorageTest classes, with correct runner and exact serial. If method could affect preexisting data, SKIP that specific test and document why.
 D. ON-DEVICE VERIFICATION after safe compile:
-- Verify install target serial 1334825549012211 and API 35. Run targeted instrumented UI and repository tests on real device.
+- Verify install target serial REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL and API 35. Run targeted instrumented UI and repository tests on real device.
 - Verify scoped scan; filters/search/selection; exclusions; confirmation/cancel; local cache deletion; MediaStore Trash, restore and permanent delete where supported; stale URI handling; operation idempotency; persisted Room history; requery of exact fixtures; denied and partial permission handling. An Assume skip is NOT a PASS.
 - Save JUnit XML, compact redacted logs/screenshots, permissions scope, exact fixture IDs, exit codes, APK SHA and observed after-state. Do not upload personal files to cloud. Do not claim a commercial Pro license exists because ProSystem displays one.
 E. INTEGRATION:

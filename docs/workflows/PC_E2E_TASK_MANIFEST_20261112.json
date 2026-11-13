@@ -365,7 +365,7 @@
                                   },
     "owner_approved_physical_test":  {
                                          "allowed":  true,
-                                         "serial":  "1334825549012211",
+                                         "serial":  "REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL",
                                          "model":  "itel S686LN",
                                          "android_api":  35,
                                          "scope":  "install/test KNOUX app and only create/delete isolated, exact synthetic test fixtures; preserve all other personal and app data",

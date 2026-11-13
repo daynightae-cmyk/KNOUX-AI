@@ -30,7 +30,7 @@ This checkpoint overrides stale QUEUED/PREFLIGHT interpretations above; individu
 - **PC01 — UNIT_TESTING (uncommitted, current code not verified):** SmartCleanReal.kt, SmartCleanController.kt, SmartCleanRepository.kt exist with substantial real data/action code; SmartCleanRealTest.kt (5 Android tests) and SmartCleanStorageTest.kt (9 Android tests) were written/updated by 23:57 on Nov 12. No current-source androidTest compile / targeted physical phone instrumentation proof, no verified Trash/Restore/Delete or customer UI path. **VERIFIED=NO**.
 - **PC02–PC13 — QUEUED**, except previously recorded visual QA debt for PC11. User-approved physical phone only for strictly isolated synthetic test fixtures. App visuals are preserved.
 - **Git:** local main c0530b6; local origin/main ref same; Qoder work remains modified/untracked; no new commit/push seen. LIVE remote SHA not independently fetched.
-- **Device:** ADB serial 1334825549012211, itel S686LN API 35 observed, but NO latest service runtime tests proved. C ~9.44GB, D ~2.50GB, K ~5.54GB free at audit.
+- **Device:** ADB serial REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL, itel S686LN API 35 observed, but NO latest service runtime tests proved. C ~9.44GB, D ~2.50GB, K ~5.54GB free at audit.
 - **Primary evidence:** qa-evidence/e2e/pc01/logs/01-compileDebugKotlin.log, 02-compileDebugAndroidTestKotlin.log, 03-testDebugUnitTest.log and generated app/build/test-results/testDebugUnitTest/*.xml.
 - **Next checkpoint:** compile current source; code-review destructive operations in 14 new Android tests; execute only audited tests on exact physical device; verify actual result; update ledger; selective commit/push when fully supported.
 

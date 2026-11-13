@@ -11,7 +11,7 @@ Independent mobile Linux OpenCode project: NOT TOUCHED
 - app-release.apk present at D:\KNOUX-AI\app\build\outputs\apk\release\app-release.apk, length=5442059 bytes, SHA256=CA8CD136908F09D912E5865241DBAD24C98CE76157407026B1BF42BB5B9C3922.
 - Review JSON reports APPROVED; remaining low-severity duplicate preference write noted in review text.
 - Existing release APK signed with Android Debug certificate: signer DN 'C=US, O=Android, CN=Android Debug'; v2 signature reported present. app/build.gradle.kts explicitly uses signingConfigs.getByName("debug") for release. This is test distribution only, NOT a production Play release signing setup.
-- Kiro log states './gradlew assembleRelease' returned BUILD SUCCESSFUL and adb install -r to physical device 1334825549012211 returned Success. No new build or ADB installation executed by this audit.
+- Kiro log states './gradlew assembleRelease' returned BUILD SUCCESSFUL and adb install -r to physical device REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL returned Success. No new build or ADB installation executed by this audit.
 - When independently checked at 09:45:50+04, adb devices showed no attached device. The earlier Kiro installation is still confirmed by the supplied console log, but current handset runtime was not available to retest.
 
 ## Visual evidence actually inspected
