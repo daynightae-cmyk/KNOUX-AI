@@ -64,7 +64,7 @@ import kotlin.math.max
 
 /** Two-tone italic title used by every master screen (white lead, magenta accent). */
 @Composable
-private fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) {
+internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) {
     val roomy = LocalRoomy.current
     Column(Modifier.fillMaxWidth().padding(horizontal = 6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         val styled = buildAnnotatedString {
@@ -87,7 +87,7 @@ private fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) {
 
 /** The compact gold disclosure that marks every master screen as design preview data. */
 @Composable
-private fun MasterPreviewPill(label: Copy = ("DESIGN PREVIEW" ar "معاينة التصميم")) {
+internal fun MasterPreviewPill(label: Copy = ("DESIGN PREVIEW" ar "معاينة التصميم")) {
     Box(Modifier.fillMaxWidth().padding(top = 7.dp), contentAlignment = Alignment.Center) {
         DesignPreviewPill(label = label)
     }
@@ -107,7 +107,7 @@ private fun InfoMarker(tint: Color = Mist, modifier: Modifier = Modifier) {
 
 /** The honest-preview note strip. */
 @Composable
-private fun PreviewNote(text: Copy, modifier: Modifier = Modifier) {
+internal fun PreviewNote(text: Copy, modifier: Modifier = Modifier) {
     GlassPanel(modifier.fillMaxWidth(), radius = 18, tint = Violet) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
@@ -119,7 +119,7 @@ private fun PreviewNote(text: Copy, modifier: Modifier = Modifier) {
 
 /** Big rounded glass card used for the featured rows of the master screens. */
 @Composable
-private fun MasterCard(
+internal fun MasterCard(
     modifier: Modifier = Modifier, radius: Int = 22, tint: Color? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -197,7 +197,7 @@ private fun ServiceRow(
 
 /** The ghost/primary action pair of the references. */
 @Composable
-private fun MasterActions(first: Action, second: Action, onFirst: () -> Unit, onSecond: () -> Unit) {
+internal fun MasterActions(first: Action, second: Action, onFirst: () -> Unit, onSecond: () -> Unit) {
     if (LocalRoomy.current) Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         AccentButton(first, Modifier.fillMaxWidth(), primary = false, tag = "review-action", onClick = onFirst)
         AccentButton(second, Modifier.fillMaxWidth(), primary = true, tag = "primary-action", onClick = onSecond)
@@ -461,113 +461,10 @@ private fun QuickAction(
 // 2 - Smart Clean (Clean)
 // ---------------------------------------------------------------------------
 
-private data class CleanSpec(
-    val title: Copy, val copy: Copy, val size: String, val mark: Mark, val tag: String, val page: Page
-)
-
+// PC01: the screen is now backed by measured device data (see SmartCleanReal.kt).
+// The approved hero, title, donut card, category rows and action pair are unchanged.
 @Composable
-internal fun SmartCleanScreen(open: (Page) -> Unit) {
-    val motion = LocalPreviewMotion.current
-    var selected by rememberSaveable { mutableIntStateOf(0b0111) }
-    var sheet by rememberSaveable { mutableStateOf<String?>(null) }
-    val categories = listOf(
-        CleanSpec("Cache" ar "ذاكرة مؤقتة", "App and system cache files" ar "ملفات ذاكرة التطبيقات والنظام",
-            "1.24 GB", Mark.LAYERS, "open-clean-center", Page.CLEAN_CENTER),
-        CleanSpec("Temporary Files" ar "ملفات مؤقتة", "Short-term and leftover files" ar "ملفات قصيرة الأمد ومتبقية",
-            "512 MB", Mark.FILE, "open-deep-scan", Page.SCAN),
-        CleanSpec("Duplicate Candidates" ar "مرشحات التكرار", "Similar photos, videos and files" ar "صور وفيديوهات وملفات متشابهة",
-            "698 MB", Mark.PICTURES, "open-duplicates", Page.DUPLICATES),
-        CleanSpec("App Residue" ar "بقايا التطبيقات", "Leftovers from uninstalled apps" ar "بقايا من تطبيقات غير مثبتة",
-            "416 MB", Mark.BOX, "open-residue", Page.RESIDUE)
-    )
-    // FIXED VIEWPORT — no root scroll
-    Column(Modifier.fillMaxSize()) {
-        NeonHero(Mark.TRASH, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
-        MasterTitle("Smart" ar "تنظيف", "Clean" ar "ذكي",
-            "Review unwanted files before any cleanup." ar "راجع الملفات غير المرغوبة قبل أي تنظيف.",
-            "screen-clean")
-        MasterPreviewPill()
-        Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp),
-            verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            MasterCard(radius = 22, tint = Violet) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Box(Modifier.size(118.dp), contentAlignment = Alignment.Center) {
-                        ProgressDonut(76, ("Recoverable (Preview)" ar "قابل للاسترداد (معاينة)").localized(),
-                            diameter = 118, displayValue = "2.86 GB")
-                    }
-                    Separator(Modifier.width(1.dp).height(88.dp))
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                        MasterIcon(Mark.DISK, Pink, 34)
-                        Label(("Cleanup Potential" ar "الإمكان التنظيفي").localized(), 11, Mist)
-                        Label("2.86 GB", 22, weight = FontWeight.ExtraBold)
-                        Label(("Across 4 categories" ar "عبر ٤ فئات").localized(), 10, Mist)
-                    }
-                }
-            }
-            categories.forEachIndexed { index, spec ->
-                val checked = selected and (1 shl index) != 0
-                MasterCard(radius = 16, tint = if (checked) Cyan else null) {
-                    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp),
-                        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Row(Modifier.weight(1f).clip(RoundedCornerShape(12.dp))
-                            .testTag(spec.tag).clickable(role = Role.Button) { open(spec.page) }
-                            .padding(vertical = 5.dp),
-                            verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                            MasterIcon(spec.mark, if (checked) Cyan else Violet, 34)
-                            Column(Modifier.weight(1f)) {
-                                Label(spec.title.localized(), 14, weight = FontWeight.Bold)
-                                Label(spec.copy.localized(), 10, Mist)
-                            }
-                        }
-                        Column(horizontalAlignment = Alignment.End) {
-                            Label(spec.size, 14, weight = FontWeight.Bold)
-                            Spacer(Modifier.height(3.dp))
-                            Box(Modifier.size(28.dp)
-                                .toggleable(checked, role = Role.Checkbox, onValueChange = {
-                                    selected = selected xor (1 shl index)
-                                })
-                                .testTag("clean-category-$index"), contentAlignment = Alignment.Center) {
-                                SelectionIndicator(checked, Cyan)
-                            }
-                        }
-                    }
-                }
-            }
-            Spacer(Modifier.weight(1f))
-            MasterActions(
-                Action("Inspect Categories" ar "فحص الفئات", Mark.LAYERS),
-                Action("Review Cleanup" ar "مراجعة التنظيف", Mark.BROOM),
-                onFirst = { sheet = "review" }, onSecond = { sheet = "proceed" }
-            )
-            PreviewNote(("Design Preview Only — these are example values and do not represent live results from your device."
-                ar "معاينة تصميم فقط — هذه قيم أمثلة ولا تمثل نتائج فعلية من جهازك."))
-        }
-    }
-    sheet?.let { mode ->
-        InfoSheet(if (mode == "review") ("Review Categories" ar "مراجعة الفئات") else ("Review Cleanup" ar "مراجعة التنظيف"),
-            { sheet = null }) {
-            when (mode) {
-                "review" -> {
-                    AccentButton(Action(Page.CLEAN_CENTER.title, Page.CLEAN_CENTER.hero), Modifier.fillMaxWidth(),
-                        tag = "open-clean-center-review") {
-                        sheet = null
-                        open(Page.CLEAN_CENTER)
-                    }
-                    categories.forEach { spec -> Label("${spec.title.localized()} · ${spec.size}", 13, Mist) }
-                }
-                "proceed" -> {
-                    categories.filterIndexed { index, _ -> selected and (1 shl index) != 0 }
-                        .forEach { spec -> Label("${spec.title.localized()} · ${spec.size}", 13, Mist) }
-                    AccentButton(Action("Confirm preview" ar "تأكيد المعاينة", Mark.CHECK), Modifier.fillMaxWidth(),
-                        enabled = selected != 0, tag = "confirm-preview") { sheet = "ack" }
-                }
-                else -> Label(NoChange.localized(), 16, Cyan, FontWeight.Bold, Modifier.testTag("preview-only-result"))
-            }
-            Label(Disclosure.localized(), 12, Mist)
-        }
-    }
-}
+internal fun SmartCleanScreen(open: (Page) -> Unit) = RealSmartCleanScreen(open)
 
 // ---------------------------------------------------------------------------
 // 3 - Device Tools (Tools)
@@ -576,6 +473,7 @@ internal fun SmartCleanScreen(open: (Page) -> Unit) {
 @Composable
 internal fun DeviceToolsScreen(open: (Page) -> Unit) {
     val motion = LocalPreviewMotion.current
+    var showProGate by remember { mutableStateOf(false) }
     // Tools is an index screen (directory) — controlled scroll is acceptable here
     // but we still tighten the hero and reduce excess padding
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
@@ -589,6 +487,13 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
         MasterTitle("Device" ar "أدوات", "Tools" ar "الجهاز",
             "Your device intelligence workspace." ar "مساحة عمل ذكاء جهازك.", "screen-tools")
         MasterPreviewPill()
+        // ── Pro Banner ──────────────────────────────────────────────────────
+        ProSectionBanner(
+            section = ProSection.APP_MANAGER,
+            tagline = ("📱 Batch operations • App freeze • Backup & restore • Usage analytics"
+                ar "📱 عمليات جماعية • تجميد التطبيقات • نسخ احتياطي • تحليلات الاستخدام"),
+            onClick = { showProGate = true }
+        )
         Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp)) {
             GlassPanel(Modifier.fillMaxWidth().clip(RoundedCornerShape(22.dp))
@@ -644,6 +549,13 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
                 Mark.LAYERS, Cyan, "open-storage-breakdown") { open(Page.STORAGE_BREAKDOWN) }
         }
     }
+    if (showProGate) {
+        ProGateDialog(
+            section = ProSection.APP_MANAGER,
+            onDismiss = { showProGate = false },
+            onActivate = { showProGate = false }
+        )
+    }
 }
 
 @Composable
@@ -666,12 +578,20 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
     val motion = LocalPreviewMotion.current
     var range by rememberSaveable { mutableIntStateOf(0) }
     var sheet by rememberSaveable { mutableStateOf<String?>(null) }
+    var showProGate by remember { mutableStateOf(false) }
     val entries = PreviewFixtures.screen(Page.REPORTS, PreviewSource.DESIGN_PREVIEW)?.entries.orEmpty()
     Column(Modifier.fillMaxSize()) {
         NeonHero(Mark.BARS, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
         MasterTitle("Reports &" ar "التقارير", "Insights" ar "والرؤى",
             "See device trends and previous actions." ar "شاهد اتجاهات الجهاز والإجراءات السابقة.", "screen-reports")
         MasterPreviewPill()
+        // ── Pro Banner ──────────────────────────────────────────────────────
+        ProSectionBanner(
+            section = ProSection.REPORTS,
+            tagline = ("📊 PDF export • 90-day history • AI predictions • Weekly reports"
+                ar "📊 تصدير PDF • سجل ٩٠ يوماً • تنبؤات ذكية • تقارير أسبوعية"),
+            onClick = { showProGate = true }
+        )
         Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp)) {
             RangeTabs(range) { range = it }
@@ -765,6 +685,13 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
             Label(Disclosure.localized(), 12, Mist)
         }
     }
+    if (showProGate) {
+        ProGateDialog(
+            section = ProSection.REPORTS,
+            onDismiss = { showProGate = false },
+            onActivate = { showProGate = false }
+        )
+    }
 }
 
 /** Small gold preview marker used inside cards (never the canonical design-preview tag). */
@@ -791,6 +718,7 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
     val motion = LocalPreviewMotion.current
     var sheet by rememberSaveable { mutableStateOf<String?>(null) }
     var entryIndex by rememberSaveable { mutableIntStateOf(0) }
+    var showProGate by remember { mutableStateOf(false) }
     val data = PreviewFixtures.screen(Page.PRIVACY, PreviewSource.DESIGN_PREVIEW)
     val risks = listOf(
         RiskSpec("Camera Access" ar "الوصول للكاميرا", "2 apps" ar "تطبيقان", "Medium Risk" ar "خطورة متوسطة", Gold, Mark.CAMERA),
@@ -812,6 +740,13 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
             "Understand permissions, trackers and exposure." ar "افهم الأذونات وأدوات التتبع ومدى التعرّض.",
             "screen-privacy")
         MasterPreviewPill(("DESIGN PREVIEW (SAMPLE DATA)" ar "معاينة التصميم (بيانات نموذجية)"))
+        // ── Pro Banner ──────────────────────────────────────────────────────
+        ProSectionBanner(
+            section = ProSection.PRIVACY_SWEEP,
+            tagline = ("🛡️ Real-time threat detection • Encrypted vault • Tracker blocker"
+                ar "🛡️ كشف تهديدات فوري • خزنة مشفرة • حاجب المتتبعين"),
+            onClick = { showProGate = true }
+        )
         Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp)) {
             risks.chunked(2).forEach { pair ->
@@ -900,6 +835,13 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
             Label(Disclosure.localized(), 12, Mist)
         }
     }
+    if (showProGate) {
+        ProGateDialog(
+            section = ProSection.PRIVACY_SWEEP,
+            onDismiss = { showProGate = false },
+            onActivate = { showProGate = false }
+        )
+    }
 }
 
 @Composable
@@ -936,6 +878,7 @@ internal fun AiOptimizationScreen(open: (Page) -> Unit) {
     val motion = LocalPreviewMotion.current
     var opportunities by rememberSaveable { mutableIntStateOf(0b111) }
     var sheet by rememberSaveable { mutableStateOf<String?>(null) }
+    var showProGate by remember { mutableStateOf(false) }
     val data = PreviewFixtures.screen(Page.OPTIMIZE, PreviewSource.DESIGN_PREVIEW)
     Column(Modifier.fillMaxSize()) {
         NeonHero(Mark.CHIP, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
@@ -943,6 +886,13 @@ internal fun AiOptimizationScreen(open: (Page) -> Unit) {
             "Explore performance opportunities with KNOUX AI" ar "استكشف فرص الأداء مع KNOUX AI.",
             "screen-ai-optimization")
         MasterPreviewPill()
+        // ── Pro Banner ──────────────────────────────────────────────────────
+        ProSectionBanner(
+            section = ProSection.AI_OPTIMIZATION,
+            tagline = ("🧠 Gaming boost • Adaptive AI • Thermal management • Smart scenes"
+                ar "🧠 تعزيز الألعاب • ذكاء اصطناعي تكيفي • إدارة الحرارة • مشاهد ذكية"),
+            onClick = { showProGate = true }
+        )
         Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 11.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp)) {
             val metrics = listOf(
@@ -1008,6 +958,13 @@ internal fun AiOptimizationScreen(open: (Page) -> Unit) {
             }
             Label(Disclosure.localized(), 12, Mist)
         }
+    }
+    if (showProGate) {
+        ProGateDialog(
+            section = ProSection.AI_OPTIMIZATION,
+            onDismiss = { showProGate = false },
+            onActivate = { showProGate = false }
+        )
     }
 }
 

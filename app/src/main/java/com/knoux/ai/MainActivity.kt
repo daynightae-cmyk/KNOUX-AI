@@ -111,6 +111,9 @@ class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Real services (Room, DataStore, WorkManager, Smart Clean engine) are
+        // created lazily but must always be built from the application context.
+        com.knoux.ai.data.KnouxData.init(this)
         enableEdgeToEdge(SystemBarStyle.dark(android.graphics.Color.TRANSPARENT), SystemBarStyle.dark(android.graphics.Color.TRANSPARENT))
         if (savedInstanceState == null) debugVisit(intent)
         val previewRoute = if (BuildConfig.DEBUG) intent?.getStringExtra("knoux.preview.route") else null

@@ -88,6 +88,16 @@ internal fun Label(
 }
 
 /**
+ * Localized overload so a bilingual string can be passed without repeating
+ * `.localized()` at every call site.
+ */
+@Composable
+internal fun Label(
+    text: Copy, size: Int = 12, tint: Color = Chalk, weight: FontWeight = FontWeight.Normal,
+    modifier: Modifier = Modifier, align: TextAlign? = null, maxLines: Int = Int.MAX_VALUE
+) = Label(text.localized(), size, tint, weight, modifier, align, maxLines)
+
+/**
  * Premium glass material.
  *
  * The surface is built from layers rather than one flat tint: a deep base
