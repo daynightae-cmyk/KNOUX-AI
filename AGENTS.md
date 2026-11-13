@@ -56,3 +56,21 @@ All other instructions regarding unique-work protection, approved designs, nonfa
 ## PUBLIC REPOSITORY DEVICE IDENTIFIER HYGIENE — 2026-11-13
 
 Never store, commit, or paste the real ADB device serial/transport identifier, WLAN pairing endpoint, or personally identifying device metadata in this public repository, prompts, code defaults, QA reports or GitHub Actions logs. Refer to the authorized test target as `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL`; supply the real serial only through a local environment variable `KNOUX_TEST_DEVICE_SERIAL` or an explicit local `-Serial` argument after verifying the user's authorization and `adb devices -l`. Screenshots/logcat must be sanitized before publication. This does not change authorization to test the owner's phone using isolated synthetic fixtures. Do not publish historical or new raw on-device logs. Protect all concurrent uncommitted product implementation.
+
+---
+
+## OWNER DIRECTIVE 2026-11-13 — VISUAL-FIRST SERVICES (RECORDED BEFORE PC05)
+
+Before PC05 continues, the owner added one binding condition to the full-functional E2E lane:
+
+> Every service, during execution and in its output, must face the user as a **creative, service-specific visual identity**. Text is minimal; the UI is dominant. Results must not be delivered as written reports where a visual instrument can carry them.
+
+Binding interpretation:
+
+1. **Applies in full to PC05 → PC13.** Each service owns one signature instrument whose geometry, colour and motion express the service's real mechanism, bound to measured state only. See `docs/design/KNOUX_SERVICE_VISUAL_IDENTITY_20261113.md` (contract, 14 identities, text budget, state choreography, honesty rules).
+2. **PC01 → PC04 are review-only** in this pass. Their accepted visuals and real controls are preserved; gaps are recorded as identity debt in the contract, not fixed by rebuilding.
+3. **A service cannot be marked VERIFIED** without: the live instrument, an EN+AR copy-budget test, an honest indeterminate-progress path, fog for unmeasured scope, reduced-motion and RTL proof, three real-state screenshots, and a visual→domain mapping table.
+4. **Honesty outranks beauty.** No fake progress, no preview art inside a real state, no unmeasured value coloured as measured, no words like "malware" for unflagged files. Unknown is drawn as unknown.
+5. **Minimal text must not reduce control:** confirmation, cancellation, undo and accessibility descriptions stay complete and reachable.
+
+This directive does not supersede the nonfake, unique-work, device-safety or remote-verification rules; it adds a mandatory presentation and proof layer on top of them.

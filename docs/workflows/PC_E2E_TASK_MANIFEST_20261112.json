@@ -4,8 +4,8 @@
     "independent_mobile_repo":  "/root/workspace/KNOUX-AI",
     "do_not_mix_repos":  true,
     "observed_at":  "2026-11-13T15:05:00+04:00",
-    "observed_head":  "54d694137c9445ab6c97292e46c5c3f5420faad3",
-    "observed_origin_main":  "54d694137c9445ab6c97292e46c5c3f5420faad3",
+    "observed_head":  "2ff21159a9d726ea7b88efc6afc45ca484e02988",
+    "observed_origin_main":  "2ff21159a9d726ea7b88efc6afc45ca484e02988",
     "observed_branch":  "main; PC03 source integrated at c1b1c2e, evidence commit being pushed after it",
     "writer_conflict_warning":  "At 2026-11-13 00:10+04 Qoder.exe was not running. Recheck active agents before any Kotlin edit; Kiro clean-profile GUI can remain open and must not be assumed writing.",
     "current_task_id":  "PC05",
@@ -451,5 +451,29 @@
                                     "audited_report":  "qa-evidence/e2e/KIRO_SESSION_76AE_DEEP_AUDIT_20261113.md"
                                 },
     "per_service_execution_contract":  "docs/workflows/KNOUX_PC_PER_SERVICE_AUTONOMOUS_EXECUTION_20261113.md",
-    "post_merge_space_policy":  "After independently verified coherent service, selective commit+fast-forward push+remote SHA/CI verification and preservation of compact runtime evidence, remove ONLY inventoried reproducible generated artifacts not in use; never source, unique untracked, git history or approved design."
+    "post_merge_space_policy":  "After independently verified coherent service, selective commit+fast-forward push+remote SHA/CI verification and preservation of compact runtime evidence, remove ONLY inventoried reproducible generated artifacts not in use; never source, unique untracked, git history or approved design.",
+    "owner_visual_directive_20261113":  {
+                                           "directive":  "Every service must face the user through a creative, service-specific visual identity during execution and output; text is minimal and the UI is dominant. Results must not be delivered as written reports where an instrument can carry them.",
+                                           "contract":  "docs/design/KNOUX_SERVICE_VISUAL_IDENTITY_20261113.md",
+                                           "recorded_at_head":  "2ff2115",
+                                           "applies_fully_from":  "PC05",
+                                           "existing_services":  "PC01-PC04 reviewed at code level only; their accepted visuals and real controls are preserved, not rebuilt",
+                                           "verification_gate":  "A service cannot be VERIFIED without a live canvas instrument bound to measured state, EN+AR copy-budget tests, honest indeterminate progress, fog for unmeasured scope, reduced-motion and RTL proof, three real-state screenshots and a visual-to-domain mapping table",
+                                           "identities":  {
+                                                              "PC00":  "Bedrock / الأساس",
+                                                              "PC01":  "Tide / المد",
+                                                              "PC02":  "Mirror / المرآة",
+                                                              "PC03":  "Strata / الطبقات",
+                                                              "PC04":  "Vault Radar / رادار الخزنة",
+                                                              "PC05":  "Abyss Sonar / سونار العمق",
+                                                              "PC06":  "Prism / المنشور",
+                                                              "PC07":  "Constellation / الكوكبة",
+                                                              "PC08":  "Terrain / التضاريس",
+                                                              "PC09":  "Pulse / النبض",
+                                                              "PC10":  "Synapse / المشبك",
+                                                              "PC11":  "Iris Gate / بوابة القزحية",
+                                                              "PC12":  "Seal Chain / سلسلة الأختام",
+                                                              "PC13":  "Gate / البوابة"
+                                                          }
+                                       }
 }
