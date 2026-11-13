@@ -27,6 +27,10 @@ object KnouxData {
     private val residueControllerRef = lazy {
         ResidueController(residueRepository, database, settings, permissions, smartClean)
     }
+    private val privacyRepositoryRef = lazy { PrivacyRepository(requireContext(), permissions) }
+    private val privacyControllerRef = lazy {
+        PrivacyController(privacyRepository, database, settings)
+    }
 
     fun init(context: Context) {
         if (appContext == null) appContext = context.applicationContext
@@ -47,4 +51,6 @@ object KnouxData {
     val duplicates: DuplicateController get() = duplicateControllerRef.value
     val residueRepository: ResidueRepository get() = residueRepositoryRef.value
     val residue: ResidueController get() = residueControllerRef.value
+    val privacyRepository: PrivacyRepository get() = privacyRepositoryRef.value
+    val privacy: PrivacyController get() = privacyControllerRef.value
 }

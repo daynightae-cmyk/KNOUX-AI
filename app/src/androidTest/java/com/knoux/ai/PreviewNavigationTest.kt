@@ -77,6 +77,16 @@ class PreviewNavigationTest {
         showing("residue-total")
     }
 
+    /**
+     * PC04 turned Privacy into a measured screen too. The score and the list are
+     * the honest markers: the score is a dash until a real pass is run.
+     */
+    private fun privacyScreen() {
+        node("screen-privacy-risk-inspector").assertExists()
+        showing("privacy-list")
+        showing("privacy-score")
+    }
+
     /** Detail routes render a service workspace plus a scrollable detail body. */
     private fun detailScreen(page: String) {
         showing("screen-$page")
@@ -154,7 +164,7 @@ class PreviewNavigationTest {
         click("tab-tools"); screen("tools")
         for ((entry, detail) in toolDetails) {
             scrollClick("open-$entry")
-            detailScreen(detail)
+            if (detail == "privacy-risk-inspector") privacyScreen() else detailScreen(detail)
             node("tab-tools").assertIsSelected()
             back(); screen("tools")
         }
@@ -249,6 +259,13 @@ class PreviewNavigationTest {
         click("tab-tools")
         for ((entry, detail) in toolDetails) {
             scrollClick("open-$entry")
+            if (detail == "privacy-risk-inspector") {
+                // PC04 replaced this design fixture with the measured sweep: it has
+                // no detail body, selection mask or preview dialog to prove.
+                privacyScreen()
+                back()
+                continue
+            }
             detailScreen(detail)
             // Pages that ship a sample selection start with one row selected; a
             // page without a selection mask has no selectors at all. Either way

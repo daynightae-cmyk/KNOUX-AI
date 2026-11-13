@@ -45,6 +45,7 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
         val SCHEDULE_MINUTES = longPreferencesKey("schedule_minutes")
         val RESIDUE_SCOPES = stringSetPreferencesKey("residue_scopes")
         val RESIDUE_MIN_AGE = longPreferencesKey("residue_min_age_days")
+        val PRIVACY_SECURE_WINDOW = booleanPreferencesKey("privacy_secure_window")
     }
 
     /** Scopes the customer last chose. Defaults to the only always-available one. */
@@ -109,5 +110,19 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
             prefs[Keys.RESIDUE_MIN_AGE] = (days.takeIf { it in ResidueRules.AGE_CHOICES }
                 ?: ResidueRules.DEFAULT_MIN_AGE_DAYS).toLong()
         }
+    }
+
+    /**
+     * PC04 — the one privacy setting KNOUX really owns.
+     *
+     * `true` makes MainActivity apply FLAG_SECURE to its window, which the OS
+     * enforces by excluding the app from screenshots and the recents thumbnail.
+     * It is a preference, not a claim: the screen re-reads the actual window flag
+     * after applying it and records a mismatch as such.
+     */
+    val privacySecureWindow: Flow<Boolean> = dataStore.data.map { it[Keys.PRIVACY_SECURE_WINDOW] ?: false }
+
+    suspend fun setPrivacySecureWindow(enabled: Boolean) {
+        dataStore.edit { prefs -> prefs[Keys.PRIVACY_SECURE_WINDOW] = enabled }
     }
 }

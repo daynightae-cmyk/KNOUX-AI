@@ -236,6 +236,56 @@ data class ResidueProfileEntity(
     val updatedAt: Long,
 )
 
+// ── PC04 privacy evidence ────────────────────────────────────────────────────
+
+/**
+ * One privacy sweep. [score] is nullable on purpose: a pass that measured only
+ * informational checks has no score, and storing 0 would read as a failure.
+ */
+@Entity(tableName = "privacy_scans")
+data class PrivacyScanEntity(
+    @PrimaryKey val id: String,
+    val startedAt: Long,
+    val finishedAt: Long?,
+    val status: String,
+    val score: Int?,
+    val scoredCount: Int,
+    val measuredCount: Int,
+    val attentionCount: Int,
+    val unmeasurableCount: Int,
+    val note: String?,
+)
+
+/** One observed row. Composite key keeps every pass append-only. */
+@Entity(tableName = "privacy_findings", primaryKeys = ["scanId", "checkId"])
+data class PrivacyFindingEntity(
+    val scanId: String,
+    val checkId: String,
+    val status: String,
+    val severity: String,
+    val observed: String,
+    val detail: String,
+    val remedy: String,
+    val recordedAt: Long,
+)
+
+/**
+ * What the customer (or the sweep) did about a row.
+ *
+ * [outcome] is `OPENED` for an Android screen KNOUX merely launched, and
+ * `VERIFIED` only after the platform was re-read and confirmed the change.
+ */
+@Entity(tableName = "privacy_actions", indices = [Index("createdAt")])
+data class PrivacyActionEntity(
+    @PrimaryKey val id: String,
+    val scanId: String?,
+    val checkId: String,
+    val action: String,
+    val outcome: String,
+    val createdAt: Long,
+    val note: String?,
+)
+
 /** Items the customer asked us to keep, so a later scan cannot re-offer them. */
 @Entity(tableName = "exclusions")
 data class ExclusionEntity(
@@ -479,6 +529,41 @@ interface ResidueDao {
     suspend fun profile(treeUri: String): ResidueProfileEntity?
 }
 
+/**
+ * PC04 privacy history. The sweep is read-only apart from KNOUX's own
+ * screenshot-protection setting, so this DAO stores observations and actions,
+ * never another app's data.
+ */
+@Dao
+interface PrivacyDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertScan(scan: PrivacyScanEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFindings(findings: List<PrivacyFindingEntity>)
+
+    @Query("SELECT * FROM privacy_findings WHERE scanId = :scanId ORDER BY checkId")
+    suspend fun findings(scanId: String): List<PrivacyFindingEntity>
+
+    @Query("DELETE FROM privacy_findings WHERE scanId = :scanId")
+    suspend fun clearFindings(scanId: String)
+
+    @Query("SELECT * FROM privacy_scans WHERE status IN ('MEASURED', 'PARTIAL') ORDER BY startedAt DESC, id DESC LIMIT 1")
+    suspend fun latestFinishedScan(): PrivacyScanEntity?
+
+    @Query("SELECT * FROM privacy_scans ORDER BY startedAt DESC, id DESC LIMIT 20")
+    fun observeScans(): Flow<List<PrivacyScanEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun putAction(action: PrivacyActionEntity)
+
+    @Query("SELECT * FROM privacy_actions ORDER BY createdAt DESC LIMIT 50")
+    fun observeActions(): Flow<List<PrivacyActionEntity>>
+
+    @Query("SELECT * FROM privacy_actions WHERE scanId = :scanId ORDER BY createdAt DESC")
+    suspend fun actions(scanId: String): List<PrivacyActionEntity>
+}
+
 @Dao
 interface ScheduleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -507,8 +592,11 @@ interface ScheduleDao {
         ResidueItemEntity::class,
         ResidueDecisionEntity::class,
         ResidueProfileEntity::class,
+        PrivacyScanEntity::class,
+        PrivacyFindingEntity::class,
+        PrivacyActionEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true
 )
 abstract class KnouxDatabase : RoomDatabase() {
@@ -518,6 +606,7 @@ abstract class KnouxDatabase : RoomDatabase() {
     abstract fun exclusionDao(): ExclusionDao
     abstract fun scheduleDao(): ScheduleDao
     abstract fun residueDao(): ResidueDao
+    abstract fun privacyDao(): PrivacyDao
 
     companion object {
         /** PC02 duplicates: new tables only, proven PC00/PC01 tables untouched. */
@@ -591,6 +680,38 @@ abstract class KnouxDatabase : RoomDatabase() {
                 )
             }
         }
+        /**
+         * PC04 privacy: three new tables, no change to any existing column.
+         *
+         * Observations are append-only by composite key, exactly like the residue
+         * evidence, so a later sweep cannot rewrite what an earlier one saw.
+         */
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `privacy_scans` (`id` TEXT NOT NULL, " +
+                        "`startedAt` INTEGER NOT NULL, `finishedAt` INTEGER, `status` TEXT NOT NULL, " +
+                        "`score` INTEGER, `scoredCount` INTEGER NOT NULL, `measuredCount` INTEGER NOT NULL, " +
+                        "`attentionCount` INTEGER NOT NULL, `unmeasurableCount` INTEGER NOT NULL, " +
+                        "`note` TEXT, PRIMARY KEY(`id`))"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `privacy_findings` (`scanId` TEXT NOT NULL, " +
+                        "`checkId` TEXT NOT NULL, `status` TEXT NOT NULL, `severity` TEXT NOT NULL, " +
+                        "`observed` TEXT NOT NULL, `detail` TEXT NOT NULL, `remedy` TEXT NOT NULL, " +
+                        "`recordedAt` INTEGER NOT NULL, PRIMARY KEY(`scanId`, `checkId`))"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `privacy_actions` (`id` TEXT NOT NULL, `scanId` TEXT, " +
+                        "`checkId` TEXT NOT NULL, `action` TEXT NOT NULL, `outcome` TEXT NOT NULL, " +
+                        "`createdAt` INTEGER NOT NULL, `note` TEXT, PRIMARY KEY(`id`))"
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_privacy_actions_createdAt` " +
+                        "ON `privacy_actions` (`createdAt`)"
+                )
+            }
+        }
         @Volatile
         private var instance: KnouxDatabase? = null
         /**
@@ -608,7 +729,7 @@ abstract class KnouxDatabase : RoomDatabase() {
                 )
                     // No fallbackToDestructiveMigration(): losing customer history
                     // is never an acceptable response to a schema change.
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                     .build()
                     .also { instance = it }
             }

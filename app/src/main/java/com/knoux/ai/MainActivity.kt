@@ -146,6 +146,9 @@ class MainActivity : FragmentActivity() {
         val startSplash = (savedInstanceState == null && !SplashGate.consumed && previewRoute == null && previewAuth == null && previewOnboarding == null) ||
             freezeSplash != null
         setContent {
+            // PC04: the only privacy setting KNOUX owns is applied to the real
+            // window here, so it holds on every screen and across restarts.
+            SecureWindowEffect()
             val preferences: PreviewPreferences = viewModel()
             LaunchedEffect(Unit) {
                 if (previewArabic) preferences.language(true)
@@ -469,6 +472,8 @@ private fun KnouxAppScaffold(
                                     Page.DUPLICATES, Page.DUPLICATE_REVIEW -> RealDuplicateScreen(target, open)
                                     // PC03 - real residue engine; no design fixture is shown.
                                     Page.RESIDUE, Page.RESIDUE_REVIEW -> RealResidueScreen(target, open)
+                                    // PC04 - real permission sweep; other apps' data is never claimed.
+                                    Page.PRIVACY_INSPECTOR -> RealPrivacyScreen(target)
                                     in Page.detailRoutes -> DetailPreview(target)
                                     else -> ReferenceScreen(target, openReview = open)
                                 }
