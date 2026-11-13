@@ -595,6 +595,10 @@ private fun ProSheet() {
         Triple(Mark.CHIP, Copy(R.string.k_ai_optimization_engine), Violet),
         Triple(Mark.ROCKET, Copy(R.string.k_exclusive_pro_features), Mint)
     )
+    Label(
+        (Copy(R.string.pro_features_planned)).localized(),
+        12, Mist.copy(alpha = .86f),
+    )
     features.forEach { (icon, title, tint) ->
         GlassPanel(Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)), radius = 14, tint = tint) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
@@ -602,7 +606,7 @@ private fun ProSheet() {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 IconBadge(icon, tint, diameter = 38)
                 Label(title.localized(), 14, Chalk, FontWeight.Medium, modifier = Modifier.weight(1f))
-                Glyph(Mark.CHECK, Modifier.size(16.dp), tint, true)
+                Glyph(Mark.LOCK, Modifier.size(16.dp), Mist.copy(alpha = .8f))
             }
         }
     }

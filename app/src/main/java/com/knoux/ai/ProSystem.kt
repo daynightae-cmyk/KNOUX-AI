@@ -299,6 +299,11 @@ internal fun ProGateDialog(
 
             // Section-specific Pro Features
             val features = ProFeaturesDB.getFeaturesForSection(section.id)
+            Label(
+                (Copy(R.string.pro_features_planned)).localized(),
+                12,
+                Mist.copy(alpha = 0.86f)
+            )
             features.forEach { feature ->
                 ProFeatureCard(feature)
             }
@@ -468,8 +473,8 @@ private fun ProFeatureCard(feature: ProFeature) {
                 )
             }
 
-            // Check mark
-            Glyph(Mark.CHECK, Modifier.size(20.dp), feature.color, true)
+            // Locked, not included: the capability is planned, not shipped.
+            Glyph(Mark.LOCK, Modifier.size(20.dp), feature.color, true)
         }
     }
 }
