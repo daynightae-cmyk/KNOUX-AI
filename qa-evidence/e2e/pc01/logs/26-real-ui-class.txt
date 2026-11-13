@@ -1,0 +1,188 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanRealTest:
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:192)
+
+INSTRUMENTATION_STATUS: stream=
+Error in permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:192)
+
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(SmartCleanRealTest.kt:185)
+
+INSTRUMENTATION_STATUS: stream=
+Error in realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(SmartCleanRealTest.kt:185)
+
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.cancelledPermanentConfirmationPreservesEveryFixture(SmartCleanRealTest.kt:227)
+
+INSTRUMENTATION_STATUS: stream=
+Error in cancelledPermanentConfirmationPreservesEveryFixture(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.cancelledPermanentConfirmationPreservesEveryFixture(SmartCleanRealTest.kt:227)
+
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing(SmartCleanRealTest.kt:266)
+
+INSTRUMENTATION_STATUS: stream=
+Error in actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing(SmartCleanRealTest.kt:266)
+
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(SmartCleanRealTest.kt:238)
+
+INSTRUMENTATION_STATUS: stream=
+Error in keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(SmartCleanRealTest.kt:238)
+
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ó┘í┘½┘º┘Ñ
+There were 5 failures:
+1) permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:192)
+2) realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(SmartCleanRealTest.kt:185)
+3) cancelledPermanentConfirmationPreservesEveryFixture(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.cancelledPermanentConfirmationPreservesEveryFixture(SmartCleanRealTest.kt:227)
+4) actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing(SmartCleanRealTest.kt:266)
+5) keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.runScanAndOpenReview(SmartCleanRealTest.kt:127)
+	at com.knoux.ai.SmartCleanRealTest.keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(SmartCleanRealTest.kt:238)
+
+FAILURES!!!
+Tests run: 5,  Failures: 5
+
+
+INSTRUMENTATION_CODE: -1

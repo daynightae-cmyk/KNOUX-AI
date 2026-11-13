@@ -1,0 +1,4 @@
+--------- beginning of main
+11-13 03:46:47.965 16674 16709 I KNOUX_MEDIA_QA: media fixtures inserted uris=[content://media/external_primary/images/media/55517, content://media/external_primary/images/media/55518]
+11-13 03:46:49.460 16674 16709 I KNOUX_MEDIA_QA: activity launched for OS media requests
+11-13 03:46:50.569 16674 16711 I KNOUX_MEDIA_QA: media request start before=PRESENT after=TRASHED items=2

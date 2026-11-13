@@ -1,0 +1,90 @@
+# KNOUX AI PC — E2E EXECUTION LEDGER (append-only)
+DATE: 2026-11-12, Asia/Dubai
+
+## Entry 0001 — Workflow initialized, implementation not claimed
+- Workspace verified: D:\KNOUX-AI.
+- At 09:16:05 +04, branch main HEAD: 1f9b555709b71130b3e072b6e49daa0c63628abe.
+- At same read, origin/main: e5b0994555aa181d00d9f75f292e4ead4b602655 (main ahead by 2).
+- Kotlin files modified: MasterScreens.kt, NeonArt.kt, values-v31/styles.xml.
+- ProSystem.kt untracked; pro docs/SQL/prompts and QA files also untracked. Preserve.
+- Kiro onboarding-universe was observed running earlier, newer completion status not independently verified. No overlapping Kotlin writer launched.
+- Added file-backed PC task manifest, workflow documentation and acceptance matrix only; separate from live app source.
+- P00 = PREFLIGHT (documentation/organization begun, NOT an implemented service).
+- PC01..PC13 = QUEUED; no claim of full-stack implementation, build PASS, Play Billing enabled, Supabase deployed or phone APK installed.
+- NEXT SAFE ACTION: Confirm native onboarding workflow finished and file ownership released; inspect live HEAD and catalog; then implement typed P00 foundations and P01 Smart Clean full vertical slice.
+- Live phone Linux workspace is NOT touched and remains independent.
+
+## Evidence rule — append new entries after each real checkpoint
+For each task: timestamp from host, HEAD/remote, status transitions, changed paths, test command/exit/results, permission/API grants, true customer action, emulator ID/API and screenshot, APK SHA when built, no fake completion, known risks, next safe task.
+
+## Entry 0002 — Workflow manifest contract validation (2026-11-12)
+- Command executed: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File D:\KNOUX-AI\scripts\validate-pc-e2e-workflow.ps1`
+- Exit: `0` after fixing a validator-only phrase assertion (first run failed with MISSING_OWNER_FUNCTIONALITY_OVERRIDE; no Android build was involved).
+- Contract report: `workflow_contract=VALID`, `tasks=14`, `catalog_sections=10`, `catalog_features=50`, `next_phase=PC00`.
+- Observed SHA at validation: `1f9b555709b71130b3e072b6e49daa0c63628abe`, branch `main`.
+- Explicit verification limits from validator: `services_verified_by_this_script=0`, `runtime_test=NOT_RUN`, `source_modified_by_script=false`.
+- AGENTS.md appended dated owner E2E override; original rules/history retained.
+- No native Kiro workflow run was launched by this task setup. The active onboarding task should retain Kotlin file ownership until verified safe.
+## Entry 0003 — Native onboarding closure audit; E2E still unverified
+- At 09:45:50 +04, independently observed main HEAD `08c6e38e62f307fc7a4fb5176f4226257ab17865`, origin/main `e5b0994555aa181d00d9f75f292e4ead4b602655` (3 local commits ahead).
+- User-supplied Kiro release build reported successful, and physical device install reported `Success`; prohibited physical-phone fallback noted. ADB was disconnected at independent inspection.
+- APK: 5,442,059 bytes; SHA256 `CA8CD136908F09D912E5865241DBAD24C98CE76157407026B1BF42BB5B9C3922`; signed with Android Debug certificate, so NOT Play production-signed.
+- Inspected all 4 screenshots. Onboarding skip/back overlaps status bar; chapter screenshot filenames inconsistent with observed sequence. Only partial UI evidence, no dedicated current onboarding instrumentation. See `qa-evidence/e2e/ONBOARDING_QA_AUDIT_20261112.md`.
+- Kiro workflow review.json marked APPROVED with minor redundant preference-write observation; no owner visual acceptance claimed.
+- Updated PC task manifest to current SHA with onboarding visual QA debt. Validator re-run: VALIDATOR_EXIT=0, 14 tasks, 10 sections, 50 features, 0 verified services, runtime test NOT_RUN.
+- No Kotlin files, APK, ADB device, Git commits or origin/main were changed by this audit.
+- Next action: begin PC00 implementation safely under one writer; fix onboarding safe insets before UI acceptance; PC01 real Smart Clean full-stack after preflight; no preview-only claims.
+
+
+## Entry 0004 - VISUAL_GATE_HOLD (owner final visual contract, 2026-11-12)
+- Status change only: the PC End-to-End service lane is PAUSED LOGICALLY, not deleted or reset. PC00..PC13 remain QUEUED.
+- Reason: owner issued a VISUAL_FINISH_ONLY gate covering onboarding chapters 1-3, login and OTP/Biometric before any service implementation resumes.
+- No service backend, Pro, Room, Supabase, battery or clean code was written in this step.
+- New ledger for this gate: qa-evidence/final-visual-gate/TASK_LEDGER.md.
+
+
+## Entry 0005 — Qoder stopped; real E2E workflow reconciliation — 2026-11-13 00:10+04
+
+- **ACTUAL REPO:** D:\KNOUX-AI, branch main, HEAD c0530b61872841dacb52b7d8602ff6a479b1bde1; local origin/main tracking ref same; LIVE remote SHA not independently fetched here. The dirty working tree and all unique untracked files remain, **none integrated/pushed by Qoder**.
+- **WRITER / REASON:** No Qoder.exe or Qoder command-shell process was active at inspection. Exact stop reason unknown; neither completion nor an AI quota failure may be inferred.
+- **CURRENT UNIQUE WORK:** Room/data files under app/src/main/java/com/knoux/ai/data/; SmartCleanReal.kt (64,958 bytes), SmartCleanController.kt (35,592), SmartCleanRepository.kt (38,543), ProSystem.kt and all existing design/SQL/docs/test assets remain on disk. Latest Qoder source modifications observed at 2026-11-12 23:57:08+04.
+- **OLDER BUILD EVIDENCE ONLY:** qa-evidence/e2e/pc01/logs/01-compileDebugKotlin.log previous compile successful; 02-compileDebugAndroidTestKotlin.log BUILD SUCCESSFUL in 17s; 03-testDebugUnitTest.log BUILD SUCCESSFUL in 22s, actual JUnit XML 3 PreviewFixturesTest + 9 RealDataRulesTest = 12/12, 0 failures and errors. All these precede latest 23:57 code edits and cannot verify CURRENT tree. Earlier Gradle FileLockContentionHandler BindException resolved on retry.
+- **NEW UNVERIFIED TEST SOURCES:** app/src/androidTest/java/com/knoux/ai/SmartCleanStorageTest.kt = 9 @Test methods, modified 23:57; SmartCleanRealTest.kt = 5 @Test methods, modified 23:54. No matching successful current compilation or on-device instrumented report; no verified provider Trash/Restore/Delete, verified Room after-state or final UI proof.
+- **DEVICE AUTHORIZATION:** user explicitly permits physical-phone testing now instead of disk-heavy emulator. Connected ADB 1334825549012211, itel S686LN, Android API 35 observed. This does not authorize deleting preexisting data. Inspect fixture setup/teardown and any media OS confirmation first. Only synthetic UUID-owned exact test files may be deleted, never personal photos or apps.
+- **DISK:** C:9.44GB / D:2.50GB / K:5.54GB free at audit. Avoid duplicate emulator/SDK downloads, backups and rebuilds; Qoder temp logs suggest attempted ~720MB system image retrieval, not a reason to erase unknown contents.
+- **TASK STATE UPDATE:** PC00 PREFLIGHT -> IMPLEMENTING (real code exists, no latest proof); PC01 QUEUED -> UNIT_TESTING (14 instrumented tests written, latest compile/run missing). PC02–PC13 still QUEUED. Verified service count = ZERO.
+- **WORKFLOW FILES UPDATED:** docs/workflows/PC_E2E_TASK_MANIFEST_20261112.json; qa-evidence/e2e/ACCEPTANCE_MATRIX.md; AGENTS.md newest owner device authorization; new prompts/e2e/PC_QODER_TO_NEXT_AGENT_AUTONOMOUS_WORKFLOW_20261113.md. This update did **not** edit Kotlin source, run a build on the phone, stage/commit/push, change Supabase or delete files.
+- **NEXT EXACT ACTION:** new agent reads handoff and durable workflow; checks active writers, latest current code/Git, compiles current Kotlin + androidTest + JVM unit, audits the 14 instrumentation methods for isolated fixture-only destructive operations, runs only audited targeted classes on the exact owner-authorized API35 phone, verifies provider/Room/UI outcomes, logs evidence, selectively integrates on main, then advances to next dependency-satisfied task automatically. Never claim FULL-STACK VERIFIED without the actual runtime evidence.
+
+
+## Entry 0006 — Deep Kiro archive review and per-service workflow reconciliation — 2026-11-13 ~02:55+04
+- Source: owner-supplied kiro-session-sess_76ae4392-8a79-4a73-85b5-658d38915723.zip; 960 main JSONL events, 210 tool calls, 2 sub-executions. Integrity verified. See qa-evidence/e2e/KIRO_SESSION_76AE_DEEP_AUDIT_20261113.md.
+- Kiro native workflow was NOT running: session.json agentMode=vibe, workflowsEnabled=false, status=failed. New OpenCode agent must execute its OWN real supported workflow/controller/checkpoint process per docs/workflows/KNOUX_PC_PER_SERVICE_AUTONOMOUS_EXECUTION_20261113.md, not merely validate an old guessed JSON recipe.
+- At direct read, local HEAD and LIVE origin/main both c0530b61872841dacb52b7d8602ff6a479b1bde1 (before documentation integration). Unique tracked/untracked Smart Clean and Room implementation still not committed. Preserve it.
+- Actual JVM JUnit XML at 2026-11-13 02:05:36: PreviewFixturesTest=3 pass + RealDataRulesTest=13 pass = 16/16; zero failures, errors, skips. Debug/test APK built.
+- Phone runtime: actual OK (8 tests), selected non-media SmartCleanStorageTest suite on owner-authorized itel S686LN API35 serial 1334825549012211. This is a subset, not complete 9-case suite.
+- MediaStore Trash→Restore→Delete test ASSERTION FAILED provider must verify the exact requested state; subsequent ADB/USB disconnections. Kiro changed a required 20-second assertion to assumeTrue; any SKIP is missing acceptance, not PASS. Test-specific OEM/root cause unproven.
+- Five SmartCleanRealTest Compose UI cases started on device but had no terminal pass report before usage-limit failure. No full service runtime acceptance, no verified permanent delete/restore, no release.
+- Kiro usage limit reached at 02:17:43+04; retry JSON deserialization error at 02:44:09; usage limit again 02:44:48. Provider/agent stopped, not a completed workflow.
+- Updated manifest PC00=UNIT_TESTING, PC01=RUNTIME_TESTING, remaining task graph intact, verified full-stack services ZERO. Repaired hardcoded validator that wrongly forced PC00 forever; validator now checks current task is one of 14 IDs.
+- Disk free: C~9.40GB, D~2.38GB, K~5.52GB. User wants low disk usage and immediate integration per independently accepted section. Post-push cleanup is limited to proven reproducible generated artifacts, never Kotlin, unique untracked, assets, Git, QA evidence or current APK.
+- New handoff: prompts/e2e/PC_OPENCODE_POST_KIRO76AE_FULL_WORKFLOW_TAKEOVER_20261113.md. NEXT: current source/agent audit; reproduce and diagnose media-provider and ADB disconnect; run 5 UI cases; independently review; only then integrate coherent tested source to local main and GitHub, verify remote SHA, safe space reclaim and auto-next section. This entry is documentation-only, no Android source changed or tests run here.
+
+## Entry 0007 - PC00 + PC01 VERIFIED on the owner-authorized phone; source integrated - 2026-11-13 06:12+04
+
+- Device: itel S686LN, Android 15 (API 35 `ro.build.version.sdk=35`), owner-authorized physical device reached over Wi-Fi ADB. No emulator was created. Only synthetic UUID fixtures were touched.
+- Starting state: HEAD `41eb16259c5a383d3578b491a6a8640c82ac36ec` (origin/main identical), PC00=UNIT_TESTING, PC01=RUNTIME_TESTING, all Smart Clean code uncommitted.
+- **Root cause of the last UI failure (found, not guessed):** the failing `SmartCleanRealTest` case ran first in the process, so the cinematic splash was still playing. When it finished, the first-run device routed itself into `OnboardingScreen`, which replaced the whole app shell ~0.5 s after the first checkbox toggle. The rows and the selection summary did not "vanish" because of a toggle bug - the screen hosting them was disposed. Proof: `screen disposed` / `review disposed` with the activity still `RESUMED`, and the live semantics tree then contained `onboarding-chapter-2`, `onboarding-dot-0..2`, `onboarding-cta-2`.
+- **Fix (real, in the test harness only):** `SmartCleanRealTest` now uses a `RuleChain` whose outer `ExternalResource` sets `SplashGate.consumed = true` before the activity launches, so every case starts on the real dashboard instead of the first-run splash. No product behaviour was weakened; production code is unchanged by this fix.
+- **Toggle handling:** controls are exercised through `SemanticsActions.OnClick` (`performSemanticsAction`) because the checkbox is visually covered by the row overlay on this device; the ViewModel receives the real `onValueChange` and selection state is asserted through `assertIsOn()`.
+- **Evidence commands and results (all on the phone above):**
+  - `.\gradlew.bat :app:compileDebugAndroidTestKotlin` -> BUILD SUCCESSFUL (diagnostics removed afterwards, recompiled clean).
+  - `.\gradlew.bat :app:connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.class=com.knoux.ai.SmartCleanRealTest"` -> 5/5 PASS, 0 failed, BUILD SUCCESSFUL (log `qa-evidence/e2e/pc01/logs/37-real-ui-class-clean.txt`).
+  - `.\gradlew.bat :app:connectedDebugAndroidTest "-Pandroid.testInstrumentationRunnerArguments.class=com.knoux.ai.SmartCleanStorageTest"` -> 8/9 PASS; the one failure is the documented media precondition (provider reports `UNKNOWN` without the runtime grant), log `38-storage-class-final.txt`.
+  - Media case re-run with the documented temporary grant: manual `adb install -r -t` of the debug + androidTest APKs, `pm grant com.knoux.ai android.permission.READ_MEDIA_IMAGES`, then `am instrument ... SmartCleanStorageTest#syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs` -> `OK (1 test)` (log `39-media-test-granted.txt`). The grant was revoked immediately afterwards; `appops get READ_MEDIA_IMAGES` now reports `ignore`.
+  - `.\gradlew.bat :app:testDebugUnitTest` -> BUILD SUCCESSFUL; JUnit XML `PreviewFixturesTest=3`, `RealDataRulesTest=13` = 16/16 with 0 failures/errors/skips (log `40-jvm-unit.txt`).
+- **Real customer actions verified:** scan of app-owned cache, review of the exact UUID fixture rows, permanent delete through the real file/MediaStore path with the irreversible acknowledgement, and OS-level Trash -> Restore -> Permanent delete for newly inserted synthetic PNGs. Every deletion was re-queried afterwards and written to Room history.
+- **Cleanup actually performed:** 27 `Pictures/KNOUX_QA_*` fixture directories removed (their only files were two `.trashed-*_knoux_storage_*` synthetic PNGs), 27 stale synthetic `KNOUX_QA_*` rows deleted from the MediaStore `files` table, app cache confirmed free of `KNOUX_QA_*`, media grant revoked. `Pictures/KNOUX REC` and all owner files were left untouched.
+- **Integration:** source + tests committed as `722af86ec8a8dbb7463e67d6413cc1dbfaa65909` (`feat(pc00-pc01): real data foundation and verified Smart Clean service`) and pushed fast-forward `41eb162..722af86`; `git rev-parse HEAD origin/main` returns the same SHA after re-fetch. APKs: debug `5C96FB5581959BCF42776811BC8D92BF5C03D62E67C9090BE769C4EC6EFF11A2`, androidTest `306E7B65598FD86DC07886242DFC9560CF9FF794CB2164938506588D9E83A31A` (debug-signed test builds, not release artefacts).
+- **Task state:** PC00 UNIT_TESTING -> VERIFIED, PC01 RUNTIME_TESTING -> VERIFIED; both carry `verified_sha=722af86`. PC02..PC13 remain QUEUED. Next task PC02 (Duplicates) because PC00 and PC01 are satisfied.
+- **Known limits, stated plainly:** these results cover Smart Clean on one API 35 device; no release APK, Play Billing, Supabase deployment, PC02+ service or owner visual re-acceptance is claimed here. Gradle intermittently failed to start with `java.net.BindException: Address already in use: bind`; each occurrence was resolved by stopping/retrying the daemon and every reported run above is a real completed run.

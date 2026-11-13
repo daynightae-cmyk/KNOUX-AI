@@ -1,0 +1,274 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanRealTest:
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_70776e7e-7bdc-4fd9-8180-3a9884ce1628_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #429 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@90f072'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:193)
+
+INSTRUMENTATION_STATUS: stream=
+Error in permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_70776e7e-7bdc-4fd9-8180-3a9884ce1628_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #429 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@90f072'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:193)
+
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_a4dd64ff-2e9c-4937-aa0c-30ba35afa5e2_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #960 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@7b98eca'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(SmartCleanRealTest.kt:186)
+
+INSTRUMENTATION_STATUS: stream=
+Error in realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_a4dd64ff-2e9c-4937-aa0c-30ba35afa5e2_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #960 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@7b98eca'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(SmartCleanRealTest.kt:186)
+
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_4b9eaa26-84f2-489b-bcd7-9a129347821d_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #1491 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@dd501ca'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.cancelledPermanentConfirmationPreservesEveryFixture(SmartCleanRealTest.kt:228)
+
+INSTRUMENTATION_STATUS: stream=
+Error in cancelledPermanentConfirmationPreservesEveryFixture(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_4b9eaa26-84f2-489b-bcd7-9a129347821d_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #1491 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@dd501ca'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.cancelledPermanentConfirmationPreservesEveryFixture(SmartCleanRealTest.kt:228)
+
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_c13e11bc-4c98-413a-b842-a573026d6118_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #2379 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@e8f9c12'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(SmartCleanRealTest.kt:239)
+
+INSTRUMENTATION_STATUS: stream=
+Error in keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_c13e11bc-4c98-413a-b842-a573026d6118_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #2379 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@e8f9c12'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(SmartCleanRealTest.kt:239)
+
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ú┘á┘½┘ú┘ª┘ú
+There were 4 failures:
+1) permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_70776e7e-7bdc-4fd9-8180-3a9884ce1628_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #429 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@90f072'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:193)
+2) realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_a4dd64ff-2e9c-4937-aa0c-30ba35afa5e2_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #960 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@7b98eca'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(SmartCleanRealTest.kt:186)
+3) cancelledPermanentConfirmationPreservesEveryFixture(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_4b9eaa26-84f2-489b-bcd7-9a129347821d_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #1491 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@dd501ca'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:174)
+	at com.knoux.ai.SmartCleanRealTest.cancelledPermanentConfirmationPreservesEveryFixture(SmartCleanRealTest.kt:228)
+4) keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: No node found that matches TestTag = 'clean-select-knoux_qa_c13e11bc-4c98-413a-b842-a573026d6118_alpha.tmp' in scrollable container
+Semantics of the node:
+Node #2379 at (l=60.0, t=1593.0, r=1020.0, b=2049.0)px, Tag: 'clean-list'
+CollectionInfo = 'androidx.compose.ui.semantics.CollectionInfo@e8f9c12'
+IsTraversalGroup = 'true'
+VerticalScrollAxisRange = 'ScrollAxisRange(value=0.0, maxValue=0.0, reverseScrolling=false)'
+Actions = [GetScrollViewportLength, IndexForKey, ScrollBy, ScrollByOffset, ScrollToIndex]
+Has 3 children, 25 siblings
+Selector used: ((TestTag = 'clean-list').last)
+
+	at androidx.compose.ui.test.ActionsKt.performScrollToNode(Actions.kt:261)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures(SmartCleanRealTest.kt:159)
+	at com.knoux.ai.SmartCleanRealTest.filterToExactFixtures$default(SmartCleanRealTest.kt:154)
+	at com.knoux.ai.SmartCleanRealTest.keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(SmartCleanRealTest.kt:239)
+
+FAILURES!!!
+Tests run: 5,  Failures: 4
+
+
+INSTRUMENTATION_CODE: -1

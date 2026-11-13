@@ -1,0 +1,14 @@
+--------- beginning of main
+11-13 03:57:02.174 27763 27801 I KNOUX_MEDIA_QA: media fixtures inserted uris=[content://media/external_primary/images/media/55526, content://media/external_primary/images/media/55527]
+11-13 03:57:04.023 27763 27803 I KNOUX_MEDIA_QA: activity launched for OS media requests
+11-13 03:57:05.444 27763 27803 I KNOUX_MEDIA_QA: media request start before=PRESENT after=TRASHED items=2
+11-13 03:57:08.218 27763 27803 I KNOUX_MEDIA_QA: clicking media consent positive button in com.google.android.providers.media.module
+11-13 03:57:08.605 27763 27803 I KNOUX_MEDIA_QA: media request result after=TRASHED verified=true clicked=com.google.android.providers.media.module observed={content://media/external_primary/images/media/55526=TRASHED, content://media/external_primary/images/media/55527=TRASHED}
+11-13 03:57:08.832 27763 27803 I KNOUX_MEDIA_QA: trash verified for 2 fixtures
+11-13 03:57:09.384 27763 27803 I KNOUX_MEDIA_QA: media request start before=TRASHED after=PRESENT items=2
+11-13 03:57:14.128 27763 27803 I KNOUX_MEDIA_QA: clicking media consent positive button in com.google.android.providers.media.module
+11-13 03:57:14.473 27763 27803 I KNOUX_MEDIA_QA: media request result after=PRESENT verified=true clicked=com.google.android.providers.media.module observed={content://media/external_primary/images/media/55526=PRESENT, content://media/external_primary/images/media/55527=PRESENT}
+11-13 03:57:14.657 27763 27801 I KNOUX_MEDIA_QA: restore verified for 2 fixtures
+11-13 03:57:15.324 27763 27801 I KNOUX_MEDIA_QA: media request start before=PRESENT after=GONE items=2
+11-13 03:57:16.311 27763 27801 I KNOUX_MEDIA_QA: clicking media consent positive button in com.google.android.providers.media.module
+11-13 03:57:16.646 27763 27801 I KNOUX_MEDIA_QA: media request result after=GONE verified=true clicked=com.google.android.providers.media.module observed={content://media/external_primary/images/media/55526=GONE, content://media/external_primary/images/media/55527=GONE}

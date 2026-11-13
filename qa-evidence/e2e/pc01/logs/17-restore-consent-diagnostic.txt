@@ -1,0 +1,35 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.MediaConsentDiagnosticTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.MediaConsentDiagnosticTest:
+INSTRUMENTATION_STATUS: test=observeRealRestoreConsentWithoutApprovingIt
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.MediaConsentDiagnosticTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: A verified trash batch must be restorable
+	at com.knoux.ai.MediaConsentDiagnosticTest.observeRealRestoreConsentWithoutApprovingIt(MediaConsentDiagnosticTest.kt:167)
+
+INSTRUMENTATION_STATUS: stream=
+Error in observeRealRestoreConsentWithoutApprovingIt(com.knoux.ai.MediaConsentDiagnosticTest):
+java.lang.AssertionError: A verified trash batch must be restorable
+	at com.knoux.ai.MediaConsentDiagnosticTest.observeRealRestoreConsentWithoutApprovingIt(MediaConsentDiagnosticTest.kt:167)
+
+INSTRUMENTATION_STATUS: test=observeRealRestoreConsentWithoutApprovingIt
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘í┘¿┘½┘º┘ª┘ñ
+There was 1 failure:
+1) observeRealRestoreConsentWithoutApprovingIt(com.knoux.ai.MediaConsentDiagnosticTest)
+java.lang.AssertionError: A verified trash batch must be restorable
+	at com.knoux.ai.MediaConsentDiagnosticTest.observeRealRestoreConsentWithoutApprovingIt(MediaConsentDiagnosticTest.kt:167)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

@@ -1,0 +1,398 @@
+{
+    "schema_version":  1,
+    "repo":  "D:\\KNOUX-AI",
+    "independent_mobile_repo":  "/root/workspace/KNOUX-AI",
+    "do_not_mix_repos":  true,
+    "observed_at":  "2026-11-13T06:35:00+04:00",
+    "observed_head":  "722af86ec8a8dbb7463e67d6413cc1dbfaa65909",
+    "observed_origin_main":  "722af86ec8a8dbb7463e67d6413cc1dbfaa65909",
+    "observed_branch":  "main; PC00/PC01 source integrated and pushed, evidence files pending commit",
+    "writer_conflict_warning":  "At 2026-11-13 00:10+04 Qoder.exe was not running. Recheck active agents before any Kotlin edit; Kiro clean-profile GUI can remain open and must not be assumed writing.",
+    "current_task_id":  "PC02",
+    "current_task_status":  "QUEUED",
+    "next_safe_action":  "Start PC02 (Duplicates) as a real vertical slice on top of the verified PC00 foundation: real MediaStore/file duplicate grouping, customer-controlled keep/delete, Trash and permanent delete with post-operation requery, Room history, JVM + instrumentation tests, then on-device runtime verification before any completion claim.",
+    "states":  [
+                   "QUEUED",
+                   "PREFLIGHT",
+                   "IMPLEMENTING",
+                   "UNIT_TESTING",
+                   "RUNTIME_TESTING",
+                   "INDEPENDENT_REVIEW",
+                   "INTEGRATION_REVIEW",
+                   "VERIFIED",
+                   "BLOCKED_EXTERNAL",
+                   "FAILED_VERIFICATION",
+                   "IMPLEMENTED_NOT_MERGED"
+               ],
+    "source_contracts":  [
+                             "docs/pro/PC_PRO_FULLSTACK_MASTER_20261112.md",
+                             "docs/pro/PC_PRO_FEATURE_CATALOG_20261112.json",
+                             "docs/pro/PC_PRO_OWNER_FULL_FUNCTIONALITY_OVERRIDE_20261112.md",
+                             "prompts/pro/PC_PRO_PASS01_EXECUTE_20261112.md",
+                             "database/supabase/drafts/004_pro_entitlements_DRAFT.sql"
+                         ],
+    "tasks":  [
+                  {
+                      "task_id":  "PC00",
+                      "name":  "Foundation and baseline",
+                      "depends_on":  [
+
+                                     ],
+                      "status":  "VERIFIED",
+                      "owner":  "controller: audit only",
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  "722af86ec8a8dbb7463e67d6413cc1dbfaa65909",
+                      "blocking_reason":  null,
+                      "latest_evidence":  "Room schema 1 exported (app/schemas), DataStore settings, permission state, ScanWorker, repository/controller compiled and exercised by JVM + on-device tests",
+                      "next_check":  "PC03/PC04 reuse the same foundation; extend schema only through reviewed migrations",
+                      "evidence_20261113":  "2026-11-13 JVM BUILD SUCCESSFUL, JUnit XML PreviewFixturesTest=3 PASS + RealDataRulesTest=13 PASS = 16/16, 0 failures/errors/skips; source integrated at 722af86 and pushed to origin/main"
+                  },
+                  {
+                      "task_id":  "PC01",
+                      "name":  "Smart Clean Full-Stack",
+                      "depends_on":  [
+                                         "PC00"
+                                     ],
+                      "status":  "VERIFIED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  "722af86ec8a8dbb7463e67d6413cc1dbfaa65909",
+                      "blocking_reason":  null,
+                      "latest_evidence":  "SmartCleanRealTest 5/5 PASS, SmartCleanStorageTest 9/9 PASS (media case with temporary READ_MEDIA_IMAGES grant, revoked), JVM 16/16 PASS on itel S686LN Android 15 / API 35",
+                      "next_check":  "PC02 Duplicates builds on the same controller/repository patterns; keep fixture isolation rules",
+                      "evidence_20261113":  "5 Compose UI cases verifies real scan -> review -> permanent delete of exact synthetic cache files with Room history; media trash/restore/permanent delete verified through the OS provider API; fixtures were fresh UUID cache files or newly inserted synthetic media, all removed afterwards"
+                  },
+                  {
+                      "task_id":  "PC02",
+                      "name":  "Duplicates",
+                      "depends_on":  [
+                                         "PC00",
+                                         "PC01"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC03",
+                      "name":  "App Residue",
+                      "depends_on":  [
+                                         "PC00"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC04",
+                      "name":  "Privacy Sweep",
+                      "depends_on":  [
+                                         "PC00"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC05",
+                      "name":  "Deep Scan",
+                      "depends_on":  [
+                                         "PC00",
+                                         "PC02"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC06",
+                      "name":  "Reports",
+                      "depends_on":  [
+                                         "PC00",
+                                         "PC01"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC07",
+                      "name":  "App Manager",
+                      "depends_on":  [
+                                         "PC00"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC08",
+                      "name":  "Storage Analyzer",
+                      "depends_on":  [
+                                         "PC00"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC09",
+                      "name":  "Battery Saver",
+                      "depends_on":  [
+                                         "PC00"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC10",
+                      "name":  "AI Optimization",
+                      "depends_on":  [
+                                         "PC00",
+                                         "PC06"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC11",
+                      "name":  "Home/Auth/Settings/Navigation",
+                      "depends_on":  [
+                                         "PC01",
+                                         "PC02",
+                                         "PC03",
+                                         "PC04",
+                                         "PC05",
+                                         "PC06",
+                                         "PC07",
+                                         "PC08",
+                                         "PC09",
+                                         "PC10"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  "Onboarding visual/RTL inset QA must be fixed and verified before UI acceptance; see qa-evidence/e2e/ONBOARDING_QA_AUDIT_20261112.md"
+                  },
+                  {
+                      "task_id":  "PC12",
+                      "name":  "Verified Billing and Supabase Staging",
+                      "depends_on":  [
+                                         "PC00"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  },
+                  {
+                      "task_id":  "PC13",
+                      "name":  "Release Acceptance",
+                      "depends_on":  [
+                                         "PC11",
+                                         "PC12"
+                                     ],
+                      "status":  "QUEUED",
+                      "owner":  null,
+                      "files":  [
+
+                                ],
+                      "tests":  [
+
+                                ],
+                      "runtime_evidence":  [
+
+                                           ],
+                      "verified_sha":  null,
+                      "blocking_reason":  null
+                  }
+              ],
+    "acceptance":  "real Android data + customer controls + user-authorized action + postoperation requery + durable state + tests + emulator runtime + screenshots; no preview-only completion",
+    "onboarding_evidence":  {
+                                "state":  "IMPLEMENTED_COMMITTED_LOCAL_VISUAL_QA_OPEN",
+                                "feature_sha":  "08c6e38e62f307fc7a4fb5176f4226257ab17865",
+                                "review":  "APPROVED in Kiro review.json; owner visual acceptance pending",
+                                "audit":  "qa-evidence/e2e/ONBOARDING_QA_AUDIT_20261112.md",
+                                "release_apk_sha256":  "CA8CD136908F09D912E5865241DBAD24C98CE76157407026B1BF42BB5B9C3922",
+                                "signature":  "Android Debug key; NOT Play release ready",
+                                "physical_phone_install_reported":  true,
+                                "pc_qa_open":  [
+                                                   "top onboarding controls collide with Android status icons",
+                                                   "three chapter screenshot names do not match visible chapters",
+                                                   "no onboarding UI instrumentation evidence",
+                                                   "app-release.apk signed with Android Debug key"
+                                               ]
+                            },
+    "last_qoder_reconciliation":  {
+                                      "timestamp":  "2026-11-13T00:19:37.9779118+04:00",
+                                      "agent":  "Qoder",
+                                      "stop_reason":  "UNKNOWN_NO_LIVE_PROCESS",
+                                      "new_source_last_modified":  "2026-11-12T23:57:08+04:00",
+                                      "last_build_and_jvm_evidence":  "2026-11-12T23:34-23:35+04:00_STALE_VS_CURRENT_EDITS",
+                                      "android_tests_written":  14,
+                                      "android_tests_compiled_after_last_edit":  false,
+                                      "android_tests_run":  false,
+                                      "real_cleanup_verified":  false,
+                                      "data_source_files_present":  true,
+                                      "main_integrated":  false,
+                                      "remote_pushed":  false
+                                  },
+    "owner_approved_physical_test":  {
+                                         "allowed":  true,
+                                         "serial":  "1334825549012211",
+                                         "model":  "itel S686LN",
+                                         "android_api":  35,
+                                         "scope":  "install/test KNOUX app and only create/delete isolated, exact synthetic test fixtures; preserve all other personal and app data",
+                                         "reverify_serial_before_each_action":  true,
+                                         "forbid_device_wipe":  true,
+                                         "instrumentation_requires_destructive_code_review":  true
+                                     },
+    "kiro_session_76ae_audit":  {
+                                    "session_id":  "sess_76ae4392-8a79-4a73-85b5-658d38915723",
+                                    "timestamp":  "2026-11-13T02:58:18.3979649+04:00",
+                                    "session_final_status":  "failed",
+                                    "agent_mode":  "vibe",
+                                    "native_workflows_enabled":  false,
+                                    "tool_calls":  210,
+                                    "sub_executions":  2,
+                                    "latest_jvm_tests":  16,
+                                    "latest_jvm_failures":  0,
+                                    "latest_jvm_skips":  0,
+                                    "storage_non_media_device_tests_passed":  8,
+                                    "storage_media_test":  "FAILED_UNVERIFIED",
+                                    "ui_instrumentation":  "STARTED_NO_TERMINAL_REPORT",
+                                    "hardware_disconnects":  "OBSERVED_CORRELATION_CAUSE_NOT_PROVEN",
+                                    "source_committed":  false,
+                                    "source_pushed":  false,
+                                    "full_service_verified":  false,
+                                    "audited_report":  "qa-evidence/e2e/KIRO_SESSION_76AE_DEEP_AUDIT_20261113.md"
+                                },
+    "per_service_execution_contract":  "docs/workflows/KNOUX_PC_PER_SERVICE_AUTONOMOUS_EXECUTION_20261113.md",
+    "post_merge_space_policy":  "After independently verified coherent service, selective commit+fast-forward push+remote SHA/CI verification and preservation of compact runtime evidence, remove ONLY inventoried reproducible generated artifacts not in use; never source, unique untracked, git history or approved design."
+}

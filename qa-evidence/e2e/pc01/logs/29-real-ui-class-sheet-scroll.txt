@@ -1,0 +1,218 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanRealTest:
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (ToggleableState = 'On')
+The node is no longer in the tree, last known semantics:
+Node #511 at (l=906.0, t=1278.0, r=996.0, b=1368.0)px, Tag: 'clean-select-knoux_qa_1bbb5e6d-2da6-467c-9e89-50e3a9e1f055_bravo.tmp'
+Focused = 'false'
+Role = 'Checkbox'
+ToggleableState = 'Off'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 5 siblings
+Original selector: TestTag = 'clean-select-knoux_qa_1bbb5e6d-2da6-467c-9e89-50e3a9e1f055_bravo.tmp'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertIsOn(Assertions.kt:70)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:178)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:193)
+
+INSTRUMENTATION_STATUS: stream=
+Error in permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Failed to assert the following: (ToggleableState = 'On')
+The node is no longer in the tree, last known semantics:
+Node #511 at (l=906.0, t=1278.0, r=996.0, b=1368.0)px, Tag: 'clean-select-knoux_qa_1bbb5e6d-2da6-467c-9e89-50e3a9e1f055_bravo.tmp'
+Focused = 'false'
+Role = 'Checkbox'
+ToggleableState = 'Off'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 5 siblings
+Original selector: TestTag = 'clean-select-knoux_qa_1bbb5e6d-2da6-467c-9e89-50e3a9e1f055_bravo.tmp'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertIsOn(Assertions.kt:70)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:178)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:193)
+
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+INSTRUMENTATION_STATUS: stream=
+Error in realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+INSTRUMENTATION_STATUS: stream=
+Error in cancelledPermanentConfirmationPreservesEveryFixture(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+INSTRUMENTATION_STATUS: stream=
+Error in actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+INSTRUMENTATION_STATUS: stream=
+Error in keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘í┘ª┘½┘Ñ┘á┘ª
+There were 5 failures:
+1) permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Failed to assert the following: (ToggleableState = 'On')
+The node is no longer in the tree, last known semantics:
+Node #511 at (l=906.0, t=1278.0, r=996.0, b=1368.0)px, Tag: 'clean-select-knoux_qa_1bbb5e6d-2da6-467c-9e89-50e3a9e1f055_bravo.tmp'
+Focused = 'false'
+Role = 'Checkbox'
+ToggleableState = 'Off'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 5 siblings
+Original selector: TestTag = 'clean-select-knoux_qa_1bbb5e6d-2da6-467c-9e89-50e3a9e1f055_bravo.tmp'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertIsOn(Assertions.kt:70)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:178)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:193)
+2) realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+3) cancelledPermanentConfirmationPreservesEveryFixture(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+4) actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+5) keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Assert failed: The component is not displayed!
+	at androidx.compose.ui.test.AssertionsKt.assertIsDisplayed(Assertions.kt:34)
+	at com.knoux.ai.SmartCleanRealTest.click(SmartCleanRealTest.kt:65)
+	at com.knoux.ai.SmartCleanRealTest.click$default(SmartCleanRealTest.kt:62)
+	at com.knoux.ai.SmartCleanRealTest.seedSyntheticFilesAndEnterSmartClean(SmartCleanRealTest.kt:85)
+
+FAILURES!!!
+Tests run: 5,  Failures: 5
+
+
+INSTRUMENTATION_CODE: -1

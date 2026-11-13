@@ -1,0 +1,142 @@
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+com.knoux.ai.SmartCleanRealTest:
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Failed to assert the following: (ToggleableState = 'On')
+The node is no longer in the tree, last known semantics:
+Node #498 at (l=906.0, t=1122.0, r=996.0, b=1212.0)px, Tag: 'clean-select-knoux_qa_0c157097-d860-4c57-ba47-b4617eba5b34_alpha.tmp'
+Focused = 'false'
+Role = 'Checkbox'
+ToggleableState = 'Off'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 5 siblings
+Original selector: TestTag = 'clean-select-knoux_qa_0c157097-d860-4c57-ba47-b4617eba5b34_alpha.tmp'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertIsOn(Assertions.kt:70)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:179)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:194)
+
+INSTRUMENTATION_STATUS: stream=
+Error in permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(com.knoux.ai.SmartCleanRealTest):
+java.lang.AssertionError: Failed to assert the following: (ToggleableState = 'On')
+The node is no longer in the tree, last known semantics:
+Node #498 at (l=906.0, t=1122.0, r=996.0, b=1212.0)px, Tag: 'clean-select-knoux_qa_0c157097-d860-4c57-ba47-b4617eba5b34_alpha.tmp'
+Focused = 'false'
+Role = 'Checkbox'
+ToggleableState = 'Off'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 5 siblings
+Original selector: TestTag = 'clean-select-knoux_qa_0c157097-d860-4c57-ba47-b4617eba5b34_alpha.tmp'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertIsOn(Assertions.kt:70)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:179)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:194)
+
+INSTRUMENTATION_STATUS: test=permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=realScanFindsExactSyntheticAppCacheAndCacheCannotBeTrashed
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=cancelledPermanentConfirmationPreservesEveryFixture
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=4
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=actuallyDeniedMediaScopesHaveNoMeasuredRowsAndAccessRemovesNothing
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.knoux.ai.SmartCleanRealTest
+INSTRUMENTATION_STATUS: current=5
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=5
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=keepExactFixturePersistsExclusionAndPreventsItBeingOfferedAgain
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: ┘ñ┘ó┘½┘º┘ª┘¿
+There was 1 failure:
+1) permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(com.knoux.ai.SmartCleanRealTest)
+java.lang.AssertionError: Failed to assert the following: (ToggleableState = 'On')
+The node is no longer in the tree, last known semantics:
+Node #498 at (l=906.0, t=1122.0, r=996.0, b=1212.0)px, Tag: 'clean-select-knoux_qa_0c157097-d860-4c57-ba47-b4617eba5b34_alpha.tmp'
+Focused = 'false'
+Role = 'Checkbox'
+ToggleableState = 'Off'
+Actions = [OnClick, RequestFocus]
+MergeDescendants = 'true'
+Has 5 siblings
+Original selector: TestTag = 'clean-select-knoux_qa_0c157097-d860-4c57-ba47-b4617eba5b34_alpha.tmp'
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:165)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.AssertionsKt.assert(Assertions.kt:258)
+	at androidx.compose.ui.test.AssertionsKt.assert$default(Assertions.kt:250)
+	at androidx.compose.ui.test.AssertionsKt.assertIsOn(Assertions.kt:70)
+	at com.knoux.ai.SmartCleanRealTest.selectExactFixtures(SmartCleanRealTest.kt:179)
+	at com.knoux.ai.SmartCleanRealTest.permanentDeleteOfExactSyntheticCacheIsVerifiedAndWrittenToHistory(SmartCleanRealTest.kt:194)
+
+FAILURES!!!
+Tests run: 5,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

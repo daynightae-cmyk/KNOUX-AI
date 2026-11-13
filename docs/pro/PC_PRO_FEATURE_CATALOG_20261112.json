@@ -1,0 +1,669 @@
+{
+  "schema_version": 1,
+  "canonical_repo": "D:\\KNOUX-AI",
+  "generated_at": "2026-11-12",
+  "origin": "Independent PC project; service concepts reconciled with existing ProSystem.kt and researched Android capability boundaries; no code copied from phone",
+  "status": "IMPLEMENTATION_SPEC_NOT_DEPLOYED",
+  "plans": {
+    "free": {
+      "description": "Core safety features must remain usable and truthful"
+    },
+    "pro": {
+      "description": "Verified extra functionality and increased convenience, only after authoritative entitlement"
+    },
+    "elite": {
+      "description": "Future tier / not offered until product, billing and backend verified"
+    }
+  },
+  "billing": {
+    "current_display_prices_AED": {
+      "monthly": 29,
+      "yearly": 249
+    },
+    "status": "UI values only; not approved or verified Play prices",
+    "checkout_provider": "Google Play Billing when Play distribution requires it, subject to registered alternatives",
+    "offline": "locally cached verified entitlement with short expiry and revocation handling",
+    "manual_codes": "server-issued only; never client-minted",
+    "whatsapp": "support only, not unapproved alternative digital checkout"
+  },
+  "feature_status_contract": [
+    "CATALOGED",
+    "NOT_IMPLEMENTED",
+    "IMPLEMENTED_UNVERIFIED",
+    "VERIFIED_ON_SUPPORTED_SCOPE",
+    "BLOCKED_EXTERNAL",
+    "UNSUPPORTED_AS_CLAIMED"
+  ],
+  "sections": [
+    {
+      "id": "smart_clean",
+      "name": "AI Smart Clean",
+      "order": 1,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "smart_clean_unlimited",
+          "title": "Unlimited Smart Clean Reviews",
+          "scope": "Repeatable permission-scoped reviews; quotas may apply; never unlimited device access",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "WorkManager, MediaStore, SAF, local operations journal",
+          "acceptance": "Scan result with actual source/time; safe user-selected actions",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "smart_clean_scheduled",
+          "title": "Scheduled Review Plans",
+          "scope": "WorkManager scheduled read-only scans; no background deletion",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "WorkManager periodic tasks + constraints",
+          "acceptance": "Scheduling, cancel and missed-run tests",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "smart_clean_deep_analysis",
+          "title": "Deep Pattern Analysis",
+          "scope": "Local explainable classification over real consented file metadata",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "Rule engine + Room snapshots",
+          "acceptance": "Same evidence produces same recommendations",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "smart_clean_priority",
+          "title": "Priority Performance Mode",
+          "scope": "Priority within app's own task queue only; cannot elevate CPU/GPU for arbitrary apps",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "Coroutine dispatcher, WorkManager constraints",
+          "acceptance": "No promises about OS-wide speedups",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "smart_clean_rollback",
+          "title": "Smart Recovery Journal",
+          "scope": "Show completed actions, open OS Trash/restore where provider permits; no universal undo",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "MediaStore Trash / SAF, operation journal",
+          "acceptance": "Cancel, restore, expiry and partial operation tested",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "duplicate_finder",
+      "name": "Duplicate Files Pro",
+      "order": 2,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "dup_verified_hashing",
+          "title": "Exact Duplicate Fingerprints",
+          "scope": "Scope-aware streamed SHA-256 groups of readable bytes",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "ContentResolver + MediaStore/SAF",
+          "acceptance": "Same-size-different-content test",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "dup_keeper_protection",
+          "title": "Protected Keeper Selection",
+          "scope": "Never select all files in a duplicate group for removal",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "Room duplicate groups + selection state",
+          "acceptance": "KEEP_ONE invariant survives reboot",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "dup_smart_similarity",
+          "title": "Opt-in Similar Photos",
+          "scope": "Perceptual similarity of user-granted media; separate from exact duplicates",
+          "feasibility": "conditional",
+          "android_mechanism": "Photo Picker + on-device similarity algorithm",
+          "acceptance": "Similarity scores labeled estimates",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "dup_batch_review",
+          "title": "Batch Review & Consent",
+          "scope": "Batch review with per-item OS authorization; no silent deletion",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "MediaStore.createTrashRequest / SAF",
+          "acceptance": "Partial approval and cancel verified",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "dup_recovery_journal",
+          "title": "Recovery Timeline",
+          "scope": "Journal selected trash actions and provider restore availability",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "Room journal + provider re-query",
+          "acceptance": "Actual vs potential bytes tracked",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "app_residue",
+      "name": "App Residue Pro",
+      "order": 3,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "residue_own_cache",
+          "title": "Own-Cache Analyzer",
+          "scope": "Only this app cache inventory and user-approved deletion",
+          "feasibility": "supported",
+          "android_mechanism": "context.cacheDir",
+          "acceptance": "No third-party app cache touched",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "residue_accessible_candidates",
+          "title": "Accessible Residue Candidates",
+          "scope": "Review user-granted folder artifacts with uncertain attribution",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "SAF + MediaStore",
+          "acceptance": "False positives never auto-selected",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "residue_saf_profiles",
+          "title": "Folder Review Profiles",
+          "scope": "Save opted-in SAF tree grants and scoped rules",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "ACTION_OPEN_DOCUMENT_TREE",
+          "acceptance": "Grant revoke case tested",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "residue_safe_trash",
+          "title": "Safe Residue Review",
+          "scope": "Dry-run, explicit selection, then OS-authorized action where permitted",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "DocumentsContract / MediaStore",
+          "acceptance": "Cancel preserves files",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "residue_history",
+          "title": "Cleanup Decision History",
+          "scope": "Audit reviewed/skipped/attempted operations without raw path sync",
+          "feasibility": "supported",
+          "android_mechanism": "Room history",
+          "acceptance": "Persistent evidence and privacy check",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "privacy_sweep",
+      "name": "Privacy Sweep Pro",
+      "order": 4,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "prv_realtime",
+          "title": "Permission Awareness Monitor",
+          "scope": "Periodic visibility-scoped permission assessments, NOT full-time interception of other apps camera/mic",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "PackageManager metadata + app-level capabilities",
+          "acceptance": "Observed vs inferred labels",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "prv_vault",
+          "title": "Personal Encrypted Vault",
+          "scope": "Encrypt only user-imported files and notes at rest with user consent",
+          "feasibility": "conditional",
+          "android_mechanism": "Android Keystore + AES-GCM + BiometricPrompt",
+          "acceptance": "KAT, rotation, restore and no-plaintext tests",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "prv_tracker",
+          "title": "Tracker Awareness Report",
+          "scope": "Identify declared embedded libraries from user-provided APK/static sources; blocking needs separate VPN consent and cannot claim 500 trackers",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "Static APK metadata, optional VpnService separate project",
+          "acceptance": "No unverified network interception claim",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "prv_report",
+          "title": "Privacy Evidence PDF",
+          "scope": "Local privacy findings PDF export with provenance and redaction",
+          "feasibility": "supported",
+          "android_mechanism": "PdfDocument / ACTION_CREATE_DOCUMENT",
+          "acceptance": "Export opens and is sanitized",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "prv_history",
+          "title": "Permission Assessment Timeline",
+          "scope": "History of KNOUX observations, NOT exact system-wide mic/camera access events",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "Room event snapshots",
+          "acceptance": "No fake 30-day retroactive coverage",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "deep_scan",
+      "name": "Deep Scan Pro",
+      "order": 5,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "scan_malware",
+          "title": "Suspicious File Indicators",
+          "scope": "Scope limited to readable files; no malware certification without signatures and validated detector",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "ContentResolver + signature source when authorized",
+          "acceptance": "Unknown != malware",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "scan_hidden",
+          "title": "Accessible Hidden-Item Inspector",
+          "scope": "Only hidden files inside user-granted access scopes",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "SAF / MediaStore",
+          "acceptance": "No Android/data or system claims",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "scan_schedule",
+          "title": "Scheduled Scope Scan",
+          "scope": "WorkManager planned scan of still-authorized sources",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "WorkManager",
+          "acceptance": "Missed run / revoked URI tests",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "scan_custom",
+          "title": "Custom Scan Profiles",
+          "scope": "User-granted folders, file types, exclusions and scheduling",
+          "feasibility": "supported",
+          "android_mechanism": "SAF and Room",
+          "acceptance": "Config persists and consent revocable",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "scan_forensic",
+          "title": "Evidence Metadata Report",
+          "scope": "Source-backed file metadata only, no privileged forensic acquisition",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "DocumentsContract / MediaStore metadata",
+          "acceptance": "Timestamp caveat, no device-wide logs",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "reports",
+      "name": "Reports & Insights Pro",
+      "order": 6,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "rep_export",
+          "title": "Export Detailed Report",
+          "scope": "Locally export verified reports via user-selected document URI",
+          "feasibility": "supported",
+          "android_mechanism": "PdfDocument / ACTION_CREATE_DOCUMENT",
+          "acceptance": "Charts reconcile with underlying journal",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "rep_history",
+          "title": "90-Day Trends",
+          "scope": "Display historical observations only from actually retained samples",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "Room snapshots",
+          "acceptance": "Empty interval represented honestly",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "rep_ai_insights",
+          "title": "Predictive Insights",
+          "scope": "Rule-based transparent forecast with confidence and history; do not invent future gains",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "Local trends, evidence references",
+          "acceptance": "Model/forecast accuracy test",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "rep_compare",
+          "title": "Device Benchmark Comparison",
+          "scope": "Compare historical self baselines; worldwide rankings require real authorized benchmark dataset",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "Local performance metrics with provenance",
+          "acceptance": "No fake global ranking",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "rep_schedule",
+          "title": "Automated Weekly Reports",
+          "scope": "Notification-enabled WorkManager summaries; local only by default",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "WorkManager / Notification permission",
+          "acceptance": "User opt-in, schedule/cancel",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "app_manager",
+      "name": "App Manager Pro",
+      "order": 7,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "app_batch",
+          "title": "Batch User-Directed Actions",
+          "scope": "Sequential system uninstall/details intents; user controls each operation",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "PackageManager + ACTION_DELETE",
+          "acceptance": "No silent removal",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "app_freeze",
+          "title": "App Freeze Guidance",
+          "scope": "Cannot freeze arbitrary third-party apps; link to user-controlled app settings",
+          "feasibility": "unsupported_as_claimed",
+          "android_mechanism": "Settings.ACTION_APPLICATION_DETAILS_SETTINGS",
+          "acceptance": "No freeze button claiming success",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "app_backup",
+          "title": "App Backup Guidance",
+          "scope": "Cannot back up private third-party app data as an ordinary app",
+          "feasibility": "unsupported_as_claimed",
+          "android_mechanism": "User-controlled Android Backup and export options",
+          "acceptance": "No private data access promise",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "app_usage",
+          "title": "Authorized Usage Analytics",
+          "scope": "UsageStats when user grants special access; no complete per-app RAM/battery metrics",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "UsageStatsManager + PackageManager",
+          "acceptance": "Access denied / partial coverage",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "app_clone",
+          "title": "Multi-account Guidance",
+          "scope": "Cloning arbitrary applications not available to ordinary APK; link to official OS features",
+          "feasibility": "unsupported_as_claimed",
+          "android_mechanism": "OEM/Android settings only when supported",
+          "acceptance": "No clone action simulation",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "storage_analyzer",
+      "name": "Storage Analyzer Pro",
+      "order": 8,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "sto_detailed_breakdown",
+          "title": "Advanced Scoped Storage Breakdown",
+          "scope": "Real StatFs totals; per-type categorized only for accessible media",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "StatFs + MediaStore/SAF",
+          "acceptance": "Scoped vs system totals separate",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "sto_large_files",
+          "title": "Large File Explorer",
+          "scope": "User-granted accessible large files with filters and previews",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "MediaStore/SAF metadata",
+          "acceptance": "Access and cancellation tested",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "sto_growth_trends",
+          "title": "Storage Growth History",
+          "scope": "True retained observations by volume and scope",
+          "feasibility": "supported",
+          "android_mechanism": "Room measurements",
+          "acceptance": "Diff reconciles timestamps",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "sto_capacity_planner",
+          "title": "Capacity What-if Planner",
+          "scope": "Show estimated gains only for verified eligible candidates",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "Local plan evaluator",
+          "acceptance": "Candidate != reclaimed",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "sto_export",
+          "title": "Scoped Inventory Export",
+          "scope": "User-requested redacted CSV/PDF export; cloud off by default",
+          "feasibility": "supported",
+          "android_mechanism": "ACTION_CREATE_DOCUMENT",
+          "acceptance": "No paths uploaded",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "battery_saver",
+      "name": "Battery Saver Pro",
+      "order": 9,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "bat_thermal_timeline",
+          "title": "Thermal Trend Timeline",
+          "scope": "Samples actual available PowerManager thermal status and battery temperature",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "PowerManager + ACTION_BATTERY_CHANGED",
+          "acceptance": "Unavailable handled by API",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "bat_charge_profiles",
+          "title": "Charging Pattern Review",
+          "scope": "Historical charge states, no hardware charge cycle count promise",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "BatteryManager + Room",
+          "acceptance": "Avoid numeric health percentage",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "bat_usage_context",
+          "title": "Usage Context Correlation",
+          "scope": "Opt-in usage stats approximate context; no per-app battery current claim",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "UsageStatsManager (special access)",
+          "acceptance": "Data provenance and consent",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "bat_smart_alerts",
+          "title": "Battery Threshold Alerts",
+          "scope": "User-configured threshold and thermal reminders subject to OS limits",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "WorkManager / Notification API",
+          "acceptance": "Opt-in notifications and no spam",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "bat_recommendations",
+          "title": "Battery Optimization Guidance",
+          "scope": "Open user-controlled battery saver/optimization settings; no CPU tuning",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "PowerManager + ACTION_BATTERY_SAVER_SETTINGS",
+          "acceptance": "No fake time gained",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    },
+    {
+      "id": "ai_optimization",
+      "name": "AI Optimization Pro",
+      "order": 10,
+      "feature_count": 5,
+      "features": [
+        {
+          "feature_id": "opt_gaming",
+          "title": "Gaming Focus Profile",
+          "scope": "User-controlled notifications/DND and local settings guidance; no arbitrary CPU/GPU priority",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "NotificationManager special access and OS Settings",
+          "acceptance": "No FPS boost claim",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "opt_ai_learn",
+          "title": "Adaptive On-device Insights",
+          "scope": "Consent-based local rules over actual observed signals; no private content to cloud",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "Room + local rules",
+          "acceptance": "Explainability and accuracy boundaries",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "opt_thermal",
+          "title": "Thermal Management Recommendations",
+          "scope": "Read thermal state, advise cooling; cannot change system governors",
+          "feasibility": "limited_claim_rewrite",
+          "android_mechanism": "PowerManager.getCurrentThermalStatus",
+          "acceptance": "No active cooling or throttling control claims",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "opt_network",
+          "title": "Network Insight Dashboard",
+          "scope": "Measure app network connectivity and own-operation latency; cannot optimize all traffic",
+          "feasibility": "unsupported_as_claimed",
+          "android_mechanism": "ConnectivityManager / NetworkCapabilities",
+          "acceptance": "No fake bandwidth priority",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        },
+        {
+          "feature_id": "opt_scene",
+          "title": "Context-Based Mode Suggestions",
+          "scope": "Local Work/Sleep/Gaming recommendations; confirmation for system changes",
+          "feasibility": "supported_with_scope",
+          "android_mechanism": "WorkManager + DataStore",
+          "acceptance": "No secret background actions",
+          "tier": "pro",
+          "implementation_status": "CATALOGED",
+          "can_sell_as_is": false
+        }
+      ]
+    }
+  ]
+}
