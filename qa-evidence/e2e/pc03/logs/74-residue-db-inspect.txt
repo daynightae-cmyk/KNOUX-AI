@@ -1,0 +1,10 @@
+user_version 3
+integrity ok
+residue_scans 0
+residue_items 0
+residue_decisions 0
+operations 4
+operation_items 8
+--- latest residue scans
+--- residue decisions
+--- latest scan items

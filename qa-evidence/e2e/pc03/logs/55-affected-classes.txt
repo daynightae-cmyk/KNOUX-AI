@@ -1,0 +1,27 @@
+
+com.knoux.ai.PreviewNavigationTest:.
+Error in arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest):
+java.lang.RuntimeException: Unable to resolve activity for: Intent { act=android.intent.action.MAIN flg=0x10008000 cmp=com.knoux.ai.test/com.knoux.ai.MainActivity (has extras) }
+	at androidx.test.core.app.InstrumentationActivityInvoker.startActivity(InstrumentationActivityInvoker.java:405)
+	at androidx.test.core.app.InstrumentationActivityInvoker.startActivity(InstrumentationActivityInvoker.java:428)
+	at androidx.test.core.app.ActivityScenario.launchInternal(ActivityScenario.java:367)
+	at androidx.test.core.app.ActivityScenario.launch(ActivityScenario.java:237)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:225)
+.....
+com.knoux.ai.MediaConsentDiagnosticTest:.
+com.knoux.ai.ResidueFreshPassTest:.
+
+Time: ٨٢٫٥٨١
+There was 1 failure:
+1) arabicSwitchMirrorsTabOrderAndPreservesNavigation(com.knoux.ai.PreviewNavigationTest)
+java.lang.RuntimeException: Unable to resolve activity for: Intent { act=android.intent.action.MAIN flg=0x10008000 cmp=com.knoux.ai.test/com.knoux.ai.MainActivity (has extras) }
+	at androidx.test.core.app.InstrumentationActivityInvoker.startActivity(InstrumentationActivityInvoker.java:405)
+	at androidx.test.core.app.InstrumentationActivityInvoker.startActivity(InstrumentationActivityInvoker.java:428)
+	at androidx.test.core.app.ActivityScenario.launchInternal(ActivityScenario.java:367)
+	at androidx.test.core.app.ActivityScenario.launch(ActivityScenario.java:237)
+	at com.knoux.ai.PreviewNavigationTest.arabicSwitchMirrorsTabOrderAndPreservesNavigation(PreviewNavigationTest.kt:225)
+
+FAILURES!!!
+Tests run: 9,  Failures: 1
+
+

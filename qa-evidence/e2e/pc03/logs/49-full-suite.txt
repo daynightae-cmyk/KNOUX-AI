@@ -1,0 +1,104 @@
+
+com.knoux.ai.AuthGatewayTest:.....
+com.knoux.ai.DuplicateMediaTest:
+Error in identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(com.knoux.ai.DuplicateMediaTest):
+java.lang.AssertionError: READ_MEDIA_IMAGES must be granted to com.knoux.ai for this run (not skipped) expected:<GRANTED> but was:<DENIED>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.knoux.ai.DuplicateMediaTest.prepareIsolatedEngineAndVerifyTheGrant(DuplicateMediaTest.kt:112)
+
+com.knoux.ai.DuplicateRealScreenTest:.
+com.knoux.ai.DuplicateRealTest:...
+com.knoux.ai.MediaConsentDiagnosticTest:
+Error in observeRealRestoreConsentWithoutApprovingIt(com.knoux.ai.MediaConsentDiagnosticTest):
+java.lang.AssertionError: trash must be observable before restore is attempted expected:<TRASHED> but was:<PRESENT>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.knoux.ai.MediaConsentDiagnosticTest.observeRealRestoreConsentWithoutApprovingIt(MediaConsentDiagnosticTest.kt:160)
+
+com.knoux.ai.PreviewNavigationTest:......
+Error in residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest):
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'select-all')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:163)
+
+com.knoux.ai.ResidueMigrationTest:.
+com.knoux.ai.ResidueRealScreenTest:.
+com.knoux.ai.ResidueStorageTest:......
+com.knoux.ai.ServiceWorldsTest:.
+com.knoux.ai.SmartCleanRealTest:.....
+com.knoux.ai.SmartCleanStorageTest:.
+Error in syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs(com.knoux.ai.SmartCleanStorageTest):
+java.lang.AssertionError: Provider must verify the exact requested state (GONE); observed={content://media/external_primary/images/media/55778=UNKNOWN, content://media/external_primary/images/media/55779=UNKNOWN}
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.SmartCleanStorageTest.launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:570)
+	at com.knoux.ai.SmartCleanStorageTest.access$launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:66)
+	at com.knoux.ai.SmartCleanStorageTest$syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs$1.invokeSuspend(SmartCleanStorageTest.kt:623)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:270)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+.......
+com.knoux.ai.SplashSequenceTest:...
+
+Time: ٨٤٦٫٤٩٨
+There were 4 failures:
+1) identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs(com.knoux.ai.DuplicateMediaTest)
+java.lang.AssertionError: READ_MEDIA_IMAGES must be granted to com.knoux.ai for this run (not skipped) expected:<GRANTED> but was:<DENIED>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.knoux.ai.DuplicateMediaTest.prepareIsolatedEngineAndVerifyTheGrant(DuplicateMediaTest.kt:112)
+2) observeRealRestoreConsentWithoutApprovingIt(com.knoux.ai.MediaConsentDiagnosticTest)
+java.lang.AssertionError: trash must be observable before restore is attempted expected:<TRASHED> but was:<PRESENT>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.knoux.ai.MediaConsentDiagnosticTest.observeRealRestoreConsentWithoutApprovingIt(MediaConsentDiagnosticTest.kt:160)
+3) residueSelectionUpdatesTotalAndConfirmationDoesNotClean(com.knoux.ai.PreviewNavigationTest)
+java.lang.AssertionError: Action performScrollTo() failed.
+Reason: Expected exactly '1' node but could not find any node that satisfies: (TestTag = 'select-all')
+
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow(SemanticsNodeInteraction.kt:178)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchOneOrThrow$default(SemanticsNodeInteraction.kt:150)
+	at androidx.compose.ui.test.SemanticsNodeInteraction.fetchSemanticsNode(SemanticsNodeInteraction.kt:84)
+	at androidx.compose.ui.test.ActionsKt.performScrollTo(Actions.kt:82)
+	at com.knoux.ai.PreviewNavigationTest.residueSelectionUpdatesTotalAndConfirmationDoesNotClean(PreviewNavigationTest.kt:163)
+4) syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs(com.knoux.ai.SmartCleanStorageTest)
+java.lang.AssertionError: Provider must verify the exact requested state (GONE); observed={content://media/external_primary/images/media/55778=UNKNOWN, content://media/external_primary/images/media/55779=UNKNOWN}
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.knoux.ai.SmartCleanStorageTest.launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:570)
+	at com.knoux.ai.SmartCleanStorageTest.access$launchVerifiedRequestAndObserve(SmartCleanStorageTest.kt:66)
+	at com.knoux.ai.SmartCleanStorageTest$syntheticMediaIsTrashedThenRestoredThenPermanentlyDeletedThroughOs$1.invokeSuspend(SmartCleanStorageTest.kt:623)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.UndispatchedCoroutine.afterResume(CoroutineContext.kt:270)
+	at kotlinx.coroutines.AbstractCoroutine.resumeWith(AbstractCoroutine.kt:102)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:47)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:115)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:103)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+FAILURES!!!
+Tests run: 44,  Failures: 4
+
+

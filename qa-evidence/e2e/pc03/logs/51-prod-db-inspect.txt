@@ -1,0 +1,15 @@
+user_version 3
+residue_tables ['residue_decisions', 'residue_items', 'residue_profiles', 'residue_scans']
+residue_scans 4
+residue_items 33
+residue_decisions 12
+residue_profiles 0
+integrity ok
+scan ('MEASURED', 1, 14, 13, 1636846, None)
+scan ('MEASURED', 1, 9, 8, 16384, None)
+scan ('MEASURED', 1, 8, 7, 16384, None)
+decision ('VERIFIED', 1, 8192, 'Removed 1 residue item(s) ΓÇö verified by the provider ┬╖ volume free +┘í┘ó KB (observation)')
+decision ('DRY_RUN', 1, 8192, 'permanent_delete')
+decision ('ATTEMPTED', 1, 8192, 'permanent_delete')
+decision ('REVIEWED', 1, 8192, 'review opened ┬╖ 0 warning(s)')
+latest_scan_items ['knoux_fail_gone.png', 'knoux_restore_window.png', 'knoux_fail_gone.xml', 'knoux_restore_window.xml', 'knoux_residue_ui_de4eb5cf-62c4-4d66-bff6-02c3f1d8abe2_leftover.tmp', 'knoux_residue_ui_de4eb5cf-62c4-4d66-bff6-02c3f1d8abe2_keep-me.bin', 'knoux_residue_ui_c51fa916-1aa0-4050-8dad-9927345a8c0b_keep-me.bin', 'androidx.work.workdb.lck', 'knoux-migration-1807c7c8-718c-4983-b624-5c6e1b350a72.lck', 'knoux-migration-2bf11e27-d0c7-46e4-93c2-51f609daa8d3.lck', 'knoux-migration-5e14d6f9-9be6-456a-92b6-8d3578a6afa8.lck', 'knoux-migration-a867e2db-25aa-4391-969b-eee1455919e1.lck', 'knoux.db.lck']

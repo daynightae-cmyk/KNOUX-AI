@@ -3,14 +3,14 @@
     "repo":  "D:\\KNOUX-AI",
     "independent_mobile_repo":  "/root/workspace/KNOUX-AI",
     "do_not_mix_repos":  true,
-    "observed_at":  "2026-11-13T10:30:00+04:00",
-    "observed_head":  "59806cad7c33f41deb39a78513c23c883b76a8a1",
-    "observed_origin_main":  "59806cad7c33f41deb39a78513c23c883b76a8a1",
-    "observed_branch":  "main; PC00/PC01/PC02 source integrated, PC02 evidence pending docs commit",
+    "observed_at":  "2026-11-13T13:50:00+04:00",
+    "observed_head":  "c1b1c2e57cfc8ed665e616fca1132a9fbd9d9278",
+    "observed_origin_main":  "c1b1c2e57cfc8ed665e616fca1132a9fbd9d9278",
+    "observed_branch":  "main; PC03 source integrated at c1b1c2e, evidence commit being pushed after it",
     "writer_conflict_warning":  "At 2026-11-13 00:10+04 Qoder.exe was not running. Recheck active agents before any Kotlin edit; Kiro clean-profile GUI can remain open and must not be assumed writing.",
-    "current_task_id":  "PC03",
+    "current_task_id":  "PC04",
     "current_task_status":  "QUEUED",
-    "next_safe_action":  "Start PC03 (App Residue) on the verified PC00/PC01 foundation as a real vertical slice: enumerate app-owned residue that Android actually permits, require explicit customer selection and irreversible acknowledgement for deletion, verify post-operation state and Room history, run JVM + on-device tests, then await independent review before marking VERIFIED. Do not touch other apps' private data.",
+    "next_safe_action":  "Start PC04 (Privacy Sweep) on the verified PC00 foundation: assess real app/device permissions through Android APIs, link only to OS-owned controls, never claim to fix another app's privacy, require explicit customer action for anything KNOUX changes, verify before/after state and Room history, run JVM + on-device tests, then await independent review before marking VERIFIED.",
     "states":  [
                    "QUEUED",
                    "PREFLIGHT",
@@ -125,19 +125,36 @@
                       "depends_on":  [
                                          "PC00"
                                      ],
-                      "status":  "QUEUED",
-                      "owner":  null,
+                      "status":  "VERIFIED",
+                      "owner":  "controller: implementation + device verification",
                       "files":  [
-
+                                    "app/src/main/java/com/knoux/ai/ResidueReal.kt",
+                                    "app/src/main/java/com/knoux/ai/data/ResidueRules.kt",
+                                    "app/src/main/java/com/knoux/ai/data/ResidueRepository.kt",
+                                    "app/src/main/java/com/knoux/ai/data/ResidueController.kt",
+                                    "app/src/main/java/com/knoux/ai/data/KnouxDatabase.kt",
+                                    "app/src/main/java/com/knoux/ai/data/KnouxData.kt",
+                                    "app/src/main/java/com/knoux/ai/data/SettingsStore.kt",
+                                    "app/src/main/java/com/knoux/ai/MainActivity.kt",
+                                    "app/schemas/com.knoux.ai.data.KnouxDatabase/3.json"
                                 ],
                       "tests":  [
-
+                                    "ResidueRulesTest 16/16 JVM",
+                                    "ResidueStorageTest 6/6 on device",
+                                    "ResidueMigrationTest 1/1 on device",
+                                    "ResidueFreshPassTest 1/1 on device",
+                                    "ResidueRealScreenTest 1/1 on device"
                                 ],
                       "runtime_evidence":  [
-
+                                               "Room journal REVIEWED -> DRY_RUN -> ATTEMPTED -> VERIFIED for one selected 8,192-byte cache fixture",
+                                               "the unselected 4,096-byte cache fixture survived and remained in the stored pass",
+                                               "persisted total dropped by exactly 8,192 bytes; PRAGMA integrity_check=ok; user_version=3"
                                            ],
-                      "verified_sha":  null,
-                      "blocking_reason":  null
+                      "verified_sha":  "c1b1c2e57cfc8ed665e616fca1132a9fbd9d9278",
+                      "blocking_reason":  null,
+                      "latest_evidence":  "PC03 VERIFIED at c1b1c2e: 45/45 JVM and 45/45 on-device tests; real cache scan, explicit selection, irreversible acknowledgement, provider-verified removal and persisted Room journal on itel S686LN API 35",
+                      "next_check":  "PC04 Privacy Sweep can reuse PermissionState and the audit ledger; never read other apps' private data or claim a privacy fix that Android did not perform",
+                      "evidence_20261113":  "See qa-evidence/e2e/pc03/PC03_EVIDENCE_20261113.md; stale synthetic media fixtures from an aborted run were removed, the temporary READ_MEDIA_IMAGES grant was revoked, and no owner file was touched"
                   },
                   {
                       "task_id":  "PC04",

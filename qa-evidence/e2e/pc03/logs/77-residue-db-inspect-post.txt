@@ -1,0 +1,20 @@
+user_version 3
+integrity ok
+residue_scans 1
+residue_items 5
+residue_decisions 4
+operations 5
+operation_items 9
+--- latest residue scans
+('MEASURED', 1, 6, 5, 487499, None)
+--- residue decisions
+('VERIFIED', 1, 8192, 'Removed 1 residue item(s) ΓÇö verified by the provider ┬╖ volume free +┘í┘ó KB (observation)')
+('ATTEMPTED', 1, 8192, 'permanent_delete')
+('DRY_RUN', 1, 8192, 'permanent_delete')
+('REVIEWED', 1, 8192, 'review opened ┬╖ 0 warning(s)')
+--- latest scan items
+('knoux_restore_window.png', 456608, 'CACHE_FILE', 'OWNED')
+('knoux_restore_window.xml', 26795, 'CACHE_FILE', 'OWNED')
+('knoux_residue_ui_53933f77-d989-4573-8db4-42474f2e8b02_keep-me.bin', 4096, 'CACHE_FILE', 'OWNED')
+('androidx.work.workdb.lck', 0, 'CACHE_FILE', 'OWNED')
+('knoux.db.lck', 0, 'CACHE_FILE', 'OWNED')

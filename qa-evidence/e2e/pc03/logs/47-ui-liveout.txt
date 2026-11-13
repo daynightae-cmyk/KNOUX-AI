@@ -1,0 +1,21 @@
+
+com.knoux.ai.ResidueRealScreenTest:
+Error in realScreenMeasuresResidueAndDeletesOnlyTheSelectedItem(com.knoux.ai.ResidueRealScreenTest):
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.ResidueRealScreenTest.realScreenMeasuresResidueAndDeletesOnlyTheSelectedItem(ResidueRealScreenTest.kt:145)
+
+
+Time: ١٧٫٩٣٢
+There was 1 failure:
+1) realScreenMeasuresResidueAndDeletesOnlyTheSelectedItem(com.knoux.ai.ResidueRealScreenTest)
+androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 10000 ms
+	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.waitUntil(ComposeUiTest.android.kt:504)
+	at androidx.compose.ui.test.junit4.AndroidComposeTestRule.waitUntil(AndroidComposeTestRule.android.kt:339)
+	at com.knoux.ai.ResidueRealScreenTest.realScreenMeasuresResidueAndDeletesOnlyTheSelectedItem(ResidueRealScreenTest.kt:145)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+

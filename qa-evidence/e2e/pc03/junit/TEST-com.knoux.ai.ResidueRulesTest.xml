@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.knoux.ai.ResidueRulesTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-11-13T09:33:23.784Z" hostname="DESKTOP-VQKU9P8" time="0.03">
+  <properties/>
+  <testcase name="theSamePhysicalFileIsCountedOnceAndMediaStoreWins" classname="com.knoux.ai.ResidueRulesTest" time="0.014"/>
+  <testcase name="sharedResidueIsRejectedWhenTooNewOrUndated" classname="com.knoux.ai.ResidueRulesTest" time="0.0"/>
+  <testcase name="safeSelectionContainsOwnCacheOnlyEvenWhenSharedEvidenceIsStrong" classname="com.knoux.ai.ResidueRulesTest" time="0.0"/>
+  <testcase name="dryRunReportsExactlyTheSelectedSelection" classname="com.knoux.ai.ResidueRulesTest" time="0.007"/>
+  <testcase name="toggleNeverSelectsAProviderProtectedItem" classname="com.knoux.ai.ResidueRulesTest" time="0.001"/>
+  <testcase name="aNormalFileNameIsNotResidue" classname="com.knoux.ai.ResidueRulesTest" time="0.0"/>
+  <testcase name="afterVerifiedRemovalDropsOnlyProvenUris" classname="com.knoux.ai.ResidueRulesTest" time="0.001"/>
+  <testcase name="summarySeparatesOwnedFromSharedBytes" classname="com.knoux.ai.ResidueRulesTest" time="0.003"/>
+  <testcase name="sharedMediaAlwaysNeedsTheOsDialogForBothActions" classname="com.knoux.ai.ResidueRulesTest" time="0.001"/>
+  <testcase name="osPrefixesAreStrongEvidenceAndGenericNamesAreWeak" classname="com.knoux.ai.ResidueRulesTest" time="0.0"/>
+  <testcase name="ownCacheIsResidueRegardlessOfAge" classname="com.knoux.ai.ResidueRulesTest" time="0.001"/>
+  <testcase name="trashIsOfferedOnlyForSharedMedia" classname="com.knoux.ai.ResidueRulesTest" time="0.0"/>
+  <testcase name="cacheOnlyDryRunNeedsNoAndroidDialog" classname="com.knoux.ai.ResidueRulesTest" time="0.0"/>
+  <testcase name="dryRunWithoutSelectionIsNotExecutable" classname="com.knoux.ai.ResidueRulesTest" time="0.001"/>
+  <testcase name="zeroByteCacheFileIsListedButNeverSelectable" classname="com.knoux.ai.ResidueRulesTest" time="0.0"/>
+  <testcase name="defaultAgeRuleIsOfferedAndSharedScopesStayExplicit" classname="com.knoux.ai.ResidueRulesTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

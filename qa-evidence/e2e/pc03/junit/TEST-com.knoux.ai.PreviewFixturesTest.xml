@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.knoux.ai.PreviewFixturesTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-13T09:33:23.747Z" hostname="DESKTOP-VQKU9P8" time="0.017">
+  <properties/>
+  <testcase name="removingOneResidueSelectionChangesTheDisplayTotal" classname="com.knoux.ai.PreviewFixturesTest" time="0.016"/>
+  <testcase name="liveUnavailableCannotExposeReferenceMetrics" classname="com.knoux.ai.PreviewFixturesTest" time="0.0"/>
+  <testcase name="debugRouteParserAcceptsOnlyKnownIds" classname="com.knoux.ai.PreviewFixturesTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

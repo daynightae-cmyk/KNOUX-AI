@@ -6,8 +6,8 @@ A commercial service is accepted ONLY if real data + actual customer controls + 
 |---|---|---|---|
 | PC00 Foundation | 10 mapped Pro sections; 50 unique IDs; trustworthy entitlement/capability and debug/release gates | catalog assertions, real OS capabilities, build/test | VERIFIED 2026-11-13 @722af86 |
 | PC01 Smart Clean | Actual selected file review, Trash/permanent delete where supported, verified freed bytes and recovery | scoped MediaStore/SAF, Room, OS confirmation, synthetic emulator E2E | VERIFIED 2026-11-13 @722af86 |
-| PC02 Duplicate Finder | SHA matches, protect keeper, select, user-confirmed actual delete/trash | byte-hash tests, keeper invariant, requery | QUEUED |
-| PC03 App Residue | Real user-scoped residue finding and approved action | SAF/app cache scopes + journal | QUEUED |
+| PC02 Duplicate Finder | SHA matches, protect keeper, select, user-confirmed actual delete/trash | byte-hash tests, keeper invariant, requery | VERIFIED 2026-11-13 @59806ca |
+| PC03 App Residue | Real user-scoped residue finding and approved action | SAF/app cache scopes + journal | VERIFIED 2026-11-13 @c1b1c2e |
 | PC04 Privacy Sweep | Permission assessment + real OS controls, optional real vault/blocker if advertised | device permissions, cryptographic/network tests | QUEUED |
 | PC05 Deep Scan | Run real modules, inspect/remediate with actual evidence | worker progress/abort, result provenance | QUEUED |
 | PC06 Reports | Real stored history and actual PDF/CSV export | Room → export file + tests | QUEUED |
@@ -51,3 +51,9 @@ This is a factual checkpoint; do not overwrite historical acceptance criteria:
 - **What was actually wrong before:** the UI case failed because the first-run splash handed the app over to `OnboardingScreen` mid-test and disposed the Smart Clean screen; the harness now consumes `SplashGate` before the activity launches. Checkbox rows are driven through `SemanticsActions.OnClick` because the checkbox is visually covered by the row overlay on this device.
 - **Permissions:** no standing media grant is left on the device (`appops get READ_MEDIA_IMAGES` = `ignore`). Only synthetic fixtures were touched; 27 `Pictures/KNOUX_QA_*` directories and 27 stale synthetic MediaStore `files` rows were removed afterwards.
 - **Still not claimed:** release signing, Play Billing, Supabase staging, PC02-PC13, or owner visual re-acceptance. PC02 (Duplicates) is the next task because its dependencies PC00 and PC01 are now satisfied.
+
+## Verified checkpoint - 2026-11-13 13:50+04 (overrides the checkpoints above for PC02 and PC03)
+- **PC02 - VERIFIED @ `59806cad7c33f41deb39a78513c23c883b76a8a1`:** 29/29 JVM and 36/36 on-device tests; real duplicate grouping by full-content SHA-256, protected original, physical-file alias collapse, customer-confirmed Trash/Restore/Delete on the owner-authorized itel S686LN API 35. Evidence: `qa-evidence/e2e/pc02/PC02_EVIDENCE_20261113.md`.
+- **PC03 - VERIFIED @ `c1b1c2e57cfc8ed665e616fca1132a9fbd9d9278`:** 45/45 JVM and 45/45 on-device tests; measured cache/MediaStore/SAF residue taxonomy, no pre-selection outside KNOUX's own cache, irreversible acknowledgement, provider-verified removal, append-only audit and Room v3 migration. The real UI case deleted one selected 8,192-byte fixture, preserved the unselected 4,096-byte keeper and persisted `REVIEWED -> DRY_RUN -> ATTEMPTED -> VERIFIED`; the DB copy reports `user_version=3`, `integrity_check=ok`. Evidence: `qa-evidence/e2e/pc03/PC03_EVIDENCE_20261113.md`.
+- **Device hygiene:** the temporary `READ_MEDIA_IMAGES` grant is revoked (`granted=false`, uid mode `ignore`); stale synthetic fixtures from an aborted media run were removed after their owner package and KNOUX_QA path were verified; no owner file was touched.
+- **Still not claimed:** release signing, Play Billing, Supabase deployment, PC04+ or owner visual re-acceptance. PC04 (Privacy Sweep) is the next dependency-satisfied task.

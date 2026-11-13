@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="com.knoux.ai.ResidueStorageTest" tests="9" failures="0" errors="0" skipped="0" time="25.038" timestamp="2026-11-13T09:10:09" hostname="localhost">
+  <properties>
+    <property name="device" value="itel S686LN - 15" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="emptyFileAndMissingFileAreReportedHonestly" classname="com.knoux.ai.ResidueStorageTest" time="0.289" />
+  <testcase name="ownCacheScanMeasuresRealFilesAndPreselectsNothing" classname="com.knoux.ai.ResidueStorageTest" time="0.032" />
+  <testcase name="unconfirmedOrUnacknowledgedPlansDeleteNothing" classname="com.knoux.ai.ResidueStorageTest" time="0.141" />
+  <testcase name="forgedCandidateOutsideTheCacheIsRefusedWithoutTouchingTheFile" classname="com.knoux.ai.ResidueStorageTest" time="0.055" />
+  <testcase name="revocationOfAnAgeRuleResetsToTheSafeDefault" classname="com.knoux.ai.ResidueStorageTest" time="0.15" />
+  <testcase name="permanentDeleteRemovesOnlySelectedAndWritesVerifiableAudit" classname="com.knoux.ai.ResidueStorageTest" time="0.227" />
+  <testcase name="versionTwoHistorySurvivesAndResidueTablesAppear" classname="com.knoux.ai.ResidueMigrationTest" time="0.391" />
+  <testcase name="freshPassListsOnlyFilesThatExistInsideTheMeasuredScope" classname="com.knoux.ai.ResidueFreshPassTest" time="10.723" />
+  <testcase name="realScreenMeasuresResidueAndDeletesOnlyTheSelectedItem" classname="com.knoux.ai.ResidueRealScreenTest" time="10.567" />
+</testsuite>
