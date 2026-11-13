@@ -295,6 +295,72 @@ data class ExclusionEntity(
     val createdAt: Long,
 )
 
+// ── PC05 deep scan evidence ──────────────────────────────────────────────────
+
+/**
+ * One deep scan pass over the modules the customer selected.
+ *
+ * [moduleUnavailable] is stored separately from [moduleMeasured] so an empty
+ * result can never be mistaken for a clean device: a pass that could not read a
+ * scope says so in its own history row. Totals are distinct-file totals, because
+ * one file can legitimately appear in more than one module (a large old video).
+ */
+@Entity(tableName = "deep_scan_sessions")
+data class DeepScanSessionEntity(
+    @PrimaryKey val id: String,
+    val startedAt: Long,
+    val finishedAt: Long?,
+    val status: String,
+    /** Comma-separated AccessScope names actually requested. */
+    val scopes: String,
+    val moduleCount: Int,
+    val moduleMeasured: Int,
+    val moduleUnavailable: Int,
+    val itemCount: Int,
+    val totalBytes: Long,
+    val note: String?,
+)
+
+/** One module's measured outcome inside a pass. Append-only by composite key. */
+@Entity(tableName = "deep_scan_modules", primaryKeys = ["scanId", "moduleId"])
+data class DeepScanModuleEntity(
+    val scanId: String,
+    val moduleId: String,
+    val status: String,
+    val itemCount: Int,
+    val totalBytes: Long,
+    val detail: String?,
+    val recordedAt: Long,
+)
+
+/**
+ * One file a module measured, with the provenance that produced it.
+ *
+ * The composite key keeps every pass append-only: a later scan cannot rewrite
+ * what an earlier one observed, and a removed file keeps its original evidence
+ * until the pass that found it is itself superseded.
+ */
+@Entity(
+    tableName = "deep_scan_findings",
+    primaryKeys = ["scanId", "moduleId", "uri"],
+    indices = [Index("moduleId"), Index("uri")],
+)
+data class DeepScanFindingEntity(
+    val scanId: String,
+    val moduleId: String,
+    val uri: String,
+    val displayName: String,
+    val mimeType: String?,
+    val bytes: Long,
+    val lastModified: Long,
+    val category: String,
+    val provenance: String,
+    val eligibility: String,
+    val reason: String,
+    val status: String,
+    val physicalKey: String?,
+)
+
 /** A user-configured scan schedule. Scan only — it never deletes on its own. */
 @Entity(tableName = "schedules")
 data class ScheduleEntity(
@@ -565,6 +631,53 @@ interface PrivacyDao {
 }
 
 @Dao
+interface DeepScanDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertSession(session: DeepScanSessionEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertModules(modules: List<DeepScanModuleEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertFindings(findings: List<DeepScanFindingEntity>)
+
+    @Query("SELECT * FROM deep_scan_sessions ORDER BY startedAt DESC, id DESC LIMIT 20")
+    fun observeSessions(): Flow<List<DeepScanSessionEntity>>
+
+    @Query("SELECT * FROM deep_scan_sessions WHERE status IN ('COMPLETE', 'PARTIAL') ORDER BY startedAt DESC, id DESC LIMIT 1")
+    suspend fun latestFinishedSession(): DeepScanSessionEntity?
+
+    @Query("SELECT * FROM deep_scan_modules WHERE scanId = :scanId ORDER BY moduleId")
+    suspend fun modules(scanId: String): List<DeepScanModuleEntity>
+
+    @Query("SELECT * FROM deep_scan_findings WHERE scanId = :scanId ORDER BY bytes DESC, uri")
+    suspend fun findings(scanId: String): List<DeepScanFindingEntity>
+
+    /** Reconciliation after a verified removal: the evidence row for that file goes. */
+    @Query("DELETE FROM deep_scan_findings WHERE uri = :uri")
+    suspend fun removeFinding(uri: String)
+
+    @Query("""
+        UPDATE deep_scan_modules SET
+            itemCount = (SELECT COUNT(*) FROM deep_scan_findings f
+                WHERE f.scanId = deep_scan_modules.scanId AND f.moduleId = deep_scan_modules.moduleId),
+            totalBytes = COALESCE((SELECT SUM(f.bytes) FROM deep_scan_findings f
+                WHERE f.scanId = deep_scan_modules.scanId AND f.moduleId = deep_scan_modules.moduleId), 0)
+        WHERE scanId = :scanId
+    """)
+    suspend fun refreshModuleTotals(scanId: String)
+
+    @Query("""
+        UPDATE deep_scan_sessions SET
+            itemCount = (SELECT COUNT(*) FROM (SELECT DISTINCT uri FROM deep_scan_findings WHERE scanId = :scanId)),
+            totalBytes = COALESCE((SELECT SUM(bytes) FROM
+                (SELECT DISTINCT uri, bytes FROM deep_scan_findings WHERE scanId = :scanId)), 0)
+        WHERE id = :scanId
+    """)
+    suspend fun refreshSessionTotals(scanId: String)
+}
+
+@Dao
 interface ScheduleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun put(schedule: ScheduleEntity)
@@ -595,8 +708,11 @@ interface ScheduleDao {
         PrivacyScanEntity::class,
         PrivacyFindingEntity::class,
         PrivacyActionEntity::class,
+        DeepScanSessionEntity::class,
+        DeepScanModuleEntity::class,
+        DeepScanFindingEntity::class,
     ],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 abstract class KnouxDatabase : RoomDatabase() {
@@ -607,6 +723,7 @@ abstract class KnouxDatabase : RoomDatabase() {
     abstract fun scheduleDao(): ScheduleDao
     abstract fun residueDao(): ResidueDao
     abstract fun privacyDao(): PrivacyDao
+    abstract fun deepScanDao(): DeepScanDao
 
     companion object {
         /** PC02 duplicates: new tables only, proven PC00/PC01 tables untouched. */
@@ -712,6 +829,46 @@ abstract class KnouxDatabase : RoomDatabase() {
                 )
             }
         }
+        /**
+         * PC05 deep scan: three new tables, no change to any existing column.
+         *
+         * A finding is keyed by (pass, module, uri) so the evidence of an earlier
+         * pass survives a later one, exactly like the PC02–PC04 tables.
+         */
+        val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `deep_scan_sessions` (`id` TEXT NOT NULL, " +
+                        "`startedAt` INTEGER NOT NULL, `finishedAt` INTEGER, `status` TEXT NOT NULL, " +
+                        "`scopes` TEXT NOT NULL, `moduleCount` INTEGER NOT NULL, " +
+                        "`moduleMeasured` INTEGER NOT NULL, `moduleUnavailable` INTEGER NOT NULL, " +
+                        "`itemCount` INTEGER NOT NULL, `totalBytes` INTEGER NOT NULL, `note` TEXT, " +
+                        "PRIMARY KEY(`id`))"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `deep_scan_modules` (`scanId` TEXT NOT NULL, " +
+                        "`moduleId` TEXT NOT NULL, `status` TEXT NOT NULL, `itemCount` INTEGER NOT NULL, " +
+                        "`totalBytes` INTEGER NOT NULL, `detail` TEXT, `recordedAt` INTEGER NOT NULL, " +
+                        "PRIMARY KEY(`scanId`, `moduleId`))"
+                )
+                db.execSQL(
+                    "CREATE TABLE IF NOT EXISTS `deep_scan_findings` (`scanId` TEXT NOT NULL, " +
+                        "`moduleId` TEXT NOT NULL, `uri` TEXT NOT NULL, `displayName` TEXT NOT NULL, " +
+                        "`mimeType` TEXT, `bytes` INTEGER NOT NULL, `lastModified` INTEGER NOT NULL, " +
+                        "`category` TEXT NOT NULL, `provenance` TEXT NOT NULL, `eligibility` TEXT NOT NULL, " +
+                        "`reason` TEXT NOT NULL, `status` TEXT NOT NULL, `physicalKey` TEXT, " +
+                        "PRIMARY KEY(`scanId`, `moduleId`, `uri`))"
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_deep_scan_findings_moduleId` " +
+                        "ON `deep_scan_findings` (`moduleId`)"
+                )
+                db.execSQL(
+                    "CREATE INDEX IF NOT EXISTS `index_deep_scan_findings_uri` " +
+                        "ON `deep_scan_findings` (`uri`)"
+                )
+            }
+        }
         @Volatile
         private var instance: KnouxDatabase? = null
         /**
@@ -729,7 +886,7 @@ abstract class KnouxDatabase : RoomDatabase() {
                 )
                     // No fallbackToDestructiveMigration(): losing customer history
                     // is never an acceptable response to a schema change.
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                     .build()
                     .also { instance = it }
             }

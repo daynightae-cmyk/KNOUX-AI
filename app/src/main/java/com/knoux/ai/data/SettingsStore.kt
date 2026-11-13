@@ -46,6 +46,7 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
         val RESIDUE_SCOPES = stringSetPreferencesKey("residue_scopes")
         val RESIDUE_MIN_AGE = longPreferencesKey("residue_min_age_days")
         val PRIVACY_SECURE_WINDOW = booleanPreferencesKey("privacy_secure_window")
+        val DEEP_SCAN_MODULES = stringSetPreferencesKey("deep_scan_modules")
     }
 
     /** Scopes the customer last chose. Defaults to the only always-available one. */
@@ -124,5 +125,16 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
 
     suspend fun setPrivacySecureWindow(enabled: Boolean) {
         dataStore.edit { prefs -> prefs[Keys.PRIVACY_SECURE_WINDOW] = enabled }
+    }
+
+    /** Deep Scan module selection (module IDs). Defaults to safe, quick modules. */
+    val deepScanModules: Flow<Set<String>> = dataStore.data.map { prefs ->
+        val raw = prefs[Keys.DEEP_SCAN_MODULES]
+            ?: return@map emptySet<String>()
+        raw.toSet()
+    }
+
+    suspend fun setDeepScanModules(moduleIds: Set<String>) {
+        dataStore.edit { prefs -> prefs[Keys.DEEP_SCAN_MODULES] = moduleIds }
     }
 }

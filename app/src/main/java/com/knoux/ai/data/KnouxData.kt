@@ -31,6 +31,12 @@ object KnouxData {
     private val privacyControllerRef = lazy {
         PrivacyController(privacyRepository, database, settings)
     }
+    private val deepScanRepositoryRef = lazy {
+        DeepScanRepository(permissions, repository, duplicateRepository)
+    }
+    private val deepScanControllerRef = lazy {
+        DeepScanController(deepScanRepository, database, settings, smartClean)
+    }
 
     fun init(context: Context) {
         if (appContext == null) appContext = context.applicationContext
@@ -53,4 +59,6 @@ object KnouxData {
     val residue: ResidueController get() = residueControllerRef.value
     val privacyRepository: PrivacyRepository get() = privacyRepositoryRef.value
     val privacy: PrivacyController get() = privacyControllerRef.value
+    internal val deepScanRepository: DeepScanRepository get() = deepScanRepositoryRef.value
+    internal val deepScan: DeepScanController get() = deepScanControllerRef.value
 }

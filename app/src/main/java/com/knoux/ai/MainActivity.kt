@@ -474,6 +474,8 @@ private fun KnouxAppScaffold(
                                     Page.RESIDUE, Page.RESIDUE_REVIEW -> RealResidueScreen(target, open)
                                     // PC04 - real permission sweep; other apps' data is never claimed.
                                     Page.PRIVACY_INSPECTOR -> RealPrivacyScreen(target)
+                                    // PC05 - real deep scan with Abyss Sonar instrument.
+                                    Page.SCAN, Page.SCAN_SUMMARY -> RealDeepScanScreen(open)
                                     in Page.detailRoutes -> DetailPreview(target)
                                     else -> ReferenceScreen(target, openReview = open)
                                 }
