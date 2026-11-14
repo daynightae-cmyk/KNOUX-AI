@@ -960,4 +960,11 @@
     <string name="residue_cache_note">These items are inside KNOUX\'s own cache and are removed directly; no Android dialog is involved.</string>
     <string name="residue_mixed_note">KNOUX cache items are removed immediately. Android\'s dialog covers only the shared media; cancelling it leaves that media untouched.</string>
     <string name="grant_revoked">Revoked — re-grant to scan</string>
+    <string name="home_title">Smart Device Hub</string>
+    <string name="home_storage_title">Device storage</string>
+    <string name="home_storage_used">Used</string>
+    <string name="home_storage_free">Free</string>
+    <string name="home_storage_unreadable">Android did not report a capacity.</string>
+    <string name="home_segment_protect">Protect</string>
+    <string name="home_recent_title">Recent activity</string>
 </resources>

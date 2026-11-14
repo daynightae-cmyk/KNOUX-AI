@@ -48,6 +48,44 @@ import androidx.compose.ui.unit.dp
 internal val TOUCH_TARGET = 48.dp
 
 /**
+ * Figma 2:2, 12:45 and 12:147 — native utility palette.
+ *
+ * The base is the measured Figma field (#090A1E), the panels are one elevation
+ * step lighter, and blue carries the primary control. Violet, magenta and cyan
+ * come from the KNOUX logo and are reserved for a thin ambient wave and one
+ * critical data accent — they never outline every card.
+ *
+ * These are deliberately screen-level tokens; approved identity, Splash and
+ * authentication artwork retain their original KNOUX signature colors.
+ */
+internal object NativePalette {
+    val ink = Color(0xFF090A1E)
+    val card = Color(0xFF0F1734)
+    val raised = Color(0xFF152343)
+    val border = Color(0xFF263558)
+    val blue = Color(0xFF1287F7)
+    val cyan = Color(0xFF2AB9FF)
+    val violet = Color(0xFFA579EC)
+    val magenta = Color(0xFFE05BD3)
+    val amber = Color(0xFFE8B23A)
+    val green = Color(0xFF3ECF8E)
+    val red = Color(0xFFE5484D)
+    val text = Color(0xFFF4F7FF)
+    val muted = Color(0xFFA5B4D0)
+}
+
+/** Vertical rhythm shared by every native screen (Figma 12/16/20 ladder). */
+internal object NativeSpace {
+    val edge = 20.dp          // Figma content margin, x20 at the 360dp reference
+    val tight = 8.dp
+    val row = 12.dp
+    val block = 16.dp
+    val section = 20.dp
+    val tile = 92.dp          // Figma service tile height at 360dp reference
+    val gutter = 12.dp        // Figma two-column gutter
+}
+
+/**
  * An opaque surface with a thin border.
  *
  * The brief keeps glass for the few main cards of a screen; everything else is
@@ -60,10 +98,15 @@ internal fun SurfaceCard(
     content: @Composable BoxScope.() -> Unit,
 ) {
     val shape = RoundedCornerShape(16.dp)
+    val native = LocalNativeApp.current
     Box(
         modifier.fillMaxWidth().clip(shape)
-            .background(if (variant) KnouxColors.surfaceVariant else KnouxColors.surface)
-            .border(1.dp, KnouxColors.border, shape),
+            .background(
+                if (native) {
+                    if (variant) NativePalette.raised else NativePalette.card
+                } else if (variant) KnouxColors.surfaceVariant else KnouxColors.surface
+            )
+            .border(1.dp, if (native) NativePalette.border else KnouxColors.border, shape),
         content = content,
     )
 }
@@ -121,8 +164,15 @@ internal fun BottomActionBar(
 @Composable
 internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () -> Unit, tag: String = "primary-action") {
     val shape = RoundedCornerShape(50)
-    val ink = if (enabled) Light.white else KnouxColors.textSecondary
-    val fill = if (enabled) Modifier.primarySurface(null, null) else Modifier.background(KnouxColors.surfaceVariant)
+    val native = LocalNativeApp.current
+    val ink = if (enabled) {
+        if (native) NativePalette.text else Light.white
+    } else KnouxColors.textSecondary
+    val fill = when {
+        !enabled -> Modifier.background(if (native) NativePalette.raised else KnouxColors.surfaceVariant)
+        native -> Modifier.background(NativePalette.blue)
+        else -> Modifier.primarySurface(null, null)
+    }
     Row(
         Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
             .clip(shape).then(fill)
@@ -140,18 +190,23 @@ internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () 
 @Composable
 internal fun SecondaryAction(action: Action, onClick: () -> Unit, tag: String = "secondary-action") {
     val shape = RoundedCornerShape(14.dp)
+    val native = LocalNativeApp.current
     Row(
         Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
-            .clip(shape).background(KnouxColors.surface)
-            .border(1.dp, KnouxColors.border, shape)
+            .clip(shape)
+            .background(if (native) NativePalette.card else KnouxColors.surface)
+            .border(1.dp, if (native) NativePalette.border else KnouxColors.border, shape)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
     ) {
-        Glyph(action.icon, Modifier.size(18.dp), KnouxColors.accent)
+        Glyph(action.icon, Modifier.size(18.dp), if (native) NativePalette.cyan else KnouxColors.accent)
         Spacer(Modifier.width(8.dp))
-        Label(action.label, 14, KnouxColors.textPrimary, FontWeight.SemiBold, align = TextAlign.Center)
+        Label(
+            action.label, 14, if (native) NativePalette.text else KnouxColors.textPrimary,
+            FontWeight.SemiBold, align = TextAlign.Center,
+        )
     }
 }
 
@@ -170,18 +225,27 @@ internal fun StateBlock(state: UiState, detail: Copy, onRetry: (() -> Unit)? = n
         UiState.ERROR -> Triple(KnouxColors.danger, Mark.WARN, Copy(R.string.state_error))
         UiState.SUCCESS -> Triple(KnouxColors.success, Mark.CHECK, Copy(R.string.state_success))
     }
+    val native = LocalNativeApp.current
+    val tone = when {
+        !native -> tint
+        state == UiState.LOADING -> NativePalette.blue
+        state == UiState.ERROR -> NativePalette.red
+        state == UiState.SUCCESS -> NativePalette.green
+        else -> NativePalette.muted
+    }
     Column(
         Modifier.fillMaxWidth().testTag("state-" + state.name.lowercase())
-            .clip(RoundedCornerShape(16.dp)).background(KnouxColors.surface)
-            .border(1.dp, KnouxColors.border, RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(16.dp))
+            .background(if (native) NativePalette.card else KnouxColors.surface)
+            .border(1.dp, if (native) NativePalette.border else KnouxColors.border, RoundedCornerShape(16.dp))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         if (state == UiState.LOADING) Shimmer()
-        Glyph(mark, Modifier.size(28.dp), tint)
-        Label(title, 15, tint, FontWeight.SemiBold, align = TextAlign.Center)
-        Label(detail, 13, KnouxColors.textSecondary, align = TextAlign.Center)
+        Glyph(mark, Modifier.size(28.dp), tone)
+        Label(title, 15, tone, FontWeight.SemiBold, align = TextAlign.Center)
+        Label(detail, 13, if (native) NativePalette.muted else KnouxColors.textSecondary, align = TextAlign.Center)
         onRetry?.let { retry ->
             SecondaryAction(Action(Copy(R.string.action_retry), Mark.SYNC), retry)
         }
@@ -192,6 +256,7 @@ internal fun StateBlock(state: UiState, detail: Copy, onRetry: (() -> Unit)? = n
 @Composable
 internal fun Shimmer() {
     val motion = LocalPreviewMotion.current
+    val native = LocalNativeApp.current
     val alpha = if (motion) {
         val transition = rememberInfiniteTransition(label = "skeleton")
         transition.animateFloat(
@@ -200,11 +265,12 @@ internal fun Shimmer() {
             label = "skeleton",
         ).value
     } else 0.30f
+    val track = if (native) NativePalette.raised else KnouxColors.surfaceVariant
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         listOf(1f, .8f, .6f).forEach { fraction ->
             Box(
                 Modifier.fillMaxWidth(fraction).height(10.dp).clip(RoundedCornerShape(50))
-                    .background(KnouxColors.surfaceVariant.copy(alpha = alpha))
+                    .background(track.copy(alpha = alpha))
             )
         }
     }
@@ -229,9 +295,12 @@ internal fun TechnicalDetails(
 ) {
     var open by rememberSaveable { mutableStateOf(false) }
     val shape = RoundedCornerShape(16.dp)
+    val native = LocalNativeApp.current
+    val quiet = if (native) NativePalette.muted else KnouxColors.textSecondary
     Column(
-        modifier.fillMaxWidth().clip(shape).background(KnouxColors.surface)
-            .border(1.dp, KnouxColors.border, shape),
+        modifier.fillMaxWidth().clip(shape)
+            .background(if (native) NativePalette.card else KnouxColors.surface)
+            .border(1.dp, if (native) NativePalette.border else KnouxColors.border, shape),
     ) {
         Row(
             Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET)
@@ -240,14 +309,13 @@ internal fun TechnicalDetails(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Glyph(Mark.GEAR, Modifier.size(16.dp), KnouxColors.textSecondary)
+            Glyph(Mark.GEAR, Modifier.size(16.dp), quiet)
             Label(
-                Copy(R.string.technical_details), 13, KnouxColors.textSecondary, FontWeight.SemiBold,
+                Copy(R.string.technical_details), 13, quiet, FontWeight.SemiBold,
                 modifier = Modifier.weight(1f),
             )
             Glyph(
-                Mark.NEXT, Modifier.size(14.dp).rotate(if (open) 90f else 0f),
-                KnouxColors.textSecondary,
+                Mark.NEXT, Modifier.size(14.dp).rotate(if (open) 90f else 0f), quiet,
             )
         }
         if (open) {
@@ -257,9 +325,10 @@ internal fun TechnicalDetails(
             ) {
                 rows.forEach { (label, value) ->
                     Row(Modifier.fillMaxWidth()) {
-                        Label(label, 12, KnouxColors.textSecondary, modifier = Modifier.weight(.42f))
+                        Label(label, 12, quiet, modifier = Modifier.weight(.42f))
                         Label(
-                            Copy.runtime(value), 12, KnouxColors.textPrimary,
+                            Copy.runtime(value), 12,
+                            if (native) NativePalette.text else KnouxColors.textPrimary,
                             modifier = Modifier.weight(.58f), maxLines = 3,
                         )
                     }

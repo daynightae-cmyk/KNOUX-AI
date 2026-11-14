@@ -25,6 +25,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,6 +75,24 @@ import kotlinx.coroutines.withContext
 /** Two-tone title used by every master screen (white lead, signature accent). */
 @Composable
 internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) {
+    // Native header: two lines of plain type, flush to the reading edge. The
+    // gradient lead and the signature flourish stay on the approved cinematic
+    // surfaces; a utility screen states its name and gets on with the job.
+    if (LocalNativeApp.current) {
+        Column(
+            Modifier.fillMaxWidth().padding(top = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Label(
+                Copy.runtime("${lead.localized()} ${accent.localized()}"), 20,
+                NativePalette.text, FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth().testTag(tag),
+                maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            )
+            Label(subtitle, 12, NativePalette.muted, maxLines = 3)
+        }
+        return
+    }
     val roomy = LocalRoomy.current
     Column(
         Modifier.fillMaxWidth().padding(horizontal = 6.dp),
@@ -259,10 +278,175 @@ private fun readHubMeasures(): List<HubMeasure> {
     }
 }
 
+/**
+ * The hub, in whichever shell the app is running.
+ *
+ * The native shell rebuilds the composition to the measured Figma geometry; the
+ * accepted cinematic hub is untouched below it, so the approved artwork can still
+ * be reached by flipping the shell flag back.
+ */
 @Composable
 internal fun SmartHubScreen(open: (Page) -> Unit) {
-    val motion = LocalPreviewMotion.current
     val measures = readHubMeasures()
+    if (LocalNativeApp.current) NativeHubScreen(measures, open) else CinematicHubScreen(measures, open)
+}
+
+/** The eight real services the hub offers, in the order the approved hub shows them. */
+private fun hubCardSpecs(): List<HubCardSpec> = listOf(
+    HubCardSpec(Copy(R.string.k_smart_clean), Copy(R.string.home_card_clean_body),
+        Mark.TRASH, KnouxColors.primary, "open-clean-center", Page.CLEAN, 0, Copy(R.string.k_review)),
+    HubCardSpec(Copy(R.string.k_duplicate_files), Copy(R.string.home_card_duplicates_body),
+        Mark.COPY, KnouxColors.accent, "hub-duplicates", Page.DUPLICATES, 2, Copy(R.string.k_review)),
+    HubCardSpec(Copy(R.string.k_app_residue_cleanup), Copy(R.string.home_card_residue_body),
+        Mark.LAYERS, KnouxColors.primary, "hub-residue", Page.RESIDUE, 1, Copy(R.string.k_review)),
+    HubCardSpec(Copy(R.string.k_storage_breakdown), Copy(R.string.home_card_storage_body),
+        Mark.DISK, KnouxColors.accent, "hub-storage-analyzer", Page.STORAGE_BREAKDOWN, action = Copy(R.string.k_open)),
+    HubCardSpec(Copy(R.string.k_privacy_sweep), Copy(R.string.home_card_privacy_body),
+        Mark.SHIELD, KnouxColors.warning, "hub-privacy-sweep", Page.PRIVACY_INSPECTOR, 3, Copy(R.string.k_review)),
+    HubCardSpec(Copy(R.string.k_ai_optimization), Copy(R.string.home_card_ai_body),
+        Mark.CHIP, KnouxColors.accent, "hub-ai-optimization", Page.AI_RECOMMENDATIONS, action = Copy(R.string.k_optimize)),
+    HubCardSpec(Copy(R.string.k_app_manager), Copy(R.string.home_card_apps_body),
+        Mark.GROUP, KnouxColors.primary, "hub-app-manager", Page.APPS_REVIEW, action = Copy(R.string.k_open)),
+    HubCardSpec(Copy(R.string.k_reports_insights), Copy(R.string.home_card_reports_body),
+        Mark.BARS, KnouxColors.accent, "hub-reports", Page.REPORTS, action = Copy(R.string.k_open)),
+)
+
+/** Which segment owns which service, keyed by the tag the tests hold on to. */
+private val hubSegmentOfTag = mapOf(
+    "open-clean-center" to HubSegment.CLEAN,
+    "hub-duplicates" to HubSegment.CLEAN,
+    "hub-residue" to HubSegment.CLEAN,
+    "hub-storage-analyzer" to HubSegment.MANAGE,
+    "hub-app-manager" to HubSegment.MANAGE,
+    "hub-reports" to HubSegment.MANAGE,
+    "hub-privacy-sweep" to HubSegment.PROTECT,
+    "hub-ai-optimization" to HubSegment.PROTECT,
+)
+
+/**
+ * The native hub: Figma 2:2 / 2010:2 measured top to bottom.
+ *
+ * Header type, a 108dp storage overview, one 48dp scan action, the 36dp segment
+ * strip, then the service grid at 154x92 with a 12dp gutter, recent activity and
+ * quick actions. Selecting a segment promotes its group; it never removes a
+ * service from the screen, so everything stays one tap and one scroll away.
+ */
+@Composable
+private fun NativeHubScreen(measures: List<HubMeasure>, open: (Page) -> Unit) {
+    val footprint = readStorageFootprint()
+    // Real Room journal only, the same source the reports chart reads.
+    val history by remember { KnouxData.smartClean.observeHistory() }
+        .collectAsState(initial = emptyList())
+    var selectedName by rememberSaveable { mutableStateOf(HubSegment.CLEAN.name) }
+    val selected = runCatching { HubSegment.valueOf(selectedName) }.getOrDefault(HubSegment.CLEAN)
+    val specs = hubCardSpecs()
+    val ordered = HubSegment.values().sortedBy { if (it == selected) 0 else 1 }
+
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+            .padding(horizontal = NativeSpace.edge),
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(top = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Label(
+                Copy(R.string.home_title), 20, NativePalette.text, FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth().testTag("screen-home"),
+            )
+            Label(Copy(R.string.home_subtitle), 12, NativePalette.muted)
+        }
+
+        NativeStorageOverview(footprint, Modifier.fillMaxWidth().padding(top = NativeSpace.block))
+
+        AccentButton(
+            Action(Copy(R.string.k_start_deep_scan), Mark.RADAR),
+            Modifier.fillMaxWidth().padding(top = NativeSpace.row).heightIn(min = 48.dp),
+            primary = true,
+            tag = "start-scan",
+            labelSize = 15,
+        ) { open(Page.SCAN) }
+
+        NativeHubSegments(selected) { picked -> selectedName = picked.name }
+
+        Column(
+            Modifier.fillMaxWidth().padding(top = NativeSpace.row),
+            verticalArrangement = Arrangement.spacedBy(NativeSpace.block),
+        ) {
+            ordered.forEach { group ->
+                val tiles = specs.filter { hubSegmentOfTag[it.tag] == group }
+                Column(
+                    Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(NativeSpace.gutter),
+                ) {
+                    Label(
+                        Copy(group.labelRes), 13,
+                        if (group == selected) NativePalette.text else NativePalette.muted,
+                        FontWeight.SemiBold,
+                    )
+                    tiles.chunked(2).forEach { pair ->
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(NativeSpace.gutter),
+                        ) {
+                            pair.forEach { spec ->
+                                Box(Modifier.weight(1f)) {
+                                    NativeHubTile(spec, measures, nativeTintFor(group, spec.tag), open)
+                                }
+                            }
+                            // A lone tile in an odd row keeps the measured width.
+                            if (pair.size == 1) Spacer(Modifier.weight(1f))
+                        }
+                    }
+                }
+            }
+        }
+
+        NativeRecentActivity(history, Modifier.fillMaxWidth().padding(top = NativeSpace.block))
+
+        SurfaceCard(Modifier.fillMaxWidth().padding(top = NativeSpace.row)) {
+            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Label(Copy(R.string.k_quick_actions), 14, NativePalette.text, FontWeight.Bold)
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    QuickAction(Modifier.weight(1f), Copy(R.string.quick_clean), Mark.BROOM,
+                        NativePalette.violet, "quick-clean") { open(Page.CLEAN) }
+                    QuickAction(Modifier.weight(1f), Copy(R.string.k_save_battery), Mark.BATTERY,
+                        NativePalette.cyan, "quick-battery") { open(Page.BATTERY_DIAGNOSTICS) }
+                    QuickAction(Modifier.weight(1f), Copy(R.string.k_secure_device), Mark.SHIELD,
+                        NativePalette.amber, "quick-privacy") { open(Page.PRIVACY_INSPECTOR) }
+                }
+            }
+        }
+
+        StateNote(Copy(R.string.home_measured_source), Modifier.padding(top = NativeSpace.row))
+        Spacer(Modifier.height(24.dp))
+    }
+}
+
+/** The one accent a segment lends its tiles: violet to work, cyan to data, amber to caution. */
+private fun nativeTintFor(group: HubSegment, tag: String): Color = when {
+    tag == "hub-privacy-sweep" -> NativePalette.amber
+    group == HubSegment.CLEAN -> NativePalette.violet
+    group == HubSegment.MANAGE -> NativePalette.cyan
+    else -> NativePalette.blue
+}
+
+@Composable
+private fun NativeHubTile(
+    spec: HubCardSpec, measures: List<HubMeasure>, tint: Color, open: (Page) -> Unit,
+) {
+    val measure = spec.valueIndex?.let { measures[it] }
+    NativeServiceTile(
+        title = spec.title, mark = spec.mark, tint = tint, tag = spec.tag,
+        value = measure?.takeIf { it.measured }?.value, action = spec.action,
+        onClick = { open(spec.page) },
+    )
+}
+
+/** The accepted cinematic hub, preserved exactly as approved. */
+@Composable
+private fun CinematicHubScreen(measures: List<HubMeasure>, open: (Page) -> Unit) {
+    val motion = LocalPreviewMotion.current
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -287,27 +471,7 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             HubMeasureStrip(measures)
-
-            // The approved home keeps every service one tap away. Each card shows
-            // its last real measurement, or a dash until a pass has measured it.
-            val cards = listOf(
-                HubCardSpec(Copy(R.string.k_smart_clean), Copy(R.string.home_card_clean_body),
-                    Mark.TRASH, KnouxColors.primary, "open-clean-center", Page.CLEAN, 0, Copy(R.string.k_review)),
-                HubCardSpec(Copy(R.string.k_duplicate_files), Copy(R.string.home_card_duplicates_body),
-                    Mark.COPY, KnouxColors.accent, "hub-duplicates", Page.DUPLICATES, 2, Copy(R.string.k_review)),
-                HubCardSpec(Copy(R.string.k_app_residue_cleanup), Copy(R.string.home_card_residue_body),
-                    Mark.LAYERS, KnouxColors.primary, "hub-residue", Page.RESIDUE, 1, Copy(R.string.k_review)),
-                HubCardSpec(Copy(R.string.k_storage_breakdown), Copy(R.string.home_card_storage_body),
-                    Mark.DISK, KnouxColors.accent, "hub-storage-analyzer", Page.STORAGE_BREAKDOWN, action = Copy(R.string.k_open)),
-                HubCardSpec(Copy(R.string.k_privacy_sweep), Copy(R.string.home_card_privacy_body),
-                    Mark.SHIELD, KnouxColors.warning, "hub-privacy-sweep", Page.PRIVACY_INSPECTOR, 3, Copy(R.string.k_review)),
-                HubCardSpec(Copy(R.string.k_ai_optimization), Copy(R.string.home_card_ai_body),
-                    Mark.CHIP, KnouxColors.accent, "hub-ai-optimization", Page.AI_RECOMMENDATIONS, action = Copy(R.string.k_optimize)),
-                HubCardSpec(Copy(R.string.k_app_manager), Copy(R.string.home_card_apps_body),
-                    Mark.GROUP, KnouxColors.primary, "hub-app-manager", Page.APPS_REVIEW, action = Copy(R.string.k_open)),
-                HubCardSpec(Copy(R.string.k_reports_insights), Copy(R.string.home_card_reports_body),
-                    Mark.BARS, KnouxColors.accent, "hub-reports", Page.REPORTS, action = Copy(R.string.k_open)),
-            )
+            val cards = hubCardSpecs()
             val singleColumn = LocalRoomy.current || LocalDensity.current.fontScale > 1.24f
             if (singleColumn) {
                 cards.forEach { spec -> HubCardFor(spec, measures, open) }

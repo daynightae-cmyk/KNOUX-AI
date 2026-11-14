@@ -959,4 +959,11 @@
     <string name="residue_cache_note">هذه العناصر داخل ذاكرة KNOUX المؤقتة وتُزال مباشرة؛ لا يظهر حوار أندرويد.</string>
     <string name="residue_mixed_note">تُزال عناصر ذاكرة KNOUX فورًا. حوار أندرويد يغطي الوسائط المشتركة فقط؛ إلغاؤه يتركها دون تغيير.</string>
     <string name="grant_revoked">مُلغى — أعد المنح للفحص</string>
+    <string name="home_title">مركز الجهاز الذكي</string>
+    <string name="home_storage_title">تخزين الجهاز</string>
+    <string name="home_storage_used">مستخدَم</string>
+    <string name="home_storage_free">متاح</string>
+    <string name="home_storage_unreadable">لم يُبلِغ أندرويد عن أي سعة.</string>
+    <string name="home_segment_protect">حماية</string>
+    <string name="home_recent_title">آخر الأنشطة</string>
 </resources>

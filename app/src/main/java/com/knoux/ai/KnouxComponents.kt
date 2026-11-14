@@ -34,6 +34,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
@@ -60,6 +61,8 @@ import kotlin.math.sin
 
 internal val LocalArabic = compositionLocalOf { false }
 internal val LocalPreviewMotion = compositionLocalOf { false }
+/** True only inside the real utility shell, never Splash or login. */
+internal val LocalNativeApp = compositionLocalOf { false }
 internal val LocalRoomy = compositionLocalOf { false }
 internal val LocalTall = compositionLocalOf { false }
 /** Brand wordmark only: this face has no Arabic glyphs. */
@@ -106,6 +109,50 @@ internal fun Unmeasured(size: Int = 15, align: TextAlign? = null, modifier: Modi
         "—", size, KnouxColors.textSecondary.copy(alpha = .70f), FontWeight.SemiBold,
         modifier = modifier, align = align,
     )
+}
+
+/**
+ * The native ambient field.
+ *
+ * Three thin arcs — two along the top edge, one along the bottom — carry the
+ * logo's violet → magenta → cyan into the empty bands of the Figma composition
+ * at low opacity. That is the whole decoration. There are deliberately no light
+ * pools, no stardust, no horizon beam and no moving parts: the field must read
+ * as a quiet navy surface with a hint of the brand, never as an effect.
+ *
+ * It is static, so a reduced-motion device and a still screenshot see the same
+ * thing.
+ */
+internal fun DrawScope.drawNativeAmbientField() {
+    val w = size.width
+    val h = size.height
+    if (w < 1f || h < 1f) return
+    val stroke = (1.4.dp.toPx()).coerceAtLeast(1f)
+    val wave = Brush.horizontalGradient(
+        listOf(
+            Color.Transparent,
+            NativePalette.violet.copy(alpha = .20f),
+            NativePalette.magenta.copy(alpha = .13f),
+            NativePalette.cyan.copy(alpha = .17f),
+            Color.Transparent,
+        ),
+        startX = 0f, endX = w,
+    )
+    val upper = Path().apply {
+        moveTo(0f, h * .045f)
+        cubicTo(w * .28f, h * .004f, w * .64f, h * .104f, w, h * .038f)
+    }
+    val second = Path().apply {
+        moveTo(0f, h * .075f)
+        cubicTo(w * .34f, h * .034f, w * .70f, h * .128f, w, h * .068f)
+    }
+    val floor = Path().apply {
+        moveTo(0f, h * .955f)
+        cubicTo(w * .30f, h * .994f, w * .68f, h * .918f, w, h * .962f)
+    }
+    drawPath(upper, wave, style = Stroke(stroke))
+    drawPath(second, wave, style = Stroke(stroke * .72f))
+    drawPath(floor, wave, style = Stroke(stroke))
 }
 
 /**
@@ -184,7 +231,16 @@ internal fun Modifier.buttonBloom(primary: Boolean, pulse: State<Float>? = null)
 @Composable
 internal fun GlassPanel(modifier: Modifier = Modifier, radius: Int = 14, tint: Color? = null, content: @Composable () -> Unit
 ) {
-    Box(modifier.glass(radius, tint = tint), contentAlignment = Alignment.CenterStart) { content() }
+    // Scoped substitution: actual utility screens borrow the Figma quiet navy
+    // panel, while the approved Splash/Onboarding/Auth cinematic glass is intact.
+    val native = LocalNativeApp.current
+    val shape = RoundedCornerShape(radius.dp)
+    val surface = if (native) {
+        modifier.clip(shape)
+            .background(Brush.verticalGradient(listOf(NativePalette.raised, NativePalette.card)))
+            .border(1.dp, NativePalette.border, shape)
+    } else modifier.glass(radius, tint = tint)
+    Box(surface, contentAlignment = Alignment.CenterStart) { content() }
 }
 
 /**
@@ -195,6 +251,19 @@ internal fun GlassPanel(modifier: Modifier = Modifier, radius: Int = 14, tint: C
 internal fun IconBadge(mark: Mark, tint: Color, modifier: Modifier = Modifier, diameter: Int = 36) {
     val shape = RoundedCornerShape((diameter * .30f).dp)
     val box = modifier.size(diameter.dp)
+    // Native utility icon: a quiet tinted plate and one flat glyph. The
+    // volumetric shell, internal bloom and specular highlight belong to the
+    // approved cinematic surfaces and stay there.
+    if (LocalNativeApp.current) {
+        val tone = if (tint == Pink || tint == KnouxColors.primary) NativePalette.blue else
+            if (tint == Cyan || tint == KnouxColors.accent) NativePalette.cyan else tint
+        Box(
+            box.background(tone.copy(alpha = .16f), shape)
+                .border(1.dp, tone.copy(alpha = .40f), shape),
+            contentAlignment = Alignment.Center,
+        ) { Glyph(mark, Modifier.size((diameter * .52f).dp), tone) }
+        return
+    }
     Box(box.background(Brush.verticalGradient(listOf(tint.copy(alpha = .68f), Color(0xff150d38).copy(alpha = .88f))),
         shape
     ).border(.9.dp, Brush.horizontalGradient(listOf(Color.White.copy(alpha = .78f), tint.copy(alpha = 1f), Color.Transparent)), shape),
@@ -228,6 +297,24 @@ internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = tr
         withStyle(SpanStyle(brush = Brush.verticalGradient(listOf(Color(0xfff896ff), Color(0xffe06bff), Color(0xffc25bff))))) { append(last) }
     }
     val alignment = if (inline) TextAlign.Start else TextAlign.Center
+    // Native utility header: the Figma screens open with a compact title and a
+    // quiet subtitle, not with a hero illustration. The instrument below the
+    // header is the visual event. The approved cinematic hero stays everywhere
+    // LocalNativeApp is false (Splash, Onboarding, authentication).
+    if (LocalNativeApp.current) {
+        Column(
+            Modifier.fillMaxWidth().padding(horizontal = NativeSpace.edge, vertical = 6.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            Label(
+                title, 22, NativePalette.text, FontWeight.ExtraBold,
+                modifier = Modifier.fillMaxWidth().testTag("screen-${page.id}"),
+                maxLines = 2, overflow = TextOverflow.Ellipsis,
+            )
+            Label(subtitle.localized(), 12, NativePalette.muted, maxLines = 2)
+        }
+        return
+    }
     val headings: @Composable () -> Unit = {
         Text(styledTitle, Modifier.fillMaxWidth().padding(horizontal = 4.dp).testTag("screen-${page.id}"), style = TextStyle(fontSize = fontSize.sp, lineHeight = (fontSize * 1.05f).sp, fontFamily = font,
             fontWeight = FontWeight.ExtraBold, textAlign = alignment
@@ -254,17 +341,22 @@ internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) .972f else 1f, tween(120), label = "cta press")
+    val native = LocalNativeApp.current
     val active = enabled && LocalPreviewMotion.current
-    val pulse = if (active && primary) {
+    val pulse = if (active && primary && !native) {
         val transition = rememberInfiniteTransition(label = "cta breath")
         transition.animateFloat(0f, 1f, infiniteRepeatable(tween(2600, easing = FastOutSlowInEasing),
             RepeatMode.Reverse), label = "cta glow")
     } else null
-    val shimmer = if (active && primary) {
+    val shimmer = if (active && primary && !native) {
         val transition = rememberInfiniteTransition(label = "cta shimmer")
         transition.animateFloat(0f, 1f, infiniteRepeatable(tween(3600, easing = LinearEasing)), label = "shimmer")
     } else null
     val surface = when {
+        native && primary && enabled -> Modifier.background(NativePalette.blue)
+        native && enabled -> Modifier.background(NativePalette.card)
+            .border(1.dp, NativePalette.border, RoundedCornerShape(28.dp))
+        native -> Modifier.background(NativePalette.raised)
         primary && enabled -> Modifier.primarySurface(shimmer, pulse)
         enabled -> Modifier.glass(28, active = selected == true, ghost = true)
         else -> Modifier.disabledSurface()
@@ -276,20 +368,32 @@ internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary
     }
     Row(modifier.heightIn(min = 48.dp).then(if (tag.isNotEmpty()) Modifier.testTag(tag) else Modifier)
         .graphicsLayer { scaleX = scale; scaleY = scale }
-        .then(if (primary && enabled) Modifier.buttonBloom(true, pulse) else Modifier)
+        .then(if (primary && enabled && !native) Modifier.buttonBloom(true, pulse) else Modifier)
         .clip(round)
         .then(surface)
-        .then(if (selected == true) Modifier.border(1.4.dp,
-            Brush.horizontalGradient(listOf(Light.ice, Light.cyan, Light.pink)), round) else Modifier)
+        .then(
+            if (selected != true) Modifier
+            else if (native) Modifier.border(1.4.dp, NativePalette.cyan, round)
+            else Modifier.border(
+                1.4.dp,
+                Brush.horizontalGradient(listOf(Light.ice, Light.cyan, Light.pink)),
+                round,
+            )
+        )
         .then(click)
         .padding(horizontal = 12.dp, vertical = 7.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally), verticalAlignment = Alignment.CenterVertically
     ) {
-        val tone = if (enabled) Chalk else Mist.copy(alpha = .64f)
-        Glyph(action.icon, Modifier.size(20.dp), tone, primary && enabled)
+        val tone = when {
+            !enabled -> if (native) NativePalette.muted.copy(alpha = .64f) else Mist.copy(alpha = .64f)
+            native && primary -> NativePalette.text
+            native -> NativePalette.text
+            else -> Chalk
+        }
+        Glyph(action.icon, Modifier.size(20.dp), tone, primary && enabled && !native)
         Label(action.label.localized(), if (action.label.localized().length > 20 && labelSize <= 13) 11 else labelSize,
             tone, FontWeight.Bold, align = TextAlign.Center, maxLines = 2)
-        if (tag == "start-scan" && !LocalRoomy.current) {
+        if (tag == "start-scan" && !LocalRoomy.current && !native) {
             val direction = if (LocalArabic.current) 180f else 0f
             Row(Modifier.rotate(direction).then(if (pulse != null) Modifier.graphicsLayer {
                 translationX = pulse.value * 2.2.dp.toPx()
@@ -351,12 +455,27 @@ internal fun GradientBar(value: Float, modifier: Modifier = Modifier, thickness:
     val target = value.coerceIn(0f, 1f)
     val shown by animateFloatAsState(if (entered) target else 0f,
         animationSpec = tween(if (motion) 780 else 0, easing = FastOutSlowInEasing), label = "bar fill")
-    val sweep = if (live && motion) {
+    val sweep = if (live && motion && !LocalNativeApp.current) {
         val transition = rememberInfiniteTransition(label = "bar sweep")
         transition.animateFloat(0f, 1f, infiniteRepeatable(tween(2300, easing = LinearEasing)), label = "bar sweep")
     } else null
+    val native = LocalNativeApp.current
     Canvas(modifier.fillMaxWidth().height(thickness.dp)) {
         val radius = CornerRadius(size.height / 2f)
+        if (native) {
+            // A measured quantity needs a track and a fill, nothing else: no
+            // saturated halo, no travelling specular sweep, no lit cap.
+            drawRoundRect(NativePalette.border.copy(alpha = .85f), cornerRadius = radius)
+            val fill = size.width * shown
+            if (fill > 0f) {
+                drawRoundRect(
+                    Brush.horizontalGradient(
+                        listOf(NativePalette.blue, NativePalette.cyan), endX = fill,
+                    ), size = Size(fill, size.height), cornerRadius = radius,
+                )
+            }
+            return@Canvas
+        }
         drawRoundRect(Color(0xff2a2058), cornerRadius = radius)
         drawRoundRect(Brush.verticalGradient(listOf(Color(0xffaaa0d8), Color(0xff61558e))),
             cornerRadius = radius, style = Stroke(.7.dp.toPx()))
@@ -386,11 +505,12 @@ internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, s
     modifier: Modifier = Modifier, displayValue: String = "$value%", live: Boolean = false
 ) {
     val motion = LocalPreviewMotion.current
+    val native = LocalNativeApp.current
     var entered by remember { mutableStateOf(!motion) }
     LaunchedEffect(Unit) { entered = true }
     val shown by animateFloatAsState(if (entered) value.coerceIn(0, 100).toFloat() else 0f,
         animationSpec = tween(if (motion) 1000 else 0, easing = FastOutSlowInEasing), label = "donut sweep")
-    val glint = if (live && motion) {
+    val glint = if (live && motion && !native) {
         val transition = rememberInfiniteTransition(label = "donut glint")
         transition.animateFloat(0f, 1f, infiniteRepeatable(tween(4200, easing = LinearEasing)), label = "donut glint")
     } else null
@@ -402,6 +522,21 @@ internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, s
             val start = Offset(inset, inset)
             val arcSize = Size(width - inset * 2, width - inset * 2)
             val sweep = if (split) 342f else 348f * shown / 100f
+            if (native) {
+                // Figma gauge anatomy: one quiet track, one measured arc, one
+                // readable number. No machined ticks, no cavity light, no glint.
+                drawCircle(NativePalette.border, radius = width / 2 - inset, center = center,
+                    style = Stroke(band))
+                if (sweep > 0.5f) {
+                    drawArc(
+                        Brush.sweepGradient(
+                            listOf(NativePalette.blue, NativePalette.cyan, NativePalette.violet), center,
+                        ), -84f, sweep, false, start, arcSize,
+                        style = Stroke(band, cap = StrokeCap.Round),
+                    )
+                }
+                return@Canvas
+            }
             val tone = Brush.sweepGradient(listOf(Color(0xffc41bff), Color(0xff6a2bff), Light.cyan, if (split) Gold else Light.cyan, Light.cyan, Light.magenta, Color(0xffc41bff)))
             // Fine machined ticks around the outside of the cavity.
             for (tick in 0..35) {
@@ -445,11 +580,13 @@ internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, s
             val fitOnOneLine = density.fontScale <= 1.24f
             val textWidth = measurer.measure(displayValue, style, softWrap = false, maxLines = 1).size.width
             val valueSize = if (fitOnOneLine && textWidth > available) preferred * (available / textWidth) else preferred
-            Text(displayValue, color = Chalk, style = style.copy(fontSize = valueSize, lineHeight = valueSize * 1.08f),
+            val valueTone = if (native) NativePalette.text else Chalk
+            val labelTone = if (native) NativePalette.muted else Mist
+            Text(displayValue, color = valueTone, style = style.copy(fontSize = valueSize, lineHeight = valueSize * 1.08f),
                 textAlign = TextAlign.Center, softWrap = !fitOnOneLine)
             if (label.isNotEmpty()) {
                 val labelSize = if (diameter < 80) 7 else 8
-                Text(label, color = Mist, textAlign = TextAlign.Center, maxLines = 2, softWrap = true,
+                Text(label, color = labelTone, textAlign = TextAlign.Center, maxLines = 2, softWrap = true,
                     modifier = Modifier.fillMaxWidth(),
                     style = LocalTextStyle.current.copy(fontSize = labelSize.sp, lineHeight = (labelSize * 1.12f).sp,
                         fontWeight = FontWeight.Medium))
@@ -461,6 +598,19 @@ internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, s
 @Composable
 internal fun NeonPill(label: String, tint: Color = Cyan, solid: Boolean = true) {
     val shape = RoundedCornerShape(16.dp)
+    if (LocalNativeApp.current) {
+        // Status vocabulary stays, the neon does not: one quiet tinted chip.
+        val tone = if (tint == Gold) NativePalette.amber else
+            if (tint == Mint) NativePalette.green else
+                if (tint == Pink) NativePalette.magenta else
+                    if (tint == Cyan) NativePalette.cyan else tint
+        Box(
+            Modifier.background(tone.copy(alpha = .14f), shape)
+                .border(1.dp, tone.copy(alpha = .42f), shape)
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+        ) { Label(label, 10, tone, FontWeight.SemiBold, align = TextAlign.Center) }
+        return
+    }
     val lightTint = tint == Cyan || tint == Mint || tint == Gold
     val fill = when {
         solid && lightTint -> listOf(lerp(tint, Color.White, .24f), tint)
@@ -483,21 +633,28 @@ internal fun NeonPill(label: String, tint: Color = Cyan, solid: Boolean = true) 
 
 @Composable
 internal fun Separator(modifier: Modifier = Modifier) {
+    if (LocalNativeApp.current) {
+        Box(modifier.background(NativePalette.border))
+        return
+    }
     Box(modifier.background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xffa692d6), Color.Transparent))))
 }
 
 @Composable
 internal fun SelectionIndicator(checked: Boolean, tint: Color = Cyan) {
     val shape = RoundedCornerShape(5.dp)
-    val check = if (tint == Cyan || tint == Mint || tint == Gold) Ink else Chalk
-    val fill by animateColorAsState(if (checked) tint else Color.Transparent,
+    val native = LocalNativeApp.current
+    val tone = if (native && tint == Cyan) NativePalette.blue else tint
+    val check = if (native) NativePalette.text else
+        if (tint == Cyan || tint == Mint || tint == Gold) Ink else Chalk
+    val fill by animateColorAsState(if (checked) tone else Color.Transparent,
         animationSpec = tween(if (LocalPreviewMotion.current) 180 else 0), label = "check fill")
     val checkScale by animateFloatAsState(if (checked) 1f else .55f,
         animationSpec = tween(if (LocalPreviewMotion.current) 190 else 0), label = "check pop")
     Box(Modifier.size(17.dp)
         .graphicsLayer { scaleX = if (checked) 1.04f else 1f; scaleY = if (checked) 1.04f else 1f }
         .background(fill, shape)
-        .border(1.dp, if (checked) lerp(tint, Color.White, .35f) else tint, shape),
+        .border(1.dp, if (checked && !native) lerp(tone, Color.White, .35f) else tone, shape),
         contentAlignment = Alignment.Center) {
         if (checked) Canvas(Modifier.size(12.dp).graphicsLayer { scaleX = checkScale; scaleY = checkScale }) {
             drawLine(check, Offset(size.width*.18f,size.height*.53f), Offset(size.width*.43f,size.height*.76f), 1.7.dp.toPx(), StrokeCap.Round)
@@ -508,10 +665,15 @@ internal fun SelectionIndicator(checked: Boolean, tint: Color = Cyan) {
 
 @Composable
 internal fun SelectChip(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+    val native = LocalNativeApp.current
+    val chip = if (native) {
+        Modifier.background(NativePalette.card, RoundedCornerShape(18.dp))
+            .border(1.dp, NativePalette.border, RoundedCornerShape(18.dp))
+    } else Modifier.glass(18, ghost = true)
     Row(Modifier.heightIn(min = 48.dp).testTag("select-all").clip(RoundedCornerShape(22.dp))
         .toggleable(checked, role = Role.Checkbox, onValueChange = onChange).padding(horizontal = 2.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        Row(Modifier.glass(18, ghost = true).padding(horizontal = 9.dp, vertical = 5.dp),
+        Row(chip.padding(horizontal = 9.dp, vertical = 5.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
             SelectionIndicator(checked)
             Label(label, 11, weight = FontWeight.Medium)
