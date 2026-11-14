@@ -12,12 +12,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.compositionLocalOf
@@ -38,7 +35,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
@@ -46,13 +42,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.PI
@@ -105,8 +99,11 @@ internal fun Label(text: Copy, size: Int = 12, tint: Color = KnouxColors.textPri
  */
 @Composable
 internal fun Unmeasured(size: Int = 15, align: TextAlign? = null, modifier: Modifier = Modifier) {
+    // Inside the utility shell the dash takes the native muted tone, the same
+    // one every native caption uses, so "not measured" never out-shouts a value.
+    val tone = if (LocalNativeApp.current) NativePalette.muted else KnouxColors.textSecondary.copy(alpha = .70f)
     Label(
-        "—", size, KnouxColors.textSecondary.copy(alpha = .70f), FontWeight.SemiBold,
+        "—", size, tone, FontWeight.SemiBold,
         modifier = modifier, align = align,
     )
 }

@@ -1010,6 +1010,10 @@ private fun DrawScope.drawCompass(t: Float, intensity: Float = 1f) {
  */
 @Composable
 internal fun WorldFog(world: World, modifier: Modifier = Modifier, alpha: Float = .34f) {
+    // The utility shell draws an unmeasured service as plain native text, never
+    // as weather: fog behind a card reads as decoration on a screen whose whole
+    // promise is that it only shows what it measured.
+    if (LocalNativeApp.current) return
     Canvas(modifier) {
         val w = size.width.coerceAtLeast(1f)
         val h = size.height.coerceAtLeast(1f)
