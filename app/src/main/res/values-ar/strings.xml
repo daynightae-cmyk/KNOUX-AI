@@ -811,6 +811,9 @@
     <string name="privacy_measure_hint">شغّل فحصًا لقراءة حالة Android الحقيقية لهذا التطبيق.</string>
     <string name="privacy_score_explanation">الدرجة هي 100 ناقص جزاءات ثابتة للعناصر المقاسة. ليست تقييمًا أمنيًا ولا تشمل أبدًا فحوصًا لم يعرضها Android.</string>
     <string name="privacy_scored_checks">%1$s مقيس من %2$s فحصًا</string>
+    <string name="privacy_attention_line">%1$s عنصرًا يحتاج انتباهك من %2$s فحصًا مقيسًا</string>
+    <string name="privacy_no_attention_line">لا يوجد عنصر يحتاج انتباهك ضمن الفحوص المقيسة</string>
+    <string name="privacy_secure_body">يضيف FLAG_SECURE إلى نافذة KNOUX، فيمنع Android بعدها لقطات الشاشة ومصغّرة التطبيقات لهذا التطبيق. يقرأ KNOUX العلم من جديد بعد التطبيق.</string>
     <string name="privacy_attention_unmeasurable">%1$s للمراجعة · %2$s غير قابل للقياس</string>
     <string name="privacy_empty_body">لم يُقس شيء في هذه الجلسة بعد. اضغط «قِس الآن» — الفحص يقرأ بيان التطبيق والأذونات وسياسة الشبكة وعلم النسخ الاحتياطي وعلم النافذة الحيّة.</string>
     <string name="reports_no_passes_title">لا توجد فحوصات مقاسة بعد</string>

@@ -69,19 +69,16 @@ import java.util.concurrent.TimeUnit
 
 // ── Formatting ───────────────────────────────────────────────────────────────
 
-/** 1.24 GB style. Negative lengths are reported as unknown, never as 0 B. */
+/**
+ * 1.2 GB style. Negative lengths are reported as unknown, never as 0 B.
+ *
+ * Delegates to [KnouxFormat.bytes] so every measured value on every screen uses
+ * the same Latin digits, the same attached unit and an LTR isolate — otherwise
+ * bidi flips "19.02 GB" into "GB 19,02" on an Arabic device.
+ */
 internal fun humanBytes(bytes: Long): String {
     if (bytes < 0L) return "—"
-    if (bytes < 1024L) return "$bytes B"
-    val units = listOf("KB", "MB", "GB", "TB")
-    var value = bytes.toDouble() / 1024.0
-    var unit = 0
-    while (value >= 1024.0 && unit < units.lastIndex) {
-        value /= 1024.0
-        unit++
-    }
-    return if (value >= 100.0 || unit == 0) "%.0f %s".format(value, units[unit])
-    else "%.2f %s".format(value, units[unit])
+    return KnouxFormat.bytes(bytes)
 }
 
 private fun agoLabel(millis: Long, arabic: Boolean = false): String {
@@ -864,7 +861,11 @@ private fun MeasuredSummaryCard(state: CleanState) {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 MasterIcon(Mark.DISK, Pink, 34)
                 Label((Copy(R.string.k_cleanup_potential)).localized(), 11, Mist)
-                Label(if (measured) humanBytes(bytes) else "—", 22, weight = FontWeight.ExtraBold)
+                if (measured) {
+                    Label(humanBytes(bytes), 22, weight = FontWeight.ExtraBold)
+                } else {
+                    Unmeasured(17)
+                }
                 Label(
                     when {
                         scanning -> (Copy.args(R.string.k_items_progress_summary, state.progressCount, humanBytes(state.progressBytes))).localized()

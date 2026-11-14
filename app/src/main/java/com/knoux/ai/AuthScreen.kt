@@ -311,12 +311,8 @@ private fun AuthBackdrop(content: @Composable () -> Unit) {
 /** Brand lockup used by the welcome and verified states. */
 @Composable
 private fun AuthBrandLockup() {
-    Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp),
-        horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-        Glyph(Mark.K, Modifier.size(30.dp))
-        Spacer(Modifier.width(4.dp))
-        Label("knoux", 20, weight = FontWeight.ExtraBold)
-        Label(" ai", 20, Pink, FontWeight.ExtraBold)
+    Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp), contentAlignment = Alignment.Center) {
+        KnouxWordmark(size = 22, withSignature = true)
     }
 }
 
@@ -825,26 +821,7 @@ private fun WelcomeStage(motion: Boolean, onUnlock: () -> Unit, onPasskey: () ->
 
         // ── Brand lockup with the lit underline ────────────────────────────
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                    Glyph(Mark.K, Modifier.size(34.dp), Chalk, true)
-                    Label("knoux", 28, Chalk, FontWeight.ExtraBold, maxLines = 1)
-                    Label(" ai", 28, Color(0xffff5cf0), FontWeight.ExtraBold, maxLines = 1)
-                }
-                Canvas(Modifier.width(170.dp).height(8.dp)) {
-                    val path = Path().apply {
-                        moveTo(4f, size.height * .46f)
-                        cubicTo(size.width * .30f, size.height * .08f,
-                            size.width * .58f, size.height * .92f,
-                            size.width - 4f, size.height * .30f
-                        )
-                    }
-                    drawPath(path,
-                        Brush.horizontalGradient(listOf(Color(0xffff4ff0), Violet, Color(0xff5a6bff), Cyan)),
-                        style = Stroke(1.6.dp.toPx(), cap = StrokeCap.Round)
-                    )
-                }
-            }
+            KnouxWordmark(size = 30, withSignature = true, glow = true)
         }
 
         Spacer(Modifier.height(10.dp))
@@ -1220,13 +1197,7 @@ private fun OtpStage(motion: Boolean, onBack: () -> Unit, onPasskey: () -> Unit,
         }
 
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                    Glyph(Mark.K, Modifier.size(30.dp), Chalk, true)
-                    Label("knoux", 25, Chalk, FontWeight.ExtraBold, maxLines = 1)
-                    Label(" ai", 25, Color(0xffff5cf0), FontWeight.ExtraBold, maxLines = 1)
-                }
-            }
+            KnouxWordmark(size = 27, withSignature = true, glow = true)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -1559,11 +1530,11 @@ private fun AuthTopBar(onBack: () -> Unit, onSettings: () -> Unit = {}) {
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                    Glyph(Mark.K, Modifier.size(30.dp))
                     if (LocalDensity.current.fontScale <= 1.45f) {
-                        val wordmark = if (LocalRoomy.current) 14 else if (LocalArabic.current) 18 else 20
-                        Label("knoux", wordmark, weight = FontWeight.ExtraBold)
-                        Label(" ai", wordmark, Pink, FontWeight.ExtraBold)
+                        val wordmark = if (LocalRoomy.current) 14 else if (LocalArabic.current) 16 else 18
+                        KnouxWordmark(size = wordmark, withSignature = true, glow = false)
+                    } else {
+                        KnouxMonogram(size = 30)
                     }
                 }
             }

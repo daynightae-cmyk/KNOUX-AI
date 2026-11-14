@@ -9,7 +9,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -332,7 +334,7 @@ internal fun AbyssSonarInstrument(
         }
 
         // ── Numeral + caption, centred on the dial ──────────────────────────
-        Box(
+        BoxWithConstraints(
             Modifier
                 .fillMaxSize()
                 .semantics { contentDescription = a11y },
@@ -340,7 +342,10 @@ internal fun AbyssSonarInstrument(
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .fillMaxWidth(0.50f),
+                    .fillMaxWidth(0.50f)
+                    // The dial sits at 63% of the canvas, not its centre; a readout
+                    // on the page centre would rest on the ring's edge.
+                    .absoluteOffset(x = maxWidth * 0.13f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {

@@ -2,6 +2,7 @@
 <!-- Generated from the interface copy that used to live inline in Kotlin.
      Every customer-visible string must be declared here, never in code. -->
 <resources>
+    <string name="app_name" translatable="false">KNOUX AI</string>
     <string name="k_use_a_passkey">Use a passkey</string>
     <string name="k_continue_with_google">Continue with Google</string>
     <string name="k_sign_in_is_not_configured">Sign-in is not configured</string>
@@ -811,6 +812,9 @@
     <string name="privacy_measure_hint">Run a measure pass to read this app\'s real Android state.</string>
     <string name="privacy_score_explanation">A score is 100 minus fixed penalties for scored items. It is not a security rating and it never includes checks Android did not expose.</string>
     <string name="privacy_scored_checks">%1$s scored / %2$s checks</string>
+    <string name="privacy_attention_line">%1$s attention item(s) across %2$s scored check(s)</string>
+    <string name="privacy_no_attention_line">No attention item in the scored checks</string>
+    <string name="privacy_secure_body">Applies FLAG_SECURE to the KNOUX window. Android then blocks screenshots and the recents thumbnail for this app. KNOUX re-reads the flag afterwards.</string>
     <string name="privacy_attention_unmeasurable">%1$s attention · %2$s unmeasurable</string>
     <string name="privacy_empty_body">Nothing has been measured in this session yet. Tap Measure now — the pass reads this app\'s manifest, grants, network policy, backup flag and the live window flag.</string>
     <string name="reports_no_passes_title">No measured passes yet</string>

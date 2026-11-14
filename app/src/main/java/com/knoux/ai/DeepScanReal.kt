@@ -474,11 +474,17 @@ private fun ModuleStrip(
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color(0xff1A1642))
                 .clickable { onEdit() }
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = 8.dp)
                 .testTag("deep-scan-modules"),
             contentAlignment = Alignment.Center,
         ) {
-            Label("${selection.size}", 11, Cyan, FontWeight.Bold)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Glyph(Mark.GEAR, Modifier.size(11.dp), Cyan)
+                Label("${selection.size}/${modules.size}", 10, Cyan, FontWeight.Bold)
+            }
         }
     }
 }

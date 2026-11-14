@@ -553,45 +553,16 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
         )
         ServiceStatePill(pill)
 
-        // ── Mirror instrument: twin orbs joined by a tether ──────────────────
-        val mirrorPhase = when (state.phase) {
-            DuplicatePhase.IDLE -> if (state.groups.isNotEmpty()) MirrorPhase.RESULT else MirrorPhase.IDLE
-            DuplicatePhase.SCANNING -> MirrorPhase.RUNNING
-            DuplicatePhase.READY -> MirrorPhase.RESULT
-            DuplicatePhase.ERROR -> MirrorPhase.FAILED
-        }
-        val mirrorFrame = MirrorFrame(
-            phase = mirrorPhase,
-            tension = if (state.groups.isNotEmpty()) 1f else null,
-            heroValue = state.redundantBytes,
-            groupCount = state.groups.size,
-            motion = motion,
-            caption = when {
-                state.phase == DuplicatePhase.SCANNING -> Copy(R.string.k_hashing)
-                state.measured && state.groups.isNotEmpty() -> Copy.args(R.string.k_groups_count, state.groups.size)
-                state.measured -> Copy(R.string.k_no_copies)
-                else -> Copy(R.string.k_not_measured_2)
-            },
-            hasFindings = state.groups.isNotEmpty(),
-            widthDp = 340f,
-            lastResultAgeMillis = state.capturedAt,
-        )
-        // P0 layout repair: the 320dp instrument used to consume the entire
-        // viewport above this weighted results list on 360dp phones.
-        // Keep the signature artwork, but place it INSIDE the list so real
-        // result cards remain reachable and the action rail stays fixed.
+        // ── Mirror instrument has moved to the hero ──────────────────────────
+        // A second 340dp twin-orb stage used to sit inside this list and pushed
+        // the real result cards off the viewport. The hero above now owns the
+        // MIRROR identity, so the list starts with measured state, not art.
         LazyColumn(
             Modifier.fillMaxWidth().weight(1f).testTag("duplicate-list"),
             contentPadding = PaddingValues(horizontal = 11.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
             item { DuplicateSummaryCard(state) }
-            item {
-                MirrorInstrument(
-                    frame = mirrorFrame,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                )
-            }
             val technical = buildList {
                 state.note?.let { add(Copy(R.string.technical_note) to it) }
                 state.error?.let { add(Copy(R.string.technical_status) to it) }
@@ -689,56 +660,70 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
 @Composable
 private fun DuplicateSummaryCard(state: DuplicateState) {
     val scanning = state.phase == DuplicatePhase.SCANNING
+    val countable = state.measured || state.filesInspected > 0
     GlassPanel(Modifier.fillMaxWidth(), tint = Pink) {
         Column(
             Modifier.fillMaxWidth().padding(13.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Label(
-                        if (state.measured) humanBytes(state.redundantBytes) else "—",
-                        30, if (state.measured) Pink else Mist, FontWeight.ExtraBold,
-                        modifier = Modifier.testTag("duplicate-redundant"),
-                    )
-                    Label(
-                        if (state.measured) Copy(R.string.k_redundant_copies_measured)
-                        else Copy(R.string.k_not_measured_yet_2),
-                        11, Mist,
-                    )
+            if (!countable) {
+                // No pass has run yet: one quiet token, not a field of dashes.
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Unmeasured(18, modifier = Modifier.testTag("duplicate-redundant"))
+                    Label(Copy(R.string.k_not_measured_yet_2), 13, Chalk, FontWeight.Bold)
                 }
-                Column(horizontalAlignment = Alignment.End) {
-                    Label(
-                        if (state.measured || state.groups.isNotEmpty()) KnouxFormat.number(state.groups.size) else "—",
-                        20, if (state.measured || state.groups.isNotEmpty()) Chalk else Mist, FontWeight.Bold,
-                        modifier = Modifier.testTag("duplicate-group-count"),
-                    )
-                    Label(Copy(R.string.k_groups), 11, Mist)
+            } else {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        if (state.measured) {
+                            Label(
+                                humanBytes(state.redundantBytes),
+                                30, Pink, FontWeight.ExtraBold,
+                                modifier = Modifier.testTag("duplicate-redundant"),
+                            )
+                        } else {
+                            Unmeasured(18, modifier = Modifier.testTag("duplicate-redundant"))
+                        }
+                        Label(
+                            if (state.measured) Copy(R.string.k_redundant_copies_measured)
+                            else Copy(R.string.k_not_measured_yet_2),
+                            11, Mist,
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.End) {
+                        Label(
+                            if (countable) KnouxFormat.number(state.groups.size) else "—",
+                            20, if (countable) Chalk else Mist, FontWeight.Bold,
+                            modifier = Modifier.testTag("duplicate-group-count"),
+                        )
+                        Label(Copy(R.string.k_groups), 11, Mist)
+                    }
                 }
-            }
-            if (state.measured || state.filesInspected > 0) {
                 GradientBar(
                     if (state.filesHashed > 0) state.filesHashed.toFloat() / state.filesInspected.coerceAtLeast(1) else 0f,
                     thickness = 8,
                 )
-            }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                val countable = state.measured || state.filesInspected > 0
-                Label(
-                    if (countable) Copy.args(R.string.dup_files_inspected, KnouxFormat.number(state.filesInspected))
-                    else Copy.runtime("—"),
-                    11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
-                )
-                Label(
-                    if (countable) Copy.args(R.string.dup_files_hashed, KnouxFormat.number(state.filesHashed))
-                    else Copy.runtime("—"),
-                    11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
-                )
-                Label(
-                    if (countable) Copy.args(R.string.dup_bytes_read, humanBytes(state.bytesHashed))
-                    else Copy.runtime("—"),
-                    11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
-                )
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Label(
+                        if (countable) Copy.args(R.string.dup_files_inspected, KnouxFormat.number(state.filesInspected))
+                        else Copy.runtime("—"),
+                        11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
+                    )
+                    Label(
+                        if (countable) Copy.args(R.string.dup_files_hashed, KnouxFormat.number(state.filesHashed))
+                        else Copy.runtime("—"),
+                        11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
+                    )
+                    Label(
+                        if (countable) Copy.args(R.string.dup_bytes_read, humanBytes(state.bytesHashed))
+                        else Copy.runtime("—"),
+                        11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
+                    )
+                }
             }
             state.capturedAt?.let { captured ->
                 Label(

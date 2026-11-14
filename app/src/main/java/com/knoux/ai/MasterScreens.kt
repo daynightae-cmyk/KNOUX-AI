@@ -1,6 +1,7 @@
 package com.knoux.ai
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,7 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
@@ -64,7 +71,7 @@ import kotlinx.coroutines.withContext
 // Shared master primitives
 // ---------------------------------------------------------------------------
 
-/** Two-tone title used by every master screen (white lead, violet accent). */
+/** Two-tone title used by every master screen (white lead, signature accent). */
 @Composable
 internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) {
     val roomy = LocalRoomy.current
@@ -74,7 +81,13 @@ internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) 
     ) {
         val styled = buildAnnotatedString {
             withStyle(SpanStyle(color = KnouxColors.textPrimary)) { append(lead.localized()) }
-            withStyle(SpanStyle(color = KnouxColors.primary)) {
+            withStyle(
+                SpanStyle(
+                    brush = Brush.horizontalGradient(
+                        listOf(Brand.magenta, Brand.violet, Brand.cyan),
+                    ),
+                )
+            ) {
                 append(" ")
                 append(accent.localized())
             }
@@ -88,11 +101,18 @@ internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) 
                 fontFamily = DisplayFace,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
+                letterSpacing = (-0.2).sp,
             ),
+        )
+        // The house flourish: a tapered signature line under every title.
+        Box(
+            Modifier.padding(top = 6.dp).width(if (roomy) 38.dp else 52.dp).height(2.dp)
+                .clip(RoundedCornerShape(50))
+                .background(Brush.horizontalGradient(Brand.signature)),
         )
         Label(
             subtitle, 13, KnouxColors.textSecondary,
-            modifier = Modifier.fillMaxWidth().padding(top = 3.dp), align = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth().padding(top = 5.dp), align = TextAlign.Center,
         )
     }
 }
@@ -248,7 +268,7 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         NeonHero(Mark.K, motion, Modifier.padding(top = 2.dp),
-            heightOverride = if (LocalRoomy.current) 76.dp else 84.dp)
+            heightOverride = if (LocalRoomy.current) 86.dp else 96.dp)
         MasterTitle(
             Copy(R.string.k_smart), Copy(R.string.k_device_hub),
             Copy(R.string.home_subtitle), "screen-home",
@@ -278,7 +298,7 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
                 HubCardSpec(Copy(R.string.k_app_residue_cleanup), Copy(R.string.home_card_residue_body),
                     Mark.LAYERS, KnouxColors.primary, "hub-residue", Page.RESIDUE, 1, Copy(R.string.k_review)),
                 HubCardSpec(Copy(R.string.k_storage_breakdown), Copy(R.string.home_card_storage_body),
-                    Mark.LAYERS, KnouxColors.accent, "hub-storage-analyzer", Page.STORAGE_BREAKDOWN, action = Copy(R.string.k_open)),
+                    Mark.DISK, KnouxColors.accent, "hub-storage-analyzer", Page.STORAGE_BREAKDOWN, action = Copy(R.string.k_open)),
                 HubCardSpec(Copy(R.string.k_privacy_sweep), Copy(R.string.home_card_privacy_body),
                     Mark.SHIELD, KnouxColors.warning, "hub-privacy-sweep", Page.PRIVACY_INSPECTOR, 3, Copy(R.string.k_review)),
                 HubCardSpec(Copy(R.string.k_ai_optimization), Copy(R.string.home_card_ai_body),
@@ -316,6 +336,12 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
             }
 
             StateNote(Copy(R.string.home_measured_source))
+            // The maker's mark closes the hub: the same smile that signs the logo.
+            KnouxSignature(
+                width = if (LocalRoomy.current) 84 else 104,
+                height = if (LocalRoomy.current) 16 else 20,
+                modifier = Modifier.padding(top = 2.dp).alpha(.55f),
+            )
             Spacer(Modifier.height(26.dp))
         }
     }
@@ -328,26 +354,42 @@ internal fun SmartHubScreen(open: (Page) -> Unit) {
 @Composable
 private fun HubMeasureStrip(measures: List<HubMeasure>) {
     SurfaceCard {
-            Row(Modifier.fillMaxWidth().padding(vertical = 9.dp),
+        Row(
+            Modifier.fillMaxWidth().padding(vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             measures.take(3).forEachIndexed { index, measure ->
                 if (index > 0) {
-                    Box(Modifier.width(1.dp).height(44.dp).background(KnouxColors.border))
+                    Box(
+                        Modifier.width(1.dp).height(52.dp).background(
+                            Brush.verticalGradient(
+                                listOf(Color.Transparent, KnouxColors.border, Color.Transparent),
+                            )
+                        )
+                    )
                 }
+                val world = worldOf(measure.mark)
                 Column(
                     Modifier.weight(1f).padding(horizontal = 4.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                 ) {
-                    Glyph(measure.mark, Modifier.size(16.dp), measure.tint)
+                    WorldCrest(world, 28, alpha = if (measure.measured) 1f else .5f)
+                    if (measure.measured) {
+                        Label(
+                            measure.value.localized(), 17,
+                            KnouxColors.textPrimary, FontWeight.ExtraBold,
+                            align = TextAlign.Center, maxLines = 1,
+                        )
+                    } else {
+                        // A dash at display weight reads as a bar. Keep the same
+                        // word, drop the weight, so "unknown" stays quiet.
+                        Unmeasured(15, align = TextAlign.Center)
+                    }
                     Label(
-                        measure.value.localized(), if (measure.measured) 17 else 22,
-                        if (measure.measured) KnouxColors.textPrimary else KnouxColors.textSecondary,
-                        FontWeight.ExtraBold, align = TextAlign.Center, maxLines = 1,
+                        measure.label.localized(), 11, KnouxColors.textSecondary,
+                        align = TextAlign.Center, maxLines = 2,
                     )
-                    Label(measure.label.localized(), 12, KnouxColors.textSecondary,
-                        align = TextAlign.Center, maxLines = 2)
                 }
             }
         }
@@ -359,7 +401,6 @@ private fun HubCardFor(spec: HubCardSpec, measures: List<HubMeasure>, open: (Pag
     val measure = spec.valueIndex?.let { measures[it] }
     HubCard(
         title = spec.title,
-        copy = spec.body,
         mark = spec.mark,
         tint = spec.tint,
         tag = spec.tag,
@@ -393,14 +434,14 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
     val motion = LocalPreviewMotion.current
     var showPro by remember { mutableStateOf(true) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        NeonHero(Mark.K, motion, Modifier.padding(top = 4.dp), heightOverride = 88.dp)
+        NeonHero(Page.TOOLS.hero, motion, Modifier.padding(top = 4.dp), heightOverride = 92.dp)
         MasterTitle(Copy(R.string.k_device), Copy(R.string.k_tools_2), Copy(R.string.tools_subtitle), "screen-tools")
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             ServiceRow(Copy(R.string.k_storage_breakdown), Copy(R.string.tools_storage_body),
-                Mark.LAYERS, "open-storage-breakdown", "open-storage") { open(Page.STORAGE_BREAKDOWN) }
+                Mark.DISK, "open-storage-breakdown", "open-storage") { open(Page.STORAGE_BREAKDOWN) }
             ServiceRow(Copy(R.string.k_app_manager), Copy(R.string.tools_apps_body),
                 Mark.GROUP, "open-app-manager", "open-app-manager") { open(Page.APPS_REVIEW) }
             ServiceRow(Copy(R.string.k_privacy_sweep), Copy(R.string.tools_privacy_body),
@@ -420,21 +461,41 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
 private fun ServiceRow(
     title: Copy, copy: Copy, mark: Mark, tag: String, clickTag: String, onClick: () -> Unit
 ) {
+    val world = worldOf(mark)
     SurfaceCard(
         Modifier.heightIn(min = TOUCH_TARGET).testTag(clickTag)
             .clickable(role = Role.Button, onClick = onClick)
+            .drawBehind {
+                val width = size.width
+                val height = size.height
+                drawRect(
+                    Brush.linearGradient(
+                        listOf(world.primary.copy(alpha = .16f), Color.Transparent),
+                        start = Offset(0f, 0f), end = Offset(width * .8f, height),
+                    )
+                )
+                val railX = if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) width - 2.dp.toPx() else 0f
+                drawRect(
+                    Brush.verticalGradient(
+                        listOf(world.primary, world.secondary.copy(alpha = .5f), Color.Transparent),
+                    ),
+                    topLeft = Offset(railX, height * .18f),
+                    size = Size(2.dp.toPx(), height * .64f),
+                )
+            }
     ) {
         Row(
-            Modifier.fillMaxWidth().padding(12.dp),
+            Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 11.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            MasterIcon(mark, KnouxColors.accent, 38)
+            WorldCrest(world, 40)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Label(title, 14, KnouxColors.textPrimary, FontWeight.SemiBold, modifier = Modifier.testTag(tag))
                 Label(copy, 12, KnouxColors.textSecondary, maxLines = 2)
             }
-            Glyph(Mark.NEXT, Modifier.size(16.dp), KnouxColors.textSecondary)
+            Glyph(Mark.NEXT, Modifier.size(16.dp).rotate(if (LocalArabic.current) 180f else 0f),
+                world.primary.copy(alpha = .8f))
         }
     }
 }
@@ -506,6 +567,11 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
             }
             StateNote(Copy(R.string.reports_honesty))
             Label(Copy(R.string.reports_chart_note), 11, KnouxColors.textSecondary)
+            // Nothing has ever been recorded, so the space below the panel is
+            // unmeasured scope — drawn as weather, carrying no number at all.
+            if (!hasHistory) {
+                WorldFog(World.PRISM, Modifier.fillMaxWidth().height(150.dp))
+            }
             Spacer(Modifier.height(16.dp))
         }
     }
@@ -527,12 +593,25 @@ private fun ReportsEmptyPanel(onScan: () -> Unit) {
             Row(
                 Modifier.fillMaxWidth().height(58.dp),
                 verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
             ) {
-                listOf(16, 34, 24, 42).forEach { bar ->
+                listOf(16, 34, 24, 42).forEachIndexed { index, bar ->
+                    // Silhouette only: an outline says "this is where a bar would
+                    // stand", a filled block would look like a measured value.
                     Box(
-                        Modifier.weight(1f).height(bar.dp).clip(RoundedCornerShape(6.dp))
-                            .background(KnouxColors.surfaceVariant)
+                        Modifier.width(26.dp).height(bar.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(World.PRISM.primary.copy(alpha = .05f))
+                            .border(
+                                1.2.dp,
+                                Brush.verticalGradient(
+                                    listOf(
+                                        World.PRISM.primary.copy(alpha = .44f - index * .06f),
+                                        World.PRISM.secondary.copy(alpha = .10f),
+                                    )
+                                ),
+                                RoundedCornerShape(50),
+                            )
                     )
                 }
             }
@@ -577,13 +656,16 @@ private fun CleanupHistoryChart(history: List<CleanupHistory>, arabic: Boolean) 
                     }
                 }
                 Row(
-                    Modifier.fillMaxWidth().heightIn(min = 112.dp),
+                    Modifier.fillMaxWidth().heightIn(min = 132.dp),
                     verticalAlignment = Alignment.Bottom,
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
                     operations.forEach { operation ->
-                        val barHeight = ((operation.bytes.toDouble() / maxBytes) * 78.0)
-                            .coerceAtLeast(4.0).dp
+                        val ratio = (operation.bytes.toDouble() / maxBytes).coerceIn(0.0, 1.0)
+                        // Honest geometry: height is the measured ratio, never a slope.
+                        // A tiny measured value still gets a visible stub so "small"
+                        // can never be confused with "nothing was recorded".
+                        val barHeight = (ratio * 84.0).coerceAtLeast(7.0).dp
                         val date = formatter.format(Date(operation.completedAtMillis))
                         val description = Copy.args(
                             R.string.reports_chart_bar,
@@ -595,13 +677,30 @@ private fun CleanupHistoryChart(history: List<CleanupHistory>, arabic: Boolean) 
                             verticalArrangement = Arrangement.Bottom,
                         ) {
                             Label(KnouxFormat.bytes(operation.bytes), 11,
-                                KnouxColors.textSecondary, maxLines = 1)
-                            Spacer(Modifier.height(4.dp))
+                                World.PRISM.primary.copy(alpha = .92f), FontWeight.Bold, maxLines = 1)
+                            Spacer(Modifier.height(5.dp))
+                            // A slender prism column: neon body, bright cap.
                             Box(
-                                Modifier.fillMaxWidth().height(barHeight)
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(Brush.verticalGradient(
-                                        listOf(KnouxColors.accent, KnouxColors.primary)))
+                                Modifier.width(34.dp).height(barHeight)
+                                    .clip(RoundedCornerShape(50))
+                                    .background(
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                World.PRISM.primary,
+                                                World.MIRROR.primary.copy(alpha = .95f),
+                                                World.PRISM.secondary.copy(alpha = .85f),
+                                            )
+                                        )
+                                    )
+                                    .drawBehind {
+                                        // Lit cap: the bar always reads as measured height.
+                                        drawRoundRect(
+                                            Color.White.copy(alpha = .85f),
+                                            topLeft = Offset(0f, 0f),
+                                            size = Size(size.width, 2.2.dp.toPx()),
+                                            cornerRadius = CornerRadius(size.width / 2f),
+                                        )
+                                    }
                                     .semantics { contentDescription = description }
                             )
                         }

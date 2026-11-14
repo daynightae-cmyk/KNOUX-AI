@@ -18,3 +18,8 @@
 keystore.properties
 *.jks
 *.keystore
+
+# Sensitive on-device logs: may contain WLAN IP/SSID. Never commit.
+/qa-evidence/e2e/pc02/logs/*
+!/qa-evidence/e2e/pc02/logs/.gitkeep
+

@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -34,10 +35,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -425,24 +430,23 @@ private fun PrivacyScoreCard(state: PrivacyState) {
     val measured = state.measured
     GlassPanel(Modifier.fillMaxWidth(), tint = Pink) {
         Column(Modifier.fillMaxWidth().padding(13.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Label(
-                        state.summary.score?.let { "$it" } ?: "—",
-                        34, if (measured) Pink else Mist, FontWeight.ExtraBold,
-                        modifier = Modifier.testTag("privacy-score"),
-                    )
-                    Label(
-                        if (measured) Copy(R.string.k_knoux_privacy_posture_measured_checks_only)
-                        else Copy(R.string.k_privacy_score),
-                        11, Mist,
-                    )
-                }
-                if (measured) {
-                    Column(horizontalAlignment = Alignment.End) {
+            if (measured) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                        Label(
+                            "${state.summary.score}",
+                            34, Pink, FontWeight.ExtraBold,
+                            modifier = Modifier.testTag("privacy-score"),
+                        )
+                        Label(
+                            Copy(R.string.k_knoux_privacy_posture_measured_checks_only),
+                            11, Mist, maxLines = 2,
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(1.dp)) {
                         Label(
                             Copy.args(R.string.privacy_scored_checks, state.summary.scoredCount, state.rows.size),
-                            11, Chalk, FontWeight.Bold,
+                            11, Chalk, FontWeight.Bold, align = TextAlign.End,
                             modifier = Modifier.testTag("privacy-scored-count"),
                         )
                         Label(
@@ -451,28 +455,46 @@ private fun PrivacyScoreCard(state: PrivacyState) {
                                 state.summary.attentionCount,
                                 state.summary.unmeasurableCount,
                             ),
-                            10, Mist,
+                            10, Mist, align = TextAlign.End,
                         )
                         state.capturedAt?.let { at ->
                             Label(
                                 DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(at)),
-                                9, Mist,
+                                9, Mist, align = TextAlign.End,
                             )
                         }
                     }
                 }
-            }
-            if (measured) {
-                Label(state.summary.label, 12, Gold, modifier = Modifier.testTag("privacy-attention"))
+                // Localised from the counts, never the domain's English label:
+                // a customer reading Arabic must not meet a raw English sentence.
+                val line = if (state.summary.attentionCount == 0 && state.summary.scoredCount > 0) {
+                    Copy(R.string.privacy_no_attention_line)
+                } else {
+                    Copy.args(
+                        R.string.privacy_attention_line,
+                        state.summary.attentionCount,
+                        state.summary.scoredCount,
+                    )
+                }
+                Label(line, 12, Gold, modifier = Modifier.testTag("privacy-attention"))
                 Label(
                     Copy(R.string.privacy_score_explanation),
                     11, Mist,
                 )
             } else {
-                Label(
-                    Copy(R.string.privacy_measure_hint),
-                    12, Mist,
-                )
+                // Unmeasured: a compact lockup, not a tall card with one dash
+                // floating in an empty half. The token stays visible and quiet.
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Unmeasured(22, modifier = Modifier.testTag("privacy-score"))
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Label(Copy(R.string.k_privacy_score), 14, Chalk, FontWeight.Bold)
+                        Label(Copy(R.string.privacy_measure_hint), 12, Mist)
+                    }
+                }
             }
         }
     }
@@ -508,7 +530,13 @@ private fun PrivacyRowCard(
                 }
                 Pill(statusLabel(row), tint)
             }
-            Label(row.detail, 10, Mist)
+            // The measured observation stays verbatim: it is Android's own fact,
+            // not prose. It is set as a technical note so the Arabic title and
+            // status remain the content of the card.
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                Label(row.detail, 10, Mist, align = TextAlign.Start, maxLines = 3,
+                    overflow = TextOverflow.Ellipsis)
+            }
             when (row.remedy) {
                 PrivacyRemedy.OS_SCREEN -> AccentButton(
                     Action(Copy(R.string.k_open_android_settings), Mark.GEAR),
@@ -548,7 +576,7 @@ private fun PrivacySecureCard(enabled: Boolean, busy: Boolean, onToggle: (Boolea
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Label(Copy(R.string.k_screenshot_protection), 13, Chalk, FontWeight.ExtraBold)
                 Label(
-                    "Applies FLAG_SECURE to the KNOUX window. Android then blocks screenshots and the recents thumbnail for this app. KNOUX re-reads the flag afterwards.",
+                    Copy(R.string.privacy_secure_body),
                     10, Mist,
                 )
             }

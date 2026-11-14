@@ -28,7 +28,7 @@
          uses-permission, so the version gate is applied in PermissionState. -->
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
-    <application android:name=".KnouxApplication" android:allowBackup="false" android:label="KNOUX AI" android:supportsRtl="true"
+    <application android:name=".KnouxApplication" android:allowBackup="false" android:label="@string/app_name" android:supportsRtl="true"
         android:theme="@style/Theme.Knoux" android:icon="@drawable/ic_knoux">
         <activity android:name=".MainActivity" android:exported="true">
             <intent-filter>

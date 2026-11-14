@@ -64,7 +64,7 @@ class UnavailableServiceTest {
 
     @Test fun theArabicSurfaceIsFullyArabic() {
         ui.setContent {
-            KnouxTheme(arabic = true, motion = false) { EmptyServiceScreen(Page.STORAGE) {} }
+            KnouxTheme(arabic = true, motion = false) { EmptyServiceScreen(Page.STORAGE, {}) }
         }
         ui.onNodeWithText(KnouxStrings.get(R.string.state_not_measured, true)).assertIsDisplayed()
         check(ui.onAllNodesWithText(KnouxStrings.get(R.string.state_not_measured, false))

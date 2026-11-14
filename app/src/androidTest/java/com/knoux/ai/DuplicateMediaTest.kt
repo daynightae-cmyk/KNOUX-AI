@@ -324,15 +324,22 @@ class DuplicateMediaTest {
 
     @Test
     fun identicalSyntheticPhotosAreTrashedRestoredAndDeletedThroughTheOs() {
-        val first = seedPng("alpha.png", 64)
-        val second = seedPng("bravo.png", 64)
-        Log.i(TAG, "fixtures inserted uris=${fixtures.map { it.uri }}")
-
-        // The screen is opened before any provider work, exactly like the customer flow.
-        // This device's OEM power manager freezes a background uid ("Hiber freeze"),
-        // which would otherwise suspend the scan mid-run and look like a hang.
+        // Two ceilings stand between a fixture and the hash queue: the scanner
+        // reads the library largest-first under a 5,000-entry ceiling, and the
+        // duplicate pass spends a 800-file hash budget on the biggest same-size
+        // buckets first. A 512 px PNG (~1 MB) sits below both on this phone's
+        // 5,677-image library, so the pass never read it. 2600 px of seeded noise
+        // is ~20+ MB: large enough to enter the window and to be hashed first,
+        // small enough to stay far below MAX_FILE_BYTES.
+        // The screen is opened before any provider work, exactly like the customer
+        // flow. This device's OEM power manager freezes a background uid ("Hiber
+        // freeze"), which otherwise suspends seeding or the scan mid-run and looks
+        // like a hang: a foreground activity is what keeps the process warm.
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         try {
+            val first = seedPng("alpha.png", 2600)
+            val second = seedPng("bravo.png", 2600)
+
             // 1. Real discovery: identical bytes, one protected original.
             val snapshot = io { controller.scan(setOf(AccessScope.MEDIA_IMAGES)).getOrThrow() }
             val group = fixtureGroup(snapshot) ?: error("the identical PNGs must form one duplicate group")

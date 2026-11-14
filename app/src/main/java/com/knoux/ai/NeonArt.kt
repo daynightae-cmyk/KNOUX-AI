@@ -169,11 +169,12 @@ internal fun HomeTileIcon(mark: Mark, tone: Color, modifier: Modifier = Modifier
 internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier, heightOverride: androidx.compose.ui.unit.Dp? = null) {
     val home = mark == Mark.K
     val homeTall = LocalTall.current
+    val world = worldOf(mark)
     // Reduced hero heights to match references (22-26% of viewport instead of 30-40%)
     // Reference analysis: hero should be ~400-480px on 1846px screen = 140-160dp equivalent
-    val height = heightOverride ?: if (home) (if (homeTall) 148.dp else 128.dp) else 96.dp
+    val height = heightOverride ?: if (home) (if (homeTall) 148.dp else 128.dp) else 104.dp
     val unitDivisor = if (home) (if (homeTall) 150f else 140f) else 120f
-    val tone = heroTone(mark)
+    val tone = if (home) World.HUB.primary else world.primary
     val points = rememberGlobePoints(if (home) 760 else 460)
     // One clock drives every layer. The states are only started while motion is
     // allowed, so reduced-motion and still captures render a single static frame.
@@ -200,54 +201,50 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
             val unit = h / unitDivisor
             translate(x, cy) {
                 scale(unit, unit, Offset.Zero) {
-                    val radius = if (home) 64f else 58f
-                    val pedestalY = if (home) 70f else 60f
-                    bloom(Offset.Zero, radius * 1.78f, tone, .58f)
-                    lightPedestal(radius * .92f, pedestalY, if (home) Light.magenta else tone)
-                    heroArcs(radius * 1.00f, 0f)
-                    if (!home) {
-                        drawGlobe(radius * .94f, points)
-                        orbitalArt(mark)
+                    if (home) {
+                        // A tighter globe keeps the official lockup the first thing
+                        // the eye lands on; the sphere is a halo, not a rival.
+                        val radius = 54f
+                        val pedestalY = 64f
+                        bloom(Offset.Zero, radius * 1.78f, tone, .52f)
+                        lightPedestal(radius * .88f, pedestalY, Light.magenta)
+                        heroArcs(radius, 0f)
+                        // The home hero is the brand signature itself: the traced K,
+                        // the wordmark and the neon smile, floating over the ribbon field.
+                        drawCircle(
+                            Brush.verticalGradient(
+                                listOf(tone.copy(alpha = .22f), Color.Transparent),
+                                startY = pedestalY - radius * .5f, endY = pedestalY + radius * .55f,
+                            ),
+                            radius * .9f, Offset(0f, pedestalY * .1f),
+                        )
+                    } else {
+                        // A service hero is a stage: the world instrument is the
+                        // protagonist, the pedestal is its floor and the arcs frame it.
+                        bloom(Offset(0f, -4f), 62f, tone, .62f)
+                        lightPedestal(44f, 55f, tone)
+                        heroArcs(51f, 0f)
+                        translate(0f, -3f) { drawWorldCentered(world, 0f, .95f, box = 94f) }
                     }
                 }
             }
         }
         if (home) {
-            // Layer 2 - the particle globe spins, bobs and squashes subtly as a
-            // cached layer; the display list is not rebuilt on every frame.
-            Canvas(Modifier.matchParentSize().graphicsLayer {
-                val radians = (phase?.value ?: 0f) * PI.toFloat() / 180f
-                transformOrigin = TransformOrigin(.5f, .44f)
-                rotationZ = sin(radians) * 7.5f
-                translationY = cos(radians * 1.35f) * 3.2f
-                scaleX = 1f + sin(radians * .7f) * .018f
-            }) {
-                val x = size.width / 2f
-                val h = size.height
-                val cy = h * .44f
-                val unit = h / unitDivisor
-                translate(x, cy) { scale(unit, unit, Offset.Zero) { drawGlobe(64f * .94f, points) } }
-            }
-            // Layer 3 - the brand mark, crisp and in front of the globe.
-            Canvas(Modifier.matchParentSize().graphicsLayer {
-                val radians = (phase?.value ?: 0f) * PI.toFloat() / 180f
-                transformOrigin = TransformOrigin(.5f, .44f)
-                translationY = -cos(radians * 1.35f) * 1.6f
-                val breath = pulse?.value ?: 0f
-                scaleX = 1f + breath * .014f
-                scaleY = 1f + breath * .014f
-            }) {
-                val x = size.width / 2f
-                val h = size.height
-                val cy = h * .44f
-                val unit = h / unitDivisor
-                translate(x, cy) { scale(unit, unit, Offset.Zero) { glowingK(64f * 1.08f) } }
-            }
+            // The official lockup at hero scale. Drawn by one canvas so the smile
+            // ends exactly under the wordmark at any width or font scale.
+            KnouxWordmark(
+                size = if (homeTall) 38 else 31,
+                withSignature = true,
+                glow = true,
+                modifier = Modifier.graphicsLayer {
+                    translationY = ((pulse?.value ?: 0f) - .5f) * 3f
+                },
+            )
         }
         // Layer 4 - counter-rotating orbital light segments. Each layer is drawn
         // once and rotated in the layer, which keeps the motion cheap even on the
         // software-rendered verification emulator.
-        if (spin != null) {
+        if (spin != null && !home) {
             val unit = with(androidx.compose.ui.platform.LocalDensity.current) { height.toPx() } / unitDivisor
             val centerY = .44f
             Canvas(Modifier.matchParentSize().graphicsLayer {
@@ -286,7 +283,7 @@ internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier
             }
         }
         // Layer 5 - fine glints that fade in and out with the breath clock.
-        if (pulse != null) Canvas(Modifier.matchParentSize().graphicsLayer { alpha = .38f + .62f * pulse.value }) {
+        if (pulse != null && !home) Canvas(Modifier.matchParentSize().graphicsLayer { alpha = .38f + .62f * pulse.value }) {
             val unit = size.minDimension / 100f
             heroGlints.forEachIndexed { index, point ->
                 val tint = when (index % 3) {

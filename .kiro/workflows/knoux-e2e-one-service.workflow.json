@@ -1,0 +1,53 @@
+{
+  "name": "knoux-e2e-one-service",
+  "description": "Deliver one existing KNOUX AI PC Android service end-to-end: inventory, implement, independently review, verify on owner-authorized device, safely integrate, and persist the next task.",
+  "inputs": {
+    "service_id": "string",
+    "mission": "prompt"
+  },
+  "steps": [
+    {
+      "type": "step",
+      "id": "safe-baseline",
+      "agent": "wf-coder",
+      "captureOutput": true,
+      "prompt": "ROOT D:\\KNOUX-AI ONLY. You are PREPARING ONE EXISTING SERVICE, not creating a project. Read AGENTS.md; prompts/e2e/PC_QODER_TO_NEXT_AGENT_AUTONOMOUS_WORKFLOW_20261113.md; docs/workflows/PC_E2E_TASK_MANIFEST_20261112.json; qa-evidence/e2e/EXECUTION_LEDGER.md. SERVICE={{service_id}}, mission={{mission}}. Inspect HEAD, ls-remote origin/main, status INCLUDING untracked, worktrees/stash, free disk, current agents and overlapping file writers. The last SmartClean source is UNIQUE and uncommitted; never recreate or delete it. Check that no source writer currently owns these Kotlin files; if another writer is active, signal warning/pause and DO NOT start implementation. The device is owner-authorized itel S686LN serial REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL API35; only isolated synthetic fixtures may be deleted. Create/update only qa-evidence/e2e/{{service_id}}/workflow-verdict.json with {\"verified\":false,\"task_id\":\"{{service_id}}\",\"state\":\"PENDING_VALIDATION\",\"evidence\":[]}, unless another workflow presently owns it. Avoid touching code in this step. Report exact baseline to the parent."
+    },
+    {
+      "type": "repeat",
+      "id": "implement-review-loop",
+      "maxIterations": 4,
+      "onMaxIterations": "pause",
+      "stopCondition": {
+        "fileCheck": {
+          "path": "qa-evidence/e2e/{{service_id}}/workflow-verdict.json",
+          "jsonPath": "verified",
+          "value": true
+        }
+      },
+      "steps": [
+        {
+          "type": "step",
+          "id": "implement-and-prove",
+          "agent": "wf-coder",
+          "captureOutput": true,
+          "prompt": "Continue service {{service_id}} in existing D:\\KNOUX-AI according to {{mission}}. READ current source and latest qa-evidence/e2e/{{service_id}}/workflow-verdict.json; act on the documented review findings, no planning-only output. One source writer. First compile CURRENT code and run sequential Gradle tests, then independently audit both SmartCleanStorageTest and SmartCleanRealTest destructive fixtures BEFORE running targeted tests on exact authorized physical device REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL (not an emulator, no costly download). Only new UUID synthetic app-owned or newly created verified MediaStore test fixtures may be deleted; no personal data/settings resets. Implement the ENTIRE customer outcome: actual Android source data, permission scope, inspect/filter/select, explicit confirmation, actual supported Trash/Permanent Delete, provider requery, durable Room history, cancel/retry/restore, correct Pro access boundaries. Preserve approved design. Record actual exact commands, exit, JUnit tests including skipped, screenshot/log references and code SHA or dirty worktree state. Do not update verified to true yourself. Do not stage/commit code until independently reviewed. If blocked, return precise blocker and continue other independent safe work; no false pass."
+        },
+        {
+          "type": "step",
+          "id": "independent-evidence-review",
+          "agent": "semantic_reviewer",
+          "captureOutput": true,
+          "prompt": "Independently audit the CURRENT source and tests for KNOUX {{service_id}} in D:\\KNOUX-AI; do not modify Kotlin code. Read qa-evidence/e2e/ACCEPTANCE_MATRIX.md and qa-evidence/e2e/{{service_id}}/workflow-verdict.json. Inspect real existing Gradle logs, JUnit XML, ADB device/serial/API, proof of exact synthetic fixture-only deletion, provider requery and Room history, UI RTL/EN and error cases; do not accept plain agent claims, unrun tests, old logs, Assume skips or build success as end-to-end evidence. Check no other source work lost and that the existing design is preserved. Write qa-evidence/e2e/{{service_id}}/workflow-verdict.json with boolean verified TRUE ONLY IF mandatory end-to-end acceptance is genuinely proven on the latest code; otherwise verified FALSE and precise actionable missing_evidence / defects and actual run timestamp. Include measured tests passed/failed/skipped and source state. Ensure any remaining gaps in Pro billing/real backend are explicitly BLOCKED_EXTERNAL; don't pass premium claims not implemented. Report verdict and findings to parent."
+        }
+      ]
+    },
+    {
+      "type": "step",
+      "id": "safe-git-integration-and-handoff",
+      "agent": "wf-coder",
+      "captureOutput": true,
+      "prompt": "Only if the current qa-evidence/e2e/{{service_id}}/workflow-verdict.json actually says verified true with real evidence: inspect HEAD and origin main LIVE, all unrelated modified/untracked unique work, reviewer findings and any concurrent writer. Stage ONLY intended verified coherent source/tests/docs, review git diff --cached, commit on existing main, fast-forward push without force if remote safe and credentials available, then verify git ls-remote origin refs/heads/main. Never mass-add untracked directories, clean/reset, delete unique work or touch independent Linux repo. Append full evidence checkpoint to qa-evidence/e2e/EXECUTION_LEDGER.md and update docs/workflows/PC_E2E_TASK_MANIFEST_20261112.json: exact task state, SHA, remote, tests, runtime, blockers and NEXT dependency-satisfied PC task. Do not start a different Kotlin writer over an active session. Return verified status and next service recommendation. Do not claim production release, Play billing or Supabase deployment without actual external verification."
+    }
+  ]
+}

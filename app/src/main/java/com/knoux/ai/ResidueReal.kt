@@ -710,57 +710,69 @@ internal fun RealResidueScreen(page: Page, open: (Page) -> Unit) {
 private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, onClear: () -> Unit) {
     val scanning = state.phase == ResiduePhase.SCANNING
     val summary = state.summary
+    val countable = state.measured || summary.count > 0
     GlassPanel(Modifier.fillMaxWidth(), tint = Pink) {
         Column(
             Modifier.fillMaxWidth().padding(13.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Label(
-                        if (state.measured) humanBytes(summary.bytes) else "—",
-                        30, if (state.measured) Pink else Mist, FontWeight.ExtraBold,
-                        modifier = Modifier.testTag("residue-total"),
-                    )
-                    Label(
-                        if (state.measured) Copy(R.string.k_measured_residue)
-                        else Copy(R.string.k_not_measured_yet_2),
-                        11, Mist,
+            if (!countable && !scanning) {
+                // Nothing measured yet: one honest token, no dash grid.
+                Row(
+                    Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Unmeasured(18, modifier = Modifier.testTag("residue-total"))
+                    Label(Copy(R.string.k_not_measured_yet_2), 13, Chalk, FontWeight.Bold)
+                }
+            } else {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Label(
+                            if (state.measured) humanBytes(summary.bytes) else "—",
+                            30, if (state.measured) Pink else Mist, FontWeight.ExtraBold,
+                            modifier = Modifier.testTag("residue-total"),
+                        )
+                        Label(
+                            if (state.measured) Copy(R.string.k_measured_residue)
+                            else Copy(R.string.k_not_measured_yet_2),
+                            11, Mist,
+                        )
+                    }
+                    Column(horizontalAlignment = Alignment.End) {
+                        val countable2 = countable
+                        Label(
+                            if (countable2) KnouxFormat.number(summary.count) else "—",
+                            20, if (countable2) Chalk else Mist, FontWeight.Bold,
+                            modifier = Modifier.testTag("residue-count"),
+                        )
+                        Label(Copy(R.string.k_items), 10, Mist)
+                    }
+                }
+                if (countable) {
+                    GradientBar(
+                        if (summary.count > 0) summary.ownedCount.toFloat() / summary.count else 0f,
+                        thickness = 8,
                     )
                 }
-                Column(horizontalAlignment = Alignment.End) {
-                    val countable = state.measured || summary.count > 0
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Label(
-                        if (countable) KnouxFormat.number(summary.count) else "—",
-                        20, if (countable) Chalk else Mist, FontWeight.Bold,
-                        modifier = Modifier.testTag("residue-count"),
+                        if (countable) Copy.args(R.string.residue_own_cache, KnouxFormat.number(summary.ownedCount))
+                        else Copy.runtime("—"),
+                        10, Mint, modifier = Modifier.weight(1f),
                     )
-                    Label(Copy(R.string.k_items), 10, Mist)
+                    Label(
+                        if (countable) Copy.args(R.string.residue_shared, KnouxFormat.number(summary.sharedCount))
+                        else Copy.runtime("—"),
+                        10, Gold, modifier = Modifier.weight(1f),
+                    )
+                    Label(
+                        if (countable) Copy.args(R.string.residue_inspected, KnouxFormat.number(state.filesInspected))
+                        else Copy.runtime("—"),
+                        10, Mist,
+                    )
                 }
-            }
-            val countable = state.measured || summary.count > 0
-            if (countable) {
-                GradientBar(
-                    if (summary.count > 0) summary.ownedCount.toFloat() / summary.count else 0f,
-                    thickness = 8,
-                )
-            }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Label(
-                    if (countable) Copy.args(R.string.residue_own_cache, KnouxFormat.number(summary.ownedCount))
-                    else Copy.runtime("—"),
-                    10, Mint, modifier = Modifier.weight(1f),
-                )
-                Label(
-                    if (countable) Copy.args(R.string.residue_shared, KnouxFormat.number(summary.sharedCount))
-                    else Copy.runtime("—"),
-                    10, Gold, modifier = Modifier.weight(1f),
-                )
-                Label(
-                    if (countable) Copy.args(R.string.residue_inspected, KnouxFormat.number(state.filesInspected))
-                    else Copy.runtime("—"),
-                    10, Mist,
-                )
             }
             state.capturedAt?.let { captured ->
                 Label(

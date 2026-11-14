@@ -120,12 +120,12 @@ internal fun BottomActionBar(
 
 @Composable
 internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () -> Unit, tag: String = "primary-action") {
-    val shape = RoundedCornerShape(14.dp)
-    val tint = if (enabled) KnouxColors.action else KnouxColors.surfaceVariant
-    val ink = if (enabled) KnouxColors.onAction else KnouxColors.textSecondary
+    val shape = RoundedCornerShape(50)
+    val ink = if (enabled) Light.white else KnouxColors.textSecondary
+    val fill = if (enabled) Modifier.primarySurface(null, null) else Modifier.background(KnouxColors.surfaceVariant)
     Row(
         Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
-            .clip(shape).background(tint)
+            .clip(shape).then(fill)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,

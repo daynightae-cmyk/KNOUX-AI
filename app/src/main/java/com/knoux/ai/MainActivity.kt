@@ -414,17 +414,48 @@ private fun KnouxAppScaffold(
         if (next in tabs.map { it.first }) nav.switchTab(next)
         else nav.navigate(next.id) { launchSingleTop = true }
     }
-    Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0xff190c52), Color(0xff090426), Color(0xff020008))))
+    Box(Modifier.fillMaxSize()
+        .background(
+            Brush.verticalGradient(
+                listOf(Color(0xFF0C0733), Color(0xFF080426), Color(0xFF05021A), Color(0xFF020008)),
+            )
+        )
         .drawBehind {
-            val top = Offset(size.width * .78f, size.height * .01f)
-            drawCircle(Brush.radialGradient(listOf(Color(0xff6d24ff).copy(alpha = .42f),
-                Color(0xff2c1570).copy(alpha = .22f), Color.Transparent), top, size.width * .95f), size.width * .95f, top)
-            val high = Offset(size.width * .14f, size.height * .13f)
-            drawCircle(Brush.radialGradient(listOf(Light.magenta.copy(alpha = .16f), Color.Transparent), high, size.width * .48f),
-                size.width * .48f, high)
-            val low = Offset(size.width * .10f, size.height * .88f)
-            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .16f), Color.Transparent), low, size.width * .70f),
-                size.width * .70f, low)
+            // Identity atmosphere: four light pools, one per corner, so every
+            // screen sits inside the same brand weather.
+            val top = Offset(size.width * .76f, size.height * .02f)
+            drawCircle(Brush.radialGradient(listOf(Color(0xff6d24ff).copy(alpha = .46f),
+                Color(0xff2c1570).copy(alpha = .24f), Color.Transparent), top, size.width * .92f), size.width * .92f, top)
+            val high = Offset(size.width * .10f, size.height * .16f)
+            drawCircle(Brush.radialGradient(listOf(Light.magenta.copy(alpha = .14f), Color.Transparent), high, size.width * .46f),
+                size.width * .46f, high)
+            val low = Offset(size.width * .90f, size.height * .72f)
+            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .13f), Color.Transparent), low, size.width * .62f),
+                size.width * .62f, low)
+            val floor = Offset(size.width * .06f, size.height * .98f)
+            drawCircle(Brush.radialGradient(listOf(Color(0xff1e3a8a).copy(alpha = .30f), Color.Transparent), floor, size.width * .70f),
+                size.width * .70f, floor)
+            // Static stardust: fixed seed, no allocation per frame.
+            var seed = 2_917
+            repeat(54) { index ->
+                seed = (seed * 1103515245 + 12345) and 0x7fffffff
+                val u = (seed % 1000) / 1000f
+                seed = (seed * 1103515245 + 12345) and 0x7fffffff
+                val v = (seed % 1000) / 1000f
+                seed = (seed * 1103515245 + 12345) and 0x7fffffff
+                val bright = .10f + (seed % 100) / 420f
+                val tint = if (index % 4 == 0) Brand.cyan else Color(0xFFE9E4FF)
+                drawCircle(tint.copy(alpha = bright), (size.width * .0011f) + (index % 3) * .6f,
+                    Offset(size.width * u, size.height * v))
+            }
+            // A single horizon hairline gives the dark field a floor.
+            drawLine(
+                Brush.horizontalGradient(
+                    listOf(Color.Transparent, Brand.violet.copy(alpha = .22f), Brand.cyan.copy(alpha = .18f), Color.Transparent),
+                ),
+                Offset(0f, size.height * .66f), Offset(size.width, size.height * .66f),
+                strokeWidth = 1f,
+            )
         }.safeDrawingPadding()
         .semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         contentAlignment = Alignment.TopCenter) {
@@ -728,22 +759,16 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                         indication = null
                     ) { logoTapCount++ }
                 ) {
-                    // K-mark logo
-                    Glyph(Mark.K, Modifier.size(26.dp))
+                    // The official lockup: traced K, wordmark and neon smile.
                     if (LocalDensity.current.fontScale <= 1.45f) {
-                        // "knoux" + "ai" on the SAME line, no wrapping
                         val wordmark = when {
-                            LocalRoomy.current -> 13
-                            LocalArabic.current -> 17
-                            else -> 19
+                            LocalRoomy.current -> 14
+                            LocalArabic.current -> 16
+                            else -> 18
                         }
-                        androidx.compose.foundation.layout.Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(0.dp)
-                        ) {
-                            Label("knoux", wordmark, Chalk, FontWeight.ExtraBold, maxLines = 1)
-                            Label(" ai", wordmark, Pink, FontWeight.ExtraBold, maxLines = 1)
-                        }
+                        KnouxWordmark(size = wordmark, withSignature = true, glow = false)
+                    } else {
+                        KnouxMonogram(size = 28)
                     }
                     // Dev mode badge — inline after name, styled like auth chip
                     if (BuildConfig.DEBUG && DevAccessManager.isDevModeActive && !compactHeader) {

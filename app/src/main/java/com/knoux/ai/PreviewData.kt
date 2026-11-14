@@ -22,7 +22,7 @@ internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
     BATTERY("battery", Copy(R.string.k_battery_saver), Mark.BATTERY),
     OPTIMIZE("ai-optimization", Copy(R.string.k_ai_optimization), Mark.CHIP),
     CLEAN("clean", Copy(R.string.k_smart_clean), Mark.BROOM),
-    TOOLS("tools", Copy(R.string.k_device_tools), Mark.GRID),
+    TOOLS("tools", Copy(R.string.k_device_tools), Mark.GEAR),
     KNOUX_UNIVERSE("knoux-universe", Copy(R.string.k_knoux_universe), Mark.SPARKLE),
     CLEAN_CENTER("clean-center", Copy(R.string.k_smart_clean_center), Mark.TRASH),
     DUPLICATE_REVIEW("duplicate-group-review", Copy(R.string.k_duplicate_group_review), Mark.PICTURES),

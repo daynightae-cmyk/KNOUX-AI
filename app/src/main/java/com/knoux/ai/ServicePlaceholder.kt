@@ -1,6 +1,7 @@
 package com.knoux.ai
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,45 +27,56 @@ import androidx.compose.ui.unit.dp
  * still reads as part of the product instead of a blank page.
  */
 @Composable
-internal fun EmptyServiceScreen(page: Page, open: (Page) -> Unit) {
+internal fun EmptyServiceScreen(
+    page: Page,
+    open: (Page) -> Unit,
+    body: Copy? = null,
+    primary: Action? = null,
+    onPrimary: (() -> Unit)? = null,
+) {
     val motion = LocalPreviewMotion.current
     Column(Modifier.fillMaxSize().testTag("service-unavailable")) {
-        Column(
-            Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            NeonHero(page.hero, motion, Modifier.padding(top = 2.dp), heightOverride = 84.dp)
+        Box(Modifier.weight(1f).fillMaxWidth()) {
+            // Unmeasured scope is fog, not a number and not a bar. The whole
+            // service area wears its world's weather behind the content.
+            WorldFog(worldOf(page), Modifier.matchParentSize())
             Column(
-                Modifier.fillMaxWidth().padding(horizontal = 18.dp),
+                Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                Label(
-                    page.title, 24, KnouxColors.textPrimary, FontWeight.Bold,
-                    align = TextAlign.Center, modifier = Modifier.testTag("screen-${page.id}"),
-                )
-                StatePill(Copy(R.string.state_not_measured), KnouxColors.warning, tag = "state-not-measured")
-                Label(
-                    Copy(R.string.service_no_engine), 13, KnouxColors.textSecondary,
-                    align = TextAlign.Center,
-                )
-                SurfaceCard {
-                    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        FactLine(Copy(R.string.technical_status), Copy(R.string.state_unavailable))
+                NeonHero(page.hero, motion, Modifier.padding(top = 2.dp), heightOverride = 84.dp)
+                Column(
+                    Modifier.fillMaxWidth().padding(horizontal = 18.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    Label(
+                        page.title, 24, KnouxColors.textPrimary, FontWeight.Bold,
+                        align = TextAlign.Center, modifier = Modifier.testTag("screen-${page.id}"),
+                    )
+                    StatePill(Copy(R.string.state_not_measured), KnouxColors.warning, tag = "state-not-measured")
+                    Label(
+                        body ?: Copy(R.string.service_no_engine), 13, KnouxColors.textSecondary,
+                        align = TextAlign.Center,
+                    )
+                    SurfaceCard {
+                        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                            FactLine(Copy(R.string.technical_status), Copy(R.string.state_unavailable))
+                        }
                     }
+                    Label(
+                        Copy(R.string.service_unavailable_footnote), 12,
+                        KnouxColors.textSecondary, align = TextAlign.Center,
+                    )
                 }
-                Label(
-                    Copy(R.string.service_unavailable_footnote), 12,
-                    KnouxColors.textSecondary, align = TextAlign.Center,
-                )
+                Spacer(Modifier.height(18.dp))
             }
-            Spacer(Modifier.height(18.dp))
         }
         BottomActionBar(
-            primary = Action(Copy(R.string.action_open_clean), Mark.BROOM),
+            primary = primary ?: Action(Copy(R.string.action_open_clean), Mark.BROOM),
             secondary = Action(Copy(R.string.action_back_home), Mark.HOME),
             enabled = true,
-            onPrimary = { open(Page.CLEAN) },
+            onPrimary = { onPrimary?.invoke() ?: open(Page.CLEAN) },
             onSecondary = { open(Page.HOME) },
         )
     }

@@ -1,0 +1,62 @@
+﻿[
+    {
+        "route":  "clean-center",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-01-clean-center.png",
+        "size":  21945,
+        "sha256":  "CCC19025070D0915E96ED4C468CE26CDA577CD2A68B8A25743112A6CA9BF4D44"
+    },
+    {
+        "route":  "duplicate-group-review",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-02-duplicate-group-review.png",
+        "size":  21945,
+        "sha256":  "CCC19025070D0915E96ED4C468CE26CDA577CD2A68B8A25743112A6CA9BF4D44"
+    },
+    {
+        "route":  "privacy-risk-inspector",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-03-privacy-risk-inspector.png",
+        "size":  21945,
+        "sha256":  "CCC19025070D0915E96ED4C468CE26CDA577CD2A68B8A25743112A6CA9BF4D44"
+    },
+    {
+        "route":  "deep-scan-summary",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-04-deep-scan-summary.png",
+        "size":  21945,
+        "sha256":  "CCC19025070D0915E96ED4C468CE26CDA577CD2A68B8A25743112A6CA9BF4D44"
+    },
+    {
+        "route":  "performance-report-detail",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-05-performance-report-detail.png",
+        "size":  21945,
+        "sha256":  "CCC19025070D0915E96ED4C468CE26CDA577CD2A68B8A25743112A6CA9BF4D44"
+    },
+    {
+        "route":  "residue-item-review",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-06-residue-item-review.png",
+        "size":  21945,
+        "sha256":  "CCC19025070D0915E96ED4C468CE26CDA577CD2A68B8A25743112A6CA9BF4D44"
+    },
+    {
+        "route":  "installed-apps-review",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-07-installed-apps-review.png",
+        "size":  21945,
+        "sha256":  "CCC19025070D0915E96ED4C468CE26CDA577CD2A68B8A25743112A6CA9BF4D44"
+    },
+    {
+        "route":  "storage-breakdown",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-08-storage-breakdown.png",
+        "size":  21945,
+        "sha256":  "CCC19025070D0915E96ED4C468CE26CDA577CD2A68B8A25743112A6CA9BF4D44"
+    },
+    {
+        "route":  "battery-diagnostics",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-09-battery-diagnostics.png",
+        "size":  22429,
+        "sha256":  "76C2BDB571A263D80C33348FD6B2564FA4577797264FBB12B339F2BE37FA26D4"
+    },
+    {
+        "route":  "ai-recommendations",
+        "file":  "D:\\KNOUX-AI\\qa-evidence\\service-worlds-20261111\\service-10-ai-recommendations.png",
+        "size":  22429,
+        "sha256":  "76C2BDB571A263D80C33348FD6B2564FA4577797264FBB12B339F2BE37FA26D4"
+    }
+]

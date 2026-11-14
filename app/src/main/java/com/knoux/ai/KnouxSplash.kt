@@ -105,46 +105,46 @@ private const val FACE_END   = 3080f
 private val PenEasing = CubicBezierEasing(.32f, 0f, .64f, 1f)
 
 // ---- K geometry (1000-unit design space, traced from the owner logo) ----
-private val kUpper: Path by lazy {
+internal val kUpper: Path by lazy {
     Path().apply {
         moveTo(448f, 240.9f); lineTo(561.8f, 240.9f); lineTo(484.4f, 377.8f)
         lineTo(364.4f, 453.3f); lineTo(435.6f, 253.5f); quadraticTo(435.6f, 240.9f, 448f, 240.9f); close()
     }
 }
-private val kBlade: Path by lazy {
+internal val kBlade: Path by lazy {
     Path().apply {
         moveTo(316.4f, 550.2f); quadraticTo(370.7f, 554.5f, 424.9f, 550.2f)
         cubicTo(497.8f, 471.1f, 604.4f, 391.1f, 680f, 320f)
         cubicTo(524.4f, 362.7f, 373.3f, 475.6f, 316.4f, 550.2f); close()
     }
 }
-private val kLower: Path by lazy {
+internal val kLower: Path by lazy {
     Path().apply {
         moveTo(493.3f, 419.6f); lineTo(565.3f, 419.6f); lineTo(653.3f, 551.1f); lineTo(539.6f, 551.1f); close()
     }
 }
-private val kCombined: Path by lazy { Path().apply { addPath(kUpper); addPath(kLower); addPath(kBlade) } }
+internal val kCombined: Path by lazy { Path().apply { addPath(kUpper); addPath(kLower); addPath(kBlade) } }
 
-private val upperBrush = Brush.linearGradient(listOf(Color(0xffff7cff), Color(0xffc218f9), Color(0xff3c1ad6)), Offset(505f, 241f), Offset(420f, 453f))
-private val bladeBrush = Brush.linearGradient(0f to Color(0xffff8bff), .22f to Color(0xffd33bff), .52f to Color(0xff6322f6),
+internal val upperBrush = Brush.linearGradient(listOf(Color(0xffff7cff), Color(0xffc218f9), Color(0xff3c1ad6)), Offset(505f, 241f), Offset(420f, 453f))
+internal val bladeBrush = Brush.linearGradient(0f to Color(0xffff8bff), .22f to Color(0xffd33bff), .52f to Color(0xff6322f6),
     .78f to Color(0xff2a5cff), 1f to Color(0xff7ceeff), start = Offset(680f, 320f), end = Offset(316f, 550f)
 )
-private val lowerBrush = Brush.linearGradient(listOf(Color(0xff123fd8), Color(0xff0d7dff), Color(0xff00f0ff)), Offset(500f, 425f), Offset(645f, 548f))
+internal val lowerBrush = Brush.linearGradient(listOf(Color(0xff123fd8), Color(0xff0d7dff), Color(0xff00f0ff)), Offset(500f, 425f), Offset(645f, 548f))
 
 // ---- Neon smile geometry (traced luminous curve beneath the wordmark) ----
-private val smileTip = Offset(936f, 772f)
-private val smilePath: Path by lazy {
+internal val smileTip = Offset(936f, 772f)
+internal val smilePath: Path by lazy {
     Path().apply {
         moveTo(72f, 757f)
         cubicTo(285f, 915f, 705f, 930f, smileTip.x, smileTip.y)
     }
 }
-private val smileMeasure: PathMeasure by lazy { PathMeasure().apply { setPath(smilePath, false) } }
-private data class SmileEdges(val upper: Offset, val lower: Offset)
+internal val smileMeasure: PathMeasure by lazy { PathMeasure().apply { setPath(smilePath, false) } }
+internal data class SmileEdges(val upper: Offset, val lower: Offset)
 
 private const val SMILE_SAMPLES = 40
 
-private fun smileEdges(progress: Float): SmileEdges {
+internal fun smileEdges(progress: Float): SmileEdges {
     val distance = smileMeasure.length * progress
     val point = smileMeasure.getPosition(distance)
     val tangent = smileMeasure.getTangent(distance)
@@ -153,15 +153,15 @@ private fun smileEdges(progress: Float): SmileEdges {
     return SmileEdges(point - normal * (2.5f * taper), point + normal * (23f * taper))
 }
 
-private val smileSamples by lazy { List(SMILE_SAMPLES + 1) { smileEdges(it.toFloat() / SMILE_SAMPLES) } }
-private val smileBrush = Brush.horizontalGradient(0f to Color.Transparent, 0.11f to Color(0xfff02bff), 0.37f to Color(0xffa749fb),
+internal val smileSamples by lazy { List(SMILE_SAMPLES + 1) { smileEdges(it.toFloat() / SMILE_SAMPLES) } }
+internal val smileBrush = Brush.horizontalGradient(0f to Color.Transparent, 0.11f to Color(0xfff02bff), 0.37f to Color(0xffa749fb),
     0.62f to Color(0xff4a73ff), 0.93f to Color(0xff00e4ff), 1f to Color.Transparent,
     startX = 60f, endX = 940f
 )
-private val smileCore = Brush.horizontalGradient(0f to Color(0xffe9d5ff).copy(alpha = 0f), 0.10f to Color(0xffe9d5ff), 0.5f to Color(0xffbfdbfe),
+internal val smileCore = Brush.horizontalGradient(0f to Color(0xffe9d5ff).copy(alpha = 0f), 0.10f to Color(0xffe9d5ff), 0.5f to Color(0xffbfdbfe),
     0.90f to Color(0xffcffafe), 1f to Color(0xffcffafe).copy(alpha = 0f), startX = 60f, endX = 940f
 )
-private val smileStops = listOf(0f to Color(0xfff02bff), 0.37f to Color(0xffa749fb), 0.62f to Color(0xff4a73ff), 1f to Color(0xff00e4ff)
+internal val smileStops = listOf(0f to Color(0xfff02bff), 0.37f to Color(0xffa749fb), 0.62f to Color(0xff4a73ff), 1f to Color(0xff00e4ff)
 )
 private val kTrail = Path().apply {
     moveTo(227f, 283f)

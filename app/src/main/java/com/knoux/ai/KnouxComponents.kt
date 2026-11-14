@@ -49,6 +49,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -73,11 +74,13 @@ internal fun Copy.localized() = text(LocalArabic.current)
 
 @Composable
 internal fun Label(text: String, size: Int = 12, tint: Color = KnouxColors.textPrimary, weight: FontWeight = FontWeight.Normal,
-    modifier: Modifier = Modifier, align: TextAlign? = null, maxLines: Int = Int.MAX_VALUE
+    modifier: Modifier = Modifier, align: TextAlign? = null, maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip,
 ) {
     val resolved = size.coerceAtLeast(MIN_TEXT_SIZE)
     Text(text, modifier, color = tint, fontSize = resolved.sp, lineHeight = (resolved * 1.3f).sp,
-        fontWeight = weightOf(weight), fontFamily = KnouxFont, textAlign = align, maxLines = maxLines)
+        fontWeight = weightOf(weight), fontFamily = KnouxFont, textAlign = align, maxLines = maxLines,
+        overflow = overflow)
 }
 
 /**
@@ -86,8 +89,24 @@ internal fun Label(text: String, size: Int = 12, tint: Color = KnouxColors.textP
  */
 @Composable
 internal fun Label(text: Copy, size: Int = 12, tint: Color = KnouxColors.textPrimary, weight: FontWeight = FontWeight.Normal,
-    modifier: Modifier = Modifier, align: TextAlign? = null, maxLines: Int = Int.MAX_VALUE
-) = Label(text.localized(), size, tint, weight, modifier, align, maxLines)
+    modifier: Modifier = Modifier, align: TextAlign? = null, maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Clip,
+) = Label(text.localized(), size, tint, weight, modifier, align, maxLines, overflow)
+
+/**
+ * A measurement that has not been taken yet.
+ *
+ * The character is a real em dash — a screen reader and a UI test both read the
+ * same honest token — but at display sizes an em dash is a solid bar, and a bar
+ * looks like data. So it is set small and quiet instead of big and bold.
+ */
+@Composable
+internal fun Unmeasured(size: Int = 15, align: TextAlign? = null, modifier: Modifier = Modifier) {
+    Label(
+        "—", size, KnouxColors.textSecondary.copy(alpha = .70f), FontWeight.SemiBold,
+        modifier = modifier, align = align,
+    )
+}
 
 /**
  * Premium glass material.
