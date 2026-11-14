@@ -260,3 +260,75 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
   - Paired home cards can differ in height in Arabic because the AR body copy wraps to a different line count; still readable, not pixel-matched.
   - API 35 / physical-device visual parity was not re-proven here (device not attached).
   - The 3 skipped device cases are genuinely inapplicable on API 26 (OS-mediated media removal requires API 30+), not silently passing.
+
+## Entry 0018 - Brand fingerprint pass on the native shell; real captures + measured motion proof - 2026-11-15
+
+- **Trigger:** owner stated the shell was good but had no fingerprint: "فين البصمة؟ … الأيقونات
+  والكروت اللي جوه … لازم تكون جاية من الألوان بتاعتنا … والأنيميشن فين؟". Auth lane deliberately paused.
+- **Rule adopted:** four logo tones only (cobalt, cyan, violet, magenta). Amber/red/green reserved for
+  measured warning/success, so `NativePalette.amber` (formerly the Privacy tone) became cyan. A tone
+  appears in exactly three places per card: icon plate, one short top hairline, measured figure.
+- **Implemented (new shared layer first, then screens):**
+  - `NativeBrand.kt` (new): `BrandTone`, `ServiceIconPlate`, `BrandHairline`, `NativeScreenTitle`,
+    `Modifier.brandClickable`, `Modifier.enterRise`.
+  - `KnouxScaffold.kt`: `SurfaceCard` gradient + lit top edge + optional accent hairline + radius
+    parameter; `PrimaryAction`/`SecondaryAction` cobalt gradient, top highlight, press scale, modifier
+    parameter; `MasterActions` now one row instead of two stacked 48dp bars.
+  - `HomeScreen.kt` / `MasterScreens.kt`: `NativeScreenTitle`, accent storage card, measured used/free
+    bar filling from the right in RTL, animated segment fill/stroke, staggered entrance, 36dp plates,
+    tone chevrons, 18→15sp values on a tinted pill, 104dp tiles, QuickAction plates.
+  - `Home`: the per-group label + odd-count half-empty row was the real cause of the large dead gaps in
+    the original pass. The grid is now one continuous list ordered by the chosen segment.
+  - `SmartCleanReal.kt`: measured size moved onto the title line and a single checkbox at the end (the
+    previous lone dash stacked above the checkbox read as a stray mark); separator removed; pinned
+    action block separated from the list by a hairline; status line is bare text, not a third card.
+  - `MasterScreens.kt` (Reports): cyan summary, violet empty panel with a 52dp plate, `BrandHairline`,
+  one honest CTA; chart bars cyan→blue→violet gradient, revealed once (520 ms), never re-animated.
+  - `MainActivity.kt`: top-bar gradient hairline, bottom-nav gradient indicator plate + cyan top light,
+    `IconControl(plated = true)` for PRO/Settings; `KnouxComponents.kt`: native ambient field gained two
+    wide, very quiet radial washes; `IconBadge` native path now uses `ServiceIconPlate`.
+- **Not treated as defects after pixel/code inspection (recorded so nobody re-fixes them):** back arrow
+  already points right in Arabic; logo background is exactly `#090A1E` (no dark plate); storage bar
+  fills from the right in RTL; menu + logo sit at the start edge in both directions. The "last row cut
+  under the nav" symptom is the honest scroll fold - `NavHost` is `weight(1f)` above the dock.
+- **Commands and results (exit code in parentheses):**
+  - `.\gradlew.bat --no-daemon :app:compileDebugKotlin` (0) - BUILD SUCCESSFUL, 18 tasks.
+  - `.\gradlew.bat --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:compileDebugAndroidTestKotlin` (0)
+    - BUILD SUCCESSFUL, 1 m 55 s; **7 suites / 80 tests / 0 failures / 0 skipped**.
+  - `adb -s emulator-5556 install -r -t app\build\outputs\apk\debug\app-debug.apk` (0) - `Success`.
+  - Capture via `am start --es knoux.preview.route <route> --ez knoux.preview.arabic <bool>` +
+    `adb shell screencap`, API 26 `kx_preview`, 1080x1920.
+- **APK:** `app-debug.apk`, 19,329,036 bytes, SHA-256
+  `a80635f64b800bb37033f31a773e9d636544adb927ecb7c3df5db03bfcf0da7b`. Re-installed and re-captured
+  after the gate; identical to the reviewed captures (177 differing samples of 640,000, all of them the
+  two live byte figures), so the visual evidence applies to the build that passed the gate.
+- **Motion proven by measurement:** `screenrecord` on a `-no-window` emulator emits one decodable frame,
+  so eight `screencap` frames were pulled across a single launch. `m7` had toolbar + section title +
+  bottom nav but no body; `m8` (0.7 s later) had the full body: **165,874 differing samples, intensity
+  delta 18,939,733, max per-sample delta 697**. The staggered fade/rise therefore runs on the device.
+  Motion between tabs and the press scale were **not** recorded and remain code-verified only.
+- **Device identity:** API 26 `kx_preview` AVD, `emulator-5556`, 1080x1920. No physical device was used.
+  A Samsung `SM-A025F` appeared on the ADB bus during this pass and was **not** touched - the owner's
+  audio/video authorization and the fixture rules cover `REDACTED_USE_KNOUX_TEST_DEVICE_SERIAL` only.
+  No serial is written to this repository.
+- **Runtime evidence:** screenshots held in the scratch area, not in Git: `g1-gated-home.png` (gated APK,
+  AR), `d1-home-ar.png`, `f2-home-en.png`, `f3-tools-en.png`, `f1-clean-ar.png`, `m7.png`/`m8.png` (motion
+  pair), `c3-reports-ar.png`. Reviewed by eye: Home AR/EN, Tools EN, Clean AR, Reports AR.
+- **Git state at entry:** branch `knoux-native-ui-20261114`, work landed in commit `64cead0e98ac113fa008c208c944475d00c24b1e`
+  ("feat(ui): brand fingerprint pass, one action row, no dead grid cells"), which equals
+  `origin/knoux-native-ui-20261114`. This entry's own doc edit is a separate commit.
+- **Concurrency preserved:** while this pass ran, another writer added `NativeTools.kt` (untracked) and
+  modified `ServicePlaceholder.kt`, `MainActivity.kt`, `AndroidManifest.xml`, `values/strings.xml`,
+  `values-ar/strings.xml` and `PreviewNavigationTest.kt`. Those files were **not** staged, committed or
+  restored; the gate above therefore compiled that writer's in-flight work too, and `git diff --check`
+  reports trailing whitespace in their two string files - reported to them, fixed by them.
+- **Task statuses:** unchanged. PC00-PC04 stay VERIFIED, PC05 stays QUEUED in
+  `docs/workflows/PC_E2E_TASK_MANIFEST_20261112.json`; this pass proves presentation and harness health
+  on API 26, not a new device E2E.
+- **Known gaps (not hidden):**
+  - Battery, App Manager and Storage still render the honest `EmptyServiceScreen` placeholder in the
+    captured build, so their own signature instruments are absent.
+  - Visual parity is not signed off - the owner has not approved a capture yet.
+  - API 35 / physical-device visual parity was not re-proven; the authorized phone was in use by another
+    session and a different Samsung device is unauthorized.
+  - Tab-transition and press motion are code-verified only, never recorded.

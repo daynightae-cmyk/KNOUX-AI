@@ -83,7 +83,7 @@ Two deliberate departures, both recorded rather than hidden:
 | unit tests | 6 result files — **74 tests, 0 skipped, 0 failures, 0 errors** |
 | instrumentation compile | `compileDebugAndroidTestKotlin` succeeds → all 17 androidTest classes still build against the new tags |
 | APK | `app-debug.apk` 19,272,116 bytes, sha256 `d2fb1bf554db5a255411f34a…` |
-| on-device UI / screenshots / permissions / Room runtime | **DEVICE_TEST_NOT_RUN** — no device connected; owner chose build-only proof |
+| on-device UI / screenshots / permissions / Room runtime | **DEVICE_TEST_NOT_RUN at the time this table was written** — no device was connected then. Real captures from the API 26 `kx_preview` AVD exist from the brand pass; see §7 |
 
 Transcripts: `K:\KNOUX-NATIVE-UI-EVIDENCE\COMPILE_SHELL_CHECKPOINT_20261114.txt`,
 `COMPILE_HOME_20261114.txt`, `COMPILE_HERO_GATE_20261114.txt`, `VERIFY_NATIVE_UI_20261114.txt`.
@@ -106,13 +106,87 @@ Test tags asserted by instrumentation and kept present: `screen-home`, `start-sc
 `design-preview` remains absent from the shell. No route, controller, permission or persistence call
 was rewired: Home only changed presentation, grouping and its data bindings.
 
-## 7. Open work (not claimed as done)
+## 7. Brand fingerprint pass (2026-11-14 → 15)
 
-- Gates 3/4 for the other nine services: each still needs its own signature instrument per
-  `KNOUX_SERVICE_VISUAL_IDENTITY_20261113.md` (Deep Scan ring from `12:45`, Reports from `12:147`,
-  Battery gauge, Duplicate media grid, etc.). The shared shell now makes them consistent; it does not
-  make them designed.
-- Visual parity cannot be signed off: no phone/emulator capture exists, and the shell contract Gate E
-  wants an owner-approved Home screenshot first.
-- Merge with the concurrent writer's 5 files, then delete this scratch worktree.
-- Auth lane (Supabase + Google Credential Manager) untouched — deliberate, owner chose UI first.
+The owner's finding was precise: the shell was correct but had **no fingerprint** — icons, inner cards,
+section headers and motion were missing, and every service icon was the same flat blue square. This is
+the pass that answered it.
+
+### 7.1 The one rule that shaped everything
+
+Four logo tones and nothing else: cobalt `#2F80FF → #0B63E8`, cyan, violet, magenta. Amber, red and
+green stay **reserved for a measured warning or success** and are never used as decoration. Before this
+pass `NativePalette.amber` was the Privacy icon tone; it is now cyan. A service tone appears in exactly
+three places per card — the icon plate, one short top hairline, and the measured figure — so the grid
+reads as one product instead of eight tinted cards.
+
+### 7.2 Shared layer (`NativeBrand.kt`, new)
+
+`BrandTone` (stable tone per service tag), `ServiceIconPlate` (gradient plate + lit top edge + glyph),
+`BrandHairline` (one violet→cyan line, separator only, never a card border), `NativeScreenTitle`
+(3dp logo-gradient bar + name + one muted sentence), `Modifier.brandClickable` (1.5 % press scale,
+90 ms, keeps the platform ripple), `Modifier.enterRise` (10 dp rise + fade, 300 ms, staggered ≤240 ms,
+skipped entirely when motion is off).
+
+### 7.3 What each screen got
+
+- **Home** — `NativeScreenTitle`; storage card on a cyan accent with a measured used/free bar that
+  fills from the right in RTL; animated segment fill and stroke; a staggered entrance; 36dp icon
+  plates, tone chevrons, 18→15sp measured values on a tinted action pill; 104dp tile minimum.
+- **Smart Clean** — violet measured card with the honest `—` donut; group rows restyled on
+  violet/cyan with the measured size moved onto the title line and a single checkbox at the end
+  (the previous layout stacked a lone dash above the checkbox, which read as a stray mark); the two
+  fixed actions now share one row instead of stacking two 48dp bars, and the status line is bare text
+  instead of a third card; a hairline separates the pinned pair from the scrollable list.
+- **Tools** — `ServiceRow` on `SurfaceCard(accent = tone)` with a 40dp plate and chevron.
+- **Reports** — summary on cyan, empty panel on violet with a 52dp plate, `BrandHairline` between the
+  copy and the single honest CTA; chart bars are a cyan→blue→violet gradient revealed once (520 ms)
+  and never animated again.
+- **Shell** — top bar gradient hairline; bottom nav gradient indicator plate plus a cyan top light;
+  two wide, very quiet radial washes for depth.
+
+### 7.4 Verification actually run
+
+| Command | Result |
+| --- | --- |
+| `gradlew.bat --no-daemon :app:assembleDebug :app:testDebugUnitTest :app:compileDebugAndroidTestKotlin` | BUILD SUCCESSFUL, exit 0, 1 m 55 s — **7 suites / 80 tests / 0 failures / 0 skipped** |
+| `adb -s emulator-5556 install -r -t app-debug.apk` | `Success`, exit 0 |
+| launch + capture, API 26 `kx_preview`, 1080x1920 | Home AR, Home EN, Tools EN, Clean AR captured |
+
+APK `app-debug.apk` **19,329,036 bytes**, sha256
+`a80635f64b800bb37033f31a773e9d636544adb927ecb7c3df5db03bfcf0da7b`.
+
+**Motion is proven by measurement, not by assertion.** `screenrecord` on a `-no-window` emulator writes
+a single decodable frame, so eight `screencap` frames were pulled across one launch and diffed. Frame
+`m7` carried the toolbar, section title and bottom nav but **no body**; `m8`, 0.7 s later, carried the
+full body: **165,874 differing samples, intensity delta 18,939,733, max per-sample delta 697**. That is
+the staggered fade/rise running. The gated APK was re-installed and re-captured and is identical to the
+captures reviewed here (**177 differing samples of 640,000**, all of them the two live byte figures),
+so the evidence applies to the build that passed the gate.
+
+Motion is **not** proven for reduced-motion-off transitions between tabs — no recording exists, and the
+press-scale/segment-colour animations were verified in code only.
+
+### 7.5 What was checked and found NOT to be defects
+
+- The back arrow already points right in Arabic; the logo has no dark plate (background pixel is
+  exactly `#090A1E`); the storage bar fills from the right in RTL; the header places the menu and the
+  logo at the start edge in both directions. All four were suspected from stills and were disproved by
+  pixel inspection or by reading the code.
+- The "last row is cut under the navigation bar" symptom was the honest scroll fold, not a layout bug:
+  the `NavHost` is `weight(1f)` above the dock, and the final `Spacer(24.dp)` clears the last card.
+
+## 8. Open work (not claimed as done)
+
+- Gates 3/4 for the other services: each still needs its own signature instrument per
+  `KNOUX_SERVICE_VISUAL_IDENTITY_20261113.md` — the Deep Scan ring from `12:45` and the Reports
+  summary+chart from `12:147`, the Battery gauge, the Duplicate media grid. **The shared shell makes
+  them consistent; it does not make them designed.** Battery, App Manager and Storage still render the
+  honest `EmptyServiceScreen` placeholder in the captured build.
+- Visual parity cannot be signed off until the owner approves a real capture. The screenshots above are
+  evidence of what was built, not approval of how it looks.
+- The 3 skipped device cases are inapplicable on API 26, and API 35 / physical-device visual parity was
+  not re-proven in this pass.
+- The scratch worktree `K:\KNOUX-AI-NATIVE-UI-20261114` still has to be merged into canonical `main`
+  and retired.
+- Auth lane (Supabase + Google Credential Manager) untouched — deliberate, the owner chose UI first.
