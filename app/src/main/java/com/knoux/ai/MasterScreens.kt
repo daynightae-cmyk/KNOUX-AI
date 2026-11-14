@@ -1,5 +1,7 @@
 package com.knoux.ai
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -35,6 +37,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -76,18 +80,12 @@ internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) 
     // lead and the signature flourish stay on the approved cinematic surfaces;
     // a utility screen states its name and gets on with the job.
     if (LocalNativeApp.current) {
-        Column(
+        NativeScreenTitle(
+            Copy.runtime("${lead.localized()} ${accent.localized()}"),
+            subtitle,
+            tag,
             Modifier.fillMaxWidth().padding(start = NativeSpace.edge, top = 8.dp, end = NativeSpace.edge),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            Label(
-                Copy.runtime("${lead.localized()} ${accent.localized()}"), 20,
-                NativePalette.text, FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth().testTag(tag),
-                maxLines = 2, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            )
-            Label(subtitle, 12, NativePalette.muted, maxLines = 3)
-        }
+        )
         return
     }
     val roomy = LocalRoomy.current
@@ -142,19 +140,28 @@ internal fun ServiceStatePill(label: Copy) {
 }
 
 /**
- * The one fixed action bar of a real service: a single primary action and one
- * secondary, so the decision always sits in the same place.
+ * The one fixed action pair of a real service.
+ *
+ * Primary and secondary share a single row: the decision still has one obvious
+ * primary, but it no longer stacks two 48dp bars plus a note into a 170dp block
+ * that squeezed the measured list on a compact phone.
  */
 @Composable
 internal fun MasterActions(first: Action, second: Action, onFirst: () -> Unit, onSecond: () -> Unit) {
-    BottomActionBar(
-        primary = second,
-        secondary = first,
-        enabled = true,
-        onPrimary = onSecond,
-        onSecondary = onFirst,
-        secondaryTag = "review-action",
-    )
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        SecondaryAction(
+            action = first, onClick = onFirst, tag = "review-action",
+            modifier = Modifier.weight(1f),
+        )
+        PrimaryAction(
+            action = second, onClick = onSecond, tag = "primary-action",
+            modifier = Modifier.weight(1.45f),
+        )
+    }
 }
 
 /**
@@ -164,7 +171,20 @@ internal fun MasterActions(first: Action, second: Action, onFirst: () -> Unit, o
  * shell, so it uses the native palette directly.
  */
 @Composable
-internal fun StateNote(text: Copy, modifier: Modifier = Modifier) {
+internal fun StateNote(text: Copy, modifier: Modifier = Modifier, bare: Boolean = false) {
+    if (bare) {
+        // A pinned status under a fixed action pair must not add a third card to
+        // the bottom of the screen. One glyph and one muted line say the same.
+        Row(
+            modifier.fillMaxWidth().padding(start = 2.dp, end = 2.dp, top = 8.dp, bottom = 2.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Glyph(Mark.SHIELD, Modifier.size(14.dp), NativePalette.cyan.copy(alpha = .75f))
+            Label(text, 11, NativePalette.muted, modifier = Modifier.weight(1f), maxLines = 2)
+        }
+        return
+    }
     SurfaceCard(modifier.fillMaxWidth()) {
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp),
@@ -190,7 +210,15 @@ internal fun MasterCard(
     content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit,
 ) {
     if (LocalNativeApp.current) {
-        SurfaceCard(modifier) { Column(Modifier.fillMaxWidth().padding(12.dp), content = content) }
+        val tone = when (tint) {
+            null -> null
+            Pink, KnouxColors.primary -> NativePalette.blue
+            Cyan, KnouxColors.accent -> NativePalette.cyan
+            else -> tint
+        }
+        SurfaceCard(modifier, accent = tone, radius = radius.dp) {
+            Column(Modifier.fillMaxWidth().padding(12.dp), content = content)
+        }
         return
     }
     Box(modifier.clip(RoundedCornerShape(radius.dp)).glass(radius, tint = tint)) {
@@ -362,94 +390,79 @@ private fun NativeHubScreen(measures: List<HubMeasure>, open: (Page) -> Unit) {
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(horizontal = NativeSpace.edge),
     ) {
-        Column(
+        NativeScreenTitle(
+            Copy(R.string.home_title), Copy(R.string.home_subtitle), "screen-home",
             Modifier.fillMaxWidth().padding(top = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
-            Label(
-                Copy(R.string.home_title), 20, NativePalette.text, FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth().testTag("screen-home"),
-            )
-            Label(Copy(R.string.home_subtitle), 12, NativePalette.muted)
-        }
+        )
 
-        NativeStorageOverview(footprint, Modifier.fillMaxWidth().padding(top = NativeSpace.block))
+        NativeStorageOverview(
+            footprint,
+            Modifier.fillMaxWidth().padding(top = NativeSpace.block).enterRise(0),
+        )
 
         AccentButton(
             Action(Copy(R.string.k_start_deep_scan), Mark.RADAR),
-            Modifier.fillMaxWidth().padding(top = NativeSpace.row).heightIn(min = 48.dp),
+            Modifier.fillMaxWidth().padding(top = NativeSpace.row).heightIn(min = 48.dp).enterRise(1),
             primary = true,
             tag = "start-scan",
             labelSize = 15,
         ) { open(Page.SCAN) }
 
-        NativeHubSegments(selected) { picked -> selectedName = picked.name }
+        Box(Modifier.fillMaxWidth().padding(top = NativeSpace.row).enterRise(2)) {
+            NativeHubSegments(selected) { picked -> selectedName = picked.name }
+        }
 
+        // One continuous grid, ordered by the chosen segment.
+        //
+        // The earlier build printed a group heading above each sub-grid. A group
+        // with an odd tile count then left a full-height empty cell, and the
+        // heading repeated the segment the customer had just tapped - three
+        // stacked voids down the page. The segment bar already states the order,
+        // so the grid simply flows: selected services first, the rest after.
+        val columns = if (stackForFontScale()) 1 else 2
+        val orderedTiles = ordered.flatMap { group -> specs.filter { hubSegmentOfTag[it.tag] == group } }
         Column(
-            Modifier.fillMaxWidth().padding(top = NativeSpace.row),
-            verticalArrangement = Arrangement.spacedBy(NativeSpace.block),
+            Modifier.fillMaxWidth().padding(top = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(NativeSpace.gutter),
         ) {
-            // Two measured columns; one when the customer's font scale needs it.
-            val columns = if (stackForFontScale()) 1 else 2
-            ordered.forEach { group ->
-                val tiles = specs.filter { hubSegmentOfTag[it.tag] == group }
-                Column(
-                    Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(NativeSpace.gutter),
+            orderedTiles.chunked(columns).forEachIndexed { rowIndex, row ->
+                // Intrinsic height: a tile that grows stretches its neighbour, so
+                // a row never shows two different heights.
+                Row(
+                    Modifier.fillMaxWidth().height(IntrinsicSize.Min).enterRise(3 + rowIndex),
+                    horizontalArrangement = Arrangement.spacedBy(NativeSpace.gutter),
                 ) {
-                    Label(
-                        Copy(group.labelRes), 13,
-                        if (group == selected) NativePalette.text else NativePalette.muted,
-                        FontWeight.SemiBold,
-                    )
-                    tiles.chunked(columns).forEach { row ->
-                        // Intrinsic height: a tile that grows stretches its
-                        // neighbour, so a row never shows two different heights.
-                        Row(
-                            Modifier.fillMaxWidth().height(IntrinsicSize.Min),
-                            horizontalArrangement = Arrangement.spacedBy(NativeSpace.gutter),
-                        ) {
-                            row.forEach { spec ->
-                                NativeHubTile(
-                                    spec, measures, nativeTintFor(group, spec.tag), open,
-                                    Modifier.weight(1f).fillMaxHeight(),
-                                )
-                            }
-                            // A lone tile in an odd row keeps the measured width.
-                            repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
-                        }
+                    row.forEach { spec ->
+                        NativeHubTile(
+                            spec, measures, BrandTone.forTag(spec.tag), open,
+                            Modifier.weight(1f).fillMaxHeight(),
+                        )
                     }
+                    // A lone tile in the last row keeps the measured width.
+                    repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
                 }
             }
         }
 
-        NativeRecentActivity(history, Modifier.fillMaxWidth().padding(top = NativeSpace.block))
+        NativeRecentActivity(history, Modifier.fillMaxWidth().padding(top = NativeSpace.block).enterRise(6))
 
-        SurfaceCard(Modifier.fillMaxWidth().padding(top = NativeSpace.row)) {
+        SurfaceCard(Modifier.fillMaxWidth().padding(top = NativeSpace.row).enterRise(7)) {
             Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Label(Copy(R.string.k_quick_actions), 14, NativePalette.text, FontWeight.Bold)
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     QuickAction(Modifier.weight(1f), Copy(R.string.quick_clean), Mark.BROOM,
-                        NativePalette.violet, "quick-clean") { open(Page.CLEAN) }
+                        BrandTone.violet, "quick-clean") { open(Page.CLEAN) }
                     QuickAction(Modifier.weight(1f), Copy(R.string.k_save_battery), Mark.BATTERY,
-                        NativePalette.cyan, "quick-battery") { open(Page.BATTERY_DIAGNOSTICS) }
+                        BrandTone.cyan, "quick-battery") { open(Page.BATTERY_DIAGNOSTICS) }
                     QuickAction(Modifier.weight(1f), Copy(R.string.k_secure_device), Mark.SHIELD,
-                        NativePalette.amber, "quick-privacy") { open(Page.PRIVACY_INSPECTOR) }
+                        BrandTone.cyan, "quick-privacy") { open(Page.PRIVACY_INSPECTOR) }
                 }
             }
         }
 
-        StateNote(Copy(R.string.home_measured_source), Modifier.padding(top = NativeSpace.row))
+        StateNote(Copy(R.string.home_measured_source), Modifier.padding(top = NativeSpace.row).enterRise(8))
         Spacer(Modifier.height(24.dp))
     }
-}
-
-/** The one accent a segment lends its tiles: violet to work, cyan to data, amber to caution. */
-private fun nativeTintFor(group: HubSegment, tag: String): Color = when {
-    tag == "hub-privacy-sweep" -> NativePalette.amber
-    group == HubSegment.CLEAN -> NativePalette.violet
-    group == HubSegment.MANAGE -> NativePalette.cyan
-    else -> NativePalette.blue
 }
 
 @Composable
@@ -470,13 +483,14 @@ private fun QuickAction(
     modifier: Modifier = Modifier, title: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit
 ) {
     Column(
-        modifier.heightIn(min = TOUCH_TARGET).clickable(role = Role.Button, onClick = onClick).testTag(tag)
+        modifier.heightIn(min = TOUCH_TARGET).testTag(tag)
+            .brandClickable(onClick = onClick)
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp),
     ) {
-        Glyph(mark, Modifier.size(22.dp), tint)
-        Label(title, 12, NativePalette.text, FontWeight.SemiBold, align = TextAlign.Center, maxLines = 2)
+        ServiceIconPlate(mark, tint, size = 38.dp, iconSize = 19.dp)
+        Label(title, 11, NativePalette.text, FontWeight.SemiBold, align = TextAlign.Center, maxLines = 2)
     }
 }
 
@@ -494,15 +508,15 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(NativeSpace.tight),
         ) {
             ServiceRow(Copy(R.string.k_storage_breakdown), Copy(R.string.tools_storage_body),
-                Mark.DISK, NativePalette.cyan, "open-storage-breakdown", "open-storage") { open(Page.STORAGE_BREAKDOWN) }
+                Mark.DISK, BrandTone.blue, "open-storage-breakdown", "open-storage") { open(Page.STORAGE_BREAKDOWN) }
             ServiceRow(Copy(R.string.k_app_manager), Copy(R.string.tools_apps_body),
-                Mark.GROUP, NativePalette.cyan, "open-app-manager", "open-app-manager") { open(Page.APPS_REVIEW) }
+                Mark.GROUP, BrandTone.blue, "open-app-manager", "open-app-manager") { open(Page.APPS_REVIEW) }
             ServiceRow(Copy(R.string.k_privacy_sweep), Copy(R.string.tools_privacy_body),
-                Mark.SHIELD, NativePalette.amber, "open-privacy", "open-privacy") { open(Page.PRIVACY_INSPECTOR) }
+                Mark.SHIELD, BrandTone.cyan, "open-privacy", "open-privacy") { open(Page.PRIVACY_INSPECTOR) }
             ServiceRow(Copy(R.string.k_battery_diagnostics), Copy(R.string.tools_battery_body),
-                Mark.BATTERY, NativePalette.blue, "open-battery", "open-battery") { open(Page.BATTERY_DIAGNOSTICS) }
+                Mark.BATTERY, BrandTone.cyan, "open-battery", "open-battery") { open(Page.BATTERY_DIAGNOSTICS) }
             ServiceRow(Copy(R.string.k_ai_optimization), Copy(R.string.tools_ai_body),
-                Mark.CHIP, NativePalette.blue, "open-ai-optimization", "open-ai-optimization") { open(Page.AI_RECOMMENDATIONS) }
+                Mark.CHIP, BrandTone.magenta, "open-ai-optimization", "open-ai-optimization") { open(Page.AI_RECOMMENDATIONS) }
 
             if (showPro) ProLine(onDismiss = { showPro = false })
             Spacer(Modifier.height(18.dp))
@@ -511,13 +525,10 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
 }
 
 /**
- * One Device Tools entry: a flat native row with a single tinted icon plate,
- * the service name, one line on what it does and a direction chevron. The whole
- * row is the control.
- *
- * The per-row world gradient, side rail and crest were the cinematic identity;
- * on the utility shell they put a glow on every card, so the row now carries
- * colour in its icon plate only, the same way the hub tiles do.
+ * One Device Tools entry: a native row with a single tinted icon plate, the
+ * service name, one line on what it does and a direction chevron. The whole row
+ * is the control, and its service tone appears only in the plate and one short
+ * hairline along the top edge.
  */
 @Composable
 private fun ServiceRow(
@@ -526,20 +537,15 @@ private fun ServiceRow(
     val shape = RoundedCornerShape(16.dp)
     SurfaceCard(
         Modifier.heightIn(min = TOUCH_TARGET).clip(shape).testTag(clickTag)
-            .clickable(role = Role.Button, onClick = onClick)
+            .brandClickable(onClick = onClick),
+        accent = tint,
     ) {
         Row(
             Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            val plate = RoundedCornerShape(10.dp)
-            Box(
-                Modifier.size(36.dp).clip(plate)
-                    .background(tint.copy(alpha = .16f))
-                    .border(1.dp, tint.copy(alpha = .34f), plate),
-                contentAlignment = Alignment.Center,
-            ) { Glyph(mark, Modifier.size(18.dp), tint) }
+            ServiceIconPlate(mark, tint, size = 40.dp, iconSize = 20.dp)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Label(title, 14, NativePalette.text, FontWeight.SemiBold, modifier = Modifier.testTag(tag))
                 Label(copy, 12, NativePalette.muted, maxLines = 2)
@@ -632,17 +638,20 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
  */
 @Composable
 private fun ReportsSummary(lastScan: Copy?) {
-    SurfaceCard {
-        Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(NativeSpace.tight)) {
-                Label(Copy(R.string.reports_last_clean_title), 13, NativePalette.muted, FontWeight.SemiBold,
-                    modifier = Modifier.weight(1f))
-                Glyph(Mark.BROOM, Modifier.size(18.dp), NativePalette.blue)
-            }
-            if (lastScan != null) {
-                Label(lastScan, 16, NativePalette.cyan, FontWeight.Bold, modifier = Modifier.testTag("reports-last-scan"))
-            } else {
-                Unmeasured(16, modifier = Modifier.testTag("reports-last-scan"))
+    SurfaceCard(accent = NativePalette.cyan) {
+        Row(
+            Modifier.fillMaxWidth().padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            ServiceIconPlate(Mark.BROOM, NativePalette.cyan, size = 40.dp, iconSize = 20.dp)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Label(Copy(R.string.reports_last_clean_title), 12, NativePalette.muted, FontWeight.SemiBold)
+                if (lastScan != null) {
+                    Label(lastScan, 18, NativePalette.cyan, FontWeight.Bold, modifier = Modifier.testTag("reports-last-scan"))
+                } else {
+                    Unmeasured(18, modifier = Modifier.testTag("reports-last-scan"))
+                }
             }
         }
     }
@@ -655,17 +664,18 @@ private fun ReportsSummary(lastScan: Copy?) {
  */
 @Composable
 private fun ReportsEmptyPanel(onScan: () -> Unit) {
-    SurfaceCard {
+    SurfaceCard(accent = NativePalette.violet) {
         Column(
-            Modifier.fillMaxWidth().padding(18.dp),
+            Modifier.fillMaxWidth().padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(NativeSpace.row),
         ) {
-            Glyph(Mark.BARS, Modifier.size(32.dp), NativePalette.muted)
+            ServiceIconPlate(Mark.BARS, NativePalette.violet, size = 52.dp, iconSize = 26.dp)
             Label(Copy(R.string.reports_no_passes_title), 15, NativePalette.text,
                 FontWeight.SemiBold, align = TextAlign.Center)
             Label(Copy(R.string.reports_empty_body), 12, NativePalette.muted,
                 align = TextAlign.Center)
+            BrandHairline(Modifier.padding(horizontal = 18.dp))
             AccentButton(
                 Action(Copy(R.string.k_start_deep_scan), Mark.RADAR),
                 Modifier.fillMaxWidth(), primary = true, tag = "reports-start-scan",
@@ -690,7 +700,16 @@ private fun CleanupHistoryChart(completed: List<CleanupHistory>) {
     val formatter = remember { DateFormat.getDateInstance(DateFormat.SHORT, Locale.US) }
     val stacked = stackForFontScale()
     val plot = 88.dp
-    SurfaceCard {
+    // One finite reveal when the chart first appears; the bars never animate
+    // again and never invent a value. Motion off means the final frame.
+    val motion = LocalPreviewMotion.current
+    var entered by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) { entered = true }
+    val reveal by animateFloatAsState(
+        if (!motion || entered) 1f else 0f,
+        tween(520), label = "chart reveal",
+    )
+    SurfaceCard(accent = NativePalette.blue) {
         Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(NativeSpace.row)) {
             Label(Copy(R.string.reports_chart_title), 15, NativePalette.text, FontWeight.SemiBold)
             if (stacked) {
@@ -707,8 +726,12 @@ private fun CleanupHistoryChart(completed: List<CleanupHistory>) {
                                 .background(NativePalette.raised)
                         ) {
                             Box(
-                                Modifier.fillMaxWidth(ratio).fillMaxHeight().clip(RoundedCornerShape(50))
-                                    .background(NativePalette.blue)
+                                Modifier.fillMaxWidth(ratio * reveal).fillMaxHeight().clip(RoundedCornerShape(50))
+                                    .background(
+                                        Brush.horizontalGradient(
+                                            listOf(NativePalette.blue, NativePalette.violet),
+                                        )
+                                    )
                             )
                         }
                     }
@@ -733,8 +756,16 @@ private fun CleanupHistoryChart(completed: List<CleanupHistory>) {
                                 Spacer(Modifier.height(6.dp))
                                 Box(
                                     Modifier.width(32.dp).height((plot * ratio).coerceAtLeast(6.dp))
+                                        .graphicsLayer {
+                                            scaleY = reveal
+                                            transformOrigin = TransformOrigin(.5f, 1f)
+                                        }
                                         .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                                        .background(NativePalette.blue)
+                                        .background(
+                                            Brush.verticalGradient(
+                                                listOf(NativePalette.cyan, NativePalette.blue, NativePalette.violet),
+                                            )
+                                        )
                                         .semantics { contentDescription = description }
                                 )
                             }

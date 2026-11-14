@@ -2,12 +2,16 @@ package com.knoux.ai
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -27,13 +31,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.testTag
@@ -42,6 +51,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 /** Minimum touch target the interface allows. */
@@ -86,27 +96,64 @@ internal object NativeSpace {
 }
 
 /**
- * An opaque surface with a thin border.
+ * An opaque surface with a thin border and a lit top edge.
  *
  * The brief keeps glass for the few main cards of a screen; everything else is
- * a quiet solid surface so the interface does not sparkle everywhere.
+ * a quiet solid surface so the interface does not sparkle everywhere. Inside
+ * the native shell the fill is a shallow vertical gradient (one elevation step
+ * from the field) with a single 1dp highlight, which gives the card depth
+ * without a glow. [accent] adds one short logo-tone line along the top edge for
+ * the card that carries a service's identity.
  */
 @Composable
 internal fun SurfaceCard(
     modifier: Modifier = Modifier,
     variant: Boolean = false,
+    accent: Color? = null,
+    radius: Dp = 18.dp,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val shape = RoundedCornerShape(16.dp)
+    val shape = RoundedCornerShape(radius)
     val native = LocalNativeApp.current
     Box(
         modifier.fillMaxWidth().clip(shape)
-            .background(
+            .then(
                 if (native) {
-                    if (variant) NativePalette.raised else NativePalette.card
-                } else if (variant) KnouxColors.surfaceVariant else KnouxColors.surface
+                    Modifier
+                        .background(
+                            Brush.verticalGradient(
+                                if (variant) listOf(Color(0xFF17234A), Color(0xFF101833))
+                                else listOf(Color(0xFF121B3B), Color(0xFF0B1128)),
+                            )
+                        )
+                        .drawWithContent {
+                            drawContent()
+                            drawLine(
+                                Brush.horizontalGradient(
+                                    listOf(Color.Transparent, Color.White.copy(alpha = .055f), Color.Transparent),
+                                ),
+                                Offset(0f, 1.dp.toPx()),
+                                Offset(size.width, 1.dp.toPx()),
+                                strokeWidth = 1.dp.toPx(),
+                            )
+                            accent?.let { tone ->
+                                drawLine(
+                                    Brush.horizontalGradient(
+                                        listOf(tone.copy(alpha = .62f), tone.copy(alpha = .08f), Color.Transparent),
+                                    ),
+                                    Offset(0f, 1.dp.toPx()),
+                                    Offset(size.width * .74f, 1.dp.toPx()),
+                                    strokeWidth = 1.4.dp.toPx(),
+                                )
+                            }
+                        }
+                } else Modifier.background(if (variant) KnouxColors.surfaceVariant else KnouxColors.surface)
             )
-            .border(1.dp, if (native) NativePalette.border else KnouxColors.border, shape),
+            .border(
+                1.dp,
+                if (native) NativePalette.border.copy(alpha = .78f) else KnouxColors.border,
+                shape,
+            ),
         content = content,
     )
 }
@@ -162,21 +209,50 @@ internal fun BottomActionBar(
 }
 
 @Composable
-internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () -> Unit, tag: String = "primary-action") {
+internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () -> Unit, tag: String = "primary-action",
+    modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(50)
     val native = LocalNativeApp.current
+    val interaction = remember { MutableInteractionSource() }
+    val pressed by interaction.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        if (pressed && enabled) .985f else 1f,
+        tween(90), label = "primary press",
+    )
     val ink = if (enabled) {
         if (native) NativePalette.text else Light.white
     } else KnouxColors.textSecondary
     val fill = when {
         !enabled -> Modifier.background(if (native) NativePalette.raised else KnouxColors.surfaceVariant)
-        native -> Modifier.background(NativePalette.blue)
+        native -> Modifier.background(
+            Brush.verticalGradient(listOf(Color(0xFF2F80FF), Color(0xFF0B63E8)))
+        )
         else -> Modifier.primarySurface(null, null)
     }
     Row(
-        Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
+        modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
+            .graphicsLayer { scaleX = scale; scaleY = scale }
             .clip(shape).then(fill)
-            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .then(
+                if (native && enabled) Modifier.drawWithContent {
+                    drawContent()
+                    drawLine(
+                        Brush.horizontalGradient(
+                            listOf(Color.Transparent, Color.White.copy(alpha = .22f), Color.Transparent),
+                        ),
+                        Offset(size.width * .12f, 1.dp.toPx()),
+                        Offset(size.width * .88f, 1.dp.toPx()),
+                        strokeWidth = 1.dp.toPx(),
+                    )
+                } else Modifier
+            )
+            .clickable(
+                interactionSource = interaction,
+                indication = LocalIndication.current,
+                enabled = enabled,
+                role = Role.Button,
+                onClick = onClick,
+            )
             .padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
@@ -188,15 +264,16 @@ internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () 
 }
 
 @Composable
-internal fun SecondaryAction(action: Action, onClick: () -> Unit, tag: String = "secondary-action") {
+internal fun SecondaryAction(action: Action, onClick: () -> Unit, tag: String = "secondary-action",
+    modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(14.dp)
     val native = LocalNativeApp.current
     Row(
-        Modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
+        modifier.fillMaxWidth().heightIn(min = TOUCH_TARGET).testTag(tag)
             .clip(shape)
             .background(if (native) NativePalette.card else KnouxColors.surface)
             .border(1.dp, if (native) NativePalette.border else KnouxColors.border, shape)
-            .clickable(role = Role.Button, onClick = onClick)
+            .brandClickable(onClick = onClick)
             .padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,

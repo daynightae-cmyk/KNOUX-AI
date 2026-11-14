@@ -147,6 +147,22 @@ internal fun DrawScope.drawNativeAmbientField() {
         moveTo(0f, h * .955f)
         cubicTo(w * .30f, h * .994f, w * .68f, h * .918f, w, h * .962f)
     }
+    // Two very wide, very quiet light pools give the field depth without a
+    // glow: violet at the top-start corner, cyan at the bottom-end corner.
+    drawRect(
+        Brush.radialGradient(
+            listOf(NativePalette.violet.copy(alpha = .055f), Color.Transparent),
+            center = Offset(w * .94f, h * .015f),
+            radius = w * .85f,
+        )
+    )
+    drawRect(
+        Brush.radialGradient(
+            listOf(NativePalette.cyan.copy(alpha = .045f), Color.Transparent),
+            center = Offset(w * .04f, h * .90f),
+            radius = w * .80f,
+        )
+    )
     drawPath(upper, wave, style = Stroke(stroke))
     drawPath(second, wave, style = Stroke(stroke * .72f))
     drawPath(floor, wave, style = Stroke(stroke))
@@ -254,11 +270,7 @@ internal fun IconBadge(mark: Mark, tint: Color, modifier: Modifier = Modifier, d
     if (LocalNativeApp.current) {
         val tone = if (tint == Pink || tint == KnouxColors.primary) NativePalette.blue else
             if (tint == Cyan || tint == KnouxColors.accent) NativePalette.cyan else tint
-        Box(
-            box.background(tone.copy(alpha = .16f), shape)
-                .border(1.dp, tone.copy(alpha = .40f), shape),
-            contentAlignment = Alignment.Center,
-        ) { Glyph(mark, Modifier.size((diameter * .52f).dp), tone) }
+        ServiceIconPlate(mark, tone, modifier, size = diameter.dp, iconSize = (diameter * .52f).dp)
         return
     }
     Box(box.background(Brush.verticalGradient(listOf(tint.copy(alpha = .68f), Color(0xff150d38).copy(alpha = .88f))),
@@ -350,7 +362,10 @@ internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary
         transition.animateFloat(0f, 1f, infiniteRepeatable(tween(3600, easing = LinearEasing)), label = "shimmer")
     } else null
     val surface = when {
-        native && primary && enabled -> Modifier.background(NativePalette.blue)
+        native && primary && enabled -> Modifier.background(
+            Brush.verticalGradient(listOf(Color(0xFF2F80FF), Color(0xFF0B63E8))),
+            RoundedCornerShape(28.dp),
+        )
         native && enabled -> Modifier.background(NativePalette.card)
             .border(1.dp, NativePalette.border, RoundedCornerShape(28.dp))
         native -> Modifier.background(NativePalette.raised)

@@ -674,7 +674,7 @@ private fun ProSheet() {
 }
 
 @Composable
-internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> Unit) {
+internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> Unit, plated: Boolean = false) {
     val mirror = LocalArabic.current && (mark == Mark.BACK || mark == Mark.NEXT)
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -682,13 +682,27 @@ internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> 
     val wash by animateColorAsState(if (pressed) Color.White.copy(alpha = .12f) else Color.Transparent,
         tween(120), label = "icon wash")
     val context = LocalContext.current
+    val native = LocalNativeApp.current
     Box(Modifier.size(48.dp).testTag(tag).graphicsLayer { scaleX = scale; scaleY = scale }
         .background(wash, RoundedCornerShape(20.dp))
         .clickable(interactionSource = interaction, indication = null, role = Role.Button, onClick = {
             TouchFeedback.tap(context); onClick()
         })
         .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
-        Glyph(mark, Modifier.size(22.dp).then(if (mirror) Modifier.rotate(180f) else Modifier))
+        val glyph: @Composable () -> Unit = {
+            Glyph(mark, Modifier.size(22.dp).then(if (mirror) Modifier.rotate(180f) else Modifier))
+        }
+        if (plated && native) {
+            val plate = RoundedCornerShape(13.dp)
+            Box(
+                Modifier.size(38.dp).clip(plate)
+                    .background(NativePalette.card.copy(alpha = .55f))
+                    .border(1.dp, NativePalette.border.copy(alpha = .60f), plate),
+                contentAlignment = Alignment.Center,
+            ) { glyph() }
+        } else {
+            glyph()
+        }
     }
 }
 
@@ -728,9 +742,21 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                             .background(NativePalette.ink)
                             .drawBehind {
                                 drawLine(
-                                    NativePalette.border,
+                                    NativePalette.border.copy(alpha = .70f),
                                     Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f),
                                     strokeWidth = 1f,
+                                )
+                                drawLine(
+                                    Brush.horizontalGradient(
+                                        listOf(
+                                            Color.Transparent,
+                                            NativePalette.violet.copy(alpha = .26f),
+                                            NativePalette.cyan.copy(alpha = .30f),
+                                            Color.Transparent,
+                                        ),
+                                    ),
+                                    Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f),
+                                    strokeWidth = 1.4f,
                                 )
                             }
                     } else Modifier.padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
@@ -786,7 +812,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
             }
         }
         if (compactHeader) {
-            IconControl(Mark.CROWN, (Copy(R.string.k_knoux_ai_pro)).localized(), "pro", pro)
+            IconControl(Mark.CROWN, (Copy(R.string.k_knoux_ai_pro)).localized(), "pro", pro, plated = true)
         } else if (!LocalRoomy.current) {
             Box(Modifier.heightIn(min = 48.dp).testTag("pro")
                 .clickable(role = Role.Button, onClick = {
@@ -804,7 +830,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                 }
             }
         }
-        IconControl(Mark.GEAR, (Copy(R.string.k_settings)).localized(), "settings", settings)
+        IconControl(Mark.GEAR, (Copy(R.string.k_settings)).localized(), "settings", settings, plated = true)
         }
     }
 
@@ -848,6 +874,22 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
                 Modifier.weight(1f).heightIn(min = if (native) 80.dp else 48.dp)
                     .testTag("tab-${tab.id}")
                     .clip(RoundedCornerShape(if (native) 0.dp else 20.dp))
+                    .drawBehind {
+                        if (fraction > .01f) {
+                            drawLine(
+                                Brush.horizontalGradient(
+                                    listOf(
+                                        Color.Transparent,
+                                        NativePalette.cyan.copy(alpha = .75f * fraction),
+                                        Color.Transparent,
+                                    ),
+                                ),
+                                Offset(size.width * .26f, 1f),
+                                Offset(size.width * .74f, 1f),
+                                strokeWidth = 2.dp.toPx(),
+                            )
+                        }
+                    }
                     .selectable(active, role = Role.Tab, onClick = {
                         TouchFeedback.tap(context)
                         SectionNotifier.markSeen(tab)
@@ -915,11 +957,22 @@ private fun Modifier.tabSelection(fraction: Float, native: Boolean): Modifier = 
     if (native) {
         val w = size.width
         val h = size.height
+        val topLeft = Offset(w * .06f, h * .10f)
+        val plate = Size(w * .88f, h * .80f)
+        val corner = CornerRadius(h * .42f)
         drawRoundRect(
-            NativePalette.blue.copy(alpha = .26f * fraction),
-            topLeft = Offset(w * .06f, h * .10f),
-            size = Size(w * .88f, h * .80f),
-            cornerRadius = CornerRadius(h * .42f),
+            Brush.horizontalGradient(
+                listOf(
+                    NativePalette.violet.copy(alpha = .16f * fraction),
+                    NativePalette.blue.copy(alpha = .30f * fraction),
+                    NativePalette.cyan.copy(alpha = .16f * fraction),
+                ),
+            ),
+            topLeft, plate, corner,
+        )
+        drawRoundRect(
+            Color.White.copy(alpha = .10f * fraction),
+            topLeft, plate, corner, style = Stroke(1.dp.toPx()),
         )
         return@drawBehind
     }

@@ -3,6 +3,8 @@ package com.knoux.ai
 import android.os.Environment
 import android.os.StatFs
 import androidx.compose.foundation.Canvas
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,7 +21,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
@@ -130,7 +135,7 @@ internal fun NativeStorageOverview(footprint: StorageFootprint?, modifier: Modif
     val stacked = stackForFontScale()
     val used = footprint?.let { KnouxFormat.bytes(it.usedBytes) } ?: "—"
     val free = footprint?.let { KnouxFormat.bytes(it.freeBytes) } ?: "—"
-    SurfaceCard(modifier) {
+    SurfaceCard(modifier, accent = NativePalette.cyan) {
         Row(
             Modifier.fillMaxWidth().heightIn(min = 108.dp).padding(horizontal = 14.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -158,6 +163,25 @@ internal fun NativeStorageOverview(footprint: StorageFootprint?, modifier: Modif
                         )
                         NativeFootprintStat(
                             Copy(R.string.home_storage_free), free, NativePalette.text, Modifier.weight(1f),
+                        )
+                    }
+                }
+                // The same arithmetic as the ring, drawn as one measured bar:
+                // used bytes against free bytes. It is not a prediction and it
+                // disappears entirely when the partition cannot be read.
+                if (percent != null) {
+                    Row(
+                        Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(50))
+                            .background(NativePalette.raised)
+                    ) {
+                        Box(
+                            Modifier.fillMaxWidth(percent / 100f).fillMaxHeight()
+                                .clip(RoundedCornerShape(50))
+                                .background(
+                                    Brush.horizontalGradient(
+                                        listOf(NativePalette.blue, NativePalette.violet),
+                                    )
+                                )
                         )
                     }
                 }
@@ -206,6 +230,14 @@ internal fun NativeHubSegments(selected: HubSegment, onSelect: (HubSegment) -> U
         HubSegment.values().forEach { segment ->
             val active = segment == selected
             val pill = RoundedCornerShape(10.dp)
+            val fill by animateColorAsState(
+                if (active) NativePalette.violet.copy(alpha = .24f) else NativePalette.card,
+                tween(180), label = "segment fill",
+            )
+            val stroke by animateColorAsState(
+                if (active) NativePalette.violet.copy(alpha = .70f) else NativePalette.border,
+                tween(180), label = "segment stroke",
+            )
             Box(
                 Modifier.weight(1f).fillMaxHeight()
                     .testTag(segment.tag)
@@ -214,12 +246,8 @@ internal fun NativeHubSegments(selected: HubSegment, onSelect: (HubSegment) -> U
             ) {
                 Box(
                     Modifier.fillMaxWidth().height(36.dp).clip(pill)
-                        .background(if (active) NativePalette.violet.copy(alpha = .22f) else NativePalette.card)
-                        .border(
-                            1.dp,
-                            if (active) NativePalette.violet.copy(alpha = .60f) else NativePalette.border,
-                            pill,
-                        ),
+                        .background(fill)
+                        .border(1.dp, stroke, pill),
                     contentAlignment = Alignment.Center,
                 ) {
                     Label(
@@ -237,53 +265,72 @@ internal fun NativeHubSegments(selected: HubSegment, onSelect: (HubSegment) -> U
 /**
  * One service tile: Figma 154x92 in a two-column grid with a 12dp gutter.
  *
- * Flat surface, one icon plate, the service name and its last measured value.
- * The whole tile is the control, so there is exactly one thing to tap. An
- * unmeasured service shows a dash rather than a number borrowed from a fixture.
- * 92dp is a minimum: a two-line name or a large font grows the tile, and the
- * grid row stretches its neighbour to match instead of clipping either one.
+ * The tile carries its service's tone in exactly three places - the icon plate,
+ * a short top hairline and the measured figure - so the grid reads as a family
+ * without eight different cards. The whole tile is the control. An unmeasured
+ * service shows a dash rather than a number borrowed from a fixture.
  */
 @Composable
 internal fun NativeServiceTile(
     title: Copy, mark: Mark, tint: Color, tag: String,
     value: Copy?, action: Copy?, modifier: Modifier = Modifier, onClick: () -> Unit,
 ) {
-    val shape = RoundedCornerShape(14.dp)
+    val shape = RoundedCornerShape(16.dp)
     Column(
-        modifier.fillMaxWidth().heightIn(min = NativeSpace.tile).clip(shape)
-            .background(NativePalette.card).border(1.dp, NativePalette.border, shape)
-            .testTag(tag).clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 10.dp),
+        modifier.fillMaxWidth().heightIn(min = 104.dp).clip(shape)
+            .background(Brush.verticalGradient(listOf(Color(0xFF121B3B), Color(0xFF0B1128))))
+            .drawWithContent {
+                drawContent()
+                drawLine(
+                    Brush.horizontalGradient(
+                        listOf(tint.copy(alpha = .55f), tint.copy(alpha = .06f), Color.Transparent),
+                    ),
+                    Offset(0f, 1.dp.toPx()),
+                    Offset(size.width * .68f, 1.dp.toPx()),
+                    strokeWidth = 1.2.dp.toPx(),
+                )
+            }
+            .border(1.dp, NativePalette.border.copy(alpha = .78f), shape)
+            .testTag(tag).brandClickable(onClick = onClick)
+            .padding(horizontal = 13.dp, vertical = 12.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            val plate = RoundedCornerShape(8.dp)
-            Box(
-                Modifier.size(24.dp).clip(plate)
-                    .background(tint.copy(alpha = .16f))
-                    .border(1.dp, tint.copy(alpha = .34f), plate),
-                contentAlignment = Alignment.Center,
-            ) { Glyph(mark, Modifier.size(14.dp), tint) }
+            ServiceIconPlate(mark, tint, size = 36.dp, iconSize = 18.dp)
             Label(
                 title, 13, NativePalette.text, FontWeight.SemiBold,
                 modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis,
             )
+            Glyph(
+                Mark.NEXT, Modifier.size(13.dp).rotate(if (LocalArabic.current) 180f else 0f),
+                NativePalette.muted.copy(alpha = .55f),
+            )
         }
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier.fillMaxWidth().padding(top = 10.dp),
             verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Label(
                 value ?: Copy.runtime("—"), 15,
-                if (value != null) tint else NativePalette.muted, FontWeight.Bold,
+                if (value != null) tint else NativePalette.muted.copy(alpha = .72f),
+                if (value != null) FontWeight.Bold else FontWeight.Normal,
                 modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
-            action?.let { Label(it, 12, NativePalette.muted, maxLines = 1) }
+            action?.let {
+                val pill = RoundedCornerShape(50)
+                Box(
+                    Modifier.clip(pill).background(tint.copy(alpha = .12f))
+                        .border(1.dp, tint.copy(alpha = .28f), pill)
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                ) {
+                    Label(it, 10, tint, FontWeight.SemiBold, maxLines = 1)
+                }
+            }
         }
     }
 }

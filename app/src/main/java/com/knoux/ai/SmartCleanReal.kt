@@ -26,6 +26,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -758,8 +760,22 @@ internal fun RealSmartCleanScreen(open: (Page) -> Unit) {
 
         // The action pair and live status stay pinned below the scrollable measurements:
         // on compact phones the cards can be taller than the viewport, and an off-screen
-        // primary action would make scanning unreachable.
-        Column(Modifier.fillMaxWidth().padding(horizontal = 11.dp, vertical = 7.dp)) {
+        // primary action would make scanning unreachable. A single hairline separates
+        // them from the list, so the row a scroll happens to cut reads as content that
+        // continues rather than a card sliced in half.
+        Column(
+            Modifier.fillMaxWidth()
+                .background(NativePalette.ink)
+                .drawBehind {
+                    drawLine(
+                        Brush.horizontalGradient(
+                            listOf(Color.Transparent, NativePalette.border.copy(alpha = .85f), Color.Transparent),
+                        ),
+                        Offset(0f, 0f), Offset(size.width, 0f), strokeWidth = 1f,
+                    )
+                }
+                .padding(horizontal = 11.dp, vertical = 7.dp)
+        ) {
             MasterActions(
                 Action(Copy(R.string.k_access_history), Mark.SHIELD),
                 when {
@@ -857,9 +873,8 @@ private fun MeasuredSummaryCard(state: CleanState) {
                     displayValue = if (measured || scanning) "$percent%" else "—"
                 )
             }
-            Separator(Modifier.width(1.dp).height(88.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                MasterIcon(Mark.DISK, Pink, 34)
+                MasterIcon(Mark.BROOM, Violet, 34)
                 Label((Copy(R.string.k_cleanup_potential)).localized(), 11, Mist)
                 if (measured) {
                     Label(humanBytes(bytes), 22, weight = FontWeight.ExtraBold)
@@ -897,9 +912,9 @@ private fun CleanGroupRow(
     onBody: () -> Unit,
     onToggle: (Boolean) -> Unit
 ) {
-    MasterCard(radius = 16, tint = if (checked) Cyan else null) {
+    MasterCard(radius = 16, tint = if (checked) BrandTone.cyan else BrandTone.violet) {
         Row(
-            Modifier.fillMaxWidth().heightIn(min = 48.dp),
+            Modifier.fillMaxWidth().heightIn(min = 52.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
@@ -909,11 +924,31 @@ private fun CleanGroupRow(
                     .clickable(role = Role.Button, onClick = onBody)
                     .padding(vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(9.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                MasterIcon(mark, if (checked) Cyan else Violet, 34)
-                Column(Modifier.weight(1f)) {
-                    Label(title.localized(), 14, weight = FontWeight.Bold)
+                MasterIcon(mark, if (checked) BrandTone.cyan else BrandTone.violet, 34)
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Label(
+                            title.localized(), 14, weight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f),
+                        )
+                        // A measured group states its size on the title line. An
+                        // unmeasured one states nothing: the subtitle already
+                        // explains why, and a lone dash stacked over the checkbox
+                        // read as a stray mark rather than a value.
+                        if (available) {
+                            Label(
+                                humanBytes(bytes), 14,
+                                if (checked) BrandTone.cyan else BrandTone.violet,
+                                FontWeight.Bold, maxLines = 1,
+                            )
+                        }
+                    }
                     Label(
                         if (available) (Copy.args(R.string.clean_group_count, count, subtitle.localized())).localized()
                         else subtitle.localized(),
@@ -921,17 +956,13 @@ private fun CleanGroupRow(
                     )
                 }
             }
-            Column(horizontalAlignment = Alignment.End) {
-                Label(if (available) humanBytes(bytes) else "—", 14, weight = FontWeight.Bold)
-                Spacer(Modifier.height(3.dp))
-                Box(
-                    Modifier.size(28.dp)
-                        .toggleable(checked, enabled = available, role = Role.Checkbox, onValueChange = onToggle)
-                        .testTag("clean-toggle-$index"),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SelectionIndicator(checked && available, Cyan)
-                }
+            Box(
+                Modifier.size(32.dp)
+                    .toggleable(checked, enabled = available, role = Role.Checkbox, onValueChange = onToggle)
+                    .testTag("clean-toggle-$index"),
+                contentAlignment = Alignment.Center
+            ) {
+                SelectionIndicator(checked && available, BrandTone.cyan)
             }
         }
     }
@@ -959,7 +990,7 @@ private fun StatusStrip(state: CleanState) {
         )
         else -> Copy(R.string.clean_nothing_scanned_yet)
     }
-    StateNote(text, Modifier.testTag("clean-status"))
+    StateNote(text, Modifier.testTag("clean-status"), bare = true)
 }
 
 // ── Access sheet ─────────────────────────────────────────────────────────────
