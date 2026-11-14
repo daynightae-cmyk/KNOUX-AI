@@ -451,11 +451,26 @@ private fun describe(frame: InstrumentFrame, arabic: Boolean): String {
     }
 }
 
-/** Byte formatting used by the instrument only; never applied to an unmeasured value. */
-internal fun formatBytes(bytes: Long): String = when {
-    bytes >= 1_000_000_000_000L -> "%.2f TB".format(bytes / 1_000_000_000_000.0)
-    bytes >= 1_000_000_000L -> "%.2f GB".format(bytes / 1_000_000_000.0)
-    bytes >= 1_000_000L -> "%.2f MB".format(bytes / 1_000_000.0)
-    bytes >= 1_000L -> "%.1f KB".format(bytes / 1_000.0)
-    else -> "$bytes B"
+/**
+ * Byte formatting used by the instrument only; never applied to an unmeasured
+ * value.
+ *
+ * The result is wrapped in a bidi isolate (U+2066 … U+2069). Without it, an
+ * Arabic paragraph reorders "0 B" into "B 0" — the digits and the unit swap on
+ * screen — even though the string is correct. The marks are zero-width and add
+ * no glyph, so Latin output is byte-identical on screen.
+ *
+ * Formatting is pinned to [java.util.Locale.US], exactly like
+ * [com.knoux.ai.KnouxFormat], so an Arabic phone shows the same Latin digits in
+ * the instrument as everywhere else instead of mixed Arabic-Indic numerals.
+ */
+internal fun formatBytes(bytes: Long): String {
+    val raw = when {
+        bytes >= 1_000_000_000_000L -> "%.2f TB".format(java.util.Locale.US, bytes / 1_000_000_000_000.0)
+        bytes >= 1_000_000_000L -> "%.2f GB".format(java.util.Locale.US, bytes / 1_000_000_000.0)
+        bytes >= 1_000_000L -> "%.2f MB".format(java.util.Locale.US, bytes / 1_000_000.0)
+        bytes >= 1_000L -> "%.1f KB".format(java.util.Locale.US, bytes / 1_000.0)
+        else -> "$bytes B"
+    }
+    return "\u2066$raw\u2069"
 }

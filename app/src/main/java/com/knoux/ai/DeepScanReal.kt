@@ -272,7 +272,7 @@ internal fun RealDeepScanScreen(
                             .background(Gold.copy(alpha = 0.12f))
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Label("$fogged ✕", 11, Gold, FontWeight.Bold)
+                        Label("\u2066$fogged\u2069 ✕", 11, Gold, FontWeight.Bold)
                     }
                 }
             }
