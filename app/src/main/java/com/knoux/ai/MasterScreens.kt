@@ -390,10 +390,18 @@ private fun NativeHubScreen(measures: List<HubMeasure>, open: (Page) -> Unit) {
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(horizontal = NativeSpace.edge),
     ) {
-        NativeScreenTitle(
-            Copy(R.string.home_title), Copy(R.string.home_subtitle), "screen-home",
+        // Title and instrument share one band: the wordmark-side text keeps the
+        // reading edge, the drawn device sits on the open side of the field.
+        Row(
             Modifier.fillMaxWidth().padding(top = 14.dp),
-        )
+            verticalAlignment = Alignment.Top,
+        ) {
+            NativeScreenTitle(
+                Copy(R.string.home_title), Copy(R.string.home_subtitle), "screen-home",
+                Modifier.weight(1f),
+            )
+            DeviceHero(Modifier.padding(start = 10.dp).size(112.dp).enterRise(0))
+        }
 
         NativeStorageOverview(
             footprint,

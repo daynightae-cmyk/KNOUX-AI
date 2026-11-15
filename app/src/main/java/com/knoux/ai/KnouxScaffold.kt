@@ -225,7 +225,10 @@ internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () 
     val fill = when {
         !enabled -> Modifier.background(if (native) NativePalette.raised else KnouxColors.surfaceVariant)
         native -> Modifier.background(
-            Brush.verticalGradient(listOf(Color(0xFF2F80FF), Color(0xFF0B63E8)))
+            // Same primary surface as AccentButton: violet into blue into cyan.
+            Brush.horizontalGradient(
+                listOf(NativePalette.violet, NativePalette.blue, NativePalette.cyan),
+            )
         )
         else -> Modifier.primarySurface(null, null)
     }

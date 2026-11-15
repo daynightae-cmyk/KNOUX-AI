@@ -363,7 +363,11 @@ internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary
     } else null
     val surface = when {
         native && primary && enabled -> Modifier.background(
-            Brush.verticalGradient(listOf(Color(0xFF2F80FF), Color(0xFF0B63E8))),
+            // Approved primary action: the brand runs violet into blue into cyan
+            // across the pill, left to right, matching the reference CTA.
+            Brush.horizontalGradient(
+                listOf(NativePalette.violet, NativePalette.blue, NativePalette.cyan),
+            ),
             RoundedCornerShape(28.dp),
         )
         native && enabled -> Modifier.background(NativePalette.card)

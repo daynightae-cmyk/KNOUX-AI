@@ -23,12 +23,12 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -90,6 +90,13 @@ import kotlin.math.exp
 import kotlin.math.sin
 
 internal val Close = Copy(R.string.k_close)
+
+/**
+ * Duration, in milliseconds, of the exit leg of a route handoff. The incoming
+ * route holds at alpha 0 for exactly this long, so the two pages are never both
+ * visible. Keep this in step with the exit transitions in the NavHost below.
+ */
+private const val HandoffMillis = 110
 
 internal data class DebugVisit(val page: Page, val number: Int, val still: Boolean)
 internal class PreviewPreferences(private val state: SavedStateHandle) : ViewModel() {
@@ -437,23 +444,32 @@ private fun KnouxAppScaffold(
                     KnouxTopBar(page, { headerSheet = HeaderSheet.MENU }, back, { headerSheet = HeaderSheet.PRO },
                         { headerSheet = HeaderSheet.SETTINGS })
                     NavHost(navController = nav, startDestination = Page.HOME.id, modifier = Modifier.weight(1f),
+                        // The routes paint no background of their own, so a conventional
+                        // cross-fade composites two legible screens on top of each other for
+                        // ~200 ms. That is the reported overlap regression. The handoff below
+                        // is sequenced instead: the outgoing page is fully gone before the
+                        // incoming page begins to fade, so at most one screen is ever legible.
                         enterTransition = {
-                            if (!navMotion) EnterTransition.None
-                            else fadeIn(tween(230)) + scaleIn(tween(290), initialScale = 0.96f) +
-                                slideInHorizontally(tween(280)) { it / 20 }
+                            if (!navMotion) EnterTransition.None else {
+                                fadeIn(tween(220, delayMillis = HandoffMillis)) +
+                                    scaleIn(tween(300, delayMillis = HandoffMillis), initialScale = 0.97f) +
+                                    slideInHorizontally(tween(300, delayMillis = HandoffMillis)) { it / 24 }
+                            }
                         },
                         exitTransition = {
                             if (!navMotion) ExitTransition.None
-                            else fadeOut(tween(160)) + scaleOut(tween(180), targetScale = 0.97f)
+                            else fadeOut(tween(HandoffMillis, easing = LinearEasing))
                         },
                         popEnterTransition = {
-                            if (!navMotion) EnterTransition.None
-                            else fadeIn(tween(230)) + scaleIn(tween(290), initialScale = 0.97f) +
-                                slideInHorizontally(tween(280)) { -it / 20 }
+                            if (!navMotion) EnterTransition.None else {
+                                fadeIn(tween(220, delayMillis = HandoffMillis)) +
+                                    scaleIn(tween(300, delayMillis = HandoffMillis), initialScale = 0.98f) +
+                                    slideInHorizontally(tween(300, delayMillis = HandoffMillis)) { -it / 24 }
+                            }
                         },
                         popExitTransition = {
                             if (!navMotion) ExitTransition.None
-                            else fadeOut(tween(160)) + scaleOut(tween(180), targetScale = 0.95f)
+                            else fadeOut(tween(HandoffMillis, easing = LinearEasing))
                         }
                     ) {
                         Page.entries.forEach { target ->
@@ -684,7 +700,10 @@ private fun ProSheet() {
 
 @Composable
 internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> Unit, plated: Boolean = false) {
-    val mirror = LocalArabic.current && (mark == Mark.BACK || mark == Mark.NEXT)
+    // Mirroring follows the direction this control is actually laid out in, not the
+    // content language. The utility bar is pinned LTR, so its back arrow must point
+    // left even on the Arabic surface, while mirrored content rows still flip.
+    val mirror = LocalLayoutDirection.current == LayoutDirection.Rtl && (mark == Mark.BACK || mark == Mark.NEXT)
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) .92f else 1f, tween(110), label = "icon press")
@@ -740,6 +759,11 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val compactHeader = maxWidth < 460.dp || LocalDensity.current.fontScale > 1.18f
         val barShape = RoundedCornerShape(if (native) 0.dp else 20.dp)
+        // The approved references keep the utility chrome left-to-right even where the
+        // content is Arabic: brand lockup left, Pro beside it, gear at the trailing edge.
+        // Pinning the bar's own direction holds that contract in RTL locales without
+        // mirroring the page content, which keeps its own reading direction.
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -776,45 +800,43 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
         if (page == Page.HOME) IconControl(Mark.MENU, (Copy(R.string.k_menu)).localized(), "menu", menu)
         else IconControl(Mark.BACK, (Copy(R.string.k_back_2)).localized(), "back", back)
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    modifier = Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) { logoTapCount++ }
-                ) {
-                    // The official lockup: traced K, wordmark and neon smile.
-                    if (LocalDensity.current.fontScale <= 1.45f) {
-                        val wordmark = when {
-                            LocalRoomy.current -> 14
-                            LocalArabic.current -> 16
-                            else -> 18
-                        }
-                        KnouxWordmark(size = wordmark, withSignature = true, glow = false)
-                    } else {
-                        KnouxMonogram(size = 28)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                modifier = Modifier.clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) { logoTapCount++ }
+            ) {
+                // The official lockup: traced K, wordmark and neon smile.
+                if (LocalDensity.current.fontScale <= 1.45f) {
+                    val wordmark = when {
+                        LocalRoomy.current -> 14
+                        LocalArabic.current -> 16
+                        else -> 18
                     }
-                    // Dev mode badge — inline after name, styled like auth chip
-                    if (BuildConfig.DEBUG && DevAccessManager.isDevModeActive && !compactHeader) {
-                        Box(
-                            Modifier
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(
-                                    Brush.horizontalGradient(listOf(Color(0xff2a1800), Color(0xff1a1430))),
-                                    RoundedCornerShape(10.dp)
-                                )
-                                .border(1.dp, Brush.horizontalGradient(listOf(Gold.copy(alpha = .9f), Cyan.copy(alpha = .5f))), RoundedCornerShape(10.dp))
-                                .padding(horizontal = 7.dp, vertical = 3.dp)
+                    KnouxWordmark(size = wordmark, withSignature = true, glow = false)
+                } else {
+                    KnouxMonogram(size = 28)
+                }
+                // Dev mode badge — inline after name, styled like auth chip
+                if (BuildConfig.DEBUG && DevAccessManager.isDevModeActive && !compactHeader) {
+                    Box(
+                        Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(
+                                Brush.horizontalGradient(listOf(Color(0xff2a1800), Color(0xff1a1430))),
+                                RoundedCornerShape(10.dp)
+                            )
+                            .border(1.dp, Brush.horizontalGradient(listOf(Gold.copy(alpha = .9f), Cyan.copy(alpha = .5f))), RoundedCornerShape(10.dp))
+                            .padding(horizontal = 7.dp, vertical = 3.dp)
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(3.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(
-                                horizontalArrangement = Arrangement.spacedBy(3.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Glyph(Mark.KEY, Modifier.size(10.dp), Gold)
-                                Label("DEV", 9, Gold, FontWeight.Bold)
-                            }
+                            Glyph(Mark.KEY, Modifier.size(10.dp), Gold)
+                            Label("DEV", 9, Gold, FontWeight.Bold)
                         }
                     }
                 }
@@ -841,6 +863,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
         }
         IconControl(Mark.GEAR, (Copy(R.string.k_settings)).localized(), "settings", settings, plated = true)
         }
+        }
     }
 
     // Dev Access Dialog - triggered by 5 quick taps on the logo
@@ -858,12 +881,14 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
     val native = LocalNativeApp.current
     val notifCounts = SectionNotifier.counts
     val container = if (native) {
-        // Figma bottom dock: one full-width 80dp container, hairline above,
-        // four equal 90dp destinations. It is not a floating glass pill.
-        Modifier.fillMaxWidth().background(NativePalette.card)
-            .drawBehind {
-                drawLine(NativePalette.border, Offset(0f, 0f), Offset(size.width, 0f), strokeWidth = 1f)
-            }
+        // Approved dock: an inset rounded tray, not a flush full-width bar. The side
+        // inset, bottom gap and 24dp radius follow the references; the four destinations
+        // stay evenly divided inside it and it remains one fixed rail over the content.
+        val tray = RoundedCornerShape(24.dp)
+        Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
+            .clip(tray)
+            .background(NativePalette.card.copy(alpha = .78f), tray)
+            .border(1.dp, NativePalette.border.copy(alpha = .90f), tray)
     } else Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp).glass(25)
     Row(container.selectableGroup().padding(if (native) 0.dp else 3.dp),
         horizontalArrangement = if (native) Arrangement.spacedBy(0.dp) else Arrangement.spacedBy(2.dp)) {
@@ -880,7 +905,7 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
             )
             val iconScale by animateFloatAsState(if (active && !native) 1.05f else 1f, tween(230), label = "tab icon")
             Column(
-                Modifier.weight(1f).heightIn(min = if (native) 80.dp else 48.dp)
+                Modifier.weight(1f).heightIn(min = if (native) 72.dp else 48.dp)
                     .testTag("tab-${tab.id}")
                     .clip(RoundedCornerShape(if (native) 0.dp else 20.dp))
                     .drawBehind {
@@ -949,7 +974,7 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
                     tabTitle(tab).localized(), 11, tone,
                     if (active) FontWeight.Bold else FontWeight.Normal,
                     align = TextAlign.Center,
-                    modifier = Modifier.padding(top = if (native) 3.dp else 0.dp, bottom = if (native) 10.dp else 0.dp),
+                    modifier = Modifier.padding(top = if (native) 3.dp else 0.dp, bottom = if (native) 8.dp else 0.dp),
                 )
             }
         }
