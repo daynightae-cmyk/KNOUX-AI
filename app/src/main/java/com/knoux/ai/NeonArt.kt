@@ -167,6 +167,13 @@ internal fun HomeTileIcon(mark: Mark, tone: Color, modifier: Modifier = Modifier
  */
 @Composable
 internal fun NeonHero(mark: Mark, motion: Boolean, modifier: Modifier = Modifier, heightOverride: androidx.compose.ui.unit.Dp? = null) {
+    // The native shell keeps no hero band at all, not even a centred plate: a
+    // plate above a start-aligned native title read as a second, competing
+    // header. Every screen opens on its title and its controls. A service's
+    // signature instrument belongs inside its content, bound to measured state.
+    // The cinematic hero is untouched wherever the native shell is off (Splash,
+    // Onboarding and authentication).
+    if (LocalNativeApp.current) return
     val home = mark == Mark.K
     val homeTall = LocalTall.current
     val world = worldOf(mark)

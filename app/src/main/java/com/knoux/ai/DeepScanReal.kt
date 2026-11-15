@@ -289,7 +289,9 @@ internal fun RealDeepScanScreen(
                             .border(1.dp, Nx.amber.copy(alpha = .40f), RoundedCornerShape(20.dp))
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Label("$fogged ✕", 11, Nx.amber, FontWeight.Bold)
+                        // The count is a Latin figure inside an RTL sentence, so it is
+                        // isolated with U+2066/U+2069 to keep the mark on the reading side.
+                        Label("\u2066$fogged\u2069 ✕", 11, Nx.amber, FontWeight.Bold)
                     }
                 }
             }

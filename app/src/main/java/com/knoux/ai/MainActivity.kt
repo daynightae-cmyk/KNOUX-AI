@@ -415,22 +415,13 @@ private fun KnouxAppScaffold(
         else nav.navigate(next.id) { launchSingleTop = true }
     }
     Box(Modifier.fillMaxSize()
-        .background(Brush.verticalGradient(
-            listOf(NativePalette.ink, Color(0xFF080D24), NativePalette.ink),
-        ))
+        .background(NativePalette.ink)
         .drawBehind {
-            // Figma-faithful dark canvas: two very restrained branded reflections
-            // instead of the old strong nebula and dozens of scattered stars.
-            val top = Offset(size.width * .88f, size.height * .04f)
-            drawCircle(Brush.radialGradient(
-                listOf(NativePalette.violet.copy(alpha = .09f), Color.Transparent),
-                top, size.width * .52f,
-            ), size.width * .52f, top)
-            val low = Offset(size.width * .08f, size.height * .95f)
-            drawCircle(Brush.radialGradient(
-                listOf(NativePalette.cyan.copy(alpha = .06f), Color.Transparent),
-                low, size.width * .52f,
-            ), size.width * .52f, low)
+            // The utility shell sits on the measured Figma field with three thin
+            // brand arcs. The light pools, stardust and horizon beam belonged to
+            // the cinematic identity and remain there — Splash, Onboarding and
+            // authentication still paint their own approved atmosphere.
+            drawNativeAmbientField()
         }.safeDrawingPadding()
         .semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         contentAlignment = Alignment.TopCenter) {
@@ -487,6 +478,12 @@ private fun KnouxAppScaffold(
                                     // PC06 - real storage partition and large-media identity.
                                     Page.STORAGE, Page.STORAGE_BREAKDOWN -> RealStorageDetailScreen(open)
                                     Page.LARGE_FILES -> RealLargeFilesScreen(open)
+                                    // Battery is measured from the platform itself: level,
+                                    // charge state, temperature, voltage. No permission, no estimate.
+                                    Page.BATTERY, Page.BATTERY_DIAGNOSTICS -> NativeBatteryScreen(open)
+                                    // The inventory Android lets a normal app read. Rows open
+                                    // the system App info screen; nothing is uninstalled here.
+                                    Page.APPS, Page.APPS_REVIEW -> NativeAppsScreen(open)
                                     else -> EmptyServiceScreen(target, open)
                                 }
                             }
@@ -686,7 +683,7 @@ private fun ProSheet() {
 }
 
 @Composable
-internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> Unit) {
+internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> Unit, plated: Boolean = false) {
     val mirror = LocalArabic.current && (mark == Mark.BACK || mark == Mark.NEXT)
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -694,13 +691,27 @@ internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> 
     val wash by animateColorAsState(if (pressed) Color.White.copy(alpha = .12f) else Color.Transparent,
         tween(120), label = "icon wash")
     val context = LocalContext.current
+    val native = LocalNativeApp.current
     Box(Modifier.size(48.dp).testTag(tag).graphicsLayer { scaleX = scale; scaleY = scale }
         .background(wash, RoundedCornerShape(20.dp))
         .clickable(interactionSource = interaction, indication = null, role = Role.Button, onClick = {
             TouchFeedback.tap(context); onClick()
         })
         .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
-        Glyph(mark, Modifier.size(22.dp).then(if (mirror) Modifier.rotate(180f) else Modifier))
+        val glyph: @Composable () -> Unit = {
+            Glyph(mark, Modifier.size(22.dp).then(if (mirror) Modifier.rotate(180f) else Modifier))
+        }
+        if (plated && native) {
+            val plate = RoundedCornerShape(13.dp)
+            Box(
+                Modifier.size(38.dp).clip(plate)
+                    .background(NativePalette.card.copy(alpha = .55f))
+                    .border(1.dp, NativePalette.border.copy(alpha = .60f), plate),
+                contentAlignment = Alignment.Center,
+            ) { glyph() }
+        } else {
+            glyph()
+        }
     }
 }
 
@@ -725,14 +736,43 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
     
     // A real phone cannot fit the wordmark, DEV, preview, Pro and Settings
     // all as full-width chips. Compact mode keeps every action accessible.
+    val native = LocalNativeApp.current
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val compactHeader = maxWidth < 460.dp || LocalDensity.current.fontScale > 1.18f
-        Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp)
-            .clip(RoundedCornerShape(18.dp))
-            .background(Brush.verticalGradient(listOf(Nx.cardTop, Nx.cardBottom)))
-            .border(1.dp, Brush.horizontalGradient(listOf(
-                Nx.violet.copy(alpha = .55f), Nx.border, Nx.cyan.copy(alpha = .45f))), RoundedCornerShape(18.dp))
-            .height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+        val barShape = RoundedCornerShape(if (native) 0.dp else 20.dp)
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .then(
+                    if (native) {
+                        // Figma toolbar: a 56dp bar flush to the field, separated
+                        // from the content by one hairline — not a floating pill.
+                        Modifier.padding(horizontal = 2.dp)
+                            .background(NativePalette.ink)
+                            .drawBehind {
+                                drawLine(
+                                    NativePalette.border.copy(alpha = .70f),
+                                    Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f),
+                                    strokeWidth = 1f,
+                                )
+                                drawLine(
+                                    Brush.horizontalGradient(
+                                        listOf(
+                                            Color.Transparent,
+                                            NativePalette.violet.copy(alpha = .26f),
+                                            NativePalette.cyan.copy(alpha = .30f),
+                                            Color.Transparent,
+                                        ),
+                                    ),
+                                    Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f),
+                                    strokeWidth = 1.4f,
+                                )
+                            }
+                    } else Modifier.padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
+                )
+                .height(56.dp).padding(horizontal = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
         if (page == Page.HOME) IconControl(Mark.MENU, (Copy(R.string.k_menu)).localized(), "menu", menu)
         else IconControl(Mark.BACK, (Copy(R.string.k_back_2)).localized(), "back", back)
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
@@ -781,7 +821,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
             }
         }
         if (compactHeader) {
-            IconControl(Mark.CROWN, (Copy(R.string.k_knoux_ai_pro)).localized(), "pro", pro)
+            IconControl(Mark.CROWN, (Copy(R.string.k_knoux_ai_pro)).localized(), "pro", pro, plated = true)
         } else if (!LocalRoomy.current) {
             Box(Modifier.heightIn(min = 48.dp).testTag("pro")
                 .clickable(role = Role.Button, onClick = {
@@ -799,7 +839,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                 }
             }
         }
-        IconControl(Mark.GEAR, (Copy(R.string.k_settings)).localized(), "settings", settings)
+        IconControl(Mark.GEAR, (Copy(R.string.k_settings)).localized(), "settings", settings, plated = true)
         }
     }
 
@@ -815,32 +855,62 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
 @Composable
 private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
     val context = LocalContext.current
+    val native = LocalNativeApp.current
     val notifCounts = SectionNotifier.counts
-    Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp)
-        .clip(RoundedCornerShape(24.dp))
-        .background(Brush.verticalGradient(listOf(Nx.cardTop, Nx.cardBottom)))
-        .border(1.dp, Brush.horizontalGradient(listOf(
-            Nx.violet.copy(alpha = .45f), Nx.border, Nx.cyan.copy(alpha = .40f))), RoundedCornerShape(24.dp))
-        .selectableGroup().padding(3.dp),
-        horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+    val container = if (native) {
+        // Figma bottom dock: one full-width 80dp container, hairline above,
+        // four equal 90dp destinations. It is not a floating glass pill.
+        Modifier.fillMaxWidth().background(NativePalette.card)
+            .drawBehind {
+                drawLine(NativePalette.border, Offset(0f, 0f), Offset(size.width, 0f), strokeWidth = 1f)
+            }
+    } else Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp).glass(25)
+    Row(container.selectableGroup().padding(if (native) 0.dp else 3.dp),
+        horizontalArrangement = if (native) Arrangement.spacedBy(0.dp) else Arrangement.spacedBy(2.dp)) {
         tabs.forEach { (tab, icon) ->
             val active = tab == selected
             val badge = notifCounts[tab] ?: 0
             val fraction by animateFloatAsState(if (active) 1f else 0f,
                 animationSpec = tween(260, easing = androidx.compose.animation.core.FastOutSlowInEasing), label = "tab selection")
-            val tone by animateColorAsState(if (active) Nx.text else Nx.muted, tween(200), label = "tab tone")
-            val iconScale by animateFloatAsState(if (active) 1.05f else 1f, tween(230), label = "tab icon")
-            Column(Modifier.weight(1f).heightIn(min = 48.dp).testTag("tab-${tab.id}").clip(RoundedCornerShape(20.dp))
-                .selectable(active, role = Role.Tab, onClick = {
-                    TouchFeedback.tap(context)
-                    SectionNotifier.markSeen(tab)
-                    open(tab)
-                }),
-                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            val tone by animateColorAsState(
+                if (native) {
+                    if (active) NativePalette.cyan else NativePalette.muted
+                } else if (active) Chalk else Mist,
+                tween(200), label = "tab tone",
+            )
+            val iconScale by animateFloatAsState(if (active && !native) 1.05f else 1f, tween(230), label = "tab icon")
+            Column(
+                Modifier.weight(1f).heightIn(min = if (native) 80.dp else 48.dp)
+                    .testTag("tab-${tab.id}")
+                    .clip(RoundedCornerShape(if (native) 0.dp else 20.dp))
+                    .drawBehind {
+                        if (fraction > .01f) {
+                            drawLine(
+                                Brush.horizontalGradient(
+                                    listOf(
+                                        Color.Transparent,
+                                        NativePalette.cyan.copy(alpha = .75f * fraction),
+                                        Color.Transparent,
+                                    ),
+                                ),
+                                Offset(size.width * .26f, 1f),
+                                Offset(size.width * .74f, 1f),
+                                strokeWidth = 2.dp.toPx(),
+                            )
+                        }
+                    }
+                    .selectable(active, role = Role.Tab, onClick = {
+                        TouchFeedback.tap(context)
+                        SectionNotifier.markSeen(tab)
+                        open(tab)
+                    }),
+                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
+            ) {
                 Box(contentAlignment = Alignment.TopEnd) {
-                    Box(Modifier.size(38.dp).clip(RoundedCornerShape(19.dp)).tabSelection(fraction),
+                    Box(Modifier.size(38.dp).clip(RoundedCornerShape(if (native) 13.dp else 19.dp))
+                        .tabSelection(fraction, native),
                         contentAlignment = Alignment.Center) {
-                        Glyph(icon, Modifier.size(20.dp).graphicsLayer { scaleX = iconScale; scaleY = iconScale }, tone, active)
+                        Glyph(icon, Modifier.size(20.dp).graphicsLayer { scaleX = iconScale; scaleY = iconScale }, tone, active && !native)
                     }
                     // Notification badge
                     if (badge > 0 && !active) {
@@ -851,29 +921,70 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
                                 .size(16.dp)
                                 .graphicsLayer { scaleX = badgeAnim; scaleY = badgeAnim }
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(
-                                    Brush.linearGradient(listOf(Nx.magenta, Nx.violet)),
-                                    RoundedCornerShape(8.dp)
+                                .then(
+                                    if (native) {
+                                        Modifier.background(NativePalette.amber.copy(alpha = .92f), RoundedCornerShape(8.dp))
+                                    } else {
+                                        Modifier.background(
+                                            Brush.radialGradient(listOf(Color(0xffff36f5), Color(0xff9922ff))),
+                                            RoundedCornerShape(8.dp),
+                                        )
+                                    }
                                 )
-                                .border(.8.dp, Color.White.copy(alpha = .6f), RoundedCornerShape(8.dp)),
+                                .border(
+                                    .8.dp,
+                                    if (native) NativePalette.border else Color.White.copy(alpha = .6f),
+                                    RoundedCornerShape(8.dp),
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Label(if (badge > 9) "9+" else badge.toString(), 8, Chalk, FontWeight.Bold, align = TextAlign.Center)
+                            Label(
+                                if (badge > 9) "9+" else badge.toString(), 8,
+                                if (native) NativePalette.ink else Chalk, FontWeight.Bold, align = TextAlign.Center,
+                            )
                         }
                     }
                 }
-                Label(tabTitle(tab).localized(), 11, tone, if (active) FontWeight.Bold else FontWeight.Normal, align = TextAlign.Center)
+                Label(
+                    tabTitle(tab).localized(), 11, tone,
+                    if (active) FontWeight.Bold else FontWeight.Normal,
+                    align = TextAlign.Center,
+                    modifier = Modifier.padding(top = if (native) 3.dp else 0.dp, bottom = if (native) 10.dp else 0.dp),
+                )
             }
         }
     }
 }
 
 /**
- * Selected tab: a lit gradient disc behind the icon, matching the reference
- * navigation where the active icon sits in a filled magenta-violet circle.
+ * Selected tab. Native mode uses the Android active-indicator shape: a soft
+ * rounded plate behind the icon in the primary control colour. The cinematic
+ * mode keeps the lit magenta-violet disc for the approved surfaces.
  */
-private fun Modifier.tabSelection(fraction: Float): Modifier = drawBehind {
+private fun Modifier.tabSelection(fraction: Float, native: Boolean): Modifier = drawBehind {
     if (fraction <= .01f) return@drawBehind
+    if (native) {
+        val w = size.width
+        val h = size.height
+        val topLeft = Offset(w * .06f, h * .10f)
+        val plate = Size(w * .88f, h * .80f)
+        val corner = CornerRadius(h * .42f)
+        drawRoundRect(
+            Brush.horizontalGradient(
+                listOf(
+                    NativePalette.violet.copy(alpha = .16f * fraction),
+                    NativePalette.blue.copy(alpha = .30f * fraction),
+                    NativePalette.cyan.copy(alpha = .16f * fraction),
+                ),
+            ),
+            topLeft, plate, corner,
+        )
+        drawRoundRect(
+            Color.White.copy(alpha = .10f * fraction),
+            topLeft, plate, corner, style = Stroke(1.dp.toPx()),
+        )
+        return@drawBehind
+    }
     val radius = size.minDimension / 2f
     val center = Offset(size.width / 2f, size.height / 2f)
     // Cast light: the active tab lifts off the glass instead of being tinted.

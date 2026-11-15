@@ -110,6 +110,43 @@ class PreviewNavigationTest {
         showing("detail-scroll-$page")
     }
 
+    /**
+     * Battery, storage and the app inventory are measured from the platform, so
+     * their page marker is the title and their instrument has to be on screen.
+     * None of them carries a scan or a score: the dial and the list are the
+     * evidence that the screen read the device.
+     */
+    private fun batteryScreen() {
+        node("screen-battery-diagnostics").assertExists()
+        showing("battery-dial")
+    }
+
+    private fun storageScreen() {
+        node("screen-storage-breakdown").assertExists()
+        showing("storage-dial")
+    }
+
+    private fun appsScreen() {
+        node("screen-installed-apps-review").assertExists()
+        // The count arrives with the PackageManager read, so wait for the
+        // measured value instead of racing the background query.
+        ui.waitUntil(20_000) {
+            ui.onAllNodesWithTag("apps-count").fetchSemanticsNodes().isNotEmpty()
+        }
+        showing("apps-count")
+    }
+
+    /** Routes a Device Tools entry to the surface it really opens. */
+    private fun toolScreen(detail: String) {
+        when (detail) {
+            "privacy-risk-inspector" -> privacyScreen()
+            "battery-diagnostics" -> batteryScreen()
+            "storage-breakdown" -> storageScreen()
+            "installed-apps-review" -> appsScreen()
+            else -> unavailableScreen()
+        }
+    }
+
     /** The five Device Tools entries and where they now lead. */
     private val toolDetails = listOf(
         "storage" to "storage-breakdown",
@@ -221,7 +258,7 @@ class PreviewNavigationTest {
         click("tab-tools"); screen("tools")
         for ((entry, detail) in toolDetails) {
             scrollClick("open-$entry")
-            if (detail == "privacy-risk-inspector") privacyScreen() else unavailableScreen()
+            toolScreen(detail)
             node("tab-tools").assertIsSelected()
             back(); screen("tools")
         }
@@ -299,7 +336,9 @@ class PreviewNavigationTest {
         check(home.left > reports.left) { "Tab order did not mirror in RTL" }
         click("tab-tools")
         scrollClick("open-battery")
-        unavailableScreen()
+        // Battery became a measured screen: the dial reads the sticky battery
+        // broadcast, and the Arabic title still renders in the mirrored layout.
+        batteryScreen()
         node("screen-battery-diagnostics").assertTextContains("تشخيص البطارية")
     }
 
@@ -312,7 +351,7 @@ class PreviewNavigationTest {
         click("tab-tools")
         for ((entry, detail) in toolDetails) {
             scrollClick("open-$entry")
-            if (detail == "privacy-risk-inspector") privacyScreen() else unavailableScreen()
+            toolScreen(detail)
             check(ui.onAllNodesWithTag("service-world-$detail").fetchSemanticsNodes().isEmpty()) {
                 "$entry must not render a design-preview studio"
             }

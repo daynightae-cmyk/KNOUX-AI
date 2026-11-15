@@ -22,6 +22,12 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
+        <!-- App details rows open the system App info screen; the "package"
+             scheme intent makes that target visible without a broad grant. -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="package" />
+        </intent>
     </queries>
 
 
@@ -48,6 +54,12 @@
     <!-- Ignored below API 34 by the platform; no minSdk attribute exists on
          uses-permission, so the version gate is applied in PermissionState. -->
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+
+    <!-- Android 11 (API 30) filters package queries by default. App Manager reads
+         the launcher-visible inventory only, so this one intent is declared
+         instead of the Play-restricted QUERY_ALL_PACKAGES permission. Without it
+         `queryIntentActivities` returns a handful of packages on API 30+ and the
+         screen reports a small, wrong count. -->
 
     <application android:name=".KnouxApplication" android:allowBackup="false" android:label="@string/app_name" android:supportsRtl="true"
         android:theme="@style/Theme.Knoux" android:icon="@drawable/ic_knoux">
