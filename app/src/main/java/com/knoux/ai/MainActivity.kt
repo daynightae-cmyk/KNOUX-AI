@@ -415,54 +415,33 @@ private fun KnouxAppScaffold(
         else nav.navigate(next.id) { launchSingleTop = true }
     }
     Box(Modifier.fillMaxSize()
-        .background(
-            Brush.verticalGradient(
-                listOf(Color(0xFF0C0733), Color(0xFF080426), Color(0xFF05021A), Color(0xFF020008)),
-            )
-        )
+        .background(Brush.verticalGradient(
+            listOf(NativePalette.ink, Color(0xFF080D24), NativePalette.ink),
+        ))
         .drawBehind {
-            // Identity atmosphere: four light pools, one per corner, so every
-            // screen sits inside the same brand weather.
-            val top = Offset(size.width * .76f, size.height * .02f)
-            drawCircle(Brush.radialGradient(listOf(Color(0xff6d24ff).copy(alpha = .46f),
-                Color(0xff2c1570).copy(alpha = .24f), Color.Transparent), top, size.width * .92f), size.width * .92f, top)
-            val high = Offset(size.width * .10f, size.height * .16f)
-            drawCircle(Brush.radialGradient(listOf(Light.magenta.copy(alpha = .14f), Color.Transparent), high, size.width * .46f),
-                size.width * .46f, high)
-            val low = Offset(size.width * .90f, size.height * .72f)
-            drawCircle(Brush.radialGradient(listOf(Cyan.copy(alpha = .13f), Color.Transparent), low, size.width * .62f),
-                size.width * .62f, low)
-            val floor = Offset(size.width * .06f, size.height * .98f)
-            drawCircle(Brush.radialGradient(listOf(Color(0xff1e3a8a).copy(alpha = .30f), Color.Transparent), floor, size.width * .70f),
-                size.width * .70f, floor)
-            // Static stardust: fixed seed, no allocation per frame.
-            var seed = 2_917
-            repeat(54) { index ->
-                seed = (seed * 1103515245 + 12345) and 0x7fffffff
-                val u = (seed % 1000) / 1000f
-                seed = (seed * 1103515245 + 12345) and 0x7fffffff
-                val v = (seed % 1000) / 1000f
-                seed = (seed * 1103515245 + 12345) and 0x7fffffff
-                val bright = .10f + (seed % 100) / 420f
-                val tint = if (index % 4 == 0) Brand.cyan else Color(0xFFE9E4FF)
-                drawCircle(tint.copy(alpha = bright), (size.width * .0011f) + (index % 3) * .6f,
-                    Offset(size.width * u, size.height * v))
-            }
-            // A single horizon hairline gives the dark field a floor.
-            drawLine(
-                Brush.horizontalGradient(
-                    listOf(Color.Transparent, Brand.violet.copy(alpha = .22f), Brand.cyan.copy(alpha = .18f), Color.Transparent),
-                ),
-                Offset(0f, size.height * .66f), Offset(size.width, size.height * .66f),
-                strokeWidth = 1f,
-            )
+            // Figma-faithful dark canvas: two very restrained branded reflections
+            // instead of the old strong nebula and dozens of scattered stars.
+            val top = Offset(size.width * .88f, size.height * .04f)
+            drawCircle(Brush.radialGradient(
+                listOf(NativePalette.violet.copy(alpha = .09f), Color.Transparent),
+                top, size.width * .52f,
+            ), size.width * .52f, top)
+            val low = Offset(size.width * .08f, size.height * .95f)
+            drawCircle(Brush.radialGradient(
+                listOf(NativePalette.cyan.copy(alpha = .06f), Color.Transparent),
+                low, size.width * .52f,
+            ), size.width * .52f, low)
         }.safeDrawingPadding()
         .semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         contentAlignment = Alignment.TopCenter) {
         BoxWithConstraints(Modifier.widthIn(max = 540.dp).fillMaxSize()) {
             val roomy = maxWidth < 350.dp || LocalDensity.current.fontScale > 1.24f
             val navMotion = LocalPreviewMotion.current
-            CompositionLocalProvider(LocalRoomy provides roomy, LocalTall provides (maxHeight >= 800.dp && !roomy)) {
+            CompositionLocalProvider(
+                LocalRoomy provides roomy,
+                LocalTall provides (maxHeight >= 800.dp && !roomy),
+                LocalNativeApp provides true,
+            ) {
                 Column(Modifier.fillMaxSize()) {
                     KnouxTopBar(page, { headerSheet = HeaderSheet.MENU }, back, { headerSheet = HeaderSheet.PRO },
                         { headerSheet = HeaderSheet.SETTINGS })
@@ -505,6 +484,9 @@ private fun KnouxAppScaffold(
                                     Page.PRIVACY_INSPECTOR -> RealPrivacyScreen(target)
                                     // PC05 - real deep scan with Abyss Sonar instrument.
                                     Page.SCAN, Page.SCAN_SUMMARY -> RealDeepScanScreen(open)
+                                    // PC06 - real storage partition and large-media identity.
+                                    Page.STORAGE, Page.STORAGE_BREAKDOWN -> RealStorageDetailScreen(open)
+                                    Page.LARGE_FILES -> RealLargeFilesScreen(open)
                                     else -> EmptyServiceScreen(target, open)
                                 }
                             }
@@ -745,7 +727,11 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
     // all as full-width chips. Compact mode keeps every action accessible.
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val compactHeader = maxWidth < 460.dp || LocalDensity.current.fontScale > 1.18f
-        Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
+        Row(Modifier.fillMaxWidth().padding(horizontal = 6.dp, vertical = 2.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .background(Brush.verticalGradient(listOf(Nx.cardTop, Nx.cardBottom)))
+            .border(1.dp, Brush.horizontalGradient(listOf(
+                Nx.violet.copy(alpha = .55f), Nx.border, Nx.cyan.copy(alpha = .45f))), RoundedCornerShape(18.dp))
             .height(56.dp).padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
         if (page == Page.HOME) IconControl(Mark.MENU, (Copy(R.string.k_menu)).localized(), "menu", menu)
         else IconControl(Mark.BACK, (Copy(R.string.k_back_2)).localized(), "back", back)
@@ -830,14 +816,19 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
 private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
     val context = LocalContext.current
     val notifCounts = SectionNotifier.counts
-    Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp).glass(25).selectableGroup().padding(3.dp),
+    Row(Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp)
+        .clip(RoundedCornerShape(24.dp))
+        .background(Brush.verticalGradient(listOf(Nx.cardTop, Nx.cardBottom)))
+        .border(1.dp, Brush.horizontalGradient(listOf(
+            Nx.violet.copy(alpha = .45f), Nx.border, Nx.cyan.copy(alpha = .40f))), RoundedCornerShape(24.dp))
+        .selectableGroup().padding(3.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)) {
         tabs.forEach { (tab, icon) ->
             val active = tab == selected
             val badge = notifCounts[tab] ?: 0
             val fraction by animateFloatAsState(if (active) 1f else 0f,
                 animationSpec = tween(260, easing = androidx.compose.animation.core.FastOutSlowInEasing), label = "tab selection")
-            val tone by animateColorAsState(if (active) Chalk else Mist, tween(200), label = "tab tone")
+            val tone by animateColorAsState(if (active) Nx.text else Nx.muted, tween(200), label = "tab tone")
             val iconScale by animateFloatAsState(if (active) 1.05f else 1f, tween(230), label = "tab icon")
             Column(Modifier.weight(1f).heightIn(min = 48.dp).testTag("tab-${tab.id}").clip(RoundedCornerShape(20.dp))
                 .selectable(active, role = Role.Tab, onClick = {
@@ -861,7 +852,7 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
                                 .graphicsLayer { scaleX = badgeAnim; scaleY = badgeAnim }
                                 .clip(RoundedCornerShape(8.dp))
                                 .background(
-                                    Brush.radialGradient(listOf(Color(0xffff36f5), Color(0xff9922ff))),
+                                    Brush.linearGradient(listOf(Nx.magenta, Nx.violet)),
                                     RoundedCornerShape(8.dp)
                                 )
                                 .border(.8.dp, Color.White.copy(alpha = .6f), RoundedCornerShape(8.dp)),
@@ -885,12 +876,23 @@ private fun Modifier.tabSelection(fraction: Float): Modifier = drawBehind {
     if (fraction <= .01f) return@drawBehind
     val radius = size.minDimension / 2f
     val center = Offset(size.width / 2f, size.height / 2f)
-    drawCircle(Brush.radialGradient(listOf(Color(0xffff54ff).copy(alpha = .34f * fraction),
-        Color(0xff5a28e8).copy(alpha = .30f * fraction), Color.Transparent), center, radius * 1.5f),
-        radius * 1.5f, center)
-    drawCircle(Brush.radialGradient(listOf(Color(0xff9a2bff), Color(0xff5a28e8), Color(0xff2448ff)), center, radius),
-        radius, center)
-    drawCircle(Color.White.copy(alpha = .30f * fraction), radius, center, style = Stroke(1.1.dp.toPx()))
+    // Cast light: the active tab lifts off the glass instead of being tinted.
+    drawCircle(
+        Brush.radialGradient(
+            listOf(Nx.cyan.copy(alpha = .30f * fraction), Nx.violet.copy(alpha = .22f * fraction), Color.Transparent),
+            center, radius * 1.62f,
+        ),
+        radius * 1.62f, center,
+    )
+    // The disc itself runs violet to cyan along the diagonal.
+    drawCircle(
+        Brush.linearGradient(
+            listOf(Nx.violet.copy(alpha = .96f * fraction), Nx.blue.copy(alpha = .96f * fraction), Nx.cyan.copy(alpha = .92f * fraction)),
+            start = Offset(0f, 0f), end = Offset(size.width, size.height),
+        ),
+        radius, center,
+    )
+    drawCircle(Color.White.copy(alpha = .38f * fraction), radius, center, style = Stroke(1.dp.toPx()))
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -898,7 +900,7 @@ private fun Modifier.tabSelection(fraction: Float): Modifier = drawBehind {
 internal fun InfoSheet(title: Copy, dismiss: () -> Unit, content: @Composable ColumnScope.() -> Unit) {
     val state = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     ModalBottomSheet(onDismissRequest = dismiss, sheetState = state,
-        containerColor = Color(0xff1d1650), contentColor = Chalk) {
+        containerColor = Nx.aurora, contentColor = Nx.text) {
         Column(Modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp, vertical = 6.dp),
             verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Label(title.localized(), 23, weight = FontWeight.Bold)

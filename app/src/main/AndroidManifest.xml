@@ -1,8 +1,29 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!--
+      Usage access is a user-granted special access, not a silent permission.
+      It lets App Manager read real package sizes and launch counts; without it
+      the screens render "not measured" instead of an invented number.
+    -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
     <uses-feature android:name="android.hardware.fingerprint" android:required="false" />
+
+    <!--
+      Package visibility: only apps that publish a launcher entry are queried,
+      which is what App Manager lists. No QUERY_ALL_PACKAGES is requested.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
 
     <!--
       Storage access is requested per use case, never as a blanket grant.

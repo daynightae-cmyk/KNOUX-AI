@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -46,90 +47,39 @@ internal fun HubCard(
     title: Copy, mark: Mark, tint: Color, tag: String, onClick: () -> Unit,
     value: Copy? = null, action: Copy? = null,
 ) {
-    val world = worldOf(mark)
-    val accent = world.primary
-    // One touch target per service (not a nested arrow button).
-    GlassPanel(
-        Modifier.fillMaxWidth().heightIn(min = 104.dp).clip(RoundedCornerShape(20.dp))
-            .testTag(tag)
-            .clickable(role = Role.Button, onClick = onClick)
-            .drawBehind {
-                val width = size.width
-                val height = size.height
-                // A diagonal wash of the service hue: the card belongs to a world.
-                drawRect(
-                    Brush.linearGradient(
-                        listOf(accent.copy(alpha = .20f), accent.copy(alpha = .03f), Color.Transparent),
-                        start = Offset(0f, 0f), end = Offset(width * .95f, height * 1.1f),
-                    )
-                )
-                // A lit rail on the reading-start edge.
-                val railX = if (layoutDirection == androidx.compose.ui.unit.LayoutDirection.Rtl) width - 2.dp.toPx() else 0f
-                drawRect(
-                    Brush.verticalGradient(
-                        listOf(accent.copy(alpha = .95f), world.secondary.copy(alpha = .45f), Color.Transparent),
-                    ),
-                    topLeft = Offset(railX, height * .12f),
-                    size = Size(2.dp.toPx(), height * .76f),
-                )
-                // A hairline of the world colour along the floor of the card.
-                drawLine(
-                    Brush.horizontalGradient(
-                        listOf(Color.Transparent, accent.copy(alpha = .55f), world.secondary.copy(alpha = .30f), Color.Transparent),
-                    ),
-                    Offset(width * .06f, height - 1f), Offset(width * .94f, height - 1f),
-                    strokeWidth = 1f,
-                )
-            },
-        radius = 20, tint = accent,
+    NxActionCard(
+        modifier = Modifier.heightIn(min = 152.dp),
+        glow = tint,
+        tag = tag,
+        onClick = onClick,
     ) {
-        Box(Modifier.fillMaxWidth()) {
-            // The world's sigil as a quiet watermark; text always wins.
-            Canvas(
-                Modifier.align(Alignment.TopEnd).size(72.dp).offset(x = 26.dp, y = (-16).dp),
-            ) { drawSigil(world, accent, alpha = .20f) }
-            Column(
-                Modifier.fillMaxWidth().heightIn(min = 98.dp).padding(horizontal = 11.dp, vertical = 10.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Row(
-                    Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(9.dp),
-                ) {
-                    WorldCrest(world, 36)
-                    Label(
-                        title.localized(), 14, KnouxColors.textPrimary, FontWeight.ExtraBold,
-                        modifier = Modifier.weight(1f), align = TextAlign.Start, maxLines = 2,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-                    )
-                }
-                if (value != null || action != null) {
-                    Row(
-                        Modifier.fillMaxWidth().padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        if (value != null) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(5.dp),
-                                modifier = Modifier.weight(1f),
-                            ) {
-                                Box(
-                                    Modifier.size(5.dp).clip(RoundedCornerShape(50))
-                                        .background(accent),
-                                )
-                                Label(
-                                    value.localized(), 14, KnouxColors.textPrimary, FontWeight.Bold,
-                                    maxLines = 1,
-                                )
-                            }
-                        } else {
-                            Spacer(Modifier.weight(1f))
-                        }
-                        action?.let { HubActionChip(it, accent, world.secondary) }
-                    }
-                }
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+            NxTile(mark, tint, size = 46, glyph = 24)
+            Spacer(Modifier.weight(1f))
+            if (value != null) {
+                Label(value.localized(), 12, Nx.cyan, FontWeight.Bold, maxLines = 1)
+            } else {
+                Unmeasured(12)
             }
+        }
+        Spacer(Modifier.height(11.dp))
+        Label(
+            title.localized(), 14, Nx.text, FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth(),
+            align = TextAlign.Start, maxLines = 2,
+            overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+        )
+        Spacer(Modifier.height(9.dp))
+        Row(verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Label((action ?: Copy(R.string.k_open)).localized(), 12, Nx.muted, FontWeight.SemiBold)
+            Glyph(
+                Mark.NEXT,
+                Modifier.size(13.dp).then(
+                    if (LocalArabic.current) Modifier.rotate(180f) else Modifier,
+                ),
+                tint,
+            )
         }
     }
 }

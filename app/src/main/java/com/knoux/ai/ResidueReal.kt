@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -598,7 +599,6 @@ internal fun RealResidueScreen(page: Page, open: (Page) -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        NeonHero(Mark.LAYERS, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
         MasterTitle(
             Copy(R.string.k_app), Copy(R.string.k_residue),
             Copy(R.string.k_leftovers_are_matched_by_filename_only_knoux_s_own_cache),
@@ -711,103 +711,107 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
     val scanning = state.phase == ResiduePhase.SCANNING
     val summary = state.summary
     val countable = state.measured || summary.count > 0
-    GlassPanel(Modifier.fillMaxWidth(), tint = Pink) {
-        Column(
-            Modifier.fillMaxWidth().padding(13.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+    val ownedShare = if (summary.count > 0) summary.ownedCount.toFloat() / summary.count else 0f
+    NxCard(radius = 22, glow = Nx.magenta, glow2 = Nx.violet) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if (!countable && !scanning) {
-                // Nothing measured yet: one honest token, no dash grid.
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Unmeasured(18, modifier = Modifier.testTag("residue-total"))
-                    Label(Copy(R.string.k_not_measured_yet_2), 13, Chalk, FontWeight.Bold)
-                }
-            } else {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        Label(
-                            if (state.measured) humanBytes(summary.bytes) else "—",
-                            30, if (state.measured) Pink else Mist, FontWeight.ExtraBold,
-                            modifier = Modifier.testTag("residue-total"),
-                        )
-                        Label(
-                            if (state.measured) Copy(R.string.k_measured_residue)
-                            else Copy(R.string.k_not_measured_yet_2),
-                            11, Mist,
-                        )
-                    }
-                    Column(horizontalAlignment = Alignment.End) {
-                        val countable2 = countable
-                        Label(
-                            if (countable2) KnouxFormat.number(summary.count) else "—",
-                            20, if (countable2) Chalk else Mist, FontWeight.Bold,
-                            modifier = Modifier.testTag("residue-count"),
-                        )
-                        Label(Copy(R.string.k_items), 10, Mist)
-                    }
-                }
+            NxTile(Mark.LAYERS, Nx.magenta, size = 52, glyph = 25)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Label(Copy(R.string.k_app_residue), 11, Nx.muted, maxLines = 1)
                 if (countable) {
-                    GradientBar(
-                        if (summary.count > 0) summary.ownedCount.toFloat() / summary.count else 0f,
-                        thickness = 8,
+                    Label(
+                        if (state.measured) humanBytes(summary.bytes) else "—",
+                        25,
+                        if (state.measured) Nx.magenta else Nx.text,
+                        FontWeight.Bold,
+                        modifier = Modifier.testTag("residue-total"),
+                        maxLines = 1,
                     )
+                } else {
+                    Unmeasured(22, modifier = Modifier.testTag("residue-total"))
                 }
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    Label(
-                        if (countable) Copy.args(R.string.residue_own_cache, KnouxFormat.number(summary.ownedCount))
-                        else Copy.runtime("—"),
-                        10, Mint, modifier = Modifier.weight(1f),
-                    )
-                    Label(
-                        if (countable) Copy.args(R.string.residue_shared, KnouxFormat.number(summary.sharedCount))
-                        else Copy.runtime("—"),
-                        10, Gold, modifier = Modifier.weight(1f),
-                    )
-                    Label(
-                        if (countable) Copy.args(R.string.residue_inspected, KnouxFormat.number(state.filesInspected))
-                        else Copy.runtime("—"),
-                        10, Mist,
-                    )
-                }
-            }
-            state.capturedAt?.let { captured ->
                 Label(
-                    if (state.previousScan) {
-                        Copy.args(R.string.residue_previous_pass, residueAgo(captured, LocalArabic.current))
-                    } else {
-                        Copy.args(R.string.residue_measured_when, residueAgo(captured, LocalArabic.current))
-                    },
-                    10, Cyan,
-                    modifier = Modifier.testTag("residue-captured"),
+                    if (state.measured) Copy(R.string.k_measured_residue)
+                    else Copy(R.string.k_not_measured_yet_2),
+                    11, Nx.muted, maxLines = 2,
                 )
             }
-            if (state.measured && state.items.isNotEmpty()) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Label(
-                        Copy(R.string.k_select_cache_items),
-                        10, Mint, FontWeight.Bold,
-                        modifier = Modifier.clip(RoundedCornerShape(10.dp))
-                            .clickable { onSelectSafe() }.padding(6.dp)
-                            .testTag("residue-select-safe"),
-                    )
-                    Label(
-                        Copy(R.string.k_clear_selection),
-                        10, Mist,
-                        modifier = Modifier.clip(RoundedCornerShape(10.dp))
-                            .clickable { onClear() }.padding(6.dp)
-                            .testTag("residue-clear"),
-                    )
-                }
-            }
-            if (scanning) {
+            Column(horizontalAlignment = Alignment.End) {
                 Label(
-                    Copy.args(R.string.residue_groups_found, KnouxFormat.number(summary.count)),
-                    11, Cyan, FontWeight.Bold,
-                    modifier = Modifier.testTag("residue-progress"),
+                    if (countable) KnouxFormat.number(summary.count) else "—",
+                    22, if (countable) Nx.text else Nx.muted, FontWeight.Bold,
+                    modifier = Modifier.testTag("residue-count"),
+                    maxLines = 1,
+                )
+                Label(Copy(R.string.k_items), 10, Nx.faint, maxLines = 1)
+            }
+        }
+        if (countable) {
+            NxBar(
+                ownedShare,
+                Modifier.padding(top = 10.dp),
+                tint = Nx.magenta,
+                tint2 = Nx.violet,
+                live = scanning,
+            )
+            Row(
+                Modifier.fillMaxWidth().padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                NxBadge(
+                    Copy.args(R.string.residue_own_cache, KnouxFormat.number(summary.ownedCount)),
+                    Nx.green,
+                )
+                NxBadge(
+                    Copy.args(R.string.residue_shared, KnouxFormat.number(summary.sharedCount)),
+                    Nx.amber,
+                )
+                NxBadge(
+                    Copy.args(R.string.residue_inspected, KnouxFormat.number(state.filesInspected)),
+                    Nx.muted,
+                )
+            }
+        }
+        state.capturedAt?.let { captured ->
+            Label(
+                if (state.previousScan) {
+                    Copy.args(R.string.residue_previous_pass, residueAgo(captured, LocalArabic.current))
+                } else {
+                    Copy.args(R.string.residue_measured_when, residueAgo(captured, LocalArabic.current))
+                },
+                10, Nx.cyan,
+                modifier = Modifier.testTag("residue-captured").padding(top = 8.dp),
+                maxLines = 2,
+            )
+        }
+        if (scanning) {
+            Label(
+                Copy.args(R.string.residue_groups_found, KnouxFormat.number(summary.count)),
+                11, Nx.cyan, FontWeight.Bold,
+                modifier = Modifier.testTag("residue-progress").padding(top = 8.dp),
+                maxLines = 2,
+            )
+        }
+        if (state.measured && state.items.isNotEmpty()) {
+            Row(
+                Modifier.fillMaxWidth().padding(top = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                NxSecondary(
+                    Copy(R.string.k_select_cache_items),
+                    Modifier.weight(1f),
+                    icon = Mark.CHECK,
+                    tag = "residue-select-safe",
+                    onClick = onSelectSafe,
+                )
+                NxSecondary(
+                    Copy(R.string.k_clear_selection),
+                    Modifier.weight(1f),
+                    tag = "residue-clear",
+                    onClick = onClear,
                 )
             }
         }
@@ -816,35 +820,49 @@ private fun ResidueSummaryCard(state: ResidueState, onSelectSafe: () -> Unit, on
 
 @Composable
 private fun ResidueAgeCard(state: ResidueState, onAge: (Int) -> Unit) {
-    GlassPanel(Modifier.fillMaxWidth(), tint = Cyan) {
-        Column(
-            Modifier.fillMaxWidth().padding(11.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+    NxCard(radius = 18, glow = Nx.cyan) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            Label(
-                Copy(R.string.k_shared_folder_age_rule), 12, Chalk, FontWeight.Bold,
-            )
-            Label(
-                Copy.args(R.string.k_residue_age_scope, state.ageDays),
-                10, Mist,
-            )
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                ResidueRules.AGE_CHOICES.forEach { days ->
-                    val active = days == state.ageDays
-                    Box(
-                        Modifier.weight(1f).heightIn(min = 44.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(if (active) Cyan.copy(alpha = 0.22f) else Chalk.copy(alpha = 0.05f))
-                            .toggleable(value = active, role = Role.RadioButton) { onAge(days) }
-                            .testTag("residue-age-$days"),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Label(
-                            if (days == 0) Copy(R.string.k_any_age)
-                            else Copy.args(R.string.age_days_short, KnouxFormat.number(days)),
-                            10, if (active) Cyan else Mist, FontWeight.Bold,
+            NxTile(Mark.CLOCK, Nx.cyan, size = 38, glyph = 19)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                Label(
+                    Copy(R.string.k_shared_folder_age_rule), 12, Nx.text, FontWeight.Bold,
+                    maxLines = 2,
+                )
+                Label(
+                    Copy.args(R.string.k_residue_age_scope, state.ageDays),
+                    10, Nx.muted, maxLines = 2,
+                )
+            }
+        }
+        Row(
+            Modifier.fillMaxWidth().padding(top = 9.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+        ) {
+            ResidueRules.AGE_CHOICES.forEach { days ->
+                val active = days == state.ageDays
+                Box(
+                    Modifier.weight(1f).heightIn(min = 44.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(if (active) Nx.cyan.copy(alpha = .20f) else Nx.card)
+                        .border(
+                            1.dp,
+                            if (active) Nx.cyan.copy(alpha = .80f) else Nx.border,
+                            RoundedCornerShape(12.dp),
                         )
-                    }
+                        .toggleable(value = active, role = Role.RadioButton) { onAge(days) }
+                        .testTag("residue-age-$days"),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Label(
+                        if (days == 0) Copy(R.string.k_any_age)
+                        else Copy.args(R.string.age_days_short, KnouxFormat.number(days)),
+                        10, if (active) Nx.cyan else Nx.muted, FontWeight.Bold,
+                        maxLines = 1,
+                    )
                 }
             }
         }

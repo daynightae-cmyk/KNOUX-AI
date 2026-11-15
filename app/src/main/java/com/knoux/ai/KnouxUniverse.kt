@@ -57,100 +57,100 @@ internal val knouxProjects = listOf(
         "knoux-ai", Copy(R.string.k_knoux_ai),
         Copy(R.string.k_ai_powered_device_intelligence_clean_protect_optimize_an),
         ProjectCategory.AI_ENGINEERING, Copy(R.string.k_android),
-        ProjectStatus.ACTIVE, Mark.CHIP, Cyan, "KNOUX-AI"
+        ProjectStatus.ACTIVE, Mark.CHIP, Nx.cyan, "KNOUX-AI"
     ),
     KnouxProject(
         "kforge", Copy(R.string.k_kforge),
         Copy(R.string.k_engineering_and_development_command_center_by_knoux),
         ProjectCategory.AI_ENGINEERING, Copy(R.string.k_multi_platform),
-        ProjectStatus.IN_DEVELOPMENT, Mark.BOLT, Violet, "KForge"
+        ProjectStatus.IN_DEVELOPMENT, Mark.BOLT, Nx.violet, "KForge"
     ),
     KnouxProject(
         "knouxcrypt", Copy(R.string.k_knouxcrypt),
         Copy(R.string.k_security_and_encryption_software),
         ProjectCategory.SECURITY, Copy(R.string.k_desktop_mobile),
-        ProjectStatus.IN_DEVELOPMENT, Mark.LOCK, Pink, "KnouxCrypt"
+        ProjectStatus.IN_DEVELOPMENT, Mark.LOCK, Nx.magenta, "KnouxCrypt"
     ),
     KnouxProject(
         "kx-private-vpn", Copy(R.string.k_kx_private_vpn),
         Copy(R.string.k_android_privacy_application_vpn_connectivity_requires_se),
         ProjectCategory.SECURITY, Copy(R.string.k_android),
-        ProjectStatus.PREVIEW, Mark.SHIELD, Cyan, "KX-Private-VPN"
+        ProjectStatus.PREVIEW, Mark.SHIELD, Nx.cyan, "KX-Private-VPN"
     ),
     KnouxProject(
         "knoux-gemini", Copy(R.string.k_knoux_gemini_smartorganizer),
         Copy(R.string.k_desktop_intelligent_file_organization_powered_by_gemini),
         ProjectCategory.UTILITIES, Copy(R.string.k_desktop),
-        ProjectStatus.IN_DEVELOPMENT, Mark.FOLDER, Gold, "KNOuX-Gemini-SmartOrganizer"
+        ProjectStatus.IN_DEVELOPMENT, Mark.FOLDER, Nx.amber, "KNOuX-Gemini-SmartOrganizer"
     ),
     KnouxProject(
         "knouxrec", Copy(R.string.k_knouxrec),
         Copy(R.string.k_recording_and_capture_utility_by_knoux),
         ProjectCategory.UTILITIES, Copy(R.string.k_desktop),
-        ProjectStatus.IN_DEVELOPMENT, Mark.MIC, Violet, "Knouxrec"
+        ProjectStatus.IN_DEVELOPMENT, Mark.MIC, Nx.violet, "Knouxrec"
     ),
     KnouxProject(
         "knoux-repair", Copy(R.string.k_knoux_repair),
         Copy(R.string.k_system_maintenance_and_repair_software),
         ProjectCategory.UTILITIES, Copy(R.string.k_desktop),
-        ProjectStatus.IN_DEVELOPMENT, Mark.SYNC, Pink, "knoux-Repair"
+        ProjectStatus.IN_DEVELOPMENT, Mark.SYNC, Nx.magenta, "knoux-Repair"
     ),
     KnouxProject(
         "knoux-webpilot", Copy(R.string.k_knoux_webpilot),
         Copy(R.string.k_capture_intelligence_convert_webpage_content_into_reusab),
         ProjectCategory.BROWSER_WEB, Copy(R.string.k_microsoft_edge),
-        ProjectStatus.ACTIVE, Mark.SEARCH, Cyan, "KNOUX-WebPilot",
+        ProjectStatus.ACTIVE, Mark.SEARCH, Nx.cyan, "KNOUX-WebPilot",
         storeUrl = "https://microsoftedge.microsoft.com/addons/search/KNOUX%20WebPilot"
     ),
     KnouxProject(
         "knoux-grabflow", Copy(R.string.k_knoux_grabflow),
         Copy(R.string.k_media_video_finder_identify_accessible_webpage_media_and),
         ProjectCategory.BROWSER_WEB, Copy(R.string.k_microsoft_edge),
-        ProjectStatus.ACTIVE, Mark.DOWNLOAD, Gold, "KNOuX-GrabFlow",
+        ProjectStatus.ACTIVE, Mark.DOWNLOAD, Nx.amber, "KNOuX-GrabFlow",
         storeUrl = "https://microsoftedge.microsoft.com/addons/search/KNOuX%20GrabFlow"
     ),
     KnouxProject(
         "knoux-x", Copy(R.string.k_knoux_x),
         Copy(R.string.k_knoux_platform_extension_and_tool),
         ProjectCategory.BROWSER_WEB, Copy(R.string.k_web),
-        ProjectStatus.IN_DEVELOPMENT, Mark.BOLT, Violet, "knoux-x"
+        ProjectStatus.IN_DEVELOPMENT, Mark.BOLT, Nx.violet, "knoux-x"
     ),
     KnouxProject(
         "knoux-store", Copy(R.string.k_knoux_store),
         Copy(R.string.k_official_knoux_digital_storefront_and_web_presence),
         ProjectCategory.CORPORATE, Copy(R.string.k_web),
-        ProjectStatus.ACTIVE, Mark.CROWN, Gold, "knoux-store",
+        ProjectStatus.ACTIVE, Mark.CROWN, Nx.amber, "knoux-store",
         websiteUrl = "https://knoux.store/"
     ),
     KnouxProject(
         "basma-moussa", Copy(R.string.k_basma_moussa_media_universe),
         Copy(R.string.k_digital_media_universe_independent_brand_project),
         ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
-        ProjectStatus.CLIENT_WORK, Mark.VIDEO, Pink, "Basma-Moussa-Media-Universe"
+        ProjectStatus.CLIENT_WORK, Mark.VIDEO, Nx.magenta, "Basma-Moussa-Media-Universe"
     ),
     KnouxProject(
         "swim-fit", Copy(R.string.k_swim_fit_academy),
         Copy(R.string.k_swimming_academy_digital_platform),
         ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
-        ProjectStatus.CLIENT_WORK, Mark.HEART, Cyan, "Swim-Fit-Academy"
+        ProjectStatus.CLIENT_WORK, Mark.HEART, Nx.cyan, "Swim-Fit-Academy"
     ),
     KnouxProject(
         "united-olympics", Copy(R.string.k_united_olympics_sports),
         Copy(R.string.k_bilingual_sports_development_platform),
         ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
-        ProjectStatus.CLIENT_WORK, Mark.TROPHY, Gold, "United-Olympics-Sports"
+        ProjectStatus.CLIENT_WORK, Mark.TROPHY, Nx.amber, "United-Olympics-Sports"
     ),
     KnouxProject(
         "daynightdelivery", Copy(R.string.k_daynightdeliveryservices1),
         Copy(R.string.k_delivery_services_digital_project),
         ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
-        ProjectStatus.CLIENT_WORK, Mark.BOLT, Violet, "DayNightDeliveryServices1"
+        ProjectStatus.CLIENT_WORK, Mark.BOLT, Nx.violet, "DayNightDeliveryServices1"
     ),
     KnouxProject(
         "yarasoolallah", Copy(R.string.k_yarasoolallah),
         Copy(R.string.k_a_dedicated_digital_project_scope_and_audience_verified),
         ProjectCategory.SPECIALIZED, Copy(R.string.k_web),
-        ProjectStatus.IN_DEVELOPMENT, Mark.SPARKLE, Gold, "YaRasoolAllah"
+        ProjectStatus.IN_DEVELOPMENT, Mark.SPARKLE, Nx.amber, "YaRasoolAllah"
     )
 )
 
@@ -178,7 +178,7 @@ internal fun KnouxUniverseScreen() {
         // ── Section 1: Corporate Hero ─────────────────────────────────────
         GlassPanel(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(24.dp)),
-            radius = 24, tint = Violet
+            radius = 24, tint = Nx.violet
         ) {
             Column(
                 Modifier.fillMaxWidth().padding(20.dp),
@@ -190,7 +190,7 @@ internal fun KnouxUniverseScreen() {
                         .size(100.dp)
                         .clip(RoundedCornerShape(50.dp))
                         .background(Color(0xff1a0040).copy(alpha = .60f), RoundedCornerShape(50.dp))
-                        .border(1.dp, Violet.copy(alpha = .55f), RoundedCornerShape(50.dp)),
+                        .border(1.dp, Nx.violet.copy(alpha = .55f), RoundedCornerShape(50.dp)),
                     contentAlignment = Alignment.Center
                 ) {
                     androidx.compose.foundation.Image(
@@ -207,13 +207,13 @@ internal fun KnouxUniverseScreen() {
                         fontSize = 36.sp,
                         fontWeight = FontWeight.ExtraBold,
                         fontFamily = DisplayFace,
-                        brush = Brush.horizontalGradient(listOf(Gold, Chalk, Gold))
+                        brush = Brush.horizontalGradient(listOf(Nx.violet, Nx.text, Nx.cyan))
                     )
                 )
 
                 Label(
                     (Copy(R.string.k_building_the_digital_future)).localized(),
-                    14, Mist,
+                    14, Nx.muted,
                     modifier = Modifier.fillMaxWidth(),
                     align = TextAlign.Center
                 )
@@ -225,7 +225,7 @@ internal fun KnouxUniverseScreen() {
         // ── Section 2: Founder Identity ───────────────────────────────────
         GlassPanel(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)),
-            radius = 20, tint = Gold
+            radius = 20, tint = Nx.violet
         ) {
             Column(
                 Modifier.fillMaxWidth().padding(18.dp),
@@ -236,19 +236,19 @@ internal fun KnouxUniverseScreen() {
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconBadge(Mark.PERSON, Gold, diameter = 48)
+                    IconBadge(Mark.PERSON, Nx.violet, diameter = 48)
                     Column(Modifier.weight(1f)) {
-                        Label((Copy(R.string.k_eng_sadek_elgazar)).localized(), 16, Chalk, FontWeight.ExtraBold)
-                        Label((Copy(R.string.k_founder_software_engineer)).localized(), 12, Mist)
-                        Label((Copy(R.string.k_founder_of_knoux)).localized(), 11, Mist.copy(alpha = .70f))
+                        Label((Copy(R.string.k_eng_sadek_elgazar)).localized(), 16, Nx.text, FontWeight.ExtraBold)
+                        Label((Copy(R.string.k_founder_software_engineer)).localized(), 12, Nx.muted)
+                        Label((Copy(R.string.k_founder_of_knoux)).localized(), 11, Nx.muted.copy(alpha = .70f))
                     }
                 }
                 Box(
                     Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Gold.copy(alpha = .10f), RoundedCornerShape(12.dp))
-                        .border(1.dp, Gold.copy(alpha = .55f), RoundedCornerShape(12.dp))
+                        .background(Nx.cyan.copy(alpha = .10f), RoundedCornerShape(12.dp))
+                        .border(1.dp, Nx.cyan.copy(alpha = .55f), RoundedCornerShape(12.dp))
                         .clickable(role = Role.Button) { openUrl("https://knoux.store/") }
                         .padding(horizontal = 14.dp, vertical = 8.dp)
                 ) {
@@ -257,9 +257,9 @@ internal fun KnouxUniverseScreen() {
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Glyph(Mark.LINK, Modifier.size(14.dp), Gold)
+                        Glyph(Mark.LINK, Modifier.size(14.dp), Nx.cyan)
                         Spacer(Modifier.width(6.dp))
-                        Label("knoux.store", 13, Gold, FontWeight.Bold)
+                        Label("knoux.store", 13, Nx.cyan, FontWeight.Bold)
                     }
                 }
             }
@@ -275,9 +275,9 @@ internal fun KnouxUniverseScreen() {
         ) {
             Label(
                 (Copy(R.string.k_software_portfolio)).localized(),
-                18, Chalk, FontWeight.ExtraBold
+                18, Nx.text, FontWeight.ExtraBold
             )
-            NeonPill("${knouxProjects.size}", Cyan)
+            NeonPill("${knouxProjects.size}", Nx.cyan)
         }
 
         Spacer(Modifier.height(8.dp))
@@ -315,7 +315,7 @@ internal fun KnouxUniverseScreen() {
         // ── Section 4: Browser Extensions Featured Cards ──────────────────
         Label(
             (Copy(R.string.k_browser_extensions)).localized(),
-            18, Chalk, FontWeight.ExtraBold
+            18, Nx.text, FontWeight.ExtraBold
         )
 
         Spacer(Modifier.height(8.dp))
@@ -347,8 +347,8 @@ private fun ProjectCard(project: KnouxProject, openUrl: (String) -> Unit) {
             ) {
                 IconBadge(project.icon, project.tint, diameter = 40)
                 Column(Modifier.weight(1f)) {
-                    Label(project.name.localized(), 14, Chalk, FontWeight.ExtraBold)
-                    Label(project.description.localized(), 11, Mist, maxLines = 2)
+                    Label(project.name.localized(), 14, Nx.text, FontWeight.ExtraBold)
+                    Label(project.description.localized(), 11, Nx.muted, maxLines = 2)
                 }
             }
             Row(
@@ -403,15 +403,15 @@ private fun ExtensionCard(project: KnouxProject, openUrl: (String) -> Unit) {
             ) {
                 IconBadge(project.icon, project.tint, diameter = 52)
                 Column(Modifier.weight(1f)) {
-                    Label(project.name.localized(), 16, Chalk, FontWeight.ExtraBold)
-                    Label(project.description.localized(), 11, Mist, maxLines = 3)
+                    Label(project.name.localized(), 16, Nx.text, FontWeight.ExtraBold)
+                    Label(project.description.localized(), 11, Nx.muted, maxLines = 3)
                 }
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                NeonPill("Microsoft Edge", Cyan)
+                NeonPill("Microsoft Edge", Nx.cyan)
                 StatusPill(project.status)
             }
             project.storeUrl?.let { url ->
@@ -431,10 +431,10 @@ private fun ExtensionCard(project: KnouxProject, openUrl: (String) -> Unit) {
 @Composable
 private fun StatusPill(status: ProjectStatus) {
     val (label, tint) = when (status) {
-        ProjectStatus.ACTIVE -> (Copy(R.string.k_active)) to Cyan
-        ProjectStatus.IN_DEVELOPMENT -> (Copy(R.string.k_in_development)) to Violet
-        ProjectStatus.PREVIEW -> (Copy(R.string.k_preview)) to Gold
-        ProjectStatus.CLIENT_WORK -> (Copy(R.string.k_client_work)) to Pink
+        ProjectStatus.ACTIVE -> (Copy(R.string.k_active)) to Nx.cyan
+        ProjectStatus.IN_DEVELOPMENT -> (Copy(R.string.k_in_development)) to Nx.violet
+        ProjectStatus.PREVIEW -> (Copy(R.string.k_preview)) to Nx.amber
+        ProjectStatus.CLIENT_WORK -> (Copy(R.string.k_client_work)) to Nx.magenta
     }
     NeonPill(label.localized(), tint)
 }
@@ -449,10 +449,10 @@ private fun categoryLabel(category: ProjectCategory): Copy = when (category) {
 }
 
 private fun categoryColor(category: ProjectCategory): Color = when (category) {
-    ProjectCategory.AI_ENGINEERING -> Cyan
-    ProjectCategory.SECURITY -> Pink
-    ProjectCategory.UTILITIES -> Gold
-    ProjectCategory.BROWSER_WEB -> Violet
-    ProjectCategory.CORPORATE -> Gold
-    ProjectCategory.SPECIALIZED -> Mint
+    ProjectCategory.AI_ENGINEERING -> Nx.cyan
+    ProjectCategory.SECURITY -> Nx.magenta
+    ProjectCategory.UTILITIES -> Nx.amber
+    ProjectCategory.BROWSER_WEB -> Nx.violet
+    ProjectCategory.CORPORATE -> Nx.amber
+    ProjectCategory.SPECIALIZED -> Nx.teal
 }

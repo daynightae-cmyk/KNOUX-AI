@@ -20,31 +20,31 @@ import androidx.compose.ui.unit.LayoutDirection
  * a semantic state, so no screen invents its own colour.
  */
 internal object KnouxColors {
-    val background = Color(0xFF05020E)
-    val surface = Color(0xFF0E0A22)
-    val surfaceVariant = Color(0xFF171136)
+    val background = Nx.ink
+    val surface = Nx.card
+    val surfaceVariant = Nx.raised
 
     /** Identity base. */
-    val primary = Color(0xFFB040FF)
-    val onPrimary = Color(0xFF0B0016)
+    val primary = Nx.violet
+    val onPrimary = Nx.inkDeep
 
     /** Identity accent. */
-    val accent = Color(0xFF00E5F5)
+    val accent = Nx.cyan
 
-    val success = Color(0xFF00E8A8)
-    val warning = Color(0xFFFFB020)
-    val danger = Color(0xFFFF3B5C)
+    val success = Nx.green
+    val warning = Nx.amber
+    val danger = Nx.rose
 
-    val textPrimary = Color(0xFFF6F2FF)
-    val textSecondary = Color(0xFFBDAFD8)
-    val border = Color(0xFF2A2148)
+    val textPrimary = Nx.text
+    val textSecondary = Nx.muted
+    val border = Nx.border
 
     /** The one primary button per screen. */
-    val action = Color(0xFFFF2ED0)
-    val onAction = Color(0xFF17001A)
+    val action = Nx.blue
+    val onAction = Nx.inkDeep
 
     /** Pro entitlement only. */
-    val pro = Color(0xFFFFCC33)
+    val pro = Nx.amber
 }
 
 /**

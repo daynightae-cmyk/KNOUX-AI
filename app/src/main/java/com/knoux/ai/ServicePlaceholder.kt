@@ -44,7 +44,8 @@ internal fun EmptyServiceScreen(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                NeonHero(page.hero, motion, Modifier.padding(top = 2.dp), heightOverride = 84.dp)
+                Spacer(Modifier.height(10.dp))
+                NxTile(page.hero, Nx.violet, size = 64, glyph = 30)
                 Column(
                     Modifier.fillMaxWidth().padding(horizontal = 18.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,

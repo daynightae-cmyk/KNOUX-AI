@@ -677,7 +677,6 @@ internal fun RealSmartCleanScreen(open: (Page) -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        NeonHero(Mark.TRASH, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
         MasterTitle(
             Copy(R.string.k_smart_2), Copy(R.string.k_clean_2),
             Copy(R.string.k_review_real_files_before_any_cleanup),
@@ -839,46 +838,47 @@ private fun MeasuredSummaryCard(state: CleanState) {
         measured && bytes > 0L -> (state.selectedBytes.toDouble() / bytes * 100).toInt()
         else -> 0
     }
-    MasterCard(radius = 22, tint = Violet) {
+    NxCard(radius = 22) {
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Box(Modifier.size(104.dp), contentAlignment = Alignment.Center) {
-                ProgressDonut(
-                    percent,
-                    when {
-                        scanning -> (Copy(R.string.k_scopes_completed)).localized()
-                        measured -> (Copy(R.string.k_selected_share)).localized()
-                        else -> (Copy(R.string.k_not_measured)).localized()
-                    },
-                    diameter = 104,
-                    displayValue = if (measured || scanning) "$percent%" else "—"
-                )
-            }
-            Separator(Modifier.width(1.dp).height(88.dp))
+            NxTile(Mark.DISK, Nx.violet, size = 52, glyph = 25)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                MasterIcon(Mark.DISK, Pink, 34)
-                Label((Copy(R.string.k_cleanup_potential)).localized(), 11, Mist)
+                Label(Copy(R.string.k_cleanup_potential), 11, Nx.muted, maxLines = 2)
                 if (measured) {
-                    Label(humanBytes(bytes), 22, weight = FontWeight.ExtraBold)
+                    Label(humanBytes(bytes), 25, Nx.cyan, FontWeight.Bold, maxLines = 1)
                 } else {
-                    Unmeasured(17)
+                    Unmeasured(20)
                 }
                 Label(
                     when {
-                        scanning -> (Copy.args(R.string.k_items_progress_summary, state.progressCount, humanBytes(state.progressBytes))).localized()
-                        measured -> (Copy.args(R.string.k_candidates_summary, state.candidates.size, agoLabel(state.scannedAt, LocalArabic.current))).localized()
-                        else -> (Copy(R.string.k_tap_scan_device_to_measure)).localized()
+                        scanning -> Copy.args(R.string.k_items_progress_summary, state.progressCount, humanBytes(state.progressBytes))
+                        measured -> Copy.args(R.string.k_candidates_summary, state.candidates.size, agoLabel(state.scannedAt, LocalArabic.current))
+                        else -> Copy(R.string.k_tap_scan_device_to_measure)
                     },
-                    11, Mist
+                    11, Nx.muted, maxLines = 2,
                 )
             }
+            NxRing(
+                value = percent,
+                display = if (measured || scanning) "$percent%" else "—",
+                label = when {
+                    scanning -> (Copy(R.string.k_scopes_completed)).localized()
+                    measured -> (Copy(R.string.k_selected_share)).localized()
+                    else -> (Copy(R.string.k_not_measured)).localized()
+                },
+                diameter = 88,
+                tint = Nx.cyan,
+                tint2 = Nx.violet,
+                live = scanning,
+                indeterminate = scanning && state.scopesTotal == 0,
+            )
         }
         if (scanning) {
             val shown = if (state.scopesTotal > 0) state.scopesDone.toFloat() / state.scopesTotal else 0f
-            GradientBar(shown, Modifier.padding(top = 2.dp), live = false)
+            NxBar(shown, Modifier.padding(top = 8.dp), live = true)
         }
     }
 }
@@ -897,11 +897,11 @@ private fun CleanGroupRow(
     onBody: () -> Unit,
     onToggle: (Boolean) -> Unit
 ) {
-    MasterCard(radius = 16, tint = if (checked) Cyan else null) {
+    NxCard(radius = 16, selected = checked) {
         Row(
             Modifier.fillMaxWidth().heightIn(min = 48.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
                 Modifier.weight(1f).clip(RoundedCornerShape(12.dp))
@@ -909,29 +909,30 @@ private fun CleanGroupRow(
                     .clickable(role = Role.Button, onClick = onBody)
                     .padding(vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(9.dp)
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                MasterIcon(mark, if (checked) Cyan else Violet, 34)
-                Column(Modifier.weight(1f)) {
-                    Label(title.localized(), 14, weight = FontWeight.Bold)
+                NxTile(mark, if (checked) Nx.cyan else Nx.violet, size = 40, glyph = 20)
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Label(title, 14, Nx.text, FontWeight.Bold, maxLines = 1)
                     Label(
-                        if (available) (Copy.args(R.string.clean_group_count, count, subtitle.localized())).localized()
-                        else subtitle.localized(),
-                        11, Mist
+                        if (available) Copy.args(R.string.clean_group_count, count, subtitle.localized())
+                        else subtitle,
+                        11, Nx.muted, maxLines = 2,
                     )
                 }
             }
-            Column(horizontalAlignment = Alignment.End) {
-                Label(if (available) humanBytes(bytes) else "—", 14, weight = FontWeight.Bold)
-                Spacer(Modifier.height(3.dp))
-                Box(
-                    Modifier.size(28.dp)
-                        .toggleable(checked, enabled = available, role = Role.Checkbox, onValueChange = onToggle)
-                        .testTag("clean-toggle-$index"),
-                    contentAlignment = Alignment.Center
-                ) {
-                    SelectionIndicator(checked && available, Cyan)
-                }
+            Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                Label(
+                    if (available) humanBytes(bytes) else "—",
+                    14, if (checked) Nx.cyan else Nx.text, FontWeight.Bold, maxLines = 1,
+                )
+                NxCheck(
+                    checked && available,
+                    enabled = available,
+                    tint = Nx.cyan,
+                    tag = "clean-toggle-$index",
+                    onChange = onToggle,
+                )
             }
         }
     }

@@ -60,6 +60,8 @@ import kotlin.math.sin
 
 internal val LocalArabic = compositionLocalOf { false }
 internal val LocalPreviewMotion = compositionLocalOf { false }
+/** True only inside the real utility shell, never Splash or login. */
+internal val LocalNativeApp = compositionLocalOf { false }
 internal val LocalRoomy = compositionLocalOf { false }
 internal val LocalTall = compositionLocalOf { false }
 /** Brand wordmark only: this face has no Arabic glyphs. */
@@ -184,7 +186,14 @@ internal fun Modifier.buttonBloom(primary: Boolean, pulse: State<Float>? = null)
 @Composable
 internal fun GlassPanel(modifier: Modifier = Modifier, radius: Int = 14, tint: Color? = null, content: @Composable () -> Unit
 ) {
-    Box(modifier.glass(radius, tint = tint), contentAlignment = Alignment.CenterStart) { content() }
+    // Scoped substitution: actual utility screens borrow the Figma quiet navy
+    // panel, while the approved Splash/Onboarding/Auth cinematic glass is intact.
+    val native = LocalNativeApp.current
+    val shape = RoundedCornerShape(radius.dp)
+    val surface = if (native) {
+        modifier.clip(shape).nxCard(radius, glow = tint ?: Nx.violet)
+    } else modifier.glass(radius, tint = tint)
+    Box(surface, contentAlignment = Alignment.CenterStart) { content() }
 }
 
 /**
@@ -193,63 +202,28 @@ internal fun GlassPanel(modifier: Modifier = Modifier, radius: Int = 14, tint: C
  */
 @Composable
 internal fun IconBadge(mark: Mark, tint: Color, modifier: Modifier = Modifier, diameter: Int = 36) {
-    val shape = RoundedCornerShape((diameter * .30f).dp)
-    val box = modifier.size(diameter.dp)
-    Box(box.background(Brush.verticalGradient(listOf(tint.copy(alpha = .68f), Color(0xff150d38).copy(alpha = .88f))),
-        shape
-    ).border(.9.dp, Brush.horizontalGradient(listOf(Color.White.copy(alpha = .78f), tint.copy(alpha = 1f), Color.Transparent)), shape),
-        contentAlignment = Alignment.Center) {
-        Canvas(Modifier.matchParentSize()) {
-            bloom(Offset(size.width * .30f, size.height * .18f), size.width * .78f, tint, 1.05f)
-            drawCircle(Brush.radialGradient(listOf(Color.White.copy(alpha = .34f), Color.Transparent),
-                Offset(size.width * .26f, size.height * .16f), size.width * .42f), size.width * .42f, Offset(size.width * .26f, size.height * .16f))
-        }
-        VolumetricGlyph(mark, tint, (diameter * .70f).dp)
-    }
+    NxTile(mark, tint, modifier, size = diameter, glyph = (diameter * .54f).toInt().coerceAtLeast(14))
 }
 
 @Composable
 internal fun HeroHeading(page: Page, subtitle: Copy, isScanRunning: Boolean = true, artBeside: Boolean = false) {
-    val animate = LocalPreviewMotion.current && isScanRunning
-    val inline = artBeside && !LocalRoomy.current
-    val title = page.title.localized()
-    val split = title.lastIndexOf(' ')
-    val first = if (split < 0) "" else title.substring(0, split + 1)
-    val last = title.substring(split + 1)
-    val fontSize = when {
-        inline -> 22
-        page == Page.HOME -> 32
-        page == Page.DUPLICATES || page == Page.RESIDUE -> 24
-        else -> 28
-    }
-    val font = DisplayFace
-    val styledTitle = buildAnnotatedString {
-        withStyle(SpanStyle(color = Chalk)) { append(first) }
-        withStyle(SpanStyle(brush = Brush.verticalGradient(listOf(Color(0xfff896ff), Color(0xffe06bff), Color(0xffc25bff))))) { append(last) }
-    }
-    val alignment = if (inline) TextAlign.Start else TextAlign.Center
-    val headings: @Composable () -> Unit = {
-        Text(styledTitle, Modifier.fillMaxWidth().padding(horizontal = 4.dp).testTag("screen-${page.id}"), style = TextStyle(fontSize = fontSize.sp, lineHeight = (fontSize * 1.05f).sp, fontFamily = font,
-            fontWeight = FontWeight.ExtraBold, textAlign = alignment
-        ))
-        Label(subtitle.localized(), if (page == Page.HOME) 13 else 11, Mist,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 1.dp), align = alignment)
-    }
-    if (inline) {
-        Row(Modifier.fillMaxWidth().padding(start = 8.dp, top = 4.dp, bottom = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(.61f), content = { headings() })
-            NeonHero(page.hero, animate, Modifier.weight(.39f))
-        }
-    } else {
-        NeonHero(page.hero, animate, Modifier.padding(top = 4.dp, bottom = 6.dp))
-        headings()
-    }
+    NxHeader(page.title, subtitle, tag = "screen-${page.id}")
 }
 
 @Composable
 internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary: Boolean = true, enabled: Boolean = true,
     tag: String = "", selected: Boolean? = null, labelSize: Int = 13, onClick: () -> Unit
 ) {
+    // The utility shell draws every action from the reference kit; the approved
+    // Splash / Auth / Onboarding cinematics keep their own signature material.
+    if (LocalNativeApp.current) {
+        if (primary) {
+            NxPrimary(action.label, modifier, action.icon, enabled, tag, selected == true, onClick)
+        } else {
+            NxSecondary(action.label, modifier, action.icon, enabled, tag, selected == true, onClick)
+        }
+        return
+    }
     val round = RoundedCornerShape(28.dp)
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
@@ -345,117 +319,21 @@ internal fun Modifier.primarySurface(shimmer: State<Float>?, glow: State<Float>?
 
 @Composable
 internal fun GradientBar(value: Float, modifier: Modifier = Modifier, thickness: Int = 7, live: Boolean = false) {
-    val motion = LocalPreviewMotion.current
-    var entered by remember { mutableStateOf(!motion) }
-    LaunchedEffect(Unit) { entered = true }
-    val target = value.coerceIn(0f, 1f)
-    val shown by animateFloatAsState(if (entered) target else 0f,
-        animationSpec = tween(if (motion) 780 else 0, easing = FastOutSlowInEasing), label = "bar fill")
-    val sweep = if (live && motion) {
-        val transition = rememberInfiniteTransition(label = "bar sweep")
-        transition.animateFloat(0f, 1f, infiniteRepeatable(tween(2300, easing = LinearEasing)), label = "bar sweep")
-    } else null
-    Canvas(modifier.fillMaxWidth().height(thickness.dp)) {
-        val radius = CornerRadius(size.height / 2f)
-        drawRoundRect(Color(0xff2a2058), cornerRadius = radius)
-        drawRoundRect(Brush.verticalGradient(listOf(Color(0xffaaa0d8), Color(0xff61558e))),
-            cornerRadius = radius, style = Stroke(.7.dp.toPx()))
-        val fill = size.width * shown
-        if (fill > 0f) {
-            val colors = listOf(Color(0xffff54ff), Color(0xffb13aff), Color(0xff4f6bff), Color(0xff00e8ff))
-            // Saturated halo under the lit part of the track.
-            drawRoundRect(Brush.horizontalGradient(colors, endX = fill), size = Size(fill, size.height),
-                cornerRadius = radius, alpha = .28f)
-            drawRoundRect(Brush.horizontalGradient(colors, endX = fill), size = Size(fill, size.height), cornerRadius = radius)
-            drawRoundRect(Color.White.copy(alpha = .56f), size = Size(fill, size.height), cornerRadius = radius,
-                style = Stroke(.6.dp.toPx()))
-            if (sweep != null) {
-                val travel = sweep.value * fill
-                drawRoundRect(Brush.horizontalGradient(listOf(Color.Transparent, Color.White.copy(alpha = .42f), Color.Transparent),
-                    startX = travel - size.height, endX = travel + size.height),
-                    topLeft = Offset(0f, 0f), size = Size(fill, size.height), cornerRadius = radius)
-            }
-            if (shown < .995f) drawCircle(Color.White.copy(alpha = .95f), size.height * .30f,
-                Offset(fill - size.height * .34f, size.height / 2f))
-        }
-    }
+    NxBar(value, modifier, thickness, live)
 }
 
 @Composable
 internal fun ProgressDonut(value: Int, label: String = "", diameter: Int = 73, split: Boolean = false,
     modifier: Modifier = Modifier, displayValue: String = "$value%", live: Boolean = false
 ) {
-    val motion = LocalPreviewMotion.current
-    var entered by remember { mutableStateOf(!motion) }
-    LaunchedEffect(Unit) { entered = true }
-    val shown by animateFloatAsState(if (entered) value.coerceIn(0, 100).toFloat() else 0f,
-        animationSpec = tween(if (motion) 1000 else 0, easing = FastOutSlowInEasing), label = "donut sweep")
-    val glint = if (live && motion) {
-        val transition = rememberInfiniteTransition(label = "donut glint")
-        transition.animateFloat(0f, 1f, infiniteRepeatable(tween(4200, easing = LinearEasing)), label = "donut glint")
-    } else null
-    Box(modifier.size(diameter.dp), contentAlignment = Alignment.Center) {
-        Canvas(Modifier.matchParentSize()) {
-            val width = size.width
-            val band = width * .125f
-            val inset = width * .087f
-            val start = Offset(inset, inset)
-            val arcSize = Size(width - inset * 2, width - inset * 2)
-            val sweep = if (split) 342f else 348f * shown / 100f
-            val tone = Brush.sweepGradient(listOf(Color(0xffc41bff), Color(0xff6a2bff), Light.cyan, if (split) Gold else Light.cyan, Light.cyan, Light.magenta, Color(0xffc41bff)))
-            // Fine machined ticks around the outside of the cavity.
-            for (tick in 0..35) {
-                val angle = (-90f + tick * 10f) * PI.toFloat() / 180f
-                val outer = width / 2f - inset * .30f
-                val inner = outer - (if (tick % 3 == 0) width * .035f else width * .018f)
-                drawLine((if (tick % 3 == 0) Light.ice.copy(alpha = .55f) else Color(0xff9a8ad0).copy(alpha = .34f)),
-                    Offset(size.width / 2f + cos(angle) * inner, size.height / 2f + sin(angle) * inner),
-                    Offset(size.width / 2f + cos(angle) * outer, size.height / 2f + sin(angle) * outer),
-                    width * .007f
-                )
-            }
-            // Dark cavity with an inner light that reads as depth, not a flat ring.
-            drawCircle(Brush.radialGradient(listOf(Color(0xff1c1145), Color(0xff08051d)), center, width * .5f),
-                width * .5f - inset * .35f, center)
-            drawCircle(Color(0xff3f3478), radius = width / 2 - inset, style = Stroke(band))
-            drawCircle(Color.White.copy(alpha = .28f), radius = width / 2 - inset - band * .48f, style = Stroke(band * .16f))
-            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .46f, style = Stroke(band * 2.2f, cap = StrokeCap.Round))
-            drawArc(tone, -84f, sweep, false, start, arcSize, style = Stroke(band, cap = StrokeCap.Round))
-            // Bright inner filament on the lit part of the ring.
-            drawArc(tone, -84f, sweep, false, start, arcSize, alpha = .95f, style = Stroke(band * .24f, cap = StrokeCap.Round))
-            // Start and end caps read as machined terminals.
-            val capAngle = Math.toRadians((-84f + sweep).toDouble())
-            drawCircle(Color.White.copy(alpha = .98f), band * .32f,
-                Offset(size.width / 2f + (width / 2 - inset) * cos(capAngle).toFloat(),
-                    size.height / 2f + (width / 2 - inset) * sin(capAngle).toFloat()))
-            // A slow specular glint travels only over the lit part of the arc.
-            if (glint != null && sweep > 2f) {
-                drawArc(Brush.sweepGradient(listOf(Color.Transparent, Color.White.copy(alpha = .95f), Color.Transparent),
-                    center), -84f + glint.value * (sweep - 10f), 10f, false, start, arcSize,
-                    style = Stroke(band * .42f, cap = StrokeCap.Round))
-            }
-        }
-        val inset = (diameter * .15f).dp
-        Column(Modifier.padding(horizontal = inset), horizontalAlignment = Alignment.CenterHorizontally) {
-            val density = LocalDensity.current
-            val measurer = rememberTextMeasurer()
-            val preferred = (if (diameter < 50) 13 else 21).sp
-            val style = LocalTextStyle.current.copy(fontSize = preferred, fontWeight = FontWeight.ExtraBold)
-            val available = with(density) { (diameter.dp - inset * 2 - 2.dp).toPx() }
-            val fitOnOneLine = density.fontScale <= 1.24f
-            val textWidth = measurer.measure(displayValue, style, softWrap = false, maxLines = 1).size.width
-            val valueSize = if (fitOnOneLine && textWidth > available) preferred * (available / textWidth) else preferred
-            Text(displayValue, color = Chalk, style = style.copy(fontSize = valueSize, lineHeight = valueSize * 1.08f),
-                textAlign = TextAlign.Center, softWrap = !fitOnOneLine)
-            if (label.isNotEmpty()) {
-                val labelSize = if (diameter < 80) 7 else 8
-                Text(label, color = Mist, textAlign = TextAlign.Center, maxLines = 2, softWrap = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    style = LocalTextStyle.current.copy(fontSize = labelSize.sp, lineHeight = (labelSize * 1.12f).sp,
-                        fontWeight = FontWeight.Medium))
-            }
-        }
-    }
+    NxRing(
+        value = value,
+        display = displayValue,
+        label = label,
+        modifier = modifier,
+        diameter = diameter,
+        live = live,
+    )
 }
 
 @Composable
@@ -488,20 +366,21 @@ internal fun Separator(modifier: Modifier = Modifier) {
 
 @Composable
 internal fun SelectionIndicator(checked: Boolean, tint: Color = Cyan) {
-    val shape = RoundedCornerShape(5.dp)
-    val check = if (tint == Cyan || tint == Mint || tint == Gold) Ink else Chalk
-    val fill by animateColorAsState(if (checked) tint else Color.Transparent,
+    val accent = if (tint == Cyan) Nx.cyan else tint
+    val shape = RoundedCornerShape(7.dp)
+    val fill by animateColorAsState(if (checked) accent else Color.Transparent,
         animationSpec = tween(if (LocalPreviewMotion.current) 180 else 0), label = "check fill")
     val checkScale by animateFloatAsState(if (checked) 1f else .55f,
         animationSpec = tween(if (LocalPreviewMotion.current) 190 else 0), label = "check pop")
-    Box(Modifier.size(17.dp)
+    Box(Modifier.size(21.dp)
         .graphicsLayer { scaleX = if (checked) 1.04f else 1f; scaleY = if (checked) 1.04f else 1f }
         .background(fill, shape)
-        .border(1.dp, if (checked) lerp(tint, Color.White, .35f) else tint, shape),
+        .border(if (checked) 1.4.dp else 1.dp,
+            if (checked) Color.White.copy(alpha = .86f) else accent.copy(alpha = .70f), shape),
         contentAlignment = Alignment.Center) {
-        if (checked) Canvas(Modifier.size(12.dp).graphicsLayer { scaleX = checkScale; scaleY = checkScale }) {
-            drawLine(check, Offset(size.width*.18f,size.height*.53f), Offset(size.width*.43f,size.height*.76f), 1.7.dp.toPx(), StrokeCap.Round)
-            drawLine(check, Offset(size.width*.43f,size.height*.76f), Offset(size.width*.84f,size.height*.23f), 1.7.dp.toPx(), StrokeCap.Round)
+        if (checked) Canvas(Modifier.size(13.dp).graphicsLayer { scaleX = checkScale; scaleY = checkScale }) {
+            drawLine(Nx.inkDeep, Offset(size.width*.18f,size.height*.53f), Offset(size.width*.43f,size.height*.76f), 2f.dp.toPx(), StrokeCap.Round)
+            drawLine(Nx.inkDeep, Offset(size.width*.43f,size.height*.76f), Offset(size.width*.84f,size.height*.23f), 2f.dp.toPx(), StrokeCap.Round)
         }
     }
 }
@@ -511,10 +390,12 @@ internal fun SelectChip(label: String, checked: Boolean, onChange: (Boolean) -> 
     Row(Modifier.heightIn(min = 48.dp).testTag("select-all").clip(RoundedCornerShape(22.dp))
         .toggleable(checked, role = Role.Checkbox, onValueChange = onChange).padding(horizontal = 2.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        Row(Modifier.glass(18, ghost = true).padding(horizontal = 9.dp, vertical = 5.dp),
+        val surface = if (LocalNativeApp.current) Modifier.nxCard(14, selected = checked)
+        else Modifier.glass(18, ghost = true)
+        Row(surface.padding(horizontal = 10.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
             SelectionIndicator(checked)
-            Label(label, 11, weight = FontWeight.Medium)
+            Label(label, 12, if (LocalNativeApp.current) Nx.text else KnouxColors.textPrimary, FontWeight.Medium)
         }
     }
 }

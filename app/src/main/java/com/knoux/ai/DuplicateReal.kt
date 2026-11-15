@@ -545,7 +545,6 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        NeonHero(Mark.PICTURES, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
         MasterTitle(
             Copy(R.string.k_duplicate), Copy(R.string.k_finder),
             Copy(R.string.k_only_byte_identical_copies_are_shown_one_original_per_gr),
@@ -661,88 +660,89 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
 private fun DuplicateSummaryCard(state: DuplicateState) {
     val scanning = state.phase == DuplicatePhase.SCANNING
     val countable = state.measured || state.filesInspected > 0
-    GlassPanel(Modifier.fillMaxWidth(), tint = Pink) {
-        Column(
-            Modifier.fillMaxWidth().padding(13.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+    val hashShare = if (state.filesHashed > 0) {
+        state.filesHashed.toFloat() / state.filesInspected.coerceAtLeast(1)
+    } else 0f
+    NxCard(radius = 22, glow = Nx.magenta, glow2 = Nx.violet) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            if (!countable) {
-                // No pass has run yet: one quiet token, not a field of dashes.
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    Unmeasured(18, modifier = Modifier.testTag("duplicate-redundant"))
-                    Label(Copy(R.string.k_not_measured_yet_2), 13, Chalk, FontWeight.Bold)
-                }
-            } else {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f)) {
-                        if (state.measured) {
-                            Label(
-                                humanBytes(state.redundantBytes),
-                                30, Pink, FontWeight.ExtraBold,
-                                modifier = Modifier.testTag("duplicate-redundant"),
-                            )
-                        } else {
-                            Unmeasured(18, modifier = Modifier.testTag("duplicate-redundant"))
-                        }
-                        Label(
-                            if (state.measured) Copy(R.string.k_redundant_copies_measured)
-                            else Copy(R.string.k_not_measured_yet_2),
-                            11, Mist,
-                        )
-                    }
-                    Column(horizontalAlignment = Alignment.End) {
-                        Label(
-                            if (countable) KnouxFormat.number(state.groups.size) else "—",
-                            20, if (countable) Chalk else Mist, FontWeight.Bold,
-                            modifier = Modifier.testTag("duplicate-group-count"),
-                        )
-                        Label(Copy(R.string.k_groups), 11, Mist)
-                    }
-                }
-                GradientBar(
-                    if (state.filesHashed > 0) state.filesHashed.toFloat() / state.filesInspected.coerceAtLeast(1) else 0f,
-                    thickness = 8,
-                )
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            NxTile(Mark.PICTURES, Nx.magenta, size = 52, glyph = 25)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Label(Copy(R.string.k_duplicate_files), 11, Nx.muted, maxLines = 1)
+                if (state.measured) {
                     Label(
-                        if (countable) Copy.args(R.string.dup_files_inspected, KnouxFormat.number(state.filesInspected))
-                        else Copy.runtime("—"),
-                        11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
+                        humanBytes(state.redundantBytes),
+                        25, Nx.magenta, FontWeight.Bold,
+                        modifier = Modifier.testTag("duplicate-redundant"),
+                        maxLines = 1,
                     )
-                    Label(
-                        if (countable) Copy.args(R.string.dup_files_hashed, KnouxFormat.number(state.filesHashed))
-                        else Copy.runtime("—"),
-                        11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
-                    )
-                    Label(
-                        if (countable) Copy.args(R.string.dup_bytes_read, humanBytes(state.bytesHashed))
-                        else Copy.runtime("—"),
-                        11, Mist, modifier = Modifier.weight(1f), maxLines = 2,
-                    )
+                } else {
+                    Unmeasured(22, modifier = Modifier.testTag("duplicate-redundant"))
                 }
-            }
-            state.capturedAt?.let { captured ->
                 Label(
-                    if (state.previousScan) {
-                        Copy.args(R.string.dup_previous_pass, dupAgo(captured, LocalArabic.current))
-                    } else {
-                        Copy.args(R.string.dup_measured_when, dupAgo(captured, LocalArabic.current))
-                    },
-                    11, Cyan,
-                    modifier = Modifier.testTag("duplicate-captured"),
+                    if (state.measured) Copy(R.string.k_redundant_copies_measured)
+                    else Copy(R.string.k_not_measured_yet_2),
+                    11, Nx.muted, maxLines = 2,
                 )
             }
-            if (scanning) {
+            Column(horizontalAlignment = Alignment.End) {
                 Label(
-                    Copy.args(R.string.dup_groups_found, KnouxFormat.number(state.groupsFound)),
-                    11, Cyan, FontWeight.Bold,
-                    modifier = Modifier.testTag("duplicate-progress"),
+                    if (countable) KnouxFormat.number(state.groups.size) else "—",
+                    22, if (countable) Nx.text else Nx.muted, FontWeight.Bold,
+                    modifier = Modifier.testTag("duplicate-group-count"),
+                    maxLines = 1,
+                )
+                Label(Copy(R.string.k_groups), 10, Nx.faint, maxLines = 1)
+            }
+        }
+        if (countable) {
+            NxBar(
+                hashShare,
+                Modifier.padding(top = 10.dp),
+                tint = Nx.magenta,
+                tint2 = Nx.violet,
+                live = scanning,
+            )
+            Row(
+                Modifier.fillMaxWidth().padding(top = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                NxBadge(
+                    Copy.args(R.string.dup_files_inspected, KnouxFormat.number(state.filesInspected)),
+                    Nx.cyan,
+                )
+                NxBadge(
+                    Copy.args(R.string.dup_files_hashed, KnouxFormat.number(state.filesHashed)),
+                    Nx.violet,
+                )
+                NxBadge(
+                    Copy.args(R.string.dup_bytes_read, humanBytes(state.bytesHashed)),
+                    Nx.muted,
                 )
             }
+        }
+        state.capturedAt?.let { captured ->
+            Label(
+                if (state.previousScan) {
+                    Copy.args(R.string.dup_previous_pass, dupAgo(captured, LocalArabic.current))
+                } else {
+                    Copy.args(R.string.dup_measured_when, dupAgo(captured, LocalArabic.current))
+                },
+                10, Nx.cyan,
+                modifier = Modifier.testTag("duplicate-captured").padding(top = 8.dp),
+                maxLines = 2,
+            )
+        }
+        if (scanning) {
+            Label(
+                Copy.args(R.string.dup_groups_found, KnouxFormat.number(state.groupsFound)),
+                11, Nx.cyan, FontWeight.Bold,
+                modifier = Modifier.testTag("duplicate-progress").padding(top = 8.dp),
+                maxLines = 2,
+            )
         }
     }
 }

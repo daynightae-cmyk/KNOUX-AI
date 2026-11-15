@@ -33,7 +33,8 @@ internal enum class Page(val id: String, val title: Copy, val hero: Mark) {
     APPS_REVIEW("installed-apps-review", Copy(R.string.k_installed_apps_review), Mark.GROUP),
     STORAGE_BREAKDOWN("storage-breakdown", Copy(R.string.k_storage_breakdown_2), Mark.DISK),
     BATTERY_DIAGNOSTICS("battery-diagnostics", Copy(R.string.k_battery_diagnostics), Mark.BATTERY),
-    AI_RECOMMENDATIONS("ai-recommendations", Copy(R.string.k_ai_recommendations), Mark.CHIP);
+    AI_RECOMMENDATIONS("ai-recommendations", Copy(R.string.k_ai_recommendations), Mark.CHIP),
+    LARGE_FILES("large-files", Copy(R.string.idn_large_title), Mark.LAYERS);
 
     companion object {
         val references = entries.take(10)
@@ -64,7 +65,7 @@ internal val Page.reviewTab: Page?
         // Tools tab stays lit - this is what the approved references show.
         Page.PRIVACY, Page.OPTIMIZE, Page.STORAGE, Page.APPS, Page.BATTERY,
         Page.PRIVACY_INSPECTOR, Page.APPS_REVIEW, Page.STORAGE_BREAKDOWN,
-        Page.BATTERY_DIAGNOSTICS, Page.AI_RECOMMENDATIONS -> Page.TOOLS
+        Page.BATTERY_DIAGNOSTICS, Page.AI_RECOMMENDATIONS, Page.LARGE_FILES -> Page.TOOLS
         Page.REPORT_DETAIL -> Page.REPORTS
         else -> null
     }

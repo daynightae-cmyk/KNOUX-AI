@@ -6,11 +6,13 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.view.WindowManager
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -308,7 +310,6 @@ internal fun RealPrivacyScreen(page: Page) {
     }
 
     Column(Modifier.fillMaxSize()) {
-        NeonHero(Mark.SHIELD, motion, Modifier.padding(top = 4.dp, bottom = 6.dp))
         MasterTitle(
             Copy(R.string.k_privacy_2), Copy(R.string.k_sweep),
             Copy(R.string.k_real_android_state_for_this_app_knoux_cannot_read_anothe),
@@ -428,74 +429,78 @@ private fun statusLabel(row: PrivacyObservation): Copy = when (row.status) {
 @Composable
 private fun PrivacyScoreCard(state: PrivacyState) {
     val measured = state.measured
-    GlassPanel(Modifier.fillMaxWidth(), tint = Pink) {
-        Column(Modifier.fillMaxWidth().padding(13.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            if (measured) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
+    // The controller reports `null` when no check could be scored. Never draw
+    // that as a zero, and never print it as text.
+    val score = state.summary.score
+    val scored = measured && score != null
+    val tint = if (scored) Nx.cyan else Nx.muted
+    NxCard(radius = 20) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            NxTile(Mark.SHIELD, if (scored) Nx.violet else Nx.faint, size = 52, glyph = 25)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Label(
+                    Copy(R.string.k_knoux_privacy_posture_measured_checks_only),
+                    11, Nx.muted, maxLines = 2,
+                )
+                if (scored) {
+                    Row(verticalAlignment = Alignment.Bottom) {
                         Label(
-                            "${state.summary.score}",
-                            34, Pink, FontWeight.ExtraBold,
+                            "$score",
+                            30, tint, FontWeight.Bold,
                             modifier = Modifier.testTag("privacy-score"),
                         )
-                        Label(
-                            Copy(R.string.k_knoux_privacy_posture_measured_checks_only),
-                            11, Mist, maxLines = 2,
-                        )
+                        Label("/100", 12, Nx.faint, FontWeight.SemiBold,
+                            modifier = Modifier.padding(start = 3.dp, bottom = 6.dp))
                     }
-                    Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.spacedBy(1.dp)) {
-                        Label(
-                            Copy.args(R.string.privacy_scored_checks, state.summary.scoredCount, state.rows.size),
-                            11, Chalk, FontWeight.Bold, align = TextAlign.End,
-                            modifier = Modifier.testTag("privacy-scored-count"),
-                        )
-                        Label(
-                            Copy.args(
-                                R.string.privacy_attention_unmeasurable,
-                                state.summary.attentionCount,
-                                state.summary.unmeasurableCount,
-                            ),
-                            10, Mist, align = TextAlign.End,
-                        )
-                        state.capturedAt?.let { at ->
-                            Label(
-                                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(at)),
-                                9, Mist, align = TextAlign.End,
-                            )
-                        }
-                    }
-                }
-                // Localised from the counts, never the domain's English label:
-                // a customer reading Arabic must not meet a raw English sentence.
-                val line = if (state.summary.attentionCount == 0 && state.summary.scoredCount > 0) {
-                    Copy(R.string.privacy_no_attention_line)
                 } else {
-                    Copy.args(
-                        R.string.privacy_attention_line,
-                        state.summary.attentionCount,
-                        state.summary.scoredCount,
-                    )
-                }
-                Label(line, 12, Gold, modifier = Modifier.testTag("privacy-attention"))
-                Label(
-                    Copy(R.string.privacy_score_explanation),
-                    11, Mist,
-                )
-            } else {
-                // Unmeasured: a compact lockup, not a tall card with one dash
-                // floating in an empty half. The token stays visible and quiet.
-                Row(
-                    Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
                     Unmeasured(22, modifier = Modifier.testTag("privacy-score"))
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Label(Copy(R.string.k_privacy_score), 14, Chalk, FontWeight.Bold)
-                        Label(Copy(R.string.privacy_measure_hint), 12, Mist)
-                    }
                 }
             }
+        }
+        if (measured) {
+            Spacer(Modifier.height(9.dp))
+            val sweep = score?.let { it / 100f }
+            if (sweep != null) {
+                NxBar(sweep, tint = tint, tint2 = Nx.violet)
+            } else {
+                Label(Copy(R.string.k_not_measurable), 11, Nx.muted, maxLines = 2)
+            }
+            Spacer(Modifier.height(9.dp))
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                NxBadge(
+                    Copy.args(R.string.privacy_scored_checks, state.summary.scoredCount, state.rows.size),
+                    Nx.cyan,
+                )
+                state.capturedAt?.let { at ->
+                    Label(
+                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(at)),
+                        10, Nx.faint, maxLines = 1,
+                    )
+                }
+            }
+            Spacer(Modifier.height(7.dp))
+            // Localised from the counts, never the domain's English label.
+            val line = if (state.summary.attentionCount == 0 && state.summary.scoredCount > 0) {
+                Copy(R.string.privacy_no_attention_line)
+            } else {
+                Copy.args(
+                    R.string.privacy_attention_line,
+                    state.summary.attentionCount,
+                    state.summary.scoredCount,
+                )
+            }
+            Label(line, 12, Nx.amber, maxLines = 2, modifier = Modifier.testTag("privacy-attention"))
+            Spacer(Modifier.height(3.dp))
+            Label(Copy(R.string.privacy_score_explanation), 11, Nx.muted, maxLines = 4)
+        } else {
+            Spacer(Modifier.height(8.dp))
+            Label(Copy(R.string.k_privacy_score), 13, Nx.text, FontWeight.Bold)
+            Label(Copy(R.string.privacy_measure_hint), 11, Nx.muted, maxLines = 3)
         }
     }
 }
@@ -520,37 +525,54 @@ private fun PrivacyRowCard(
     onOpenOsScreen: () -> Unit,
 ) {
     val tint = severityTint(row.severity)
-    GlassPanel(Modifier.fillMaxWidth().testTag("privacy-check-${row.check.tag()}"), tint = tint) {
-        Column(Modifier.fillMaxWidth().padding(11.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                IconBadge(if (row.status == PrivacyStatus.UNMEASURABLE) Mark.EYE else Mark.SHIELD, tint, diameter = 28)
-                Column(Modifier.weight(1f).padding(start = 8.dp)) {
-                    Label(checkTitle(row.check), 13, Chalk, FontWeight.ExtraBold)
-                    Label(row.observed, 10, tint)
+    NxCard(
+        Modifier.fillMaxWidth().testTag("privacy-check-${row.check.tag()}"),
+        radius = 16, glow = tint,
+    ) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            NxTile(if (row.status == PrivacyStatus.UNMEASURABLE) Mark.EYE else Mark.SHIELD,
+                tint, size = 38, glyph = 19)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
+                Label(checkTitle(row.check), 13, Nx.text, FontWeight.Bold, maxLines = 1)
+                if (row.observed.isNotBlank()) {
+                    Label(row.observed, 10, Nx.faint, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
-                Pill(statusLabel(row), tint)
             }
-            // The measured observation stays verbatim: it is Android's own fact,
-            // not prose. It is set as a technical note so the Arabic title and
-            // status remain the content of the card.
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-                Label(row.detail, 10, Mist, align = TextAlign.Start, maxLines = 3,
-                    overflow = TextOverflow.Ellipsis)
+            NxBadge(statusLabel(row), tint)
+        }
+        if (row.detail.isNotBlank()) {
+            // Android's own observation stays verbatim in a technical note.
+            Box(
+                Modifier.fillMaxWidth().padding(top = 9.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(Nx.inkDeep.copy(alpha = .62f))
+                    .border(1.dp, Nx.border.copy(alpha = .70f), RoundedCornerShape(10.dp))
+                    .padding(horizontal = 9.dp, vertical = 7.dp),
+            ) {
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+                    Label(row.detail, 11, Nx.muted, align = TextAlign.Start, maxLines = 3,
+                        overflow = TextOverflow.Ellipsis)
+                }
             }
-            when (row.remedy) {
-                PrivacyRemedy.OS_SCREEN -> AccentButton(
+        }
+        when (row.remedy) {
+            PrivacyRemedy.OS_SCREEN -> {
+                Spacer(Modifier.height(8.dp))
+                AccentButton(
                     Action(Copy(R.string.k_open_android_settings), Mark.GEAR),
                     Modifier.fillMaxWidth(), primary = false, enabled = enabled,
                     tag = "privacy-action-${row.check.tag()}", onClick = onOpenOsScreen,
                 )
-                PrivacyRemedy.APP_SETTING -> Label(
-                    Copy(R.string.k_controls_below_in_screenshot_protection),
-                    9, Cyan,
-                )
-                PrivacyRemedy.NONE, PrivacyRemedy.NOT_POSSIBLE -> Label(
-                    Copy(R.string.k_no_action_inside_knoux), 9, Mist,
-                )
             }
+            PrivacyRemedy.APP_SETTING -> Label(
+                Copy(R.string.k_controls_below_in_screenshot_protection),
+                11, Nx.cyan, maxLines = 2, modifier = Modifier.padding(top = 6.dp),
+            )
+            PrivacyRemedy.NONE, PrivacyRemedy.NOT_POSSIBLE -> Label(
+                Copy(R.string.k_no_action_inside_knoux), 11, Nx.muted, maxLines = 2,
+                modifier = Modifier.padding(top = 6.dp),
+            )
         }
     }
 }

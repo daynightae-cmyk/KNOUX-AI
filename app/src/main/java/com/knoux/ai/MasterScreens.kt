@@ -74,47 +74,9 @@ import kotlinx.coroutines.withContext
 /** Two-tone title used by every master screen (white lead, signature accent). */
 @Composable
 internal fun MasterTitle(lead: Copy, accent: Copy, subtitle: Copy, tag: String) {
-    val roomy = LocalRoomy.current
-    Column(
-        Modifier.fillMaxWidth().padding(horizontal = 6.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        val styled = buildAnnotatedString {
-            withStyle(SpanStyle(color = KnouxColors.textPrimary)) { append(lead.localized()) }
-            withStyle(
-                SpanStyle(
-                    brush = Brush.horizontalGradient(
-                        listOf(Brand.magenta, Brand.violet, Brand.cyan),
-                    ),
-                )
-            ) {
-                append(" ")
-                append(accent.localized())
-            }
-        }
-        Text(
-            styled,
-            Modifier.fillMaxWidth().testTag(tag),
-            style = TextStyle(
-                fontSize = (if (roomy) 22 else 26).sp,
-                lineHeight = (if (roomy) 28 else 33).sp,
-                fontFamily = DisplayFace,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                letterSpacing = (-0.2).sp,
-            ),
-        )
-        // The house flourish: a tapered signature line under every title.
-        Box(
-            Modifier.padding(top = 6.dp).width(if (roomy) 38.dp else 52.dp).height(2.dp)
-                .clip(RoundedCornerShape(50))
-                .background(Brush.horizontalGradient(Brand.signature)),
-        )
-        Label(
-            subtitle, 13, KnouxColors.textSecondary,
-            modifier = Modifier.fillMaxWidth().padding(top = 5.dp), align = TextAlign.Center,
-        )
-    }
+    // Reading-start alignment responds to RTL; the rule, title and accent follow
+    // the reference header instead of a promotional headline.
+    NxHeader(lead, subtitle, accent = accent, tag = tag)
 }
 
 /** The measured-state chip a real service shows under its title. */
@@ -155,27 +117,18 @@ internal fun StateNote(text: Copy, modifier: Modifier = Modifier) {
     }
 }
 
-/** Big rounded glass card used for the few main cards of a master screen. */@Composable
+/** Big rounded card used for the few main cards of a master screen. */@Composable
 internal fun MasterCard(
     modifier: Modifier = Modifier, radius: Int = 22, tint: Color? = null,
     content: @Composable androidx.compose.foundation.layout.ColumnScope.() -> Unit,
 ) {
-    Box(modifier.clip(RoundedCornerShape(radius.dp)).glass(radius, tint = tint)) {
-        Column(Modifier.fillMaxWidth().padding(12.dp), content = content)
-    }
+    NxCard(modifier, radius = radius, glow = tint ?: Nx.violet, padding = 12.dp, content = content)
 }
 
-/** Circular service icon with one soft bloom. */
+/** Service tile: the visual key the eye uses to recognise a service. */
 @Composable
 internal fun MasterIcon(mark: Mark, tint: Color, diameter: Int = 44) {
-    Box(
-        Modifier.size(diameter.dp).clip(RoundedCornerShape(diameter.dp / 2))
-            .background(Brush.radialGradient(listOf(tint.copy(alpha = .45f), KnouxColors.surfaceVariant)))
-            .padding(diameter.dp * .22f),
-        contentAlignment = Alignment.Center,
-    ) {
-        Glyph(mark, Modifier.fillMaxSize(), if (tint == KnouxColors.primary) KnouxColors.textPrimary else tint)
-    }
+    NxTile(mark, tint, size = diameter, glyph = (diameter * .54f).toInt().coerceAtLeast(14))
 }
 
 // ---------------------------------------------------------------------------
@@ -261,89 +214,143 @@ private fun readHubMeasures(): List<HubMeasure> {
 
 @Composable
 internal fun SmartHubScreen(open: (Page) -> Unit) {
-    val motion = LocalPreviewMotion.current
     val measures = readHubMeasures()
+    val cards = listOf(
+        HubCardSpec(Copy(R.string.k_smart_clean), Copy(R.string.home_card_clean_body),
+            Mark.TRASH, KnouxColors.primary, "open-clean-center", Page.CLEAN, 0, Copy(R.string.k_review)),
+        HubCardSpec(Copy(R.string.k_duplicate_files), Copy(R.string.home_card_duplicates_body),
+            Mark.COPY, KnouxColors.accent, "hub-duplicates", Page.DUPLICATES, 2, Copy(R.string.k_review)),
+        HubCardSpec(Copy(R.string.k_app_residue_cleanup), Copy(R.string.home_card_residue_body),
+            Mark.LAYERS, KnouxColors.primary, "hub-residue", Page.RESIDUE, 1, Copy(R.string.k_review)),
+        HubCardSpec(Copy(R.string.k_storage_breakdown), Copy(R.string.home_card_storage_body),
+            Mark.DISK, KnouxColors.accent, "hub-storage-analyzer", Page.STORAGE_BREAKDOWN, action = Copy(R.string.k_open)),
+        HubCardSpec(Copy(R.string.k_privacy_sweep), Copy(R.string.home_card_privacy_body),
+            Mark.SHIELD, KnouxColors.warning, "hub-privacy-sweep", Page.PRIVACY_INSPECTOR, 3, Copy(R.string.k_review)),
+        HubCardSpec(Copy(R.string.k_ai_optimization), Copy(R.string.home_card_ai_body),
+            Mark.CHIP, KnouxColors.accent, "hub-ai-optimization", Page.AI_RECOMMENDATIONS, action = Copy(R.string.k_optimize)),
+        HubCardSpec(Copy(R.string.k_app_manager), Copy(R.string.home_card_apps_body),
+            Mark.GROUP, KnouxColors.primary, "hub-app-manager", Page.APPS_REVIEW, action = Copy(R.string.k_open)),
+        HubCardSpec(Copy(R.string.k_reports_insights), Copy(R.string.home_card_reports_body),
+            Mark.BARS, KnouxColors.accent, "hub-reports", Page.REPORTS, action = Copy(R.string.k_open)),
+    )
     Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        Modifier.fillMaxSize().background(NativePalette.ink).verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(11.dp),
     ) {
-        NeonHero(Mark.K, motion, Modifier.padding(top = 2.dp),
-            heightOverride = if (LocalRoomy.current) 86.dp else 96.dp)
-        MasterTitle(
-            Copy(R.string.k_smart), Copy(R.string.k_device_hub),
-            Copy(R.string.home_subtitle), "screen-home",
-        )
-        // The approved home leads with one action, then the three measured
-        // figures. Every value comes from a real pass; a dash is unknown.
-        AccentButton(
-            Action(Copy(R.string.k_start_deep_scan), Mark.RADAR),
-            Modifier.fillMaxWidth().padding(horizontal = 30.dp).padding(top = 10.dp).heightIn(min = 56.dp),
-            primary = true,
-            tag = "start-scan",
-            labelSize = 16,
-        ) { open(Page.SCAN) }
         Column(
-            Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            Modifier.fillMaxWidth().padding(horizontal = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            HubMeasureStrip(measures)
-
-            // The approved home keeps every service one tap away. Each card shows
-            // its last real measurement, or a dash until a pass has measured it.
-            val cards = listOf(
-                HubCardSpec(Copy(R.string.k_smart_clean), Copy(R.string.home_card_clean_body),
-                    Mark.TRASH, KnouxColors.primary, "open-clean-center", Page.CLEAN, 0, Copy(R.string.k_review)),
-                HubCardSpec(Copy(R.string.k_duplicate_files), Copy(R.string.home_card_duplicates_body),
-                    Mark.COPY, KnouxColors.accent, "hub-duplicates", Page.DUPLICATES, 2, Copy(R.string.k_review)),
-                HubCardSpec(Copy(R.string.k_app_residue_cleanup), Copy(R.string.home_card_residue_body),
-                    Mark.LAYERS, KnouxColors.primary, "hub-residue", Page.RESIDUE, 1, Copy(R.string.k_review)),
-                HubCardSpec(Copy(R.string.k_storage_breakdown), Copy(R.string.home_card_storage_body),
-                    Mark.DISK, KnouxColors.accent, "hub-storage-analyzer", Page.STORAGE_BREAKDOWN, action = Copy(R.string.k_open)),
-                HubCardSpec(Copy(R.string.k_privacy_sweep), Copy(R.string.home_card_privacy_body),
-                    Mark.SHIELD, KnouxColors.warning, "hub-privacy-sweep", Page.PRIVACY_INSPECTOR, 3, Copy(R.string.k_review)),
-                HubCardSpec(Copy(R.string.k_ai_optimization), Copy(R.string.home_card_ai_body),
-                    Mark.CHIP, KnouxColors.accent, "hub-ai-optimization", Page.AI_RECOMMENDATIONS, action = Copy(R.string.k_optimize)),
-                HubCardSpec(Copy(R.string.k_app_manager), Copy(R.string.home_card_apps_body),
-                    Mark.GROUP, KnouxColors.primary, "hub-app-manager", Page.APPS_REVIEW, action = Copy(R.string.k_open)),
-                HubCardSpec(Copy(R.string.k_reports_insights), Copy(R.string.home_card_reports_body),
-                    Mark.BARS, KnouxColors.accent, "hub-reports", Page.REPORTS, action = Copy(R.string.k_open)),
-            )
+            MasterTitle(Copy(R.string.k_smart), Copy(R.string.k_device_hub),
+                Copy(R.string.home_subtitle), "screen-home")
+            NativeHomeSummary(measures)
+            NativeScanAction("start-scan") { open(Page.SCAN) }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                NativeHubSegment(Copy(R.string.k_smart_clean), Modifier.weight(1f), true) { open(Page.CLEAN) }
+                NativeHubSegment(Copy(R.string.k_device), Modifier.weight(1f), false) { open(Page.TOOLS) }
+                NativeHubSegment(Copy(R.string.k_reports_2), Modifier.weight(1f), false) { open(Page.REPORTS) }
+            }
             val singleColumn = LocalRoomy.current || LocalDensity.current.fontScale > 1.24f
             if (singleColumn) {
                 cards.forEach { spec -> HubCardFor(spec, measures, open) }
             } else {
                 cards.chunked(2).forEach { pair ->
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         pair.forEach { spec ->
                             Box(Modifier.weight(1f)) { HubCardFor(spec, measures, open) }
                         }
                     }
                 }
             }
+            Row(Modifier.fillMaxWidth().padding(top = 2.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                QuickAction(Modifier.weight(1f), Copy(R.string.quick_clean), Mark.BROOM,
+                    NativePalette.blue, "quick-clean") { open(Page.CLEAN) }
+                QuickAction(Modifier.weight(1f), Copy(R.string.k_save_battery), Mark.BATTERY,
+                    NativePalette.cyan, "quick-battery") { open(Page.BATTERY_DIAGNOSTICS) }
+                QuickAction(Modifier.weight(1f), Copy(R.string.k_secure_device), Mark.SHIELD,
+                    NativePalette.blue, "quick-privacy") { open(Page.PRIVACY_INSPECTOR) }
+            }
+            StateNote(Copy(R.string.home_measured_source))
+            Spacer(Modifier.height(16.dp))
+        }
+    }
+}
 
-            SurfaceCard {
-                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Label(Copy(R.string.k_quick_actions), 15, KnouxColors.textPrimary, FontWeight.Bold)
-                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        QuickAction(Modifier.weight(1f), Copy(R.string.quick_clean), Mark.BROOM,
-                            KnouxColors.primary, "quick-clean") { open(Page.CLEAN) }
-                        QuickAction(Modifier.weight(1f), Copy(R.string.k_save_battery), Mark.BATTERY,
-                            KnouxColors.accent, "quick-battery") { open(Page.BATTERY_DIAGNOSTICS) }
-                        QuickAction(Modifier.weight(1f), Copy(R.string.k_secure_device), Mark.SHIELD,
-                            KnouxColors.primary, "quick-privacy") { open(Page.PRIVACY_INSPECTOR) }
-                    }
+/** Real main reading: the measured cleanable volume, then two live observations. */
+@Composable
+private fun NativeHomeSummary(measures: List<HubMeasure>) {
+    val leading = measures.first()
+    NxCard(radius = 20, glow = Nx.violet, glow2 = Nx.cyan) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            NxTile(Mark.RADAR, Nx.violet, size = 54, glyph = 26)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Label(Copy(R.string.home_clean_potential), 12, Nx.muted, maxLines = 2)
+                if (leading.measured) {
+                    Label(leading.value.localized(), 28, Nx.cyan, FontWeight.Bold, maxLines = 1)
+                } else {
+                    Unmeasured(20)
                 }
             }
-
-            StateNote(Copy(R.string.home_measured_source))
-            // The maker's mark closes the hub: the same smile that signs the logo.
-            KnouxSignature(
-                width = if (LocalRoomy.current) 84 else 104,
-                height = if (LocalRoomy.current) 16 else 20,
-                modifier = Modifier.padding(top = 2.dp).alpha(.55f),
+            NxBadge(
+                if (leading.measured) Copy(R.string.state_success) else Copy(R.string.state_not_measured),
+                if (leading.measured) Nx.green else Nx.faint,
             )
-            Spacer(Modifier.height(26.dp))
         }
+        Spacer(Modifier.height(12.dp))
+        Box(Modifier.fillMaxWidth().height(1.dp)
+            .background(Brush.horizontalGradient(listOf(Color.Transparent, Nx.borderLit.copy(alpha = .55f), Color.Transparent))))
+        Spacer(Modifier.height(10.dp))
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+            measures.drop(1).take(2).forEach { metric ->
+                Column(
+                    Modifier.weight(1f).clip(RoundedCornerShape(14.dp))
+                        .background(Nx.inkDeep.copy(alpha = .55f))
+                        .border(1.dp, Nx.border.copy(alpha = .75f), RoundedCornerShape(14.dp))
+                        .padding(horizontal = 10.dp, vertical = 9.dp),
+                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                        Glyph(metric.mark, Modifier.size(15.dp), metric.tint)
+                        Label(metric.label, 11, Nx.muted, maxLines = 2)
+                    }
+                    if (metric.measured) {
+                        Label(metric.value, 15, Nx.text, FontWeight.Bold, maxLines = 1)
+                    } else Unmeasured(13)
+                }
+            }
+        }
+    }
+}
+
+/** Real Deep Scan route; no ornamental inert button. */
+@Composable
+private fun NativeScanAction(tag: String, onClick: () -> Unit) {
+    NxPrimary(Copy(R.string.k_start_deep_scan), Modifier.fillMaxWidth(), Mark.RADAR, tag = tag, onClick = onClick)
+}
+
+@Composable
+private fun NativeHubSegment(title: Copy, modifier: Modifier, selected: Boolean, onClick: () -> Unit) {
+    val shape = RoundedCornerShape(21.dp)
+    Box(
+        modifier.heightIn(min = 48.dp).clip(shape)
+            .background(
+                if (selected) Brush.horizontalGradient(listOf(Nx.blueDeep, Nx.blue, Nx.cyan))
+                else Brush.verticalGradient(listOf(Nx.cardTop, Nx.cardBottom)),
+            )
+            .border(
+                1.dp,
+                if (selected) Color.White.copy(alpha = .42f) else Nx.border,
+                shape,
+            )
+            .clickable(role = Role.Button, onClick = onClick),
+        contentAlignment = Alignment.Center,
+    ) {
+        Label(title, 12, if (selected) Color.White else Nx.muted,
+            FontWeight.Bold, align = TextAlign.Center, maxLines = 1)
     }
 }
 
@@ -434,7 +441,6 @@ internal fun DeviceToolsScreen(open: (Page) -> Unit) {
     val motion = LocalPreviewMotion.current
     var showPro by remember { mutableStateOf(true) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        NeonHero(Page.TOOLS.hero, motion, Modifier.padding(top = 4.dp), heightOverride = 92.dp)
         MasterTitle(Copy(R.string.k_device), Copy(R.string.k_tools_2), Copy(R.string.tools_subtitle), "screen-tools")
         Column(
             Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
@@ -489,7 +495,7 @@ private fun ServiceRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            WorldCrest(world, 40)
+            NxTile(mark, world.primary, size = 44, glyph = 22)
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Label(title, 14, KnouxColors.textPrimary, FontWeight.SemiBold, modifier = Modifier.testTag(tag))
                 Label(copy, 12, KnouxColors.textSecondary, maxLines = 2)
@@ -527,52 +533,60 @@ private fun ProLine(onDismiss: () -> Unit) {
 
 @Composable
 internal fun ReportsScreen(open: (Page) -> Unit) {
-    val motion = LocalPreviewMotion.current
     val arabic = LocalArabic.current
     var measured by remember { mutableStateOf<Copy?>(null) }
-    // Real Room history only. No fixture, no synthetic trend.
+    // This flow reads real Room operations, never design fixture statistics.
     val history by remember { KnouxData.smartClean.observeHistory() }
         .collectAsState(initial = emptyList())
     LaunchedEffect(Unit) {
         measured = withContext(Dispatchers.IO) {
             runCatching { KnouxData.smartClean.latestScan() }.getOrNull()
         }?.let {
-            Copy.args(R.string.reports_last_clean, KnouxFormat.bytes(it.candidates.sumOf { c -> c.bytes }))
+            Copy.runtime(KnouxFormat.bytes(it.candidates.sumOf { c -> c.bytes }))
         }
     }
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-        NeonHero(Mark.BARS, motion, Modifier.padding(top = 4.dp), heightOverride = 88.dp)
-        MasterTitle(Copy(R.string.k_reports_2), Copy(R.string.k_insights), Copy(R.string.reports_subtitle), "screen-reports")
+    val completed = history.filter {
+        (it.status == OperationStatus.SUCCEEDED || it.status == OperationStatus.PARTIAL) && it.bytes > 0L
+    }
+    Column(
+        Modifier.fillMaxSize().background(NativePalette.ink).verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
         Column(
-            Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            Modifier.fillMaxWidth().padding(horizontal = 14.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            val last = measured
-            val hasHistory = history.any {
-                (it.status == OperationStatus.SUCCEEDED || it.status == OperationStatus.PARTIAL) && it.bytes > 0L
-            }
-            if (last == null && !hasHistory) {
-                // One honest empty state instead of two identical "Empty" cards.
-                ReportsEmptyPanel { open(Page.SCAN) }
-            } else {
-                last?.let { value ->
-                    SurfaceCard {
-                        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Label(Copy(R.string.reports_last_clean_title), 15, KnouxColors.textPrimary, FontWeight.Bold)
-                            Label(value, 14, KnouxColors.accent, FontWeight.SemiBold)
+            MasterTitle(Copy(R.string.k_reports_2), Copy(R.string.k_insights),
+                Copy(R.string.reports_subtitle), "screen-reports")
+            NxCard(radius = 20) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    NxTile(Mark.BARS, Nx.violet, size = 50, glyph = 24)
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Label(Copy(R.string.reports_last_clean_title), 12, Nx.muted, maxLines = 2)
+                        if (measured != null) {
+                            Label(measured!!, 24, Nx.cyan, FontWeight.Bold)
+                        } else {
+                            Unmeasured(18)
                         }
                     }
                 }
+                Spacer(Modifier.height(10.dp))
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    NxBadge(Copy(R.string.state_success), Nx.green)
+                    Label(completed.size.toString(), 13, Nx.text, FontWeight.Bold)
+                    Label(Copy(R.string.reports_chart_title), 12, Nx.muted, maxLines = 2)
+                }
+            }
+            if (completed.isEmpty()) {
+                ReportsEmptyPanel { open(Page.SCAN) }
+            } else {
                 CleanupHistoryChart(history, arabic)
             }
             StateNote(Copy(R.string.reports_honesty))
-            Label(Copy(R.string.reports_chart_note), 11, KnouxColors.textSecondary)
-            // Nothing has ever been recorded, so the space below the panel is
-            // unmeasured scope — drawn as weather, carrying no number at all.
-            if (!hasHistory) {
-                WorldFog(World.PRISM, Modifier.fillMaxWidth().height(150.dp))
-            }
-            Spacer(Modifier.height(16.dp))
+            Label(Copy(R.string.reports_chart_note), 12, NativePalette.muted)
+            Spacer(Modifier.height(18.dp))
         }
     }
 }
@@ -586,43 +600,18 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
 private fun ReportsEmptyPanel(onScan: () -> Unit) {
     SurfaceCard {
         Column(
-            Modifier.fillMaxWidth().padding(16.dp),
+            Modifier.fillMaxWidth().padding(18.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            Row(
-                Modifier.fillMaxWidth().height(58.dp),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-            ) {
-                listOf(16, 34, 24, 42).forEachIndexed { index, bar ->
-                    // Silhouette only: an outline says "this is where a bar would
-                    // stand", a filled block would look like a measured value.
-                    Box(
-                        Modifier.width(26.dp).height(bar.dp)
-                            .clip(RoundedCornerShape(50))
-                            .background(World.PRISM.primary.copy(alpha = .05f))
-                            .border(
-                                1.2.dp,
-                                Brush.verticalGradient(
-                                    listOf(
-                                        World.PRISM.primary.copy(alpha = .44f - index * .06f),
-                                        World.PRISM.secondary.copy(alpha = .10f),
-                                    )
-                                ),
-                                RoundedCornerShape(50),
-                            )
-                    )
-                }
-            }
-            Label(Copy(R.string.reports_no_passes_title), 15, KnouxColors.textPrimary,
+            // An empty chart stays empty. Outlined sample bars can be mistaken
+            // for observations, so no graph is painted until Room has records.
+            Glyph(Mark.BARS, Modifier.size(32.dp), NativePalette.muted)
+            Label(Copy(R.string.reports_no_passes_title), 15, NativePalette.text,
                 FontWeight.Bold, align = TextAlign.Center)
-            Label(Copy(R.string.reports_empty_body), 12, KnouxColors.textSecondary,
+            Label(Copy(R.string.reports_empty_body), 12, NativePalette.muted,
                 align = TextAlign.Center)
-            AccentButton(
-                Action(Copy(R.string.k_start_deep_scan), Mark.RADAR),
-                Modifier.fillMaxWidth(), primary = true, tag = "reports-start-scan",
-            ) { onScan() }
+            NativeScanAction("reports-start-scan", onScan)
         }
     }
 }
@@ -637,7 +626,7 @@ private fun CleanupHistoryChart(history: List<CleanupHistory>, arabic: Boolean) 
     val operations = history
         .filter { it.status == OperationStatus.SUCCEEDED || it.status == OperationStatus.PARTIAL }
         .filter { it.bytes > 0L }
-        .take(4)
+        .take(7)
         .reversed()
     if (operations.isEmpty()) {
         StateBlock(UiState.EMPTY, Copy(R.string.reports_chart_empty))
@@ -646,76 +635,65 @@ private fun CleanupHistoryChart(history: List<CleanupHistory>, arabic: Boolean) 
     val maxBytes = operations.maxOf { it.bytes }.coerceAtLeast(1L)
     val formatter = remember(arabic) { DateFormat.getDateInstance(DateFormat.SHORT, Locale.US) }
     SurfaceCard {
-        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Label(Copy(R.string.reports_chart_title), 15, KnouxColors.textPrimary, FontWeight.Bold)
-            Box(Modifier.fillMaxWidth().heightIn(min = 112.dp)) {
-                Column(Modifier.matchParentSize(), verticalArrangement = Arrangement.SpaceBetween) {
-                    repeat(3) {
-                        Box(Modifier.fillMaxWidth().height(1.dp)
-                            .background(KnouxColors.textSecondary.copy(alpha = .18f)))
-                    }
+        Column(
+            Modifier.fillMaxWidth().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(13.dp),
+        ) {
+            Label(Copy(R.string.reports_chart_title), 15, NativePalette.text, FontWeight.Bold)
+            androidx.compose.foundation.Canvas(Modifier.fillMaxWidth().height(220.dp)) {
+                val left = 16.dp.toPx()
+                val right = size.width - 16.dp.toPx()
+                val top = 22.dp.toPx()
+                val bottom = size.height - 22.dp.toPx()
+                val chartHeight = bottom - top
+                repeat(4) { idx ->
+                    val y = top + chartHeight * idx / 3f
+                    drawLine(NativePalette.border.copy(alpha = .85f),
+                        Offset(left, y), Offset(right, y), 1.dp.toPx())
                 }
-                Row(
-                    Modifier.fillMaxWidth().heightIn(min = 132.dp),
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    operations.forEach { operation ->
-                        val ratio = (operation.bytes.toDouble() / maxBytes).coerceIn(0.0, 1.0)
-                        // Honest geometry: height is the measured ratio, never a slope.
-                        // A tiny measured value still gets a visible stub so "small"
-                        // can never be confused with "nothing was recorded".
-                        val barHeight = (ratio * 84.0).coerceAtLeast(7.0).dp
-                        val date = formatter.format(Date(operation.completedAtMillis))
-                        val description = Copy.args(
-                            R.string.reports_chart_bar,
-                            KnouxFormat.bytes(operation.bytes), date,
-                        ).localized()
-                        Column(
-                            Modifier.weight(1f),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Bottom,
-                        ) {
-                            Label(KnouxFormat.bytes(operation.bytes), 11,
-                                World.PRISM.primary.copy(alpha = .92f), FontWeight.Bold, maxLines = 1)
-                            Spacer(Modifier.height(5.dp))
-                            // A slender prism column: neon body, bright cap.
-                            Box(
-                                Modifier.width(34.dp).height(barHeight)
-                                    .clip(RoundedCornerShape(50))
-                                    .background(
-                                        Brush.verticalGradient(
-                                            listOf(
-                                                World.PRISM.primary,
-                                                World.MIRROR.primary.copy(alpha = .95f),
-                                                World.PRISM.secondary.copy(alpha = .85f),
-                                            )
-                                        )
-                                    )
-                                    .drawBehind {
-                                        // Lit cap: the bar always reads as measured height.
-                                        drawRoundRect(
-                                            Color.White.copy(alpha = .85f),
-                                            topLeft = Offset(0f, 0f),
-                                            size = Size(size.width, 2.2.dp.toPx()),
-                                            cornerRadius = CornerRadius(size.width / 2f),
-                                        )
-                                    }
-                                    .semantics { contentDescription = description }
-                            )
-                        }
+                val points = operations.mapIndexed { index, item ->
+                    val x = if (operations.size == 1) (left + right) / 2f
+                        else left + (right - left) * index / (operations.size - 1).toFloat()
+                    val y = bottom - (item.bytes.toDouble() / maxBytes).toFloat()
+                        .coerceIn(0f, 1f) * chartHeight
+                    Offset(x, y)
+                }
+                if (points.size > 1) {
+                    val area = androidx.compose.ui.graphics.Path().apply {
+                        moveTo(points.first().x, bottom)
+                        points.forEach { lineTo(it.x, it.y) }
+                        lineTo(points.last().x, bottom)
+                        close()
                     }
+                    drawPath(area, Brush.verticalGradient(
+                        listOf(NativePalette.blue.copy(alpha = .33f),
+                            NativePalette.blue.copy(alpha = .02f)),
+                        startY = top, endY = bottom))
+                    val line = androidx.compose.ui.graphics.Path().apply {
+                        moveTo(points.first().x, points.first().y)
+                        points.drop(1).forEach { lineTo(it.x, it.y) }
+                    }
+                    drawPath(line, NativePalette.cyan,
+                        style = androidx.compose.ui.graphics.drawscope.Stroke(
+                            width = 3.dp.toPx()))
+                }
+                points.forEach { point ->
+                    drawCircle(NativePalette.blue, 6.dp.toPx(), point)
+                    drawCircle(NativePalette.text, 2.5.dp.toPx(), point)
                 }
             }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                 operations.forEach { operation ->
-                    Label(
-                        formatter.format(Date(operation.completedAtMillis)), 11,
-                        KnouxColors.textSecondary,
-                        modifier = Modifier.weight(1f), align = TextAlign.Center, maxLines = 1,
-                    )
+                    Column(Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        Label(KnouxFormat.bytes(operation.bytes), 11, NativePalette.cyan,
+                            FontWeight.Bold, maxLines = 1)
+                        Label(formatter.format(Date(operation.completedAtMillis)), 11,
+                            NativePalette.muted, maxLines = 1)
+                    }
                 }
             }
         }
     }
 }
+

@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -233,26 +235,39 @@ internal fun RealDeepScanScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column {
-                Label(
-                    text = Copy(R.string.k_deep_scan),
-                    size = 22,
-                    tint = Chalk,
-                    weight = FontWeight.ExtraBold,
+            Row(
+                Modifier.weight(1f).testTag("screen-deep-scan"),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                // Same lit rule as every other headline, on the reading edge.
+                Box(
+                    Modifier.width(3.dp).height(24.dp).clip(RoundedCornerShape(50))
+                        .background(Brush.verticalGradient(listOf(Nx.magenta, Nx.violet, Nx.cyan))),
                 )
-                Label(
-                    text = when {
-                        running -> Copy(R.string.k_scanning_granted_scopes)
-                        outcome == null -> Copy(R.string.k_nothing_measured_yet)
-                        outcome?.status == DeepScanStatus.COMPLETE -> Copy(R.string.k_measured_on_this_device)
-                        outcome?.status == DeepScanStatus.PARTIAL -> Copy(R.string.k_partly_measured)
-                        outcome?.status == DeepScanStatus.UNAVAILABLE -> Copy(R.string.k_no_scope_could_be_read)
-                        outcome?.status == DeepScanStatus.CANCELLED -> Copy(R.string.k_stopped_nothing_removed)
-                        else -> Copy(R.string.k_measurement_failed)
-                    },
-                    size = 11,
-                    tint = Mist,
-                )
+                Column(Modifier.weight(1f)) {
+                    Label(
+                        text = Copy(R.string.k_deep_scan),
+                        size = 21,
+                        tint = Nx.text,
+                        weight = FontWeight.Bold,
+                        maxLines = 1,
+                    )
+                    Label(
+                        text = when {
+                            running -> Copy(R.string.k_scanning_granted_scopes)
+                            outcome == null -> Copy(R.string.k_nothing_measured_yet)
+                            outcome?.status == DeepScanStatus.COMPLETE -> Copy(R.string.k_measured_on_this_device)
+                            outcome?.status == DeepScanStatus.PARTIAL -> Copy(R.string.k_partly_measured)
+                            outcome?.status == DeepScanStatus.UNAVAILABLE -> Copy(R.string.k_no_scope_could_be_read)
+                            outcome?.status == DeepScanStatus.CANCELLED -> Copy(R.string.k_stopped_nothing_removed)
+                            else -> Copy(R.string.k_measurement_failed)
+                        },
+                        size = 11,
+                        tint = Nx.muted,
+                        maxLines = 2,
+                    )
+                }
             }
             Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
                 val measured = frame.facets.count { it.state == FacetState.MEASURED || it.state == FacetState.THIN }
@@ -260,19 +275,21 @@ internal fun RealDeepScanScreen(
                 Box(
                     Modifier
                         .clip(RoundedCornerShape(20.dp))
-                        .background(Cyan.copy(alpha = 0.12f))
+                        .background(Nx.cyan.copy(alpha = 0.12f))
+                        .border(1.dp, Nx.cyan.copy(alpha = .40f), RoundedCornerShape(20.dp))
                         .padding(horizontal = 10.dp, vertical = 4.dp)
                 ) {
-                    Label("$measured/${frame.facets.size}", 11, Cyan, FontWeight.Bold)
+                    Label("$measured/${frame.facets.size}", 11, Nx.cyan, FontWeight.Bold)
                 }
                 if (fogged > 0) {
                     Box(
                         Modifier
                             .clip(RoundedCornerShape(20.dp))
-                            .background(Gold.copy(alpha = 0.12f))
+                            .background(Nx.amber.copy(alpha = 0.12f))
+                            .border(1.dp, Nx.amber.copy(alpha = .40f), RoundedCornerShape(20.dp))
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
-                        Label("$fogged ✕", 11, Gold, FontWeight.Bold)
+                        Label("$fogged ✕", 11, Nx.amber, FontWeight.Bold)
                     }
                 }
             }
