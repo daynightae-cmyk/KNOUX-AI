@@ -475,6 +475,14 @@ private fun KnouxAppScaffold(
                                     Page.PRIVACY_INSPECTOR -> RealPrivacyScreen(target)
                                     // PC05 - real deep scan with Abyss Sonar instrument.
                                     Page.SCAN, Page.SCAN_SUMMARY -> RealDeepScanScreen(open)
+                                    // Battery and storage are measured from the platform itself:
+                                    // level, charge state, temperature, voltage and the shared
+                                    // data partition. No permission, no estimate.
+                                    Page.BATTERY, Page.BATTERY_DIAGNOSTICS -> NativeBatteryScreen(open)
+                                    Page.STORAGE, Page.STORAGE_BREAKDOWN -> NativeStorageScreen(open)
+                                    // The inventory Android lets a normal app read. Rows open the
+                                    // system App info screen; nothing is uninstalled here.
+                                    Page.APPS, Page.APPS_REVIEW -> NativeAppsScreen(open)
                                     else -> EmptyServiceScreen(target, open)
                                 }
                             }
