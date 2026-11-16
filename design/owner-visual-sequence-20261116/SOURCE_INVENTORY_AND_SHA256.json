@@ -1,0 +1,1135 @@
+{
+  "schema": 1,
+  "date": "2026-11-16",
+  "target_repo": "daynightae-cmyk/KNOUX-AI",
+  "branch": "main",
+  "scope": "design references for KNOUX AI only, no source imported from KNOUX-AI-Pro",
+  "source": "C:/Users/day night/Downloads/New folder (3)",
+  "rar_warning": "RAR listing warned about unreadable filenames; archive identity is NOT independently verified; original files were checked directly",
+  "counts": {
+    "folder_images": 136,
+    "sha_unique": 61,
+    "exact_duplicates_excluded": 75,
+    "home_variants": 35,
+    "entry_concepts": 3,
+    "service_refs": 23
+  },
+  "bytes": {
+    "source_unique": 84499284,
+    "optimized": 18155204
+  },
+  "images": [
+    {
+      "name": "79566(2).png",
+      "size": 308721,
+      "sha": "6acd98dd5f08c28df7c43e11c9989f4e0e439223a030bd16de07a82a660146c2",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000100000001111110111011111111011001101111100101111110011100111100011101110111111011100111010110101110000011111111000001101101101101100110000110000010001011001011001001110001100000100111000000000110000000000000000000000001100001100000000110000010",
+      "copies": [
+        "79566(2) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_000.webp",
+      "webp_sha256": "cb4a00623d3505a606faa408167bfdbb2974603ba0fd862e45486e7b2887f2ea",
+      "webp_bytes": 297718,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "79580.jpg",
+      "size": 307530,
+      "sha": "e04d04cf6a3b31bb14cebe54f032ca771950114aa8c6a8a73447892413dfe4bb",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000100000001111110111011111111011001101111100101111110011100111100011101110111111011100111010110101110000011111111000001101101101101100110000110000010001011001011001001110001100000100111000000000110000000000000000000000001100001100000000110000010",
+      "copies": [
+        "80266.jpg",
+        "79580 - Copy.jpg",
+        "80266 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_001.webp",
+      "webp_sha256": "31cb699ac25e4b3dab255cd556ed4992eadf80c471e9b8022cc47c0b5ea64fb7",
+      "webp_bytes": 296420,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "79587.png",
+      "size": 307907,
+      "sha": "4fce795fec35fb50d778a7350e70679a3e28d59e4df34d88a2a43865709af3ac",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000000001001011110101011111010011001000111100101111111011100111110011100110111111011100111010110111110000011111111000001101101101101100110010010110110011011011011001001110001111001100111101001101110000000000000000000100001100001100000000110000000",
+      "copies": [
+        "79587 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_002.webp",
+      "webp_sha256": "3a5d87dbf5da921e5023237c1e7963193daffa603f89d03c9d50a7c926eeafe7",
+      "webp_bytes": 293292,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "79589(1).png",
+      "size": 307435,
+      "sha": "f58ea44264db40c3f4d66edb0405a54b45307b03693d2294bc2156ad8d9b3179",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000100000001111110111011111001001001101111100101111111011100111100001101110111111011100111010110101110000011111111000001101101101101100110010110110110011001001011001001111001111000100111101001100110000000011000000000000001100001100000000000000000",
+      "copies": [
+        "79589(1) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_003.webp",
+      "webp_sha256": "e3b33111349ae4b1d72c12827d2190e7952e463897f11e1f363218b16884b56f",
+      "webp_bytes": 293734,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "79590.png",
+      "size": 286649,
+      "sha": "8e4de9c6269489c401b81817ec640115a9eb0d5aee2d35feff7599e179350422",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000100000001111110111011111011011001101111100101111111011100011110001111110011110011000111011111101110011001110100111000000000010001000010011001100110001001100110010000100010011001100111001111100010011100011000010000000001100001100000000110000000",
+      "copies": [
+        "79590 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_004.webp",
+      "webp_sha256": "b61469fa844767819c6ef5b5bc6fae7512a72c1275dd444f2e9dfae679031ad4",
+      "webp_bytes": 269374,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "79591.png",
+      "size": 293697,
+      "sha": "ed6a5e0953641c920e243d48c6191d010c768de0daded540f4ab99c9662a4e6c",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000100000001111110101011110110111001101111100100011110011100111100001101110111111011100111010110101110000011111111000001101101101100000110110000110000011010000000001001111100110011100111111000100010000000011000000000001001100101100000000110000000",
+      "copies": [
+        "79591(1).png",
+        "79591 - Copy.png",
+        "79591(1) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_005.webp",
+      "webp_sha256": "58b7588a0a2458414e2d5ff5d5492d7f2648288026dce02a0d6673f0f96f06c6",
+      "webp_bytes": 279548,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "79750.jpg",
+      "size": 307082,
+      "sha": "0ef094f94e649b6b6a890a3e7b781566f3290f2c7cff855f2a1eb88bd6c49314",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000100000001111110111011111111011001101111100101111110011100111100011101110111111011100111010110101110000011111111000001101101101101100110000110000010001011001011001001110001100000100111000000000110000000000000000000000001100001100000000110000010",
+      "copies": [
+        "79750 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_006.webp",
+      "webp_sha256": "79d6087fb61b4b8ca823f4fe706a47405890eab91c4a1740b6bafe01e584c310",
+      "webp_bytes": 295536,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80247.jpg",
+      "size": 305628,
+      "sha": "03a11c79275dd076a0fd38240584d69d4134243cd2e7f0b4436e713ea2acf7a3",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000100000001111110111011111001001001101111100101111111011100111100001101110111111011100111010110101110000011111111000001101101101101100110010110110110011001001011001001111001111000100111101001100110000000011000000000000001100001100000000000000000",
+      "copies": [
+        "80247 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_007.webp",
+      "webp_sha256": "76f89ea57c2926c6d492e1f90671e710fc555e3e22fa8723e577acb4c95a2b8e",
+      "webp_bytes": 292214,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80255.png",
+      "size": 324731,
+      "sha": "466174f4f9a7c964e5fe231da565b5df77bfa2f4499adfcefa3d63c076d7b2aa",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000100100000010000110110100001110000000011100111100101101111011000111100111101110110111011100111111111111110000011111111000001100110011001100111011001100110011001100110010001111011101100100111101001100100000000011000000001100001100000000000000000000000",
+      "copies": [
+        "80255(1).png",
+        "80255 - Copy.png",
+        "80255(1) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_008.webp",
+      "webp_sha256": "caa039e43fb7e602773b953b0dd1d152aa3acab4b65e8b344ad87c5d63799ed2",
+      "webp_bytes": 309990,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80256.png",
+      "size": 317949,
+      "sha": "7af51366d1e5fa20cac8902bf4ba2e012e52f902f2291bdeb16598bf6020d1dc",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000000100000010000111110100101110000011011100111100101111111011001111100111101110111111101100110000110100110000011111111000000100110111101100110011001100110011101100110011001111011111101100111011000100000000000011000001000000001100001100000000000000000",
+      "copies": [
+        "80256 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_009.webp",
+      "webp_sha256": "f96b5027e27176b055d39fe73ccef8ca22f20d5080972a97bfbb26d7c98b20bb",
+      "webp_bytes": 303410,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80257.png",
+      "size": 323842,
+      "sha": "561c1116630b90a01cdb42a6bb48ed2c99a7db70b14270939f9a2b707827acdf",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000001100000000000111100000001110000001011100111100101101111011000111100111101110111111011100111000110011110000011111111000001100010011001100110011001100110001001100110010001111011111101100111101000100110000000011000000000000001100001100000000010000000",
+      "copies": [
+        "80257(1).png",
+        "80257(1) (1).png",
+        "ChatGPT Image Nov 16, 2026, 04_49_32 AM.png",
+        "80257 - Copy.png",
+        "80257(1) - Copy.png",
+        "80257(1) (1) - Copy.png",
+        "ChatGPT Image Nov 16, 2026, 04_49_32 AM - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_010.webp",
+      "webp_sha256": "7e4a9c0646d2c9b3879e0b9beeb0d42c2918e39ec6a4153b009562ef75a0990b",
+      "webp_bytes": 309814,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80258.png",
+      "size": 321854,
+      "sha": "ef5fdb0a3f331abaffadd62ee465bc6b0b2842af0bab76ad67c0b970dc86143e",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000000100000000000111100100001110001011001100111100101101111011000111100111101110111111111100111101111110110000011111111000000100110011001100010001001000110001000100110011001111011111101100111110000101110000000011000000000001001100001100000000000000000",
+      "copies": [
+        "80258 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_011.webp",
+      "webp_sha256": "415bfccf3ca4646992d8a0ec013971c91f1727ae5799cffa69678c04330af005",
+      "webp_bytes": 306230,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80259.png",
+      "size": 322742,
+      "sha": "e62e6b46d530381539ab6b9490d5fd3f7ec11a382009f722645a83750197fe3d",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000000100000000001111110000001110111111011100111100101111111011000111100111101110111111011100111000110101110000011111111000000100110111001000110001001100110011101100110010001111011111100100111111000001110000000010000000000001001100001100000000110000000",
+      "copies": [
+        "80259 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_012.webp",
+      "webp_sha256": "004570ec4370c1dca38df4472ae8300f0967a7dbaa1d9e3f2c9c5dfb1b03a6e8",
+      "webp_bytes": 309140,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80260.png",
+      "size": 320403,
+      "sha": "55b6bdd6677af67042d5318c3f8f269f8d231067e5e081ef79df632a3540e71a",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000001100000010000111110100001110000011001100111100101111111011000111100001101110111111111100111111111111110000011111111000001100110011001100110001001000110001001100110011001111011111100100111111000110010000000011000000000001001100001100000000000000000",
+      "copies": [
+        "80260 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_013.webp",
+      "webp_sha256": "b068454a21ba186ffd5faeadc00718409a55170516b3c2727c0a020cfeed610d",
+      "webp_bytes": 305632,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80265.jpg",
+      "size": 318434,
+      "sha": "82ba15f15083c2f5f3d1a618253ee1a2ed77182171f2fd52321de192bca8aa22",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000001100000010000111110100001110000011001100111100101111111011000111100001101110111111111100111111111111110000011111111000001100110011001100110001001000110001001100110011001111011111100100111111000110010000000011000000000001001100001100000000000000000",
+      "copies": [
+        "80265 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_014.webp",
+      "webp_sha256": "5422e3a957423155a23781092b15e6c1cc87c10ab9f3cab035df9b4a35523d3f",
+      "webp_bytes": 303526,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80267.jpg",
+      "size": 321095,
+      "sha": "2ec85bab4eb286e27e7b3548c484fd18fc4da849dc2a94b3201ac443db6b276b",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000000100000000001111110000001110111111011100111100101111111011000111100111101110111111011100111000110101110000011111111000000100110111001000110001001100110011101100110010001111011111100100111111000001110000000010000000000001001100001100000000110000000",
+      "copies": [
+        "80267 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_015.webp",
+      "webp_sha256": "246ae8fad0e8f5e5c40ed3728d515d1f40aaf2f77f64ff8c6b5224d47cd79ca3",
+      "webp_bytes": 307078,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80268.jpg",
+      "size": 304783,
+      "sha": "cd55a273b1afd2d5aa641e4baadb99417edb9494d943d0e2ff5f0a3920a30c56",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000110000100000001111110111011111001001001101111100101111111011100111100001101110111111011100111010110101110000011111111000001101101101101100110010110110110011001001011001001111001111000100111101001100110000000011000000000000001100001100000000000000000",
+      "copies": [
+        "80268 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_016.webp",
+      "webp_sha256": "2b463b7379737ca00c8f4c75941121927724d2e10a50c3d0b89b58d032534924",
+      "webp_bytes": 291626,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80269.jpg",
+      "size": 316018,
+      "sha": "2c49b14f05bee66d43d8e7bddd8680ece0f336e0ec3e7e3cbcd801c526e0f889",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000000100000010000111110100101110000011011100111100101111111011001111100111101110111111101100110000110100110000011111111000000100110111101100110011001100110011101100110011001111011111101100111011000100000000000011000000000000001100001100000000000000000",
+      "copies": [
+        "80269 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_017.webp",
+      "webp_sha256": "afd234092f2a474616cf9c4a803df84dd09a8bc1daacd12dcc56c1b8378d0c14",
+      "webp_bytes": 301732,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80270.jpg",
+      "size": 319824,
+      "sha": "e903ac45b4063f9d5b85a6db35ae6769556103f5e2072f66d9a54dd33606bb52",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000000100000000000111100100001110001011001100111100101101111011000111100111101110111111111100111101111110110000011111111000000100110011001100010001001000110001000100110011001111011111101100111110000101110000000011000000000001001100001100000000000000000",
+      "copies": [
+        "ChatGPT Image Nov 16, 2026, 04_49_23 AM.jpg",
+        "80270 - Copy.jpg",
+        "ChatGPT Image Nov 16, 2026, 04_49_23 AM - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_018.webp",
+      "webp_sha256": "f3ec630b04a1cef8e565412b3377191dcd952f19d491be0a599f6741b454699d",
+      "webp_bytes": 304178,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80271.jpg",
+      "size": 322485,
+      "sha": "df6b9b5d544e6d846b30c65c520cc755a651e1ade1bf3d5c04f89e6e69711007",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000000100000010000110110100001110000000011100111100101101111011000111100111101110110111011100111111111111110000011111111000001100110011001100111011001100110011001100110010001111011101100100111101001100100000000011000000001100001100000000000000000000000",
+      "copies": [
+        "80271 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_019.webp",
+      "webp_sha256": "f73410366fc87e03e150c2b421bc2d0aa3e443048e1930b50db23497cad15f30",
+      "webp_bytes": 307908,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "80272.jpg",
+      "size": 321690,
+      "sha": "66b88ab13af5bcf03de743b698424ed5933db8432454f23ec4e4150acecc4077",
+      "width": 864,
+      "height": 1536,
+      "ahash": "0000000001100000000000111100000001110000001011100111100101101111011000111100111101110111111011100111000110011110000011111111000001100010011001100110011001100110001001100110010001111011111101100111101000100110000000011000000000000001100001100000000010000000",
+      "copies": [
+        "80272 - Copy.jpg"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_020.webp",
+      "webp_sha256": "48854cfa9b1c1483b410e35bab96a7c241d2fc2b772add022b838d85ea047fff",
+      "webp_bytes": 307848,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_21 AM-1.png",
+      "size": 2045510,
+      "sha": "aa5bebf8de22c48868e802aacb6393fdeeba660657159012012c5e5e19a8756d",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000000000000001000010000001111011111011100001011110001111000100001111111100000011111111000011111111111100000111111111100000110001100011000001000110001000001100011000110001110000000000100011000010001100000000011000000000000001100001100000000110000000",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_21 AM-1 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "home_scan_visual",
+      "path": "03_service_screens/ref_021.webp",
+      "webp_sha256": "9aec439a5f7e8132fc69be0935172cca15f0fda9d7aa0c8eabc8b428227769bc",
+      "webp_bytes": 323062,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_23 AM-2.png",
+      "size": 1955112,
+      "sha": "9dd9a390523516ea05125832b08a36c758268b693ca8e6eb50e8bd19298366cc",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110100000010110011110010001111110110110000111111100001100011011110000000000001111000110100001000011010010010110101101001000011010110100100110000000111000011100000010010001110000000000000111111111111110011111111111111000000000011000000000000001100000",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_23 AM-2 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "privacy_risk",
+      "path": "03_service_screens/ref_022.webp",
+      "webp_sha256": "ff5ff6c3fb4459dea6f763f4556d300d0ffb22600721a3eae9b80de9652eaea8",
+      "webp_bytes": 290632,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_24 AM-3.png",
+      "size": 1946774,
+      "sha": "53f8122526693aa8cc352e5baf0cafe0b0393da2f1960b0d112b4b40a530b45d",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000000000011110000000000001110000000001100110000000100110010000000000010000000010111111100000000000110010110111001001111100000000000111100000000000000010000000000000001001111111111111100011111000111110000000001111111000000001111111100000000110000000",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_24 AM-3 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "duplicate_group",
+      "path": "03_service_screens/ref_023.webp",
+      "webp_sha256": "e63541d7628a5b64f0b48077ce951df584dac430707b1e5add33e20ead547f97",
+      "webp_bytes": 313696,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_25 AM-4.png",
+      "size": 2027857,
+      "sha": "27f413c9f444df08591e4064964909a2eaca8563e8a7acb89df8cb08d23c208e",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000101000100011110110000000001111000110011100110000001011111010001111001111000001001001001100110010110010010000000000001101011011000000110100101100000111010010110000011101000001100001110101101101100000000000110110000000000011001111111110000000011111111",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_25 AM-4 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "scan_results",
+      "path": "03_service_screens/ref_024.webp",
+      "webp_sha256": "abae0eaf8a1b3f9a42248546a445856a2de18a6b0574fddb1d35c041b689a954",
+      "webp_bytes": 348996,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_29 AM-5.png",
+      "size": 1946650,
+      "sha": "df7240f666d121ec2406710d953bb3550e54f9da7bc5ebb427b36f0766f9c318",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000001101000000011101111110000001111000000011100111011001011110000000000001111000000000011000100001000011111110000100001111111000010000111111100000000001111110011100001111110001111100000000100110000011111100001100011111111100000000111111100000000001100000",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_29 AM-5 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "residue_result",
+      "path": "03_service_screens/ref_025.webp",
+      "webp_sha256": "62d06c5ab48908306ef5e8d87bf4efff2a809eef5f1017b5845f7a2bdf8a7491",
+      "webp_bytes": 312578,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_30 AM-6.png",
+      "size": 1965711,
+      "sha": "10943c1a4d502df24bd984cc509870584e05006d644f619e0f19d524030ea475",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000001101000000011111100111100001101001101011100111011111101110010010000100011101100100011111100010000000110110001000000011011001100100010101100110000001111110011000000111011001101110001111100010000100010100001000001111111000110101111111100000000110000000",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_30 AM-6 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "storage_overview",
+      "path": "03_service_screens/ref_026.webp",
+      "webp_sha256": "078c3e02c1318a92a65cd725952309487f7d8b186096d49df4e9f9d67fb8735b",
+      "webp_bytes": 321630,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_31 AM-7.png",
+      "size": 1936674,
+      "sha": "2ec7cdddf258a97ec155151fe9f71afcda3bafa837eb904892d4e3576e39b4de",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000001101100000001111100001000001110011111011100110100110000110000001111000011100001100000111110000000011111110000000011110110000000000111011100000000001101100000110001111110001111011110110100110011000000000001100001111111100000000111111100000000001100000",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_31 AM-7 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "large_files",
+      "path": "03_service_screens/ref_027.webp",
+      "webp_sha256": "ccd630a99d50d98bad1493416d5ed3f7829421b91ab5ac495810841dfbfd348f",
+      "webp_bytes": 314382,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_32 AM-8.png",
+      "size": 1938550,
+      "sha": "27b6213c34317b51d1ddc21670317a8e8b6cad663eb991b04951be74be4f5dc1",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0001000101000000011111111111111000100000000011111001001000101110010011000111111000001100000011100100000001000110001000001111010000100000011001100111100001100100010010111110001000000011111001000000000001111010000000000000001000000001111111100000000111111111",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_32 AM-8 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "scan_analysis",
+      "path": "03_service_screens/ref_028.webp",
+      "webp_sha256": "da9b543aeb09fc56a9318249b03c7c5e13b283de1204577464aaa5d14144f330",
+      "webp_bytes": 318880,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_33 AM-9.png",
+      "size": 1991123,
+      "sha": "0dc73c7ff521eda69f7c32d9aee657dbe31d72cd44c401b86646436170eb8c67",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000001101000000011110100111100011101101100011100110010100001111000001100011111101100000011101000110000000110100011000000011010000000000000111000001001111101000001100011000110001000111110111100111111100000000000001001111111100110000111111100000000000000000",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_33 AM-9 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "storage_analysis",
+      "path": "03_service_screens/ref_029.webp",
+      "webp_sha256": "4a8ffc962aa03a0a6f3e1884c83fc4b6888721385bad81ce64d496117949c707",
+      "webp_bytes": 323456,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "ChatGPT Image Nov 15, 2026, 03_09_35 AM-10.png",
+      "size": 1880264,
+      "sha": "828758c42f5743ea06724d227d1fedd47fbef2590615a287a5c50b751eda4da3",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000101000010000110011110110000111111110001000111011111100100001100000000000011001111110011100001000111111110000100000001111000010000001110100001100000111010001100000011111001110111111111000011001111001100000111001111111000000000011111100000000001100000",
+      "copies": [
+        "ChatGPT Image Nov 15, 2026, 03_09_35 AM-10 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "app_detail",
+      "path": "03_service_screens/ref_030.webp",
+      "webp_sha256": "dedb735ceac45b419dabd00f0df1f51fa77eab1255f4ad135b7c20082e66acb3",
+      "webp_bytes": 288326,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "image-gen-1(9).png",
+      "size": 2098741,
+      "sha": "deb4708526908b5f5c79a55afafdd40ac311a530622780474d338a2f550a849a",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000100000000001111110000001110111111011100111100101111111011000111100111101110111111011100111000110101110000011111111000000100110111001000110001001100110011101100110010001111011111100100111111000001110000000010000000000001001100001100000000110000000",
+      "copies": [
+        "image-gen-1(9) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_031.webp",
+      "webp_sha256": "d211ed06b763255c45382f3f92a4098d8ad9d77f1c7602972b924d7df6a1d71e",
+      "webp_bytes": 350694,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "image-gen-2(9).png",
+      "size": 2041046,
+      "sha": "c4a7914dc68bd7a8c4d4af9c126232cc466f511be91be2f506671f5d097157b0",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000100000010000110110100001110000000011100111100101101111011000111100111101110110111011100111111111111110000011111111000001100110011001100111011001100110011001100110010001111011101100100111101001100100000000011000000001100001100000000000000000000000",
+      "copies": [
+        "image-gen-2(9) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_032.webp",
+      "webp_sha256": "7dbc0f3c9e77b28967cd97cf1bd24b2877617d7a9e1134b071b9791b2e1083c5",
+      "webp_bytes": 341126,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "image-gen-3(9).png",
+      "size": 2060523,
+      "sha": "6525649e0ea3165a3911d86aa5369640abfb6c045551765194ef4c3092dd74d8",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000100000000000111100100001110001011001100111100101101111011000111100111101110111111111100111101111110110000011111111000000100110011001100010001001000110001000100110011001111011111101100111110000101110000000011000000000001001100001100000000000000000",
+      "copies": [
+        "image-gen-3(9) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_033.webp",
+      "webp_sha256": "214266740ef3609e303ecdb79f10415ee49f31464d0884de4d052e0a2492005f",
+      "webp_bytes": 339562,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "image-gen-4(9).png",
+      "size": 2059550,
+      "sha": "e70000e0ee8b277a6afec8a16b032875954f350b28fc581ade84af9cf75d902f",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000001100000010000111110100001110000011001100111100101111111011000111100001101110111111111100111111111111110000011111111000001100110011001100110001001000110001001100110011001111011111100100111111000110010000000011000000000001001100001100000000000000000",
+      "copies": [
+        "image-gen-4(9) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_034.webp",
+      "webp_sha256": "24d91de5b4d7022c627a4cfb748234c322ec85e072ae105451328e39f0b81364",
+      "webp_bytes": 338254,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "image-gen-5(9).png",
+      "size": 2043300,
+      "sha": "2febf0fc9cd90197f1eff2b5b5cc70dffa4c5e66f9e0ea0f028408a4ea36c723",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000001100000000000111100000001110000001011100111100101101111011000111100111101110111111011100111000110011110000011111111000001100010011001100110011001100110001001100110010001111011111101100111101000100110000000011000000000000001100001100000000010000000",
+      "copies": [
+        "image-gen-5(9) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_035.webp",
+      "webp_sha256": "44f51433fe0cdcf212a0854c0edd140113c48418d1920d4839305a7dac2bc908",
+      "webp_bytes": 342850,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "image-gen-6(9).png",
+      "size": 2029603,
+      "sha": "0f577dfc8b94e389b651fc1ae1253e3c6f3af9385880eb96face2dbff2cf4aed",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000100000010000111110100101110000011011100111100101111111011001111100111101110111111101100110000110100110000011111111000000100110111101100110011001100110011101100110011001111011111101100111011000100000000000011000001000000001100001100000000000000000",
+      "copies": [
+        "image-gen-6(9) - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_036.webp",
+      "webp_sha256": "7444099f8d39197300e1e673d1a1466e54152a3cce03d9ba6614bf7fd5f53d0e",
+      "webp_bytes": 333354,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "البحث عن الملفات المكررة بتصميم نيون.png",
+      "size": 1859921,
+      "sha": "da1f0b92a4481f2f5ba409fa79a1398daa3ffd84988512ad81c09bad267635c6",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001110000000000011001100010000000011111100010000111111110100000010111111110010001111111110000001111111111110000111001111111000000000000000000011110000000000001011100111000000111110011100000011110000000110001111111111111100000000000000000",
+      "copies": [
+        "البحث عن الملفات المكررة بتصميم نيون - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "duplicate_search",
+      "path": "03_service_screens/ref_037.webp",
+      "webp_sha256": "30da2ad84978f9390c5706a793ae719b07464b8bba5b0cde3d329ad47585ddc9",
+      "webp_bytes": 237100,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "شاشة ترحيب KNOUX AI PRO المستقبلية.png",
+      "size": 2024911,
+      "sha": "ad792989962208712b0196ee82d65d5e2c03a09d25596db0f46c5c2851dfa081",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000000010000000010000000000010001101100001000010011110000000011101111111100111110110111100111111111111100001111100000011101000111110100000110111111010110000000001100000000001100000000000011111111001100001101110000100101000000000001110000100000000000",
+      "copies": [
+        "شاشة ترحيب KNOUX AI PRO المستقبلية - Copy.png"
+      ],
+      "group": "01_entry_concepts",
+      "role": "welcome_concept",
+      "path": "01_entry_concepts/ref_038.webp",
+      "webp_sha256": "68a74ebf6d2f0b69551f727f2c456902601fbe31d9a340ff730e69bc450d24ae",
+      "webp_bytes": 292278,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "لوحة KNOUX AI Pro neon-9.png",
+      "size": 2033318,
+      "sha": "327e66fe5d959b10ff407566e933b969d02275504125c8051630e8cf5cb3c356",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000000001001011110101011111010011001000111100101111111011100111110011100110111111011100111010110111110000011111111000001101101101101100110010010110110011011011011001001110001111001100111101001101110000000000000000000100001100001100000000110000000",
+      "copies": [
+        "لوحة KNOUX AI Pro neon-9 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_039.webp",
+      "webp_sha256": "c19aa7ab03b037f54eaba916ad8f67daf23dff77b49a165ccda243bcc2856c03",
+      "webp_bytes": 332532,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "لوحة KNOUX AI Pro الذكية-4.png",
+      "size": 1966398,
+      "sha": "5c1ef6432e44b64cbf1f9f33cc45a5e12605cc59c7f86a6d355981ed9cc29768",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001111110111011111011011001101111100101111111011100011100001111110011110011000111011111101110011001110100111000000000010001000010011001100110001001100110010000100010011001100111001111100010011100011000010000000001100001100000000110000000",
+      "copies": [
+        "لوحة KNOUX AI Pro الذكية-4 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_040.webp",
+      "webp_sha256": "77b2ea8cbdd96a5d1790ab2a9abc525011baa37b5b1993b41a4e8e4c1580b990",
+      "webp_bytes": 300726,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "لوحة KNOUX AI Pro الذكية-6.png",
+      "size": 2050713,
+      "sha": "17009738de4a69e59dfe2880d7d333101c66edc8d8c573c285a1c505589c9011",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001111110101011111011011001101111100101111110011100111100011101110111111001100111010110101110000111111111000001101101101101100110010110110110011011001011001001110011110100100111001000000110000000000000000000000001100001100000000110000000",
+      "copies": [
+        "لوحة KNOUX AI Pro الذكية-6 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_041.webp",
+      "webp_sha256": "07e47290989c01aefc88f5073f1f6530b4a947da9cea75a707a55a396a3b0067",
+      "webp_bytes": 343670,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "لوحة KNOUX AI Pro الذكية-7.png",
+      "size": 1995640,
+      "sha": "5048554b868c83bb206eee6044b257a5993f97b57cbf5af98cc927153cef07ab",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001111110111011111011011001101111110100111111011010111100001101110111111011100111011011101110000011111111000001101101101101100110010110110010011011011011001011111001110000100111000000100110000000011000011000000001100001100000000000001000",
+      "copies": [
+        "لوحة KNOUX AI Pro الذكية-7 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_042.webp",
+      "webp_sha256": "e4f5bf7a7a0420118dc7f96aa0f07ea1637bbb91d138169c277959670f8bd69f",
+      "webp_bytes": 316988,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "لوحة الخصوصية الذكية الفاخرة.png",
+      "size": 1790776,
+      "sha": "7a9bc3e9833a0b7fe913f17367aeae400caeb8ff9bbb367e6bd517a09e49af59",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000000000000001100000000111100010011000011111111110010001111110110011000001111000011000100000001010110011000100100011001100010010001100100000001100000011000000011101001110000000000000111111111111110011111111111111000000000011000000000000000001000",
+      "copies": [
+        "لوحة الخصوصية الذكية الفاخرة - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "privacy_overview",
+      "path": "03_service_screens/ref_043.webp",
+      "webp_sha256": "269ada8571f229bd966f7a6e8dfff15f72f2e9b2474021338af44db2a40d652a",
+      "webp_bytes": 233314,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "لوحة تحكم KNOUX AI Pro الذكية-10.png",
+      "size": 1958537,
+      "sha": "12e5cf4bd5df34f3cfe61191ca34abc8d950d95cee95587ae374a161963ab355",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001111110111011110011111001101111100000111111011100111100001101110111111011100111010110101110000011111111000000100110011001100011011001000110001000100110010001110001111000100111000000100110000000011000000000001001100101100000000110000000",
+      "copies": [
+        "لوحة تحكم KNOUX AI Pro الذكية-10 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_044.webp",
+      "webp_sha256": "0e02ee1d3692ddef7859e16d751485589ecaf4a4d3909a77d689e6d7be92dce3",
+      "webp_bytes": 306444,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "لوحة تحكم KNOUX AI Pro المستقبلية-1.png",
+      "size": 2049446,
+      "sha": "2c8ad357099fa91a78246d78420a6de3f5375942fd4cd2c9b32bab84dca73598",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001111110111011111001001001101111100101111111011100111100001101110111111011100111010110101110000011111111000001101101101101100110010110110110011001001011001001111001111000100111101001100110000000011000000000000001100001100000000000000000",
+      "copies": [
+        "لوحة تحكم KNOUX AI Pro المستقبلية-1 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_045.webp",
+      "webp_sha256": "559fe94831c144790bdd3ba68fcf950ad1c6399a06c46ffa46dc2f5979f46854",
+      "webp_bytes": 331736,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "لوحة كنوكسر برو للتنظيف الذكي-2.png",
+      "size": 1992079,
+      "sha": "a97f6dc5c291a866247d65c9935f8003e28fc0a072c22989daae7e837b063405",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001111110101011110110111001101111100100011110011100111100001101110111111011100111010110101110000011111111000001101101101100000110110000110000011010000000001001111100110011100111111000100010000000011000000000001001100101100000000110000000",
+      "copies": [
+        "لوحة كنوكسر برو للتنظيف الذكي-2 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_046.webp",
+      "webp_sha256": "0312a6860007a92d22720c60fbed480b2ae65d9e6cf6d300c837e519a63a38f3",
+      "webp_bytes": 315836,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "مجموعة ملفات مكررة بتصميم نيون فاخر-3.png",
+      "size": 1943315,
+      "sha": "9d5a82f7c8636dd8f4f5f604207f18a334950ee495d8ee620510eedf91ca1330",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001111110011001110010000011100110000000000110010100001101111000000000000111100100000000000010010001001011111000000000000111100100000000000010111111000111111001111111111111100001110000111000000100001111111000100001100101000000000110000000",
+      "copies": [
+        "مجموعة ملفات مكررة بتصميم نيون فاخر-3 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "duplicate_group_alt",
+      "path": "03_service_screens/ref_047.webp",
+      "webp_sha256": "71e9531970e64bff11be57796f99e71fb1251b917d791798d4c94f2a9347c097",
+      "webp_bytes": 305980,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "مدير التطبيقات الذكي بتوهج نيون.png",
+      "size": 1726105,
+      "sha": "dcc7c52c26db15deef2c06d7fbeaaa015911d4d9aa72739f2bdb8824d874ea5c",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100001000111110010001100000001111100111101100011110001110111100011000000000000011110001011000000010000111100000001000111110000000100011101100000010000111100000001000010000000000000110011001100100000000011000000001001001100101100000000110000000",
+      "copies": [
+        "مدير التطبيقات الذكي بتوهج نيون - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "app_manager",
+      "path": "03_service_screens/ref_048.webp",
+      "webp_sha256": "21b3534746f87425144b583ad5f175ab67a846b8ea46f9dcc2fcd6418ac46692",
+      "webp_bytes": 206340,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "مرحباً بك في عالم KNOUX AI.png",
+      "size": 2000078,
+      "sha": "4ffed554435a312283c0310e60f1bdb99dfc9e6f8967fcfc2c1013ea384b25b3",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000000000000000000011000001000011101100100010101111011100011111111111110011111111111001000110010111001110000001111111000000000111110000000000000000000000001110011001100000001000100001000011101110001100011111111100110001100000000001100000100001111100",
+      "copies": [
+        "مرحباً بك في عالم KNOUX AI - Copy.png"
+      ],
+      "group": "01_entry_concepts",
+      "role": "welcome_concept",
+      "path": "01_entry_concepts/ref_049.webp",
+      "webp_sha256": "d52409486381f94de5c7e85c95009cf5f61472cf4a37b7d94580c38c27ffd0c7",
+      "webp_bytes": 290276,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة KNOUX AI Pro المستقبلية-5.png",
+      "size": 1900409,
+      "sha": "3e473e4833ca26a8bc55e178c07eb2f522df3288e6d092723b4f40790ae12d52",
+      "width": 841,
+      "height": 1870,
+      "ahash": "0000000111000000001011111110101111111000011111100111110111111111011101111110001101110110111011101101111111111010001011111111010001100110011001100010011001100100011100000110001011111011101111100001000000100000001000011000011000000001100001100000000000000000",
+      "copies": [
+        "واجهة KNOUX AI Pro المستقبلية-5 - Copy.png"
+      ],
+      "group": "02_home_and_hub_variants",
+      "role": "home_variant",
+      "path": "02_home_and_hub_variants/ref_050.webp",
+      "webp_sha256": "49328da4ba8e11cf4726b056d131209da7c9b548a200e2d0a881b6de2ea7ee8d",
+      "webp_bytes": 294562,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة KNOUX AI Pro لإدارة الملفات المكررة-8.png",
+      "size": 1904609,
+      "sha": "2a5d67736b3c21326490e5a9fbee4e3efccb5dfb57b7a573702f690c6ed3bb46",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100011010111010011011100010000011110111000000000100010000001001111000000000000111100100000010010110000001001001111100000000100111110000000000001010000111100111111001111111111111100001110000011000000000001111111000100101101100000000000110000000",
+      "copies": [
+        "واجهة KNOUX AI Pro لإدارة الملفات المكررة-8 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "duplicate_group_alt",
+      "path": "03_service_screens/ref_051.webp",
+      "webp_sha256": "320a47e04fdfbd6a40a14a146bc4f30b1913e5e01a8808c5dcdf0cc7c35569cb",
+      "webp_bytes": 298118,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة KNOUX AI Pro للملفات المكررة-11.png",
+      "size": 1953928,
+      "sha": "e996ea1774759152e45de31e8a73c95e2637efee668994278113d18c88cfee26",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000100000000011011110000000001100110000000000000000110000001111000000000000111101110010010111111000000001001111000000000000010100010000000000010011111101111111001111111111111100000000000011010000000001111111100010001101111000000000110000000",
+      "copies": [
+        "واجهة KNOUX AI Pro للملفات المكررة-11 - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "duplicate_group_alt",
+      "path": "03_service_screens/ref_052.webp",
+      "webp_sha256": "78b61270e92aa100eecb8dab64d748addd65339eaef3d92b920d72aaae649b37",
+      "webp_bytes": 308138,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة التنظيف الذكي بتوهج نيون.png",
+      "size": 1803844,
+      "sha": "c2da6b2d0a603eb831bf9fcf36754cd5f81548562e79ac3e20123fb3babac54a",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000000100000000111111000000000011111100000001111111100000000111111111000000011111111100000000000111000010001111111111110000111111111111000000000000011110001110011100001001111100111100000100110011100000000000011110000000000001101100000000000000000000",
+      "copies": [
+        "واجهة التنظيف الذكي بتوهج نيون - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "smart_clean",
+      "path": "03_service_screens/ref_053.webp",
+      "webp_sha256": "7f7c873846f40ae7b0410f98e5e74f71d91c23bff9107ad9d6c4615302d73b2b",
+      "webp_bytes": 241902,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة الفحص العميق بتصميم نيون futurիստي.png",
+      "size": 1840941,
+      "sha": "196ee17eb4e5bd9c37c862e543409d8e88af2121ab3a41d61b187a13d22ddab8",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000000000000000100000111000000111111011100010011111100010000001011110000000000110111100000001011001100000001110100110110000111111100111000111101111110000011111111000011000110010000000000011111111111100001111111111110000000001100001100000000110000000",
+      "copies": [
+        "واجهة الفحص العميق بتصميم نيون futurիստي - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "deep_scan",
+      "path": "03_service_screens/ref_054.webp",
+      "webp_sha256": "d6b90d4ac3965b3dbdcc0cf2207b0ce364193771f8f5d69e1a37a105f6418bfd",
+      "webp_bytes": 231080,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة ترحيب نيون مستقبلية لـ Knoux AI.png",
+      "size": 2002578,
+      "sha": "be70cd0c1d4c836796879acd15c77c6b3ca066266008e1ea68b8664dbb945e22",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000000000000000011000000000000011100000000011001110110011000011000001110000001011111111100001111111110110000111110110110000101111111101000010111111010100011100000100110001110010010011001110001110001110001111111111110001101001100101100110000000000100",
+      "copies": [
+        "واجهة ترحيب نيون مستقبلية لـ Knoux AI - Copy.png"
+      ],
+      "group": "01_entry_concepts",
+      "role": "welcome_concept",
+      "path": "01_entry_concepts/ref_055.webp",
+      "webp_sha256": "52b867d2765eeb70c81240101e5f4137528e516f17430a79b954c2c08d832df4",
+      "webp_bytes": 288948,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة تنظيف بقايا التطبيقات بتوهج نيون.png",
+      "size": 1807599,
+      "sha": "f708312537117acf1eb6b0def0bf3b5ee50c431e9c7576d8899ef6cdfdac0d91",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000001111010000000001111101010000000011111010000000110111101110000111111111110000001111111111000000001111011110001100000111111000111000000000000001100011000110000010001100011001111111111111110011111111111111000001001101100000000000110000000",
+      "copies": [
+        "واجهة تنظيف بقايا التطبيقات بتوهج نيون - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "app_residue",
+      "path": "03_service_screens/ref_056.webp",
+      "webp_sha256": "f9d9f72b81c4d693f761cf8d4b32da1bf785db92b3fa3380f15617bfe764fadd",
+      "webp_bytes": 232450,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة فحص KNOUX AI العميق.png",
+      "size": 1934572,
+      "sha": "594576a6f70075e625761a324bb2f3ddae2745e0623d607ce743ae9eb0b220c9",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000000110110000001000111110000000001111111111100000110011111100000010001100110000000100111111000000111111111000000111111111111000001111111101000001001100110011000000000000000000000011000111010000001000111111000000001100000100000010110000010",
+      "copies": [
+        "واجهة فحص KNOUX AI العميق - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "deep_scan_alt",
+      "path": "03_service_screens/ref_057.webp",
+      "webp_sha256": "6cf792107145fd0e416d351950033de4e7276bb99b15304f7281309168babc71",
+      "webp_bytes": 262430,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة فحص الخصوصية بتوهج نيون.png",
+      "size": 1883841,
+      "sha": "94722aca2f5d1cf5376b9cdd46c278e463671a5771dd0e15eef8671280482776",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000000011000010001100110011001101111100100111110000111111111101100111111111111000000111111110000001111111111110001111111111111100011100000110100000000000000000000110001100011000011000010001100000000011000000001001001100000000000000000000000",
+      "copies": [
+        "واجهة فحص الخصوصية بتوهج نيون - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "privacy_scan",
+      "path": "03_service_screens/ref_058.webp",
+      "webp_sha256": "013a681d9203deabb21a0d44dabb7273d6208a1a66bf6512939699e6bf7324b3",
+      "webp_bytes": 258246,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة مدير التطبيقات بتصميم نيون مستقبلي.png",
+      "size": 1831509,
+      "sha": "766d488203e2d87746749efc41b25892696a8f7761dccf219b87aff998a3c7e0",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000110000100000011011000000000101001111000001100101100001000001111111100110000110111111011000010101111000100001110001000010011111111111111110111011001101110001001100110010000111000000000000111100001111000000000000000000000000001100001100000000110000010",
+      "copies": [
+        "واجهة مدير التطبيقات بتصميم نيون مستقبلي - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "app_manager_tools",
+      "path": "03_service_screens/ref_059.webp",
+      "webp_sha256": "4ef1985535569cb05d8ba2c7383fe2a42b248ed12c15ff8841dff56669d75343",
+      "webp_bytes": 228806,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    },
+    {
+      "name": "واجهة منظف بقايا التطبيقات بتصميم نيون عربي.png",
+      "size": 1696730,
+      "sha": "d1bc2f032627725bc9aaa69559e1a0cd777d1d1e6124064e8715afa32a2883da",
+      "width": 941,
+      "height": 1672,
+      "ahash": "0000000000000110000000100100000000011001100110000000001111000100001111111110111000011100101111100000000110000000111111110000010000100011001001100111110000000000011110110001110000111000000010000011110000100000011111111111111011111111111111110000000000000000",
+      "copies": [
+        "واجهة منظف بقايا التطبيقات بتصميم نيون عربي - Copy.png"
+      ],
+      "group": "03_service_screens",
+      "role": "app_residue_alt",
+      "path": "03_service_screens/ref_060.webp",
+      "webp_sha256": "7eeeba46483b07188db1597831d60f75431381a1fd7f9334477e2cb4ebaee007",
+      "webp_bytes": 209878,
+      "concept_only": true,
+      "source_may_show_pro_brand": true
+    }
+  ]
+}
