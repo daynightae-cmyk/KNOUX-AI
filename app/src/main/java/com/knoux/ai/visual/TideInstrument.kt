@@ -1,14 +1,17 @@
 package com.knoux.ai.visual
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -90,8 +93,12 @@ internal fun TideInstrument(
         if (fogCount > 0) append(if (arabic) "، $fogCount مجموعة غير مقاسة" else ", $fogCount unmeasured group(s)")
     }
 
+    val window = RoundedCornerShape(18.dp)
     Column(modifier.fillMaxWidth().testTag("instrument-tide").semantics { contentDescription = description }) {
-        Canvas(Modifier.fillMaxWidth().height(132.dp)) {
+        Canvas(
+            Modifier.fillMaxWidth().height(132.dp).clip(window)
+                .border(1.dp, NativePalette.border.copy(alpha = .55f), window),
+        ) {
             drawTide(
                 waves = waves,
                 crest = crest,
@@ -155,7 +162,10 @@ private fun DrawScope.drawTide(
     drawRect(
         Brush.verticalGradient(
             if (known) listOf(Color(0xFF0C1A3A), Color(0xFF081228))
-            else listOf(InstrumentFog.copy(alpha = .10f), InstrumentWell),
+            // Unmeasured scope is a deep, quiet haze — never a pale slab. The
+            // fog tone only glows faintly near the surface; the body stays ink,
+            // so "not measured" reads as darkness, not as a blank panel.
+            else listOf(Color(0xFF16103A), Color(0xFF0A0A22)),
             startY = waterline, endY = h,
         ),
         topLeft = Offset(0f, waterline),
@@ -173,9 +183,9 @@ private fun DrawScope.drawTide(
         )
     } else {
         listOf(
-            Triple(InstrumentFog.copy(alpha = .10f), waterline + h * .04f, h * .030f),
-            Triple(InstrumentFog.copy(alpha = .14f), waterline + h * .12f, h * .038f),
-            Triple(InstrumentFog.copy(alpha = .18f), waterline + h * .22f, h * .046f),
+            Triple(InstrumentFog.copy(alpha = .045f), waterline + h * .04f, h * .030f),
+            Triple(InstrumentFog.copy(alpha = .065f), waterline + h * .12f, h * .038f),
+            Triple(InstrumentFog.copy(alpha = .085f), waterline + h * .22f, h * .046f),
         )
     }
     layers.forEachIndexed { index, (tint, baseY, amp) ->
@@ -204,7 +214,7 @@ private fun DrawScope.drawTide(
             }
             drawPath(
                 crest,
-                (if (known) NativePalette.cyan else InstrumentFog).copy(alpha = if (known) .5f else .28f),
+                (if (known) NativePalette.cyan else InstrumentFog).copy(alpha = if (known) .5f else .20f),
                 style = Stroke(1.4.dp.toPx(), cap = StrokeCap.Round),
             )
         }

@@ -75,38 +75,45 @@ import androidx.compose.ui.unit.sp
  * never carries a value, and never blocks input.
  */
 internal object Nx {
-    // Canvas
-    val ink = Color(0xFF05091E)
-    val inkDeep = Color(0xFF030514)
-    val aurora = Color(0xFF0B1436)
+    // Canvas — the approved authentication field, shared by every screen.
+    val ink = Knx.ink
+    val inkDeep = Knx.inkDeep
+    val aurora = Knx.aurora
 
-    // Surfaces
-    val cardTop = Color(0xFF101A3C)
-    val cardBottom = Color(0xFF080F27)
-    val card = Color(0xFF0B1330)
-    val raised = Color(0xFF16234A)
-    val border = Color(0xFF223258)
-    val borderLit = Color(0xFF3A5A96)
+    // Surfaces — the violet glass of the approved login panel.
+    val cardTop = Knx.panelTop
+    val cardBottom = Knx.panelBottom
+    val card = Knx.panelMid
+    val raised = Knx.fieldTop
+    val border = Knx.border
+    val borderLit = Knx.borderLit
 
     // Identity
-    val blue = Color(0xFF2C7BFF)
+    val blue = Knx.blue
     val blueDeep = Color(0xFF0B4FC4)
-    val cyan = Color(0xFF25D6F2)
+    val cyan = Knx.cyan
     val teal = Color(0xFF1ED9C4)
-    val violet = Color(0xFFA06BFF)
+    val violet = Knx.violet
     val purple = Color(0xFF7B3FE4)
-    val magenta = Color(0xFFE25CF0)
+    val magenta = Knx.magenta
     val pink = Color(0xFFF06AB4)
 
-    // Measured states
-    val green = Color(0xFF2ED3A4)
-    val amber = Color(0xFFF3B23C)
-    val rose = Color(0xFFF24E6A)
+    // Measured states — semantic, never decorative.
+    val green = Knx.green
+    val amber = Knx.amber
+    val rose = Knx.rose
 
     // Type
-    val text = Color(0xFFF3F7FF)
-    val muted = Color(0xFF9DAFD6)
-    val faint = Color(0xFF6B7DA3)
+    val text = Knx.text
+    val muted = Knx.muted
+    val faint = Knx.faint
+
+    // The one action gradient, shared with the login button.
+    val cta = Knx.cta
+    val panel = Knx.panel
+    val panelBorder = Knx.panelBorder
+    val field = Knx.field
+    val fieldBorder = Knx.fieldBorder
 }
 
 /** Press feedback shared by every card and control. */

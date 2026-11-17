@@ -187,14 +187,15 @@ internal fun Modifier.buttonBloom(primary: Boolean, pulse: State<Float>? = null)
 @Composable
 internal fun GlassPanel(modifier: Modifier = Modifier, radius: Int = 14, tint: Color? = null, content: @Composable () -> Unit
 ) {
-    // Scoped substitution: actual utility screens borrow the Figma quiet navy
-    // panel, while the approved Splash/Onboarding/Auth cinematic glass is intact.
+    // Scoped substitution: the signed-in shell borrows the approved login
+    // glass — the inset violet field and its lit rim — so a panel after login
+    // and the input panel before it are the same material.
     val native = LocalNativeApp.current
     val shape = RoundedCornerShape(radius.dp)
     val surface = if (native) {
         modifier.clip(shape)
-            .background(Brush.verticalGradient(listOf(NativePalette.raised, NativePalette.card)))
-            .border(1.dp, NativePalette.border, shape)
+            .background(Knx.field)
+            .border(1.dp, Knx.panelBorderQuiet, shape)
     } else modifier.glass(radius, tint = tint)
     Box(surface, contentAlignment = Alignment.CenterStart) { content() }
 }
@@ -306,15 +307,13 @@ internal fun AccentButton(action: Action, modifier: Modifier = Modifier, primary
     } else null
     val surface = when {
         native && primary && enabled -> Modifier.background(
-            // Approved primary action: the brand runs violet into blue into cyan
-            // across the pill, left to right, matching the reference CTA.
-            Brush.horizontalGradient(
-                listOf(NativePalette.violet, NativePalette.blue, NativePalette.cyan),
-            ),
+            // Approved primary action: the brand runs magenta into violet into
+            // blue into cyan across the pill, exactly like the login CTA.
+            Knx.cta,
             RoundedCornerShape(28.dp),
         )
         native && enabled -> Modifier.background(NativePalette.card)
-            .border(1.dp, NativePalette.border, RoundedCornerShape(28.dp))
+            .border(1.dp, Knx.panelBorderQuiet, RoundedCornerShape(28.dp))
         native -> Modifier.background(NativePalette.raised)
         primary && enabled -> Modifier.primarySurface(shimmer, pulse)
         enabled -> Modifier.glass(28, active = selected == true, ghost = true)

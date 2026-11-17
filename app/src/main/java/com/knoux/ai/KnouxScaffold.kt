@@ -69,19 +69,25 @@ internal val TOUCH_TARGET = 48.dp
  * authentication artwork retain their original KNOUX signature colors.
  */
 internal object NativePalette {
-    val ink = Color(0xFF090A1E)
-    val card = Color(0xFF0F1734)
-    val raised = Color(0xFF152343)
-    val border = Color(0xFF263558)
-    val blue = Color(0xFF1287F7)
-    val cyan = Color(0xFF2AB9FF)
-    val violet = Color(0xFFA579EC)
-    val magenta = Color(0xFFE05BD3)
-    val amber = Color(0xFFE8B23A)
-    val green = Color(0xFF3ECF8E)
-    val red = Color(0xFFE5484D)
-    val text = Color(0xFFF4F7FF)
-    val muted = Color(0xFFA5B4D0)
+    val ink = Knx.ink
+    val card = Knx.panelMid
+    val raised = Knx.panelTop
+    val border = Knx.border
+    val blue = Knx.blue
+    val cyan = Knx.cyan
+    val violet = Knx.violet
+    val magenta = Knx.magenta
+    val amber = Knx.amber
+    val green = Knx.green
+    val red = Knx.rose
+    val text = Knx.text
+    val muted = Knx.muted
+
+    /** Shared identity brushes — one source for the whole shell. */
+    val panel = Knx.panel
+    val panelBorder = Knx.panelBorder
+    val field = Knx.field
+    val cta = Knx.cta
 }
 
 /** Vertical rhythm shared by every native screen (Figma 12/16/20 ladder). */
@@ -121,10 +127,11 @@ internal fun SurfaceCard(
                 if (native) {
                     Modifier
                         .background(
-                            Brush.verticalGradient(
-                                if (variant) listOf(Color(0xFF17234A), Color(0xFF101833))
-                                else listOf(Color(0xFF121B3B), Color(0xFF0B1128)),
-                            )
+                            // The approved login panel, reused verbatim so a
+                            // service card and the authentication card are cut
+                            // from the same glass.
+                            if (variant) Brush.verticalGradient(listOf(Knx.fieldTop, Knx.panelMid, Knx.panelBottom))
+                            else Knx.panel,
                         )
                         .drawWithContent {
                             drawContent()
@@ -151,7 +158,7 @@ internal fun SurfaceCard(
             )
             .border(
                 1.dp,
-                if (native) NativePalette.border.copy(alpha = .78f) else KnouxColors.border,
+                if (native) Knx.panelBorderQuiet else androidx.compose.ui.graphics.SolidColor(KnouxColors.border),
                 shape,
             ),
         content = content,
@@ -225,10 +232,9 @@ internal fun PrimaryAction(action: Action, enabled: Boolean = true, onClick: () 
     val fill = when {
         !enabled -> Modifier.background(if (native) NativePalette.raised else KnouxColors.surfaceVariant)
         native -> Modifier.background(
-            // Same primary surface as AccentButton: violet into blue into cyan.
-            Brush.horizontalGradient(
-                listOf(NativePalette.violet, NativePalette.blue, NativePalette.cyan),
-            )
+            // The approved call to action: the same magenta → violet → blue →
+            // cyan pill that signs the customer in, everywhere in the product.
+            Knx.cta
         )
         else -> Modifier.primarySurface(null, null)
     }

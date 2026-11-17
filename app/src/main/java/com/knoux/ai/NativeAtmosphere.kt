@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -91,59 +92,24 @@ private fun DrawScope.drawSky(phase: Float, stars: List<StarSeed>, motion: Boole
     val breath = if (motion) 1f + 0.12f * sin(drift) else 1f
     drawRect(
         Brush.radialGradient(
-            listOf(NativePalette.violet.copy(alpha = .062f * breath), Color.Transparent),
+            listOf(NativePalette.violet.copy(alpha = .11f * breath), Color.Transparent),
             center = Offset(w * .96f, h * .01f),
             radius = w * .92f,
         )
     )
     drawRect(
         Brush.radialGradient(
-            listOf(NativePalette.cyan.copy(alpha = .052f * (2f - breath)), Color.Transparent),
+            listOf(NativePalette.cyan.copy(alpha = .09f * (2f - breath)), Color.Transparent),
             center = Offset(w * .03f, h * .93f),
             radius = w * .85f,
         )
     )
 
-    // Aurora ribbons: one violet→magenta band high in the field, one cyan band
-    // lower. Each is a single cubic whose control points slide a few percent
-    // with the phase — a slow drift, never a wave the eye can chase.
-    val ribbonStroke = (1.6.dp.toPx()).coerceAtLeast(1f)
+    // The approved identity ribbons: the same four sweeps that light the login
+    // screen, drifting a few pixels on the shared phase. One implementation,
+    // two surfaces — the sky never changes when the customer signs in.
     val slide = sin(drift) * h * .012f
-    val upper = Path().apply {
-        moveTo(-w * .05f, h * .052f + slide)
-        cubicTo(w * .30f, h * .006f - slide, w * .62f, h * .112f + slide, w * 1.05f, h * .040f - slide)
-    }
-    drawPath(
-        upper,
-        Brush.horizontalGradient(
-            listOf(
-                Color.Transparent,
-                NativePalette.violet.copy(alpha = .20f),
-                NativePalette.magenta.copy(alpha = .12f),
-                NativePalette.cyan.copy(alpha = .16f),
-                Color.Transparent,
-            ),
-            startX = 0f, endX = w,
-        ),
-        style = Stroke(ribbonStroke),
-    )
-    val lower = Path().apply {
-        moveTo(-w * .05f, h * .906f - slide)
-        cubicTo(w * .32f, h * .952f + slide, w * .66f, h * .878f - slide, w * 1.05f, h * .924f + slide)
-    }
-    drawPath(
-        lower,
-        Brush.horizontalGradient(
-            listOf(
-                Color.Transparent,
-                NativePalette.cyan.copy(alpha = .14f),
-                NativePalette.violet.copy(alpha = .11f),
-                Color.Transparent,
-            ),
-            startX = 0f, endX = w,
-        ),
-        style = Stroke(ribbonStroke * .8f),
-    )
+    withTransform({ translate(top = slide) }) { drawRibbons() }
 
     // The starfield. Twinkle is a per-star sine on the same shared phase, so
     // the whole sky costs one animation value. A still sky keeps every star at

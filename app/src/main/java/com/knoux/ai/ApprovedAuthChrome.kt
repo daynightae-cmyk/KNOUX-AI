@@ -83,34 +83,24 @@ import com.knoux.ai.visual.InstrumentFog
 // success state on its own.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Near-black field the approved screens sit on. */
-internal val AwInk = Color(0xFF07030F)
-internal val AwViolet = Color(0xFF8938FF)
-internal val AwMagenta = Color(0xFFE62BFF)
-internal val AwCyan = Color(0xFF00DEFF)
-internal val AwBlue = Color(0xFF1968FF)
-internal val AwGold = Color(0xFFF5B942)
+/** Near-black field the approved screens sit on — the product-wide field. */
+internal val AwInk = Knx.ink
+internal val AwViolet = Knx.violet
+internal val AwMagenta = Knx.magenta
+internal val AwCyan = Knx.cyan
+internal val AwBlue = Knx.blue
+internal val AwGold = Knx.gold
 
 /** The single call-to-action gradient: magenta → violet → blue → cyan. */
-internal val AwCtaBrush = Brush.horizontalGradient(
-    listOf(AwMagenta, Color(0xFFC22BFF), AwViolet, AwBlue, AwCyan)
-)
+internal val AwCtaBrush = Knx.cta
 
-private val AwPanelBrush = Brush.verticalGradient(
-    listOf(Color(0xFF1C1044), Color(0xFF100933), Color(0xFF0B0B2A))
-)
+private val AwPanelBrush = Knx.panel
 
-private val AwPanelBorder = Brush.linearGradient(
-    listOf(AwViolet.copy(alpha = .85f), AwBlue.copy(alpha = .55f), AwCyan.copy(alpha = .75f))
-)
+private val AwPanelBorder = Knx.panelBorder
 
-private val AwFieldBrush = Brush.horizontalGradient(
-    listOf(Color(0xFF241352), Color(0xFF140A33), Color(0xFF0D1336))
-)
+private val AwFieldBrush = Knx.field
 
-private val AwFieldBorder = Brush.horizontalGradient(
-    listOf(AwViolet.copy(alpha = .72f), AwBlue.copy(alpha = .48f), AwCyan.copy(alpha = .58f))
-)
+private val AwFieldBorder = Knx.fieldBorder
 
 /** The founder signature face (Great Vibes, OFL — see docs/design/fonts). */
 internal val ScriptFace = FontFamily(Font(R.font.great_vibes, FontWeight.Normal))
@@ -122,14 +112,17 @@ internal val ScriptFace = FontFamily(Font(R.font.great_vibes, FontWeight.Normal)
  */
 @Composable
 internal fun ApprovedSky(content: @Composable () -> Unit) {
-    Box(Modifier.fillMaxSize().background(AwInk)) {
+    // The room is the shared observatory sky. It is now the same atmosphere the
+    // signed-in shell stands on, so crossing the authentication gate no longer
+    // changes the world the customer is standing in.
+    Box(Modifier.fillMaxSize().background(Knx.ink)) {
         NativeAtmosphere(Modifier.fillMaxSize())
-        Canvas(Modifier.fillMaxSize()) { drawRibbons() }
         content()
     }
 }
 
-private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawRibbons() {
+internal fun androidx.compose.ui.graphics.drawscope.DrawScope.drawRibbons() {
+
     val w = size.width
     val h = size.height
     if (w < 1f || h < 1f) return
@@ -291,25 +284,32 @@ internal fun ApprovedAuthHeader(
     onSettings: () -> Unit,
     showWordmark: Boolean = true,
 ) {
-    Row(
-        Modifier.fillMaxWidth().heightIn(min = 52.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        if (showWordmark) {
-            BrandLockupRow(size = 21, tag = "auth-wordmark")
-        }
-        Spacer(Modifier.weight(1f))
-        ProPill(onClick = onPro)
-        Spacer(Modifier.width(6.dp))
-        Box(
-            Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .clickable(role = Role.Button, onClick = onSettings)
-                .testTag("auth-settings"),
-            contentAlignment = Alignment.Center,
+    // The approved references keep the utility chrome left-to-right even on the
+    // Arabic surface: brand lockup at the leading edge, Pro and Settings at the
+    // trailing edge. Pinning it here makes the gateway header and the signed-in
+    // toolbar the same bar in the same order, so signing in no longer flips the
+    // product's furniture.
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        Row(
+            Modifier.fillMaxWidth().heightIn(min = 52.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Glyph(Mark.GEAR, Modifier.size(22.dp), Chalk.copy(alpha = .92f), false)
+            if (showWordmark) {
+                BrandLockupRow(size = 21, tag = "auth-wordmark")
+            }
+            Spacer(Modifier.weight(1f))
+            ProPill(onClick = onPro)
+            Spacer(Modifier.width(6.dp))
+            Box(
+                Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .clickable(role = Role.Button, onClick = onSettings)
+                    .testTag("auth-settings"),
+                contentAlignment = Alignment.Center,
+            ) {
+                Glyph(Mark.GEAR, Modifier.size(22.dp), Chalk.copy(alpha = .92f), false)
+            }
         }
     }
 }

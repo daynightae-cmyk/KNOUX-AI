@@ -267,6 +267,8 @@
     <string name="k_animations">الرسوم المتحركة</string>
     <string name="k_enable_animations">تشغيل الرسوم</string>
     <string name="k_reduce_motion_2">تقليل الحركة</string>
+    <string name="k_sign_out">تسجيل الخروج</string>
+    <string name="k_exit_guest_mode">إنهاء وضع الزائر</string>
     <string name="k_unlock_the_full_power_of_ai_driven_device_care">أطلق القوة الكاملة للعناية الذكية بالجهاز</string>
     <string name="k_unlimited_ai_deep_scans">فحوصات ذكاء اصطناعي عميقة بلا حدود</string>
     <string name="k_advanced_privacy_shield">درع الخصوصية المتقدم</string>

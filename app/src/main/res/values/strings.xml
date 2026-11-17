@@ -268,6 +268,8 @@
     <string name="k_animations">Animations</string>
     <string name="k_enable_animations">Enable Animations</string>
     <string name="k_reduce_motion_2">Reduce Motion</string>
+    <string name="k_sign_out">Sign out</string>
+    <string name="k_exit_guest_mode">Exit guest mode</string>
     <string name="k_unlock_the_full_power_of_ai_driven_device_care">Unlock the full power of AI-driven device care</string>
     <string name="k_unlimited_ai_deep_scans">Unlimited AI Deep Scans</string>
     <string name="k_advanced_privacy_shield">Advanced Privacy Shield</string>

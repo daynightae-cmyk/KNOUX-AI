@@ -45,6 +45,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -99,6 +100,18 @@ internal val Close = Copy(R.string.k_close)
 private const val HandoffMillis = 110
 
 internal data class DebugVisit(val page: Page, val number: Int, val still: Boolean)
+
+/**
+ * The only three ways a customer can be present in the product.
+ *
+ * A guest is a real, named state — not a disguised account. It is held in
+ * memory only: closing the app ends the guest session and the gateway returns,
+ * because silently remembering a guest as a signed-in customer would manufacture
+ * a session the product never verified. An account session is the only one that
+ * is persisted, and it is restored only when the customer chose it.
+ */
+internal enum class SessionMode { NONE, GUEST, ACCOUNT }
+
 internal class PreviewPreferences(private val state: SavedStateHandle) : ViewModel() {
     val arabic = state.getStateFlow("arabic", Locale.getDefault().language == "ar")
     val reduceMotion = state.getStateFlow("reduceMotion", false)
@@ -106,6 +119,8 @@ internal class PreviewPreferences(private val state: SavedStateHandle) : ViewMod
     fun language(arabic: Boolean) { state["arabic"] = arabic }
     fun motion(reduced: Boolean) { state["reduceMotion"] = reduced }
     fun authenticate() { state["authenticated"] = true }
+    /** Ends an account session. A guest never sets this flag. */
+    fun signOut() { state["authenticated"] = false }
 }
 
 class MainActivity : FragmentActivity() {
@@ -175,9 +190,39 @@ class MainActivity : FragmentActivity() {
                 ValueAnimator.areAnimatorsEnabled() && power?.isPowerSaveMode != true
             val splashReduced = reduced || !ValueAnimator.areAnimatorsEnabled() || power?.isPowerSaveMode == true
             var showSplash by remember { mutableStateOf(startSplash) }
-            val onbPrefs = LocalContext.current.getSharedPreferences("knoux_prefs", Context.MODE_PRIVATE)
-            var onboardingDone by remember { mutableStateOf(onbPrefs.getBoolean("knoux_onboarding_done", false)) }
-            var showOnboarding by remember { mutableStateOf(false) }
+            val appPrefs = LocalContext.current.getSharedPreferences("knoux_prefs", Context.MODE_PRIVATE)
+            var onboardingDone by remember { mutableStateOf(appPrefs.getBoolean("knoux_onboarding_done", false)) }
+            var showOnboarding by rememberSaveable { mutableStateOf(false) }
+            // The one navigation state machine. Every surface below is chosen
+            // from this single value, so a transition can never leave two
+            // destinations fighting over the screen.
+            var session by remember {
+                mutableStateOf(
+                    when {
+                        authenticated -> SessionMode.ACCOUNT
+                        appPrefs.getString("knoux_session_mode", null) == "account" -> SessionMode.ACCOUNT
+                        else -> SessionMode.NONE
+                    }
+                )
+            }
+            fun enter(mode: SessionMode) {
+                session = mode
+                showOnboarding = false
+                showSplash = false
+                if (mode == SessionMode.ACCOUNT) {
+                    preferences.authenticate()
+                    // Only a verified account is remembered across launches.
+                    appPrefs.edit().putString("knoux_session_mode", "account").apply()
+                } else {
+                    appPrefs.edit().remove("knoux_session_mode").apply()
+                }
+            }
+            fun signOut() {
+                session = SessionMode.NONE
+                showOnboarding = false
+                preferences.signOut()
+                appPrefs.edit().remove("knoux_session_mode").apply()
+            }
             // The identity gateway sits between the splash and the application.
             var dashboardPrepared by remember { mutableStateOf(!startSplash || splashReduced) }
             val dashReveal = remember { Animatable(if (startSplash && !splashReduced) 0f else 1f) }
@@ -188,74 +233,109 @@ class MainActivity : FragmentActivity() {
             }
             KnouxTheme(arabic, motion && !showSplash) {
                 Box(Modifier.fillMaxSize()) {
-                    when {
-                        // A debug route jump is a capture hook: it opens the requested
-                        // screen directly and bypasses the identity gateway.
-                        previewRoute != null -> KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
-                        // Debug capture of a single onboarding chapter. It never
-                        // writes the first-run flag.
-                        !showSplash && previewOnboarding != null -> OnboardingScreen(
-                            onComplete = {},
-                            previewChapter = previewOnboarding
-                        )
-                        // Cinematic onboarding on first launch
-                        !showSplash && showOnboarding -> OnboardingScreen(
-                            onComplete = {
-                                onboardingDone = true
-                                showOnboarding = false
+                    // One decision for the whole surface tree: a session that
+                    // exists shows the shell, a session that does not shows the
+                    // first-run path. Nothing else chooses a destination.
+                    if (session != SessionMode.NONE) {
+                        if (dashboardPrepared || !showSplash) {
+                            val scale = if (splashReduced) 1f else 0.95f + 0.05f * dashReveal.value
+                            val alpha = if (splashReduced) 1f else dashReveal.value
+                            Box(Modifier.fillMaxSize().graphicsLayer {
+                                scaleX = scale; scaleY = scale
+                                this.alpha = alpha
+                                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0.52f)
+                            }) {
+                                KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced,
+                                    session = session, onSignOut = { signOut() })
                             }
-                        )
-                        // The cinematic gateway is the first surface after the splash.
-                        !showSplash && !authenticated && previewAuth == null -> AuthGateway(
-                            reducedMotion = reduced,
-                            onAuthenticated = { preferences.authenticate() },
-                            onGuest = { preferences.authenticate() },
-                            onLanguage = preferences::language,
-                            onMotion = preferences::motion,
-                            reduced = reduced
-                        )
-                        // A forced debug state is captured on its own, without the shell.
-                        !showSplash && previewAuth != null -> AuthGateway(
-                            forcedStage = previewAuth,
-                            reducedMotion = reduced,
-                            onAuthenticated = { preferences.authenticate() },
-                            onGuest = { preferences.authenticate() },
-                            onLanguage = preferences::language,
-                            onMotion = preferences::motion,
-                            reduced = reduced
-                        )
-                        else -> {
-                            if (dashboardPrepared || !showSplash) {
-                                // Fluid reveal: scale up from 0.95 + fade in as splash exits
-                                val scale = if (splashReduced) 1f else 0.95f + 0.05f * dashReveal.value
-                                val alpha = if (splashReduced) 1f else dashReveal.value
-                                Box(Modifier.fillMaxSize().graphicsLayer {
-                                    scaleX = scale; scaleY = scale
-                                    this.alpha = alpha
-                                    transformOrigin = androidx.compose.ui.graphics.TransformOrigin(0.5f, 0.52f)
-                                }) {
-                                    KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                        }
+                        if (showSplash) {
+                            val chime = rememberSplashChime(!splashReduced && freezeSplash == null)
+                            KnouxSplashRoute(
+                                reduced = splashReduced,
+                                freezeAtMs = freezeSplash,
+                                onSmileCompleted = {
+                                    if (this@MainActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                        chime?.play()
+                                    }
+                                    dashboardPrepared = true
+                                },
+                                onEnter = {
+                                    if (!onboardingDone && session == SessionMode.NONE) showOnboarding = true
+                                    showSplash = false
                                 }
+                            ) {
+                                if (!onboardingDone && session == SessionMode.NONE) showOnboarding = true
+                                showSplash = false
                             }
-                            if (showSplash) {
-                                val chime = rememberSplashChime(!splashReduced && freezeSplash == null)
-                                KnouxSplashRoute(
-                                    reduced = splashReduced,
-                                    freezeAtMs = freezeSplash,
-                                    onSmileCompleted = {
-                                        if (this@MainActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                                            chime?.play()
+                        }
+                    } else {
+                        when {
+                            // A debug route jump is a capture hook: it opens the requested
+                            // screen directly and bypasses the identity gateway.
+                            previewRoute != null -> KnouxAppScaffold(visit, preferences::language, preferences::motion, reduced)
+                            // Debug capture of a single onboarding chapter. It never
+                            // writes the first-run flag.
+                            !showSplash && previewOnboarding != null -> OnboardingScreen(
+                                onComplete = {},
+                                previewChapter = previewOnboarding
+                            )
+                            // Cinematic onboarding on first launch
+                            !showSplash && showOnboarding -> OnboardingScreen(
+                                onComplete = {
+                                    onboardingDone = true
+                                    showOnboarding = false
+                                }
+                            )
+                            // The cinematic gateway is the first surface after the splash.
+                            !showSplash && previewAuth == null -> AuthGateway(
+                                reducedMotion = reduced,
+                                onAuthenticated = { enter(SessionMode.ACCOUNT) },
+                                onGuest = {
+                                    onboardingDone = true
+                                    // Guest is its own state: Home, without ever
+                                    // being recorded as a verified account.
+                                    enter(SessionMode.GUEST)
+                                },
+                                onLanguage = preferences::language,
+                                onMotion = preferences::motion,
+                                reduced = reduced
+                            )
+                            // A forced debug state is captured on its own, without the shell.
+                            !showSplash && previewAuth != null -> AuthGateway(
+                                forcedStage = previewAuth,
+                                reducedMotion = reduced,
+                                onAuthenticated = { enter(SessionMode.ACCOUNT) },
+                                onGuest = {
+                                    onboardingDone = true
+                                    // Guest is its own state: Home, without ever
+                                    // being recorded as a verified account.
+                                    enter(SessionMode.GUEST)
+                                },
+                                onLanguage = preferences::language,
+                                onMotion = preferences::motion,
+                                reduced = reduced
+                            )
+                            else -> {
+                                if (showSplash) {
+                                    val chime = rememberSplashChime(!splashReduced && freezeSplash == null)
+                                    KnouxSplashRoute(
+                                        reduced = splashReduced,
+                                        freezeAtMs = freezeSplash,
+                                        onSmileCompleted = {
+                                            if (this@MainActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                                                chime?.play()
+                                            }
+                                            dashboardPrepared = true
+                                        },
+                                        onEnter = {
+                                            if (!onboardingDone && session == SessionMode.NONE) showOnboarding = true
+                                            showSplash = false
                                         }
-                                        dashboardPrepared = true
-                                    },
-                                    // The Enter button appears at the end; tapping it dismisses the splash
-                                    onEnter = {
-                                        if (!onboardingDone) showOnboarding = true
+                                    ) {
+                                        if (!onboardingDone && session == SessionMode.NONE) showOnboarding = true
                                         showSplash = false
                                     }
-                                ) {
-                                    if (!onboardingDone) showOnboarding = true
-                                    showSplash = false
                                 }
                             }
                         }
@@ -398,7 +478,9 @@ private fun NavHostController.switchTab(page: Page) {
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun KnouxAppScaffold(
-    visit: DebugVisit?, language: (Boolean) -> Unit, reduceMotion: (Boolean) -> Unit, reduced: Boolean
+    visit: DebugVisit?, language: (Boolean) -> Unit, reduceMotion: (Boolean) -> Unit, reduced: Boolean,
+    session: SessionMode = SessionMode.ACCOUNT,
+    onSignOut: () -> Unit = {},
 ) {
     val nav = rememberNavController()
     val current by nav.currentBackStackEntryAsState()
@@ -472,6 +554,8 @@ private fun KnouxAppScaffold(
                     ) {
                         Page.entries.forEach { target ->
                             composable(target.id) {
+                                // Explicit key via remember to prevent cross-tab caching
+                                val _key = remember(target.name) { Unit }
                                 when (target) {
                                     Page.HOME -> HomeScreen(open)
                                     // The clean centre IS the real Smart Clean surface: the
@@ -578,6 +662,22 @@ private fun KnouxAppScaffold(
                                 AccentButton(
                                     Action(if (reduced) Copy(R.string.k_enable_animations) else Copy(R.string.k_reduce_motion_2), Mark.RADAR),
                                     Modifier.fillMaxWidth(), primary = false, tag = "motion-toggle") { reduceMotion(!reduced) }
+                                // Leaving is a real control, not a hidden gesture: a guest
+                                // ends the guest session, an account signs out, and both
+                                // land back on the gateway with no stale shell behind them.
+                                AccentButton(
+                                    Action(
+                                        if (session == SessionMode.ACCOUNT) Copy(R.string.k_sign_out)
+                                        else Copy(R.string.k_exit_guest_mode),
+                                        Mark.BACK,
+                                    ),
+                                    Modifier.fillMaxWidth().testTag("sign-out"),
+                                    primary = false,
+                                    tag = "sign-out",
+                                ) {
+                                    headerSheet = null
+                                    onSignOut()
+                                }
                             }
                         }
                     }
@@ -702,7 +802,8 @@ private fun ProSheet() {
 }
 
 @Composable
-internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> Unit, plated: Boolean = false) {
+internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> Unit, plated: Boolean = false,
+                         tint: Color? = null) {
     // Mirroring follows the direction this control is actually laid out in, not the
     // content language. The utility bar is pinned LTR, so its back arrow must point
     // left even on the Arabic surface, while mirrored content rows still flip.
@@ -721,14 +822,25 @@ internal fun IconControl(mark: Mark, label: String, tag: String, onClick: () -> 
         })
         .semantics { contentDescription = label }, contentAlignment = Alignment.Center) {
         val glyph: @Composable () -> Unit = {
-            Glyph(mark, Modifier.size(22.dp).then(if (mirror) Modifier.rotate(180f) else Modifier))
+            Glyph(mark, Modifier.size(22.dp).then(if (mirror) Modifier.rotate(180f) else Modifier),
+                tint ?: Chalk)
         }
         if (plated && native) {
             val plate = RoundedCornerShape(13.dp)
+            val crown = tint != null
             Box(
                 Modifier.size(38.dp).clip(plate)
-                    .background(NativePalette.card.copy(alpha = .55f))
-                    .border(1.dp, NativePalette.border.copy(alpha = .60f), plate),
+                    .background(
+                        if (crown) Brush.horizontalGradient(listOf(Color(0xFF2A1B05), Color(0xFF171006)))
+                        else Brush.horizontalGradient(
+                            listOf(NativePalette.card.copy(alpha = .55f), NativePalette.card.copy(alpha = .55f))
+                        )
+                    )
+                    .border(
+                        1.dp,
+                        if (crown) Gold.copy(alpha = .85f) else NativePalette.border.copy(alpha = .60f),
+                        plate,
+                    ),
                 contentAlignment = Alignment.Center,
             ) { glyph() }
         } else {
@@ -772,29 +884,15 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
                 .fillMaxWidth()
                 .then(
                     if (native) {
-                        // Figma toolbar: a 56dp bar flush to the field, separated
-                        // from the content by one hairline — not a floating pill.
-                        Modifier.padding(horizontal = 2.dp)
-                            .background(NativePalette.ink)
-                            .drawBehind {
-                                drawLine(
-                                    NativePalette.border.copy(alpha = .70f),
-                                    Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f),
-                                    strokeWidth = 1f,
-                                )
-                                drawLine(
-                                    Brush.horizontalGradient(
-                                        listOf(
-                                            Color.Transparent,
-                                            NativePalette.violet.copy(alpha = .26f),
-                                            NativePalette.cyan.copy(alpha = .30f),
-                                            Color.Transparent,
-                                        ),
-                                    ),
-                                    Offset(0f, size.height - 1f), Offset(size.width, size.height - 1f),
-                                    strokeWidth = 1.4f,
-                                )
-                            }
+                        // The approved reference header: one floating glass capsule
+                        // inset from both edges, with the violet→blue→cyan lit rim.
+                        // The capsule is the signed-in twin of the authentication
+                        // header, so the identity does not change at the door.
+                        val capsule = RoundedCornerShape(24.dp)
+                        Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                            .clip(capsule)
+                            .background(Knx.panel)
+                            .border(1.dp, Knx.panelBorder, capsule)
                     } else Modifier.padding(horizontal = 6.dp, vertical = 2.dp).glass(20, tab = false)
                 )
                 .height(56.dp).padding(horizontal = 4.dp),
@@ -846,7 +944,7 @@ private fun KnouxTopBar(page: Page, menu: () -> Unit, back: () -> Unit, pro: () 
             }
         }
         if (compactHeader) {
-            IconControl(Mark.CROWN, (Copy(R.string.k_knoux_ai_pro)).localized(), "pro", pro, plated = true)
+            IconControl(Mark.CROWN, (Copy(R.string.k_knoux_ai_pro)).localized(), "pro", pro, plated = true, tint = Gold)
         } else if (!LocalRoomy.current) {
             Box(Modifier.heightIn(min = 48.dp).testTag("pro")
                 .clickable(role = Role.Button, onClick = {
@@ -890,8 +988,8 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
         val tray = RoundedCornerShape(24.dp)
         Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, bottom = 8.dp)
             .clip(tray)
-            .background(NativePalette.card.copy(alpha = .78f), tray)
-            .border(1.dp, NativePalette.border.copy(alpha = .90f), tray)
+            .background(Knx.panel, tray)
+            .border(1.dp, Knx.panelBorder, tray)
     } else Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 5.dp).glass(25)
     Row(container.selectableGroup().padding(if (native) 0.dp else 3.dp),
         horizontalArrangement = if (native) Arrangement.spacedBy(0.dp) else Arrangement.spacedBy(2.dp)) {
@@ -902,7 +1000,7 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
                 animationSpec = tween(260, easing = androidx.compose.animation.core.FastOutSlowInEasing), label = "tab selection")
             val tone by animateColorAsState(
                 if (native) {
-                    if (active) NativePalette.cyan else NativePalette.muted
+                    if (active) Knx.text else Knx.muted
                 } else if (active) Chalk else Mist,
                 tween(200), label = "tab tone",
             )
@@ -913,18 +1011,39 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
                     .clip(RoundedCornerShape(if (native) 0.dp else 20.dp))
                     .drawBehind {
                         if (fraction > .01f) {
-                            drawLine(
-                                Brush.horizontalGradient(
-                                    listOf(
-                                        Color.Transparent,
-                                        NativePalette.cyan.copy(alpha = .75f * fraction),
-                                        Color.Transparent,
+                            if (native) {
+                                // The reference dock marks the current section with
+                                // one violet→blue pill behind icon and label — the
+                                // same lit action ramp, at rest.
+                                val insetX = 5.dp.toPx()
+                                val insetY = 5.dp.toPx()
+                                drawRoundRect(
+                                    brush = Brush.verticalGradient(
+                                        listOf(
+                                            Knx.violet.copy(alpha = .92f),
+                                            Knx.blue.copy(alpha = .62f),
+                                            Knx.cyan.copy(alpha = .30f),
+                                        ),
                                     ),
-                                ),
-                                Offset(size.width * .26f, 1f),
-                                Offset(size.width * .74f, 1f),
-                                strokeWidth = 2.dp.toPx(),
-                            )
+                                    topLeft = Offset(insetX, insetY),
+                                    size = Size(size.width - insetX * 2, size.height - insetY * 2),
+                                    cornerRadius = CornerRadius(18.dp.toPx(), 18.dp.toPx()),
+                                    alpha = fraction,
+                                )
+                            } else {
+                                drawLine(
+                                    Brush.horizontalGradient(
+                                        listOf(
+                                            Color.Transparent,
+                                            NativePalette.cyan.copy(alpha = .75f * fraction),
+                                            Color.Transparent,
+                                        ),
+                                    ),
+                                    Offset(size.width * .26f, 1f),
+                                    Offset(size.width * .74f, 1f),
+                                    strokeWidth = 2.dp.toPx(),
+                                )
+                            }
                         }
                     }
                     .selectable(active, role = Role.Tab, onClick = {
@@ -936,7 +1055,7 @@ private fun KnouxBottomNavigation(selected: Page, open: (Page) -> Unit) {
             ) {
                 Box(contentAlignment = Alignment.TopEnd) {
                     Box(Modifier.size(38.dp).clip(RoundedCornerShape(if (native) 13.dp else 19.dp))
-                        .tabSelection(fraction, native),
+                        .then(if (native) Modifier else Modifier.tabSelection(fraction, false)),
                         contentAlignment = Alignment.Center) {
                         Glyph(icon, Modifier.size(20.dp).graphicsLayer { scaleX = iconScale; scaleY = iconScale }, tone, active && !native)
                     }
