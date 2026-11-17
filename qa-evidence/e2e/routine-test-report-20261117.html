@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KNOUX-AI — unit test run, 17 Nov 2026</title>
+<style>
+  :root {
+    --bg: #0a0a12;
+    --panel: #12121d;
+    --panel-2: #171726;
+    --line: #262637;
+    --ink: #ececf4;
+    --muted: #9a9ab0;
+    --violet: #8b5cf6;
+    --cyan: #22d3ee;
+    --pass: #34d399;
+    --warn: #fbbf24;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: radial-gradient(1200px 600px at 15% -10%, #1b1435 0%, transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, #0d2b33 0%, transparent 55%), var(--bg);
+    color: var(--ink);
+    font: 15px/1.55 "Segoe UI", system-ui, -apple-system, sans-serif;
+    padding: 40px 24px 64px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  header { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 20px; justify-content: space-between; }
+  .brand { font-size: 13px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); }
+  h1 { margin: 6px 0 0; font-size: 30px; letter-spacing: -.02em; }
+  .verdict {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: rgba(52,211,153,.1); border: 1px solid rgba(52,211,153,.35);
+    color: var(--pass); padding: 9px 16px; border-radius: 999px;
+    font-weight: 600; letter-spacing: .06em; text-transform: uppercase; font-size: 13px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 12px currentColor; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 28px 0 8px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+  .stat b { display: block; font-size: 28px; letter-spacing: -.02em; }
+  .stat span { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; }
+  .bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; margin: 18px 0 30px;
+         background: var(--panel-2); border: 1px solid var(--line); }
+  .bar i { display: block; height: 100%; }
+  h2 { font-size: 13px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin: 34px 0 12px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  th, td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  th { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); background: var(--panel-2); }
+  tr:last-child td { border-bottom: 0; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .chip { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11px; letter-spacing: .08em;
+          text-transform: uppercase; background: rgba(52,211,153,.12); color: var(--pass); border: 1px solid rgba(52,211,153,.3); }
+  .chip.warn { background: rgba(251,191,36,.12); color: var(--warn); border-color: rgba(251,191,36,.3); }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  .card h3 { margin: 0 0 8px; font-size: 15px; }
+  .card p { margin: 0 0 10px; color: #c9c9dc; font-size: 14px; }
+  .card p:last-child { margin-bottom: 0; }
+  code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 12.5px;
+         background: #0d0d16; border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; color: #d8d8ea; }
+  .mono { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 12.5px; color: #cfcfe2; }
+  footer { margin-top: 34px; color: var(--muted); font-size: 12.5px; line-height: 1.7; }
+  .k { color: var(--cyan); }
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: 1fr 1fr; }
+    .cols { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <div class="brand">KNOUX-AI · routine run</div>
+      <h1>Unit test suite — 17 Nov 2026</h1>
+    </div>
+    <div class="verdict"><span class="dot"></span>Passed</div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b>84</b><span>tests</span></div>
+    <div class="stat"><b style="color:var(--pass)">0</b><span>failures</span></div>
+    <div class="stat"><b style="color:var(--pass)">0</b><span>errors</span></div>
+    <div class="stat"><b>0</b><span>skipped</span></div>
+  </div>
+
+  <div class="bar"><i style="width:100%; background:linear-gradient(90deg,var(--violet),var(--cyan))"></i></div>
+
+  <h2>Per class</h2>
+  <table>
+    <thead>
+      <tr><th>Test class</th><th class="num">Tests</th><th class="num">Failed</th><th class="num">Time (s)</th><th>Result</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="mono">DeepScanRulesTest</td><td class="num">11</td><td class="num">0</td><td class="num">0.050</td><td><span class="chip">pass</span></td></tr>
+      <tr><td class="mono">DuplicateRulesTest</td><td class="num">13</td><td class="num">0</td><td class="num">0.053</td><td><span class="chip">pass</span></td></tr>
+      <tr><td class="mono">PageRoutesTest</td><td class="num">5</td><td class="num">0</td><td class="num">0.009</td><td><span class="chip">pass</span></td></tr>
+      <tr><td class="mono">PrivacyRulesTest</td><td class="num">16</td><td class="num">0</td><td class="num">0.022</td><td><span class="chip">pass</span></td></tr>
+      <tr><td class="mono">RealDataRulesTest</td><td class="num">13</td><td class="num">0</td><td class="num">0.012</td><td><span class="chip">pass</span></td></tr>
+      <tr><td class="mono">ResidueRulesTest</td><td class="num">16</td><td class="num">0</td><td class="num">0.028</td><td><span class="chip">pass</span></td></tr>
+      <tr><td class="mono">visual.AbyssSonarBytesTest</td><td class="num">6</td><td class="num">0</td><td class="num">0.039</td><td><span class="chip">pass</span></td></tr>
+      <tr><td class="mono">visual.InstrumentCopyBudgetTest</td><td class="num">4</td><td class="num">0</td><td class="num">0.290</td><td><span class="chip">pass</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>What ran, and what did not</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>Ran — JVM unit tests</h3>
+      <p><code>:app:testDebugUnitTest</code> on a throwaway worktree branched from local <span class="k">main</span> @ <span class="mono">3ba9613</span>.</p>
+      <p>Build: <span class="mono">BUILD SUCCESSFUL in 6m 23s</span>. Result XML: <span class="mono">app/build/test-results/testDebugUnitTest/*.xml</span>.</p>
+      <p>Your working copy was not touched — the 3 modified UI files stayed modified and uncommitted.</p>
+    </div>
+    <div class="card">
+      <h3>Not run — instrumentation tests</h3>
+      <p><span class="chip warn">needs a device</span> &nbsp;17 classes in <span class="mono">app/src/androidTest</span> (Smart Clean, Privacy, Residue, Duplicate, navigation, splash).</p>
+      <p>The attached device reported as <span class="mono">SM-A025F</span> (R9ZR20HWHQY), not the itel S686LN named in AGENTS.md. Nothing was installed or executed on it.</p>
+    </div>
+  </div>
+
+  <footer>
+    No failures → no fix, no branch, no pull request. Temporary branch <span class="mono">routine/tests-20261117</span> and its worktree were deleted after the run.<br>
+    Local <span class="k">main</span> is 4 commits ahead of <span class="mono">origin/main</span>; those commits were not pushed by this routine.<br>
+    Setup note: Gradle rejects <span class="mono">JAVA_HOME</span> passed from this shell, so the suite is launched through PowerShell — documented in the routine's notes.
+  </footer>
+</div>
+</body>
+</html>

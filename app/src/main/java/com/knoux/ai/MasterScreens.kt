@@ -382,27 +382,13 @@ private fun NativeHubScreen(measures: List<HubMeasure>, open: (Page) -> Unit) {
     // Real Room journal only, the same source the reports chart reads.
     val history by remember { KnouxData.smartClean.observeHistory() }
         .collectAsState(initial = emptyList())
-    var selectedName by rememberSaveable { mutableStateOf(HubSegment.CLEAN.name) }
-    val selected = runCatching { HubSegment.valueOf(selectedName) }.getOrDefault(HubSegment.CLEAN)
     val specs = hubCardSpecs()
-    val ordered = HubSegment.values().sortedBy { if (it == selected) 0 else 1 }
 
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             .padding(horizontal = NativeSpace.edge),
     ) {
-        // Title and instrument share one band: the wordmark-side text keeps the
-        // reading edge, the drawn device sits on the open side of the field.
-        Row(
-            Modifier.fillMaxWidth().padding(top = 14.dp),
-            verticalAlignment = Alignment.Top,
-        ) {
-            NativeScreenTitle(
-                Copy(R.string.home_title), Copy(R.string.home_subtitle), "screen-home",
-                Modifier.weight(1f),
-            )
-            DeviceHero(Modifier.padding(start = 10.dp).size(112.dp).enterRise(0))
-        }
+        HubHero()
 
         NativeStorageOverview(
             footprint,
@@ -411,34 +397,23 @@ private fun NativeHubScreen(measures: List<HubMeasure>, open: (Page) -> Unit) {
 
         AccentButton(
             Action(Copy(R.string.k_start_deep_scan), Mark.RADAR),
-            Modifier.fillMaxWidth().padding(top = NativeSpace.row).heightIn(min = 48.dp).enterRise(1),
+            Modifier.fillMaxWidth().padding(top = NativeSpace.row).heightIn(min = 52.dp).enterRise(1),
             primary = true,
             tag = "start-scan",
-            labelSize = 15,
+            labelSize = 16,
         ) { open(Page.SCAN) }
 
-        Box(Modifier.fillMaxWidth().padding(top = NativeSpace.row).enterRise(2)) {
-            NativeHubSegments(selected) { picked -> selectedName = picked.name }
-        }
-
-        // One continuous grid, ordered by the chosen segment.
-        //
-        // The earlier build printed a group heading above each sub-grid. A group
-        // with an odd tile count then left a full-height empty cell, and the
-        // heading repeated the segment the customer had just tapped - three
-        // stacked voids down the page. The segment bar already states the order,
-        // so the grid simply flows: selected services first, the rest after.
+        // The reference hub flows straight from the action into the service
+        // grid. The grid keeps every service on screen in a fixed family order,
+        // so nothing is hidden behind a filter and the page reads top to bottom.
         val columns = if (stackForFontScale()) 1 else 2
-        val orderedTiles = ordered.flatMap { group -> specs.filter { hubSegmentOfTag[it.tag] == group } }
         Column(
-            Modifier.fillMaxWidth().padding(top = 14.dp),
+            Modifier.fillMaxWidth().padding(top = NativeSpace.block),
             verticalArrangement = Arrangement.spacedBy(NativeSpace.gutter),
         ) {
-            orderedTiles.chunked(columns).forEachIndexed { rowIndex, row ->
-                // Intrinsic height: a tile that grows stretches its neighbour, so
-                // a row never shows two different heights.
+            specs.chunked(columns).forEachIndexed { rowIndex, row ->
                 Row(
-                    Modifier.fillMaxWidth().height(IntrinsicSize.Min).enterRise(3 + rowIndex),
+                    Modifier.fillMaxWidth().height(IntrinsicSize.Min).enterRise(2 + rowIndex),
                     horizontalArrangement = Arrangement.spacedBy(NativeSpace.gutter),
                 ) {
                     row.forEach { spec ->
@@ -447,7 +422,6 @@ private fun NativeHubScreen(measures: List<HubMeasure>, open: (Page) -> Unit) {
                             Modifier.weight(1f).fillMaxHeight(),
                         )
                     }
-                    // A lone tile in the last row keeps the measured width.
                     repeat(columns - row.size) { Spacer(Modifier.weight(1f)) }
                 }
             }
@@ -474,6 +448,58 @@ private fun NativeHubScreen(measures: List<HubMeasure>, open: (Page) -> Unit) {
     }
 }
 
+/**
+ * The hub's opening composition, taken from the approved reference: one large
+ * orb, the two-tone product title and one quiet subtitle, centred on the field.
+ * It carries the `screen-home` tag because it is the surface the hub is known by.
+ */
+@Composable
+private fun HubHero() {
+    Column(
+        Modifier.fillMaxWidth().padding(top = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        DeviceHero(Modifier.size(200.dp).enterRise(0))
+        val title = Copy(R.string.home_title).localized()
+        val split = title.trim().lastIndexOf(' ')
+        val lead = if (split > 0) title.substring(0, split) else title
+        val accent = if (split > 0) title.substring(split + 1) else ""
+        val styled = buildAnnotatedString {
+            withStyle(SpanStyle(color = NativePalette.text)) { append(lead) }
+            if (accent.isNotEmpty()) {
+                withStyle(
+                    SpanStyle(
+                        brush = Brush.horizontalGradient(
+                            listOf(Knx.magenta, Knx.violet, Knx.blue, Knx.cyan),
+                        ),
+                    )
+                ) {
+                    append(" ")
+                    append(accent)
+                }
+            }
+        }
+        Text(
+            styled,
+            Modifier.fillMaxWidth().padding(top = 6.dp).testTag("screen-home"),
+            style = TextStyle(
+                fontSize = 27.sp,
+                lineHeight = 34.sp,
+                fontFamily = DisplayFace,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                letterSpacing = (-0.3).sp,
+            ),
+        )
+        Label(
+            Copy(R.string.home_subtitle), 13, NativePalette.muted,
+            modifier = Modifier.fillMaxWidth().padding(top = 4.dp, start = 18.dp, end = 18.dp),
+            align = TextAlign.Center,
+        )
+    }
+}
+
+
 @Composable
 private fun NativeHubTile(
     spec: HubCardSpec, measures: List<HubMeasure>, tint: Color, open: (Page) -> Unit,
@@ -481,7 +507,7 @@ private fun NativeHubTile(
 ) {
     val measure = spec.valueIndex?.let { measures[it] }
     NativeServiceTile(
-        title = spec.title, mark = spec.mark, tint = tint, tag = spec.tag,
+        title = spec.title, body = spec.body, mark = spec.mark, tint = tint, tag = spec.tag,
         value = measure?.takeIf { it.measured }?.value, action = spec.action,
         modifier = modifier, onClick = { open(spec.page) },
     )

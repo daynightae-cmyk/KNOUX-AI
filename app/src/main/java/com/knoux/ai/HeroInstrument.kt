@@ -10,7 +10,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -20,140 +19,178 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.unit.dp
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 /**
- * The hub's device instrument.
+ * The hub's device instrument — the observatory orb.
  *
- * It is drawn, not photographed: a lit handset held inside two orbit rings whose
- * satellites carry the brand's two colours. Nothing here encodes a measurement,
- * so the artwork stays decorative — a real figure is always printed as a number
- * beside it, never implied by the drawing.
+ * One glass sphere holds the traced K, lit from above by the brand's own
+ * magenta→violet→blue→cyan ramp and resting on a pool of light. A single orbit
+ * rail carries a travelling satellite. Nothing here encodes a measurement: the
+ * orb is atmosphere, and every real figure is printed as a number beside it.
  *
- * Motion is a slow orbit drift. It is dropped entirely when the customer turns
- * motion off, leaving a composed still frame rather than a frozen animation.
+ * Motion is one slow satellite drift and one breathing halo. Under reduced
+ * motion both stop at a composed frame instead of freezing mid-animation.
  */
 @Composable
 internal fun DeviceHero(modifier: Modifier = Modifier) {
     val motion = LocalPreviewMotion.current
     val drift = if (motion) {
-        val transition = rememberInfiniteTransition(label = "hero orbit")
+        val transition = rememberInfiniteTransition(label = "hub orb")
         transition.animateFloat(
-            0f, 360f,
-            infiniteRepeatable(tween(18_000, easing = LinearEasing), RepeatMode.Restart),
-            label = "orbit angle",
+            0f, 1f,
+            infiniteRepeatable(tween(16_000, easing = LinearEasing), RepeatMode.Restart),
+            label = "orb satellite",
         )
     } else null
-    val angle = drift?.value ?: 318f
+    val phase = drift?.value ?: 0.32f
 
-    // Decorative: the instrument states no measurement, so it exposes no reading.
+    // Decorative: the orb states no measurement, so it exposes no reading.
     Canvas(modifier) {
         val w = size.width
         val h = size.height
-        val cx = w * 0.50f
-        val cy = h * 0.50f
-        val ringR = w * 0.46f
+        val cx = w * .5f
+        val cy = h * .46f
+        val r = w * .315f
 
-        // Floor light: the instrument sits on a pool of the brand, not in a void.
-        drawOval(
+        // ── Halo: the orb sits in its own light, not on a flat field ──────────
+        drawCircle(
             Brush.radialGradient(
-                listOf(NativePalette.violet.copy(alpha = .30f), Color.Transparent),
-                center = Offset(cx, h * 0.855f),
-                radius = w * 0.34f,
+                listOf(
+                    NativePalette.violet.copy(alpha = .30f),
+                    NativePalette.blue.copy(alpha = .10f),
+                    Color.Transparent,
+                ),
+                center = Offset(cx, cy), radius = r * 1.85f,
             ),
-            topLeft = Offset(cx - w * 0.28f, h * 0.82f),
-            size = Size(w * 0.56f, h * 0.07f),
+            radius = r * 1.85f, center = Offset(cx, cy),
         )
 
-        // Two tilted orbits, each with one travelling satellite. The rings are drawn
-        // bright enough to read as rails, so the satellites sit on a visible path.
-        listOf(-20f to NativePalette.cyan, 22f to NativePalette.violet).forEachIndexed { index, (tilt, tint) ->
-            rotate(tilt, pivot = Offset(cx, cy)) {
-                drawOval(
-                    Brush.sweepGradient(
-                        listOf(
-                            tint.copy(alpha = .10f),
-                            tint.copy(alpha = .85f),
-                            tint.copy(alpha = .20f),
-                            Color.Transparent,
-                            tint.copy(alpha = .10f),
-                        ),
-                        center = Offset(cx, cy),
+        // ── Ground: three perspective rings and a light pool ──────────────────
+        val floorY = cy + r * 1.00f
+        drawOval(
+            Brush.radialGradient(
+                listOf(NativePalette.violet.copy(alpha = .34f), NativePalette.cyan.copy(alpha = .10f), Color.Transparent),
+                center = Offset(cx, floorY), radius = r * 1.10f,
+            ),
+            topLeft = Offset(cx - r * 1.08f, floorY - r * .16f),
+            size = Size(r * 2.16f, r * .34f),
+        )
+        listOf(1.00f to .34f, .74f to .22f, .48f to .14f).forEach { (scale, alpha) ->
+            drawOval(
+                Brush.horizontalGradient(
+                    listOf(
+                        Color.Transparent,
+                        NativePalette.cyan.copy(alpha = alpha),
+                        NativePalette.violet.copy(alpha = alpha * .8f),
+                        Color.Transparent,
                     ),
-                    topLeft = Offset(cx - ringR, cy - ringR * 0.30f),
-                    size = Size(ringR * 2f, ringR * 0.60f),
-                    style = Stroke(width = w * 0.012f, cap = StrokeCap.Round),
-                )
-                val satellite = angle + if (index == 0) 0f else 180f
-                val sx = cx + ringR * cos(Math.toRadians(satellite.toDouble())).toFloat()
-                val sy = cy + ringR * 0.30f * sin(Math.toRadians(satellite.toDouble())).toFloat()
-                drawCircle(tint.copy(alpha = .22f), w * 0.042f, Offset(sx, sy))
-                drawCircle(tint, w * 0.017f, Offset(sx, sy))
-            }
+                ),
+                topLeft = Offset(cx - r * 1.02f * scale, floorY - r * .13f * scale),
+                size = Size(r * 2.04f * scale, r * .26f * scale),
+                style = Stroke(1.2.dp.toPx()),
+            )
         }
 
-        // The handset: a lit slab with a gradient rim and a real screen inset.
-        rotate(-9f, pivot = Offset(cx, cy)) {
-            val bodyW = w * 0.42f
-            val bodyH = h * 0.58f
-            val body = Offset(cx - bodyW / 2f, cy - bodyH / 2f)
-            val screen = CornerRadius(w * 0.065f, w * 0.065f)
-            drawRoundRect(
-                Brush.verticalGradient(
-                    listOf(Color(0xFF1E2A5C), Color(0xFF0A0F26)),
-                    startY = body.y, endY = body.y + bodyH,
+        // ── The glass sphere ─────────────────────────────────────────────────
+        drawCircle(
+            Brush.radialGradient(
+                listOf(Color(0xFF3A1E82), Color(0xFF1B0F4A), Color(0xFF0A0620)),
+                center = Offset(cx - r * .28f, cy - r * .34f),
+                radius = r * 1.42f,
+            ),
+            radius = r, center = Offset(cx, cy),
+        )
+        // Inner violet floor light, as if the sphere were lit from its base.
+        drawCircle(
+            Brush.radialGradient(
+                listOf(NativePalette.violet.copy(alpha = .34f), Color.Transparent),
+                center = Offset(cx, cy + r * .58f), radius = r * .86f,
+            ),
+            radius = r, center = Offset(cx, cy),
+        )
+        // Fine dotted texture, deterministic — the sphere reads as a volume.
+        for (i in 0 until 108) {
+            val angle = i * 2.399963f
+            val radius = r * sqrt((i + .5f) / 108f) * .92f
+            val x = cx + cos(angle) * radius
+            val y = cy + sin(angle) * radius * .96f
+            val alpha = .05f + .07f * ((i * 37 % 11) / 11f)
+            drawCircle(Color.White.copy(alpha = alpha), .7.dp.toPx(), Offset(x, y))
+        }
+        // Reflected window: one soft specular highlight at the top-left.
+        drawCircle(
+            Brush.radialGradient(
+                listOf(Color.White.copy(alpha = .22f), Color.Transparent),
+                center = Offset(cx - r * .34f, cy - r * .40f), radius = r * .58f,
+            ),
+            radius = r * .58f, center = Offset(cx - r * .34f, cy - r * .40f),
+        )
+        // Rim: the whole brand ramp, with a brighter arc where light enters.
+        drawCircle(
+            Brush.sweepGradient(
+                listOf(
+                    NativePalette.violet, NativePalette.magenta, NativePalette.blue,
+                    NativePalette.cyan, NativePalette.violet,
                 ),
-                topLeft = body, size = Size(bodyW, bodyH), cornerRadius = screen,
-            )
-            drawRoundRect(
-                Brush.linearGradient(
-                    listOf(NativePalette.violet, NativePalette.blue, NativePalette.cyan),
-                    start = Offset(body.x, body.y), end = Offset(body.x + bodyW, body.y + bodyH),
+                center = Offset(cx, cy),
+            ),
+            radius = r, center = Offset(cx, cy),
+            style = Stroke(1.8.dp.toPx()),
+            alpha = .85f,
+        )
+        drawCircle(
+            Color.White.copy(alpha = .40f),
+            radius = r, center = Offset(cx, cy),
+            style = Stroke(1.dp.toPx()),
+            alpha = .30f,
+        )
+
+        // ── The traced K, at the centre of the sphere ────────────────────────
+        val kx = cx
+        val ky = cy + r * .02f
+        val stem = r * .40f
+        val mark = Path().apply {
+            moveTo(kx - r * .26f, ky - stem)
+            lineTo(kx - r * .26f, ky + stem)
+            moveTo(kx - r * .26f, ky)
+            lineTo(kx + r * .38f, ky - stem * .88f)
+            moveTo(kx - r * .26f, ky)
+            lineTo(kx + r * .38f, ky + stem * .88f)
+        }
+        val markBrush = Brush.linearGradient(
+            listOf(Knx.magenta, Knx.violet, Knx.blue, Knx.cyan),
+            start = Offset(kx - r * .26f, ky - stem),
+            end = Offset(kx + r * .38f, ky + stem),
+        )
+        // Phosphor under the stroke, then the stroke itself.
+        drawPath(mark, markBrush, alpha = .28f, style = Stroke(r * .22f, cap = StrokeCap.Round))
+        drawPath(mark, markBrush, style = Stroke(r * .105f, cap = StrokeCap.Round))
+        drawPath(mark, Color.White.copy(alpha = .55f), style = Stroke(r * .026f, cap = StrokeCap.Round))
+
+        // ── Orbit rail and its satellite ─────────────────────────────────────
+        rotate(-18f, pivot = Offset(cx, cy)) {
+            drawOval(
+                Brush.horizontalGradient(
+                    listOf(
+                        Color.Transparent,
+                        NativePalette.cyan.copy(alpha = .55f),
+                        NativePalette.violet.copy(alpha = .55f),
+                        Color.Transparent,
+                    ),
                 ),
-                topLeft = body, size = Size(bodyW, bodyH), cornerRadius = screen,
-                style = Stroke(width = w * 0.011f),
+                topLeft = Offset(cx - r * 1.42f, cy - r * .30f),
+                size = Size(r * 2.84f, r * .60f),
+                style = Stroke(1.4.dp.toPx(), cap = StrokeCap.Round),
             )
-            // Screen bloom, cast from the lower edge like the reference field.
-            val inset = w * 0.020f
-            drawRoundRect(
-                Brush.radialGradient(
-                    listOf(NativePalette.cyan.copy(alpha = .26f), NativePalette.violet.copy(alpha = .10f), Color.Transparent),
-                    center = Offset(cx, cy + bodyH * 0.16f),
-                    radius = bodyW * 0.80f,
-                ),
-                topLeft = Offset(body.x + inset, body.y + inset),
-                size = Size(bodyW - inset * 2f, bodyH - inset * 2f),
-                cornerRadius = CornerRadius(w * 0.050f, w * 0.050f),
-            )
-            // Earpiece slot: one honest hardware detail, so the slab reads as a handset.
-            drawRoundRect(
-                Color.White.copy(alpha = .22f),
-                topLeft = Offset(cx - bodyW * 0.10f, body.y + bodyH * 0.055f),
-                size = Size(bodyW * 0.20f, bodyH * 0.010f),
-                cornerRadius = CornerRadius(w * 0.006f, w * 0.006f),
-            )
-            // The traced K, at the scale of a mark rather than a logo lockup.
-            val kx = cx
-            val ky = cy + bodyH * 0.02f
-            val stem = bodyH * 0.135f
-            val mark = Path().apply {
-                moveTo(kx - bodyW * 0.115f, ky - stem)
-                lineTo(kx - bodyW * 0.115f, ky + stem)
-                moveTo(kx - bodyW * 0.115f, ky)
-                lineTo(kx + bodyW * 0.145f, ky - stem * 0.88f)
-                moveTo(kx - bodyW * 0.115f, ky)
-                lineTo(kx + bodyW * 0.145f, ky + stem * 0.88f)
-            }
-            drawPath(
-                mark,
-                Brush.linearGradient(
-                    listOf(NativePalette.violet, NativePalette.cyan),
-                    start = Offset(kx - bodyW * 0.115f, ky - stem),
-                    end = Offset(kx + bodyW * 0.145f, ky + stem),
-                ),
-                style = Stroke(width = w * 0.024f, cap = StrokeCap.Round),
-            )
+            val angle = phase * 2f * PI.toFloat()
+            val sx = cx + r * 1.42f * cos(angle)
+            val sy = cy + r * .30f * sin(angle)
+            drawCircle(NativePalette.cyan.copy(alpha = .22f), r * .10f, Offset(sx, sy))
+            drawCircle(Color.White.copy(alpha = .95f), r * .032f, Offset(sx, sy))
         }
     }
 }

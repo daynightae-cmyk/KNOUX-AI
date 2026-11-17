@@ -389,84 +389,84 @@ internal fun NativeHubSegments(selected: HubSegment, onSelect: (HubSegment) -> U
 }
 
 /**
- * One service tile: Figma 154x92 in a two-column grid with a 12dp gutter.
+ * One service tile in the approved two-column grid.
  *
- * The tile carries its service's tone in exactly three places - the icon plate,
- * a short top hairline and the measured figure - so the grid reads as a family
- * without eight different cards. The whole tile is the control. An unmeasured
- * service shows a dash rather than a number borrowed from a fixture.
+ * The card carries its service's tone in exactly three places — the icon plate,
+ * the lit rim and the measured figure — so the grid reads as one family without
+ * eight unrelated cards. The whole tile is the control; the trailing pill states
+ * what a tap does. An unmeasured service shows a dash, never a borrowed number.
  */
 @Composable
 internal fun NativeServiceTile(
-    title: Copy, mark: Mark, tint: Color, tag: String,
+    title: Copy, body: Copy, mark: Mark, tint: Color, tag: String,
     value: Copy?, action: Copy?, modifier: Modifier = Modifier, onClick: () -> Unit,
 ) {
-    val shape = RoundedCornerShape(16.dp)
+    val shape = RoundedCornerShape(18.dp)
     Column(
-        modifier.fillMaxWidth().heightIn(min = 104.dp).clip(shape)
-            .background(Brush.verticalGradient(listOf(Color(0xFF121B3B), Color(0xFF0B1128))))
+        modifier.fillMaxWidth().heightIn(min = 132.dp).clip(shape)
+            .background(Knx.panel)
             .drawBehind {
-                // One quiet corner light in the service's own tone: the tile
-                // belongs to a family, and the tone says which member it is
-                // without painting the whole card.
+                // Corner light in the service's own tone: identity without paint.
                 drawRect(
                     Brush.radialGradient(
-                        listOf(tint.copy(alpha = .085f), Color.Transparent),
-                        center = Offset(size.width * .06f, 0f),
-                        radius = size.width * .85f,
+                        listOf(tint.copy(alpha = .16f), Color.Transparent),
+                        center = Offset(size.width * .04f, 0f),
+                        radius = size.width * .95f,
                     )
                 )
             }
-            .drawWithContent {
-                drawContent()
-                drawLine(
-                    Brush.horizontalGradient(
-                        listOf(tint.copy(alpha = .55f), tint.copy(alpha = .06f), Color.Transparent),
-                    ),
-                    Offset(0f, 1.dp.toPx()),
-                    Offset(size.width * .68f, 1.dp.toPx()),
-                    strokeWidth = 1.2.dp.toPx(),
-                )
-            }
-            .border(1.dp, NativePalette.border.copy(alpha = .78f), shape)
+            .border(1.dp, Knx.panelBorderQuiet, shape)
             .testTag(tag).brandClickable(onClick = onClick)
-            .padding(horizontal = 13.dp, vertical = 12.dp),
+            .padding(horizontal = 12.dp, vertical = 11.dp),
         verticalArrangement = Arrangement.SpaceBetween,
     ) {
         Row(
             Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(9.dp),
         ) {
-            ServiceIconPlate(mark, tint, size = 36.dp, iconSize = 18.dp)
-            Label(
-                title, 12, NativePalette.text, FontWeight.SemiBold,
-                modifier = Modifier.weight(1f), maxLines = 3, overflow = TextOverflow.Ellipsis,
-            )
-            Glyph(
-                Mark.NEXT, Modifier.size(13.dp).rotate(if (LocalArabic.current) 180f else 0f),
-                NativePalette.muted.copy(alpha = .55f),
-            )
+            ServiceIconPlate(mark, tint, size = 44.dp, iconSize = 22.dp)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Label(
+                    title, 14, NativePalette.text, FontWeight.Bold,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis,
+                )
+                Label(
+                    body, 11, NativePalette.muted,
+                    maxLines = 2, overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
         Row(
-            Modifier.fillMaxWidth().padding(top = 10.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            Modifier.fillMaxWidth().padding(top = 9.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             Label(
-                value ?: Copy.runtime("—"), 15,
-                if (value != null) tint else NativePalette.muted.copy(alpha = .72f),
+                value ?: Copy.runtime("—"), 13,
+                if (value != null) tint else NativePalette.muted.copy(alpha = .70f),
                 if (value != null) FontWeight.Bold else FontWeight.Normal,
                 modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis,
             )
             action?.let {
                 val pill = RoundedCornerShape(50)
-                Box(
-                    Modifier.clip(pill).background(tint.copy(alpha = .12f))
-                        .border(1.dp, tint.copy(alpha = .28f), pill)
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                Row(
+                    Modifier.clip(pill)
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(tint.copy(alpha = .34f), tint.copy(alpha = .14f)),
+                            )
+                        )
+                        .border(1.dp, tint.copy(alpha = .62f), pill)
+                        .padding(start = 10.dp, end = 7.dp, top = 4.dp, bottom = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(3.dp),
                 ) {
-                    Label(it, 10, tint, FontWeight.SemiBold, maxLines = 1)
+                    Label(it, 11, NativePalette.text, FontWeight.SemiBold, maxLines = 1)
+                    Glyph(
+                        Mark.NEXT, Modifier.size(11.dp).rotate(if (LocalArabic.current) 180f else 0f),
+                        NativePalette.text,
+                    )
                 }
             }
         }
