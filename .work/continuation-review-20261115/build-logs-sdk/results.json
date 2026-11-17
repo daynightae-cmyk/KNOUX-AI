@@ -1,0 +1,17 @@
+[
+  {
+    "task": ":app:compileDebugKotlin",
+    "exit": 0,
+    "log": "D:\\KNOUX-AI\\.work\\continuation-review-20261115\\build-logs-sdk\\app-compileDebugKotlin.log"
+  },
+  {
+    "task": ":app:compileDebugAndroidTestKotlin",
+    "exit": 0,
+    "log": "D:\\KNOUX-AI\\.work\\continuation-review-20261115\\build-logs-sdk\\app-compileDebugAndroidTestKotlin.log"
+  },
+  {
+    "task": ":app:testDebugUnitTest",
+    "exit": 1,
+    "log": "D:\\KNOUX-AI\\.work\\continuation-review-20261115\\build-logs-sdk\\app-testDebugUnitTest.log"
+  }
+]

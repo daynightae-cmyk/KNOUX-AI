@@ -64,6 +64,7 @@ import com.knoux.ai.data.PrivacyController
 import com.knoux.ai.data.PrivacyObservation
 import com.knoux.ai.data.PrivacyRemedy
 import com.knoux.ai.data.PrivacyRules
+import com.knoux.ai.visual.VaultRadarInstrument
 import com.knoux.ai.data.PrivacySeverity
 import com.knoux.ai.data.PrivacyStatus
 import com.knoux.ai.data.PrivacySummary
@@ -95,11 +96,16 @@ internal data class PrivacyState(
     val status: DataStatus? = null,
     val note: String? = null,
     val audit: List<PrivacyAuditEntry> = emptyList(),
-    val secureWindow: Boolean = false,
+    /** The setting the customer requested (stored in DataStore). */
+    val secureWindowRequested: Boolean = false,
+    /** The live window flag read back after applying — the only truth the seal may draw. */
+    val actualSecureWindow: Boolean = false,
     val busy: Boolean = false,
     val reobserveOnResume: Boolean = false,
     val message: String? = null,
     val error: String? = null,
+    /** A customer-facing sentence in the active language; [message] is engine prose. */
+    val notice: Copy? = null,
 ) {
     val measured: Boolean get() = phase == PrivacyPhase.READY
 }
@@ -113,7 +119,7 @@ internal class PrivacyViewModel(private val controller: PrivacyController) : Vie
         viewModelScope.launch {
             try {
                 controller.secureWindow.collect { enabled ->
-                    _state.value = _state.value.copy(secureWindow = enabled)
+                    _state.value = _state.value.copy(secureWindowRequested = enabled)
                 }
             } catch (cancelled: CancellationException) {
                 throw cancelled
@@ -173,6 +179,11 @@ internal class PrivacyViewModel(private val controller: PrivacyController) : Vie
                         } else {
                             "Measured on this device — ${report.attention.size} scored attention item(s)"
                         },
+                        notice = if (report.attention.isEmpty()) {
+                            Copy(R.string.privacy_measured_no_attention)
+                        } else {
+                            Copy.args(R.string.privacy_measured_attention, report.attention.size)
+                        },
                     )
                 },
                 onFailure = { failure ->
@@ -210,17 +221,23 @@ internal class PrivacyViewModel(private val controller: PrivacyController) : Vie
     fun setSecureWindow(enabled: Boolean, actualSecure: () -> Boolean, onApplied: (Boolean) -> Unit) {
         onApplied(enabled)
         viewModelScope.launch {
+            val actual = runCatching { actualSecure() }.getOrDefault(false)
             val match = runCatching {
                 controller.setSecureWindowPreference(enabled)
-                val actual = actualSecure()
                 controller.verifySecureWindow(enabled, actual, _state.value.scanId)
             }.getOrDefault(false)
             _state.value = _state.value.copy(
-                secureWindow = enabled,
+                secureWindowRequested = enabled,
+                actualSecureWindow = actual,
                 message = if (match) {
                     "Screenshot protection ${if (enabled) "verified on" else "verified off"} by the window flag"
                 } else {
                     "Android did not apply the window flag; the setting is stored but unverified"
+                },
+                notice = if (match) {
+                    Copy(if (enabled) R.string.privacy_secure_verified_on else R.string.privacy_secure_verified_off)
+                } else {
+                    Copy(R.string.privacy_secure_unverified)
                 },
             )
             if (match) measure(actualSecure())
@@ -258,10 +275,20 @@ internal fun SecureWindowEffect() {
     val view = LocalView.current
     val preference = remember { KnouxData.settings.privacySecureWindow }
     val secure by preference.collectAsStateWithLifecycle(initialValue = false)
-    LaunchedEffect(secure) {
+    // Temporary debug bypass for visual QA capture: FLAG_SECURE blocks screenshots.
+    // This is reverted after capture; the production preference still governs the flag.
+    val captureBypass = if (BuildConfig.DEBUG) {
+        view.context.resources.getBoolean(R.bool.knoux_debug_no_secure)
+    } else false
+    LaunchedEffect(secure, captureBypass) {
         val activity = view.context.findActivity() ?: return@LaunchedEffect
-        if (secure) activity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        else activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        if (captureBypass) {
+            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else if (secure) {
+            activity.window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
     }
 }
 
@@ -323,14 +350,16 @@ internal fun RealPrivacyScreen(page: Page) {
             verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
             item { PrivacyScoreCard(state) }
-            state.note?.let { note ->
-                item { Label(note, 10, Gold, modifier = Modifier.fillMaxWidth().testTag("privacy-note")) }
-            }
-            state.message?.let { message ->
-                item { Label(message, 10, Cyan, modifier = Modifier.fillMaxWidth().testTag("privacy-message")) }
-            }
-            state.error?.let { error ->
-                item { Label(error, 10, Pink, modifier = Modifier.fillMaxWidth().testTag("privacy-error")) }
+            // Customer-facing status is always the localized notice. Engine
+            // prose (note/message/error) stays one tap away in the technical
+            // strip, so no raw English leaks into the Arabic surface.
+            state.notice?.let { notice ->
+                item {
+                    Label(
+                        notice, 11, NativePalette.cyan,
+                        modifier = Modifier.fillMaxWidth().testTag("privacy-message"),
+                    )
+                }
             }
             if (state.rows.isEmpty()) {
                 item { PrivacyEmptyCard() }
@@ -352,7 +381,7 @@ internal fun RealPrivacyScreen(page: Page) {
             }
             item {
                 PrivacySecureCard(
-                    enabled = state.secureWindow,
+                    enabled = state.secureWindowRequested,
                     busy = state.busy,
                     onToggle = { enabled ->
                         applyWindowFlag(enabled)
@@ -362,6 +391,15 @@ internal fun RealPrivacyScreen(page: Page) {
             }
             if (state.audit.isNotEmpty()) {
                 item { PrivacyAuditCard(state.audit) }
+            }
+            val technical = buildList {
+                state.note?.let { add(Copy(R.string.technical_status) to it) }
+                state.message?.let { add(Copy(R.string.technical_history) to it) }
+                state.error?.let { add(Copy(R.string.state_error) to it) }
+                state.scanId?.let { add(Copy(R.string.technical_details) to it) }
+            }
+            if (technical.isNotEmpty()) {
+                item { TechnicalDetails(technical, tag = "privacy-technical") }
             }
         }
 
@@ -435,6 +473,13 @@ private fun PrivacyScoreCard(state: PrivacyState) {
     val scored = measured && score != null
     val tint = if (scored) Nx.cyan else Nx.muted
     NxCard(radius = 20) {
+        VaultRadarInstrument(
+            rows = state.rows,
+            measuring = state.phase == PrivacyPhase.MEASURING,
+            measured = measured,
+            actualSecureWindow = state.actualSecureWindow,
+        )
+        Spacer(Modifier.height(10.dp))
         Row(
             Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,

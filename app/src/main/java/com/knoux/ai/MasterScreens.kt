@@ -52,6 +52,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.knoux.ai.data.CleanupHistory
+import com.knoux.ai.visual.PrismInstrument
 import com.knoux.ai.data.KnouxData
 import java.text.DateFormat
 import java.util.Date
@@ -622,14 +623,13 @@ internal fun ReportsScreen(open: (Page) -> Unit) {
                 scan == null && completed.isEmpty() -> ReportsEmptyPanel { open(Page.SCAN) }
                 else -> {
                     ReportsSummary(scan)
-                    if (completed.isNotEmpty()) {
-                        CleanupHistoryChart(completed)
-                        Label(Copy(R.string.reports_chart_note), 12, NativePalette.muted)
-                    } else {
-                        // A scan was measured but nothing was cleaned yet: the
-                        // chart stays empty rather than borrowing the scan figure.
-                        StateBlock(UiState.EMPTY, Copy(R.string.reports_chart_empty))
+                    SurfaceCard(accent = NativePalette.violet) {
+                        Column(Modifier.fillMaxWidth().padding(16.dp)) {
+                            PrismInstrument(completed)
+                        }
                     }
+                    CleanupHistoryChart(completed)
+                    Label(Copy(R.string.reports_chart_note), 12, NativePalette.muted)
                 }
             }
             StateNote(Copy(R.string.reports_honesty))

@@ -25,11 +25,8 @@ internal fun PrivacySweepScreen(open: (Page) -> Unit) {
 
 @Composable
 internal fun AiOptimizationScreen(open: (Page) -> Unit) {
-    EmptyServiceScreen(
-        page = Page.OPTIMIZE,
-        open = open,
-        body = Copy(R.string.ai_hub_body),
-        primary = Action(Copy(R.string.action_open_clean), Mark.BROOM),
-        onPrimary = { open(Page.CLEAN) },
-    )
+    // The index route now opens the real on-device recommendation engine instead
+    // of the old "no connected engine" placeholder. Every node it lights traces
+    // to a measured pass the customer can open and verify.
+    AiRecommendationsScreen(open)
 }

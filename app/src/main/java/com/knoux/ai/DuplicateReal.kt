@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
@@ -552,15 +553,54 @@ internal fun RealDuplicateScreen(page: Page, open: (Page) -> Unit) {
         )
         ServiceStatePill(pill)
 
-        // ── Mirror instrument has moved to the hero ──────────────────────────
-        // A second 340dp twin-orb stage used to sit inside this list and pushed
-        // the real result cards off the viewport. The hero above now owns the
-        // MIRROR identity, so the list starts with measured state, not art.
+        // ── Mirror: the signature PC02 instrument ────────────────────────────
+        // Twin orbs on a tether — the sealed keeper and the removable copies.
+        // Drawn from the same measured state as the cards below: tension tracks
+        // real scope completion, the hero numeral is measured redundant bytes
+        // only, and an unmeasured pass stays fogged. It scrolls with the list so
+        // the real result cards remain one flick away.
         LazyColumn(
             Modifier.fillMaxWidth().weight(1f).testTag("duplicate-list"),
             contentPadding = PaddingValues(horizontal = 11.dp, vertical = 7.dp),
             verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
+            item {
+                val mirrorPhase = when {
+                    state.phase == DuplicatePhase.SCANNING -> MirrorPhase.RUNNING
+                    state.phase == DuplicatePhase.ERROR -> MirrorPhase.FAILED
+                    state.phase == DuplicatePhase.IDLE -> MirrorPhase.IDLE
+                    state.status == DataStatus.PARTIAL -> MirrorPhase.PARTIAL
+                    else -> MirrorPhase.RESULT
+                }
+                val mirrorCaption = when (mirrorPhase) {
+                    MirrorPhase.RUNNING -> Copy(R.string.k_measuring_device)
+                    MirrorPhase.FAILED -> Copy(R.string.k_pass_failed)
+                    MirrorPhase.IDLE -> Copy(R.string.k_not_measured_yet)
+                    MirrorPhase.PARTIAL -> Copy(R.string.status_partial)
+                    else -> Copy(R.string.status_verified)
+                }
+                val tension = if (state.scopesTotal > 0) {
+                    (state.scopesDone.toFloat() / state.scopesTotal).coerceIn(0f, 1f)
+                } else {
+                    null
+                }
+                SurfaceCard(accent = NativePalette.magenta) {
+                    MirrorInstrument(
+                        frame = MirrorFrame(
+                            phase = mirrorPhase,
+                            tension = tension,
+                            heroValue = if (state.measured) state.redundantBytes else null,
+                            groupCount = state.groups.size,
+                            motion = motion,
+                            caption = mirrorCaption,
+                            hasFindings = state.groups.isNotEmpty(),
+                            widthDp = LocalConfiguration.current.screenWidthDp.toFloat(),
+                            lastResultAgeMillis = state.capturedAt?.let { System.currentTimeMillis() - it },
+                        ),
+                        modifier = Modifier.fillMaxWidth().testTag("duplicate-mirror"),
+                    )
+                }
+            }
             item { DuplicateSummaryCard(state) }
             val technical = buildList {
                 state.note?.let { add(Copy(R.string.technical_note) to it) }

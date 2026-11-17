@@ -108,65 +108,8 @@ internal fun Unmeasured(size: Int = 15, align: TextAlign? = null, modifier: Modi
     )
 }
 
-/**
- * The native ambient field.
- *
- * Three thin arcs — two along the top edge, one along the bottom — carry the
- * logo's violet → magenta → cyan into the empty bands of the Figma composition
- * at low opacity. That is the whole decoration. There are deliberately no light
- * pools, no stardust, no horizon beam and no moving parts: the field must read
- * as a quiet navy surface with a hint of the brand, never as an effect.
- *
- * It is static, so a reduced-motion device and a still screenshot see the same
- * thing.
- */
-internal fun DrawScope.drawNativeAmbientField() {
-    val w = size.width
-    val h = size.height
-    if (w < 1f || h < 1f) return
-    val stroke = (1.4.dp.toPx()).coerceAtLeast(1f)
-    val wave = Brush.horizontalGradient(
-        listOf(
-            Color.Transparent,
-            NativePalette.violet.copy(alpha = .20f),
-            NativePalette.magenta.copy(alpha = .13f),
-            NativePalette.cyan.copy(alpha = .17f),
-            Color.Transparent,
-        ),
-        startX = 0f, endX = w,
-    )
-    val upper = Path().apply {
-        moveTo(0f, h * .045f)
-        cubicTo(w * .28f, h * .004f, w * .64f, h * .104f, w, h * .038f)
-    }
-    val second = Path().apply {
-        moveTo(0f, h * .075f)
-        cubicTo(w * .34f, h * .034f, w * .70f, h * .128f, w, h * .068f)
-    }
-    val floor = Path().apply {
-        moveTo(0f, h * .955f)
-        cubicTo(w * .30f, h * .994f, w * .68f, h * .918f, w, h * .962f)
-    }
-    // Two very wide, very quiet light pools give the field depth without a
-    // glow: violet at the top-start corner, cyan at the bottom-end corner.
-    drawRect(
-        Brush.radialGradient(
-            listOf(NativePalette.violet.copy(alpha = .055f), Color.Transparent),
-            center = Offset(w * .94f, h * .015f),
-            radius = w * .85f,
-        )
-    )
-    drawRect(
-        Brush.radialGradient(
-            listOf(NativePalette.cyan.copy(alpha = .045f), Color.Transparent),
-            center = Offset(w * .04f, h * .90f),
-            radius = w * .80f,
-        )
-    )
-    drawPath(upper, wave, style = Stroke(stroke))
-    drawPath(second, wave, style = Stroke(stroke * .72f))
-    drawPath(floor, wave, style = Stroke(stroke))
-}
+// The native ambient field now lives in NativeAtmosphere.kt: one shared,
+// motion-aware observatory sky behind every route of the utility shell.
 
 /**
  * Premium glass material.

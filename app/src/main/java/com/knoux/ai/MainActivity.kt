@@ -423,15 +423,13 @@ private fun KnouxAppScaffold(
     }
     Box(Modifier.fillMaxSize()
         .background(NativePalette.ink)
-        .drawBehind {
-            // The utility shell sits on the measured Figma field with three thin
-            // brand arcs. The light pools, stardust and horizon beam belonged to
-            // the cinematic identity and remain there — Splash, Onboarding and
-            // authentication still paint their own approved atmosphere.
-            drawNativeAmbientField()
-        }.safeDrawingPadding()
+        .safeDrawingPadding()
         .semantics { testTagsAsResourceId = BuildConfig.DEBUG },
         contentAlignment = Alignment.TopCenter) {
+        // The observatory sky: one shared atmosphere behind every route. It is
+        // decorative and states no measurement; the instruments above it carry
+        // every real figure. Reduced motion draws the same sky, still.
+        NativeAtmosphere(Modifier.matchParentSize())
         BoxWithConstraints(Modifier.widthIn(max = 540.dp).fillMaxSize()) {
             val roomy = maxWidth < 350.dp || LocalDensity.current.fontScale > 1.24f
             val navMotion = LocalPreviewMotion.current
@@ -476,12 +474,17 @@ private fun KnouxAppScaffold(
                             composable(target.id) {
                                 when (target) {
                                     Page.HOME -> HomeScreen(open)
-                                    Page.CLEAN -> SmartCleanScreen(open)
+                                    // The clean centre IS the real Smart Clean surface: the
+                                    // review queue, Trash and Restore all live there. No
+                                    // second, thinner screen is invented for this route.
+                                    Page.CLEAN, Page.CLEAN_CENTER -> SmartCleanScreen(open)
                                     Page.TOOLS -> DeviceToolsScreen(open)
-                                    Page.REPORTS -> ReportsScreen(open)
+                                    // A report detail is the measured history itself, so the
+                                    // route opens the same real reports surface.
+                                    Page.REPORTS, Page.REPORT_DETAIL -> ReportsScreen(open)
                                     // PC04 - the index route opens the real measured sweep.
                                     Page.PRIVACY -> RealPrivacyScreen(Page.PRIVACY_INSPECTOR)
-                                    Page.OPTIMIZE -> AiOptimizationScreen(open)
+                                    Page.OPTIMIZE, Page.AI_RECOMMENDATIONS -> AiRecommendationsScreen(open)
                                     Page.KNOUX_UNIVERSE -> KnouxUniverseScreen()
                                     // PC02 - real duplicate engine; no design fixture is shown.
                                     Page.DUPLICATES, Page.DUPLICATE_REVIEW -> RealDuplicateScreen(target, open)

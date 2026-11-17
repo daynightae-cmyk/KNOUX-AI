@@ -36,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.knoux.ai.data.*
+import com.knoux.ai.visual.StrataInstrument
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -612,15 +613,18 @@ internal fun RealResidueScreen(page: Page, open: (Page) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
             item { ResidueSummaryCard(state, vm::selectSafe, vm::clearSelection) }
-            item { ResidueAgeCard(state, vm::setAgeDays) }
-            state.note?.let { note ->
-                item {
-                    Label(
-                        note, 10, Gold,
-                        modifier = Modifier.fillMaxWidth().testTag("residue-note"),
-                    )
-                }
+            item {
+                StrataInstrument(
+                    scanning = state.phase == ResiduePhase.SCANNING,
+                    measured = state.measured,
+                    items = state.items,
+                    measuredBytes = if (state.measured) state.items.sumOf { it.candidate.bytes } else null,
+                    scopesDone = state.scopesDone,
+                    scopesTotal = state.scopesTotal,
+                    fogged = state.status == DataStatus.PARTIAL,
+                )
             }
+            item { ResidueAgeCard(state, vm::setAgeDays) }
             if (!state.measured || state.items.isEmpty()) {
                 item { ResidueEmptyCard(state) }
             }
@@ -643,6 +647,16 @@ internal fun RealResidueScreen(page: Page, open: (Page) -> Unit) {
             }
             if (state.measured && state.items.isNotEmpty()) {
                 item { ResidueAuditCard(state) }
+            }
+            // Engine prose stays one tap away; the surface itself only ever
+            // shows the localized notice, in both languages.
+            val technical = buildList {
+                state.note?.let { add(Copy(R.string.technical_status) to it) }
+                state.message?.let { add(Copy(R.string.technical_history) to it) }
+                state.error?.let { add(Copy(R.string.state_error) to it) }
+            }
+            if (technical.isNotEmpty()) {
+                item { TechnicalDetails(technical, tag = "residue-technical") }
             }
         }
 

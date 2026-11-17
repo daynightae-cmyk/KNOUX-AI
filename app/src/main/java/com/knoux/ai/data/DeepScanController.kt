@@ -392,10 +392,18 @@ internal class DeepScanController(
             DeepScanStatus.FAILED -> Copy(R.string.k_scan_failed)
         }
         val byId = outcome.moduleResults.associateBy { it.moduleId }
+        val realProgress = when (outcome.status) {
+            DeepScanStatus.COMPLETE -> 1f
+            DeepScanStatus.PARTIAL -> {
+                val total = outcome.moduleResults.size.coerceAtLeast(1)
+                outcome.measuredModules.size.toFloat() / total
+            }
+            DeepScanStatus.UNAVAILABLE, DeepScanStatus.FAILED, DeepScanStatus.CANCELLED -> null
+        }
         return InstrumentFrame(
             phase = phase,
-            progress = if (outcome.status == DeepScanStatus.CANCELLED) null else 1f,
-            heroValue = if (outcome.status == DeepScanStatus.UNAVAILABLE) null else outcome.totalBytes,
+            progress = realProgress,
+            heroValue = if (outcome.status == DeepScanStatus.UNAVAILABLE || outcome.status == DeepScanStatus.FAILED) null else outcome.totalBytes,
             facets = modules.map { module -> facet(module, byId[module.id], selection) },
             motion = motion,
             caption = caption,

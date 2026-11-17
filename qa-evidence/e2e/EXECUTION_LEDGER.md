@@ -332,3 +332,35 @@ For each task: timestamp from host, HEAD/remote, status transitions, changed pat
   - API 35 / physical-device visual parity was not re-proven; the authorized phone was in use by another
     session and a different Samsung device is unauthorized.
   - Tab-transition and press motion are code-verified only, never recorded.
+
+## Entry 0019 - Identity gateway (login) rebuilt; real EN/AR captures on the authorized handset - 2026-11-15 16:10+04
+
+- **Scope:** the post-splash login gate only. No other route, instrument or accepted visual was
+  replaced. Evidence: `qa-evidence/e2e/visual/SESSION_20261115_LOGIN_GATEWAY.md`.
+- **Git state:** branch `main`, HEAD `3f69b00` (one commit ahead of `origin/main`) - unchanged.
+  No commit, no push, no reset, no clean, no checkout. The 20 modified tracked files and the 37
+  untracked entries that were already in the tree are preserved verbatim; this pass adds 5
+  modified files (`AuthScreen.kt`, `NeonArt.kt`, `PreviewData.kt`, both `strings.xml`), 2 new
+  source files (`visual/PortalSeal.kt`, `tools/qa/capture_auth_states.ps1`) and 1 evidence doc.
+- **Test target:** SM-A025F, API 31, 720x1600 px @ 280 dpi, reached through
+  `KNOUX_TEST_DEVICE_SERIAL`; the identifier is not stored in the repository.
+- **Build/test:** `:app:assembleDebug :app:testDebugUnitTest` -> BUILD SUCCESSFUL, EXIT 0.
+  APK 19,732,152 bytes, SHA-256 `6450AB3A535C84856F116CE7E767E5971C4E9FC76E7AC2A132085D7608852300`.
+- **Runtime evidence:** 10 device captures (5 states x EN/AR) at 18 s settle, refreshed after the
+  last two fixes. Each PNG is hashed in the session doc. TalkBack is parked for the run and
+  restored in `finally`.
+- **Honesty fixes:** the fake `PRO` pill, the dead "Remember me"/"Sign up" controls and the
+  credential form that implied a working sign-in are gone. Google and passkey say they are not
+  connected; the code step says no OTP provider exists; the unavailable state is drawn in fog,
+  not as an error. No path in this build can create a session.
+- **Defects found by the harness:** a sleeping handset produced 7,904-byte black frames (harness
+  now wakes and dismisses the keyguard); the OTP label and its clock ran together as
+  `in00:47` (5 dp spacer); a PowerShell `-File` array argument collapsed into one state name.
+- **Task statuses:** unchanged. PC00-PC04 stay VERIFIED, PC05 stays QUEUED; this pass proves the
+  login presentation and its honesty rules, not a new service E2E.
+- **Known gaps:** the handset has no enrolled fingerprint, so the biometric success callback is
+  code-verified only; the code step is reachable through the debug preview hook only; account,
+  passkey and Google remain unconnected by design.
+- **Other lane (read-only):** `K:\KNOUX-AI-Pro` was inspected for the next phase. Nothing was
+  reverted there; its debug build was failing on one missing icon import in an untracked file
+  and now builds green after that single line.

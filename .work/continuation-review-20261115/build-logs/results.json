@@ -1,0 +1,5 @@
+{
+  "task": ":app:compileDebugKotlin",
+  "exit": 1,
+  "log": "D:\\KNOUX-AI\\.work\\continuation-review-20261115\\build-logs\\app-compileDebugKotlin.log"
+}

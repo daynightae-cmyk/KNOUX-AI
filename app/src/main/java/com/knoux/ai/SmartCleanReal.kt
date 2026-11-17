@@ -50,6 +50,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.knoux.ai.data.*
+import com.knoux.ai.visual.TideInstrument
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CancellationException
@@ -693,6 +694,30 @@ internal fun RealSmartCleanScreen(open: (Page) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(7.dp)
         ) {
             MeasuredSummaryCard(state)
+            TideInstrument(
+                scanning = state.phase == CleanPhase.SCANNING,
+                measuredBytes = if (measured) state.measuredBytes else null,
+                selectedBytes = if (measured) state.selectedBytes else null,
+                grainCounts = listOf(
+                    state.candidates.count { it.provenance == DataProvenance.APP_OWNED_CACHE },
+                    state.candidates.count {
+                        it.category == CandidateCategory.TEMP_FILE || it.category == CandidateCategory.THUMBNAIL
+                    },
+                ),
+                selectedCounts = listOf(
+                    state.candidates.count {
+                        it.provenance == DataProvenance.APP_OWNED_CACHE && it.uri in state.selected
+                    },
+                    state.candidates.count {
+                        (it.category == CandidateCategory.TEMP_FILE || it.category == CandidateCategory.THUMBNAIL) &&
+                            it.uri in state.selected
+                    },
+                ),
+                // Duplicates and residue are never measured by Smart Clean itself,
+                // so their two buoys stay hollow. This is a structural fact, not a
+                // fabricated count.
+                fogCount = 2,
+            )
             CleanGroupRow(
                 index = 0,
                 tag = "open-clean-center",
@@ -883,7 +908,9 @@ private fun MeasuredSummaryCard(state: CleanState) {
                 label = when {
                     scanning -> (Copy(R.string.k_scopes_completed)).localized()
                     measured -> (Copy(R.string.k_selected_share)).localized()
-                    else -> (Copy(R.string.k_not_measured)).localized()
+                    // A long word wraps and clips inside an 88dp face; the ring
+                    // already shows "—" and the card says how to measure.
+                    else -> ""
                 },
                 diameter = 88,
                 tint = Nx.cyan,

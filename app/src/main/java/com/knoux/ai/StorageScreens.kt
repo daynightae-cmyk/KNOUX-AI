@@ -55,6 +55,7 @@ import com.knoux.ai.data.AccessScope
 import com.knoux.ai.data.DeviceInsights
 import com.knoux.ai.data.KnouxData
 import com.knoux.ai.data.PermissionGrant
+import com.knoux.ai.visual.TerrainInstrument
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -126,6 +127,11 @@ internal fun RealStorageDetailScreen(open: (Page) -> Unit) {
                 IdentityLoading(Copy(R.string.idn_measuring))
             } else {
                 StorageHero(data, world)
+                SurfaceCard {
+                    Column(Modifier.fillMaxWidth().padding(12.dp)) {
+                        TerrainInstrument(snapshot = data)
+                    }
+                }
                 StorageBreakdown(data, world, onGrant = {
                     permissionLauncher.launch(KnouxData.permissions.mediaPermissions())
                 })

@@ -58,6 +58,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.knoux.ai.visual.ConstellationInstrument
+import com.knoux.ai.visual.PulseInstrument
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.roundToInt
@@ -153,14 +155,12 @@ internal fun NativeBatteryScreen(open: (Page) -> Unit) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
-                        NativeInstrumentDial(
-                            value = level,
-                            display = level?.let { KnouxFormat.isolate("$it%") },
-                            caption = Copy(R.string.battery_level),
-                            tones = listOf(NativePalette.blue, NativePalette.cyan),
-                            diameter = 168,
-                            tag = "battery-dial",
-                        )
+                        Box(Modifier.fillMaxWidth().testTag("battery-dial")) {
+                            PulseInstrument(
+                                levelPercent = level,
+                                status = charge?.status,
+                            )
+                        }
                         ChargeStatePill(charge?.status)
                     }
                 }
@@ -559,6 +559,7 @@ private fun Drawable.toImage(sizePx: Int): ImageBitmap? = runCatching {
 internal fun NativeAppsScreen(open: (Page) -> Unit) {
     val context = LocalContext.current
     var apps by remember { mutableStateOf<List<InstalledApp>?>(null) }
+    var focusedApp by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(context) {
         apps = withContext(Dispatchers.IO) { loadInstalledApps(context) }
     }
@@ -593,6 +594,21 @@ internal fun NativeAppsScreen(open: (Page) -> Unit) {
                             modifier = Modifier.testTag("apps-count"),
                         )
                     }
+                }
+            }
+        }
+        // The installed apps as a readable starfield: two honest orbits (user
+        // inner/bright, system outer/dim), tap a star to name it. Per-app size is
+        // not readable here, so every star is the same size — no invented weight.
+        val loaded = apps
+        if (loaded != null && loaded.isNotEmpty()) {
+            SurfaceCard(
+                Modifier.fillMaxWidth()
+                    .padding(start = NativeSpace.edge + 4.dp, end = NativeSpace.edge + 4.dp, top = 12.dp),
+                accent = BrandTone.blue,
+            ) {
+                Column(Modifier.fillMaxWidth().padding(14.dp)) {
+                    ConstellationInstrument(apps = loaded, focused = focusedApp, onFocus = { focusedApp = it })
                 }
             }
         }

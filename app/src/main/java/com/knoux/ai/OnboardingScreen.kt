@@ -105,7 +105,9 @@ internal fun OnboardingScreen(onComplete: () -> Unit, previewChapter: Int? = nul
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.safeDrawing)
         ) {
-            ChapterBar(onBack = goBack, onSkip = complete)
+            if (chapter > 0) {
+                ChapterBar(onBack = goBack, onSkip = complete)
+            }
 
             Box(Modifier.weight(1f).fillMaxWidth()) {
                 Crossfade(targetState = chapter, animationSpec = tween(420), label = "chapter") { index ->
@@ -117,7 +119,7 @@ internal fun OnboardingScreen(onComplete: () -> Unit, previewChapter: Int? = nul
                 }
             }
 
-            ChapterFooter(chapter, onNext = goNext)
+            ChapterFooter(chapter, onNext = goNext, onSkip = complete)
         }
     }
 }
@@ -177,20 +179,45 @@ private fun QuietTextAction(label: String,
 
 /** Bottom progress dots plus the single chapter call to action. */
 @Composable
-private fun ColumnScope.ChapterFooter(chapter: Int, onNext: () -> Unit) {
+private fun ColumnScope.ChapterFooter(chapter: Int, onNext: () -> Unit, onSkip: () -> Unit) {
     Column(Modifier
             .fillMaxWidth()
             .padding(horizontal = 22.dp)
             .padding(top = 6.dp, bottom = 14.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ProgressDots(chapter)
 
-        when (chapter) {
-            0 -> GradientCta((Copy(R.string.k_explore_knoux)).localized(), onNext, "onboarding-cta-1")
-            1 -> GradientCta((Copy(R.string.k_next)).localized(), onNext, "onboarding-cta-2")
-            else -> GradientCta((Copy(R.string.k_start_your_journey_with_knoux_ai)).localized(), onNext, "onboarding-cta-3")
+        if (chapter == 0) {
+            // The approved founder page pairs a quiet Skip with the wide
+            // "Explore KNOUX >>" pill instead of a full-width bar.
+            Row(Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(Modifier
+                        .heightIn(min = 48.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .clickable(role = Role.Button, onClick = onSkip)
+                        .testTag("onboarding-skip")
+                        .padding(horizontal = 10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Label((Copy(R.string.k_skip)).localized(), 14,
+                        Mist.copy(alpha = .92f), FontWeight.Medium, maxLines = 1)
+                }
+                Spacer(Modifier.width(8.dp))
+                Box(Modifier.weight(1f)) {
+                    GradientCta((Copy(R.string.k_explore_knoux)).localized(), onNext,
+                        "onboarding-cta-1", doubleChevron = true)
+                }
+            }
+        } else {
+            when (chapter) {
+                1 -> GradientCta((Copy(R.string.k_next)).localized(), onNext, "onboarding-cta-2")
+                else -> GradientCta((Copy(R.string.k_start_your_journey_with_knoux_ai)).localized(),
+                    onNext, "onboarding-cta-3")
+            }
         }
     }
 }
@@ -201,11 +228,12 @@ private fun ProgressDots(active: Int) {
         repeat(3) { index ->
             val on = index == active
             val width by animateDpAsState(if (on) 26.dp else 8.dp, tween(260), label = "dot width")
+            val tint = if (index == 0) Color(0xffff4fd8) else Cyan
             Box(Modifier
                     .height(8.dp)
                     .width(width)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(if (on) Brush.horizontalGradient(listOf(Cyan, Color(0xff5ce8ff)))
+                    .background(if (on) Brush.horizontalGradient(listOf(tint, Color(0xff9b6bff)))
                         else Brush.horizontalGradient(listOf(Mist.copy(alpha = .34f), Mist.copy(alpha = .34f)))
                     )
                     .testTag("onboarding-dot-$index")
@@ -219,7 +247,9 @@ private fun ProgressDots(active: Int) {
  * chevron to the trailing edge exactly like reference 01.
  */
 @Composable
-private fun GradientCta(label: String, onClick: () -> Unit, tag: String? = null) {
+private fun GradientCta(label: String, onClick: () -> Unit, tag: String? = null,
+    doubleChevron: Boolean = false
+) {
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(if (pressed) .972f else 1f, tween(120), label = "cta scale")
@@ -254,6 +284,11 @@ private fun GradientCta(label: String, onClick: () -> Unit, tag: String? = null)
         // The chevron tracks the reading direction: it points right in LTR and
         // left in RTL, so a mirrored layout never shows a "next" arrow aimed back.
         Glyph(Mark.NEXT, Modifier.size(17.dp).rotate(if (LocalArabic.current) 180f else 0f), Chalk, true)
+        if (doubleChevron) {
+            Spacer(Modifier.width(1.dp))
+            Glyph(Mark.NEXT, Modifier.size(12.dp).rotate(if (LocalArabic.current) 180f else 0f),
+                Chalk.copy(alpha = .82f), true)
+        }
     }
 }
 
@@ -266,35 +301,66 @@ private fun ChapterAwakening() {
     Column(Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp)
+            .padding(horizontal = 22.dp)
             .testTag("onboarding-chapter-1"),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BrandLockup(compact = true)
         Spacer(Modifier.height(6.dp))
+        BrandLockupRow(size = 24)
+        Spacer(Modifier.height(2.dp))
 
-        HeroOrb(Modifier.fillMaxWidth().aspectRatio(1.02f), glyphFraction = .50f)
+        HeroOrb(Modifier.fillMaxWidth(.86f).aspectRatio(0.98f), glyphFraction = .48f, pedestal = true)
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(2.dp))
 
-        GradientHeadline(lead = (Copy(R.string.k_welcome_to)).localized(),
-            accent = "KNOUX AI",
-            size = 27
+        // Approved founder page: "Welcome to" over a two-tone "KNOUX AI".
+        Text((Copy(R.string.k_welcome_lead)).localized(),
+            modifier = Modifier.fillMaxWidth(),
+            style = TextStyle(fontSize = 27.sp,
+                lineHeight = 31.sp,
+                fontFamily = if (LocalArabic.current) KnouxFont else BrandFace,
+                fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
+                color = Chalk
+            )
+        )
+        Text(buildAnnotatedString {
+                withStyle(SpanStyle(color = Chalk)) { append("KNOUX ") }
+                withStyle(SpanStyle(brush = Brush.horizontalGradient(listOf(Color(0xffff7bf0),
+                            Color(0xffe62bff), Color(0xffb95cff))
+                        )
+                    )
+                ) { append("AI") }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            style = TextStyle(fontSize = 46.sp,
+                lineHeight = 50.sp,
+                fontFamily = BrandFace,
+                fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center
+            )
+        )
+
+        Spacer(Modifier.height(7.dp))
+
+        Text((Copy(R.string.k_intelligence_beautifully_engineered)).localized(),
+            modifier = Modifier.fillMaxWidth(),
+            style = TextStyle(fontSize = 16.sp,
+                lineHeight = 22.sp,
+                fontFamily = KnouxFont,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+                color = Chalk
+            )
+        )
+        Spacer(Modifier.height(3.dp))
+        Label((Copy(R.string.k_smarter_world_begins)).localized(), 13, Mist.copy(alpha = .86f),
+            modifier = Modifier.fillMaxWidth(), align = TextAlign.Center
         )
 
         Spacer(Modifier.height(14.dp))
 
-        OutlinePill((Copy(R.string.k_intelligence_beautifully_engineered)).localized())
+        FounderPlate()
 
-        Spacer(Modifier.height(16.dp))
-
-        Label((Copy(R.string.k_begin_your_journey_into_a_world_that_is_smarter_stronger)).localized(),
-            13, Mist.copy(alpha = .82f),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp),
-            align = TextAlign.Center
-        )
-
-        Spacer(Modifier.height(18.dp))
+        Spacer(Modifier.height(12.dp))
     }
 }
 
@@ -520,7 +586,20 @@ private fun Nucleus(modifier: Modifier = Modifier) {
                 size = Size(r * 2.5f, r * .44f)
             )
         }
-        Glyph(Mark.K, Modifier.size(62.dp), Chalk, true)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Glyph(Mark.K, Modifier.size(50.dp), Chalk, true)
+            Spacer(Modifier.height(3.dp))
+            val shape = RoundedCornerShape(12.dp)
+            Box(Modifier
+                    .clip(shape)
+                    .background(Color(0xff160a38).copy(alpha = .86f), shape)
+                    .border(1.dp, Violet.copy(alpha = .62f), shape)
+                    .padding(horizontal = 9.dp, vertical = 2.dp)
+            ) {
+                Label((Copy(R.string.k_intelligence_nucleus)).localized(), 12, Chalk,
+                    FontWeight.SemiBold, maxLines = 1)
+            }
+        }
     }
 }
 
@@ -703,35 +782,10 @@ private fun FounderCard(onOpenSite: () -> Unit) {
 // Reusable pieces
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** "K knoux ai" — single line, always LTR, italic brand lockup with the lit underline. */
+/** "K knoux ai" — the one official lockup, always LTR with the lit smile. */
 @Composable
 private fun BrandLockup(compact: Boolean = false) {
-    val wordSize = if (compact) 20 else 24
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Row(verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(7.dp)
-            ) {
-                Glyph(Mark.K, Modifier.size(if (compact) 26.dp else 30.dp), Chalk, true)
-                Label("knoux", wordSize, Chalk, FontWeight.ExtraBold, maxLines = 1)
-                Label("ai", wordSize, Color(0xffff5cf0), FontWeight.ExtraBold, maxLines = 1)
-            }
-            Canvas(Modifier.width(150.dp).height(7.dp)) {
-                val path = Path().apply {
-                    moveTo(4f, size.height * .42f)
-                    cubicTo(size.width * .30f, size.height * .10f,
-                        size.width * .58f, size.height * .88f,
-                        size.width - 4f, size.height * .32f
-                    )
-                }
-                drawPath(path,
-                    Brush.horizontalGradient(listOf(Color(0xffff4ff0), Violet, Color(0xff5a6bff), Cyan)
-                    ),
-                    style = Stroke(1.5.dp.toPx(), cap = StrokeCap.Round)
-                )
-            }
-        }
-    }
+    BrandLockupRow(size = if (compact) 21 else 25)
 }
 
 /**

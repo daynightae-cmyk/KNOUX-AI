@@ -1049,6 +1049,94 @@
     <string name="apps_reading">Reading the installed-app list…</string>
     <string name="apps_empty">Android did not return any application to this build.</string>
     <string name="apps_system">System</string>
+    <string name="apps_user">User</string>
     <string name="apps_system_settings">System app settings</string>
     <string name="apps_row_note">Every row opens Android\'s own App info screen. KNOUX never uninstalls, freezes or clears another app, and per-app sizes are not readable here.</string>
+    <string name="privacy_measured_no_attention">Measured on this device — no attention item</string>
+    <string name="privacy_measured_attention">Measured on this device — %1$d attention item(s)</string>
+    <string name="privacy_secure_verified_on">Screenshot protection verified on</string>
+    <string name="privacy_secure_verified_off">Screenshot protection verified off</string>
+    <string name="privacy_secure_unverified">Window flag not applied — setting stored, unverified</string>
+    <string name="inst_tide">Tide</string>
+    <string name="inst_strata">Strata</string>
+    <string name="inst_vault_radar">Vault Radar</string>
+    <string name="inst_pulse">Pulse</string>
+    <string name="inst_constellation">Constellation</string>
+    <string name="inst_terrain">Terrain</string>
+    <string name="inst_synapse">Synapse</string>
+    <string name="inst_prism">Prism</string>
+    <string name="inst_mirror">Mirror</string>
+    <string name="tide_selected">%1$s selected</string>
+    <string name="tide_listening">Listening for files…</string>
+    <string name="strata_roots">%1$d leftovers · %2$s</string>
+    <string name="strata_digging">Reading sources…</string>
+    <string name="vault_seal_verified">Window seal verified</string>
+    <string name="vault_seal_open">Window seal open</string>
+    <string name="vault_nodes">%1$d checks · %2$d attention</string>
+    <string name="pulse_live">Live reading</string>
+    <string name="pulse_trace_desc">Battery %1$s, %2$s</string>
+    <string name="constellation_hint">Tap a star to focus an app</string>
+    <string name="constellation_star_desc">%1$s · %2$s</string>
+    <string name="constellation_apps">%1$d apps plotted</string>
+    <string name="terrain_contours">%1$s measured · %2$s unmeasured</string>
+    <string name="synapse_on_device">On-device rules</string>
+    <string name="synapse_subtitle">Recommendations read your measured passes. Nothing leaves the phone.</string>
+    <string name="synapse_empty_title">No measured evidence yet</string>
+    <string name="synapse_empty_body">Run a scan; each recommendation lights from a real finding.</string>
+    <string name="synapse_evidence">%1$s · %2$d files</string>
+    <string name="rec_cache_title">Clear measured cache</string>
+    <string name="rec_duplicates_title">Review duplicate bytes</string>
+    <string name="rec_residue_title">Review app residue</string>
+    <string name="rec_storage_title">Storage %1$d%% full</string>
+    <string name="rec_privacy_title">%1$d privacy attention items</string>
+    <string name="synapse_accept">Review</string>
+    <string name="synapse_lit">%1$d of %2$d lit</string>
+    <string name="prism_spectrum">Cleanup spectrum</string>
+    <string name="prism_empty">No completed cleanup yet — the prism waits for real light.</string>
+    <string name="prism_band">%1$s freed on %2$s</string>
+
+    <!-- Identity gateway (login). The account path is not connected in this build;
+         the copy below never claims otherwise, while local mode stays a real entry. -->
+    <string name="auth_continue">Continue</string>
+    <string name="auth_sign_in_to_continue">Sign in to continue</string>
+    <string name="auth_local_entry">Enter in local mode</string>
+    <string name="auth_local_entry_note">No account needed — the local tools open directly.</string>
+    <string name="auth_signin_not_connected_short">Account sign-in is not connected in this build.</string>
+    <string name="auth_biometric_absent">No biometric print enrolled on this device.</string>
+    <string name="auth_unavailable_body">No enrolled biometric is available on this device. The local tools are still open to you.</string>
+
+    <!-- Approved identity surfaces (owner references, 2026-11-16). -->
+    <string name="k_secure_access_device_intelligence">Secure access to your device intelligence.</string>
+    <string name="k_private_by_design">Private by design — on-device tools, transparent access, no hidden scanning.</string>
+    <string name="k_create_account">Create Account</string>
+    <string name="k_full_name">Full name</string>
+    <string name="k_keep_me_signed_in">Keep me signed in</string>
+    <string name="k_google">Google</string>
+    <string name="k_passkey">Passkey</string>
+    <string name="k_biometric_production_note">Biometric, passkey, and Google sign-in become fully active after production key setup.</string>
+    <string name="k_welcome_back">Welcome Back</string>
+    <string name="k_welcome_back_lead">Welcome</string>
+    <string name="k_welcome_back_accent">Back</string>
+    <string name="k_welcome_lead">Welcome to</string>
+    <string name="k_we_sent_code_to_email">We sent a code to your email</string>
+    <string name="k_enter_verification_code">Enter the verification code</string>
+    <string name="k_use_fingerprint">Use fingerprint</string>
+    <string name="k_use_password">Use password</string>
+    <string name="k_identity_protected">Your identity is protected with advanced security.</string>
+    <string name="k_authentication_successful">Authentication successful</string>
+    <string name="k_secure_access_caps">Secure Access — Your data stays private, on your device.</string>
+    <string name="k_founded_by">FOUNDED BY</string>
+    <string name="k_founder_role">FOUNDER &amp; SOFTWARE ENGINEER</string>
+    <string name="k_founder_name_script">Eng. Sadek Elgazar</string>
+    <string name="k_smarter_world_begins">Your smarter digital world begins here.</string>
+    <string name="k_intelligence_nucleus">Intelligence Nucleus</string>
+    <string name="k_ten_services_one_platform">10 intelligent services, one integrated platform.</string>
+    <string name="k_email_signin_build_note">Email sign-in is not connected yet. Biometrics and guest mode work on this device.</string>
+    <string name="k_pro_chip_description">KNOUX AI Pro</string>
+    <string name="k_account_sheet_body">Account creation is not connected in this build. No profile or entitlement is created.</string>
+
+    <!-- QA capture switch. Production stays false, so the customer's screenshot
+         protection is never silently disabled. The debug source set overlays this
+         to true for visual verification runs. -->
+    <bool name="knoux_debug_no_secure">false</bool>
 </resources>

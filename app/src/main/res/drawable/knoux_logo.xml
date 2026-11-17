@@ -1,0 +1,17 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- The traced K monogram from the owner logo, without a tile background,
+         so it can sit inside a glass circle. -->
+    <path
+        android:fillColor="#E85CFF"
+        android:pathData="M18,7H27L22,20L12,29Z" />
+    <path
+        android:fillColor="#8F58FF"
+        android:pathData="M8,40L33,14H43L16,40Z" />
+    <path
+        android:fillColor="#36DFFF"
+        android:pathData="M25,29L32,23L42,40H31Z" />
+</vector>

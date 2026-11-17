@@ -1,10 +1,5 @@
 package com.knoux.ai.visual
 
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +25,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -82,34 +80,34 @@ internal fun MirrorInstrument(
     val gold = Color(0xffFFC24B)
     val ink = Color(0xff07051A)
 
-    // Breath for idle / armed
-    val breathTransition = rememberInfiniteTransition(label = "mirror breath")
-    val breath: androidx.compose.runtime.State<Float> = breathTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(5000, easing = LinearEasing),
-            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
-        ),
-        label = "breath"
+    // Breath for idle / armed — freezes to a composed still frame under reduced motion.
+    val breath: androidx.compose.runtime.State<Float> =
+        rememberMotionPhase(active = motion, periodMillis = 5000, label = "mirror breath")
+
+    // Pulse for measured pairs — only alive while motion is permitted.
+    val pulse: androidx.compose.runtime.State<Float> =
+        rememberMotionPhase(active = motion && frame.hasFindings, periodMillis = 2400, label = "pair pulse")
+
+    // Tether tension (grows with real findings, never with time).
+    // Remembered animated state so the value is not re-allocated every frame.
+    val tensionTarget = when (frame.phase) {
+        MirrorPhase.IDLE -> 0f
+        MirrorPhase.ARMED -> 0.1f
+        MirrorPhase.RUNNING -> frame.tension ?: 0f
+        MirrorPhase.PAUSED -> frame.tension ?: 0f
+        MirrorPhase.RESULT -> 1f
+        MirrorPhase.PARTIAL -> frame.tension ?: 0f
+        MirrorPhase.FAILED, MirrorPhase.FOGGED -> 0f
+    }.coerceIn(0f, 1f)
+    val tension by androidx.compose.animation.core.animateFloatAsState(
+        targetValue = tensionTarget,
+        animationSpec = androidx.compose.animation.core.tween(400),
+        label = "mirror tension",
     )
 
-    // Pulse for measured pairs
-    val pulseTransition = rememberInfiniteTransition(label = "pair pulse")
-    val pulse: androidx.compose.runtime.State<Float> = pulseTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(2400, easing = LinearEasing),
-            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse
-        ),
-        label = "pulse"
-    )
+    val tetherPath = remember { Path() }
 
-    // Tether tension (grows with real findings, never with time)
-    val tension = frame.tensionAnim.value // 0..1, real finding fraction
-
-    val instrumentHeight = 320.dp
+    val instrumentHeight = 260.dp
 
     val a11yDesc = description ?: buildContentDescription(frame, arabic)
 
@@ -134,14 +132,13 @@ internal fun MirrorInstrument(
             val leftCx = centerX - pairGap / 2f
             val rightCx = centerX + pairGap / 2f
             val tetherSag = 12f * (1f - tension) * orbR / 40f
-            val tetherPath = Path().apply {
-                moveTo(leftCx, centerY - orbR)
-                cubicTo(
-                    centerX, centerY - orbR - tetherSag,
-                    centerX, centerY - orbR + tetherSag,
-                    rightCx, centerY - orbR
-                )
-            }
+            tetherPath.rewind()
+            tetherPath.moveTo(leftCx, centerY - orbR)
+            tetherPath.cubicTo(
+                centerX, centerY - orbR - tetherSag,
+                centerX, centerY - orbR + tetherSag,
+                rightCx, centerY - orbR
+            )
             drawPath(
                 path = tetherPath,
                 color = if (frame.hasFindings) magenta.copy(alpha = 0.5f + 0.3f * tension)
@@ -158,7 +155,7 @@ internal fun MirrorInstrument(
             }
 
             // ── Left orb: Keeper (original, protected) ───────────────────────
-            val keeperGlow = if (frame.hasFindings) 0.35f + 0.25f * pulse.value else 0.2f
+            val keeperGlow = if (frame.hasFindings) 0.35f + 0.25f * pulse.value else 0.16f + 0.08f * breath.value
             drawCircle(
                 brush = Brush.radialGradient(
                     colors = listOf(magenta.copy(alpha = 0.5f * keeperGlow), Color.Transparent),
@@ -193,7 +190,7 @@ internal fun MirrorInstrument(
             )
 
             // ── Right orb: Copies (removable) ────────────────────────────────
-            val copyGlow = if (frame.hasFindings) 0.35f + 0.25f * (1f - pulse.value) else 0.2f
+            val copyGlow = if (frame.hasFindings) 0.35f + 0.25f * (1f - pulse.value) else 0.16f + 0.08f * (1f - breath.value)
             val copyColor = if (frame.hasFindings) violet else fog.copy(alpha = 0.35f)
             drawCircle(
                 brush = Brush.radialGradient(
@@ -251,12 +248,21 @@ internal fun MirrorInstrument(
             }
 
             // ── Failure / empty marker ───────────────────────────────────────
-            if (frame.phase == MirrorPhase.FAILED || frame.phase == MirrorPhase.FOGGED) {
+            if (frame.phase == MirrorPhase.FAILED) {
                 drawLine(
                     color = Color(0xffFF6B6B).copy(alpha = 0.7f),
                     start = Offset(centerX - with(density) { 14.dp.toPx() }, centerY),
                     end = Offset(centerX + with(density) { 14.dp.toPx() }, centerY),
                     strokeWidth = with(density) { 2.dp.toPx() },
+                )
+            }
+            // Fogged / partial: a hollow dashed orb — unknown, never drawn as measured.
+            if (frame.phase == MirrorPhase.FOGGED || frame.phase == MirrorPhase.PARTIAL) {
+                drawCircle(
+                    color = fog.copy(alpha = 0.7f),
+                    radius = orbR * 0.5f,
+                    center = Offset(centerX, centerY),
+                    style = Stroke(1.6.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(5.dp.toPx(), 4.dp.toPx()))),
                 )
             }
         }
@@ -266,6 +272,7 @@ internal fun MirrorInstrument(
             Modifier
                 .fillMaxSize()
                 .align(Alignment.Center),
+            contentAlignment = Alignment.Center,
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -312,7 +319,7 @@ private fun buildContentDescription(frame: MirrorFrame, arabic: Boolean): String
         MirrorPhase.FAILED -> if (arabic) "فشل" else "failed"
         MirrorPhase.FOGGED -> if (arabic) "غير مقاس" else "fogged"
     }
-    val hero = frame.heroValue?.let { mirrorFormatBytes(it) } ?: "0"
+    val hero = frame.heroValue?.let { mirrorFormatBytes(it) } ?: if (arabic) "غير مقاس" else "not measured"
     return if (arabic) {
         "مرآة التكرار، $phaseWord، $hero، ${frame.groupCount} مجموعة"
     } else {
@@ -343,17 +350,4 @@ internal data class MirrorFrame(
     /** Age of last real result (millis), for idle display. */
     val lastResultAgeMillis: Long? = null
 ) {
-    val tensionAnim: androidx.compose.runtime.State<Float>
-        get() {
-            val target = when (phase) {
-                MirrorPhase.IDLE -> 0f
-                MirrorPhase.ARMED -> 0.1f
-                MirrorPhase.RUNNING -> tension ?: 0f
-                MirrorPhase.PAUSED -> tension ?: 0f
-                MirrorPhase.RESULT -> 1f
-                MirrorPhase.PARTIAL -> tension ?: 0f
-                MirrorPhase.FAILED, MirrorPhase.FOGGED -> 0f
-            }
-            return androidx.compose.runtime.mutableStateOf(target.coerceIn(0f, 1f))
-        }
 }

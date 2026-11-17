@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Debug-only overlay for visual QA. FLAG_SECURE makes Android refuse
+      `adb shell screencap`, so a debug build may opt out to capture the real
+      rendered UI. Release builds never see this file: the production value in
+      src/main/res stays false, and the customer's screenshot protection is
+      never silently disabled.
+    -->
+    <bool name="knoux_debug_no_secure">true</bool>
+</resources>

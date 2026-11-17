@@ -89,7 +89,16 @@ private val symbol = mapOf(
     Mark.COPY to "M8 4H16Q20 4 20 8V16Q20 20 16 20H8Q4 20 4 16V8Q4 4 8 4 M14 4L14 8L20 8",
     Mark.CHART to "M3 3V21H21 M7 11V18 M12 7V18 M17 10V18",
     Mark.RIGHT to "M9 6L15 12L9 18",
-    Mark.MAIL to "M3 5H21V19H3Z M3 6L12 13L21 6"
+    Mark.MAIL to "M3 5H21V19H3Z M3 6L12 13L21 6",
+    // A real fingerprint glyph: five nested ridges that break at the base like a
+    // live print, so the biometric affordance never borrows the key or shield.
+    Mark.FINGERPRINT to "M4.6 11.2C4.6 7.1 7.9 3.8 12 3.8C16.1 3.8 19.4 7.1 19.4 11.2 " +
+        "M7.8 11.4C7.8 9.1 9.7 7.2 12 7.2C14.3 7.2 16.2 9.1 16.2 11.4 " +
+        "M12 10.6C10.9 10.6 10.1 11.4 10.1 12.5C10.1 14.2 10.6 15.4 10.6 17.1C10.6 18.5 10.2 19.5 9.7 20.3 " +
+        "M13.9 12.5C13.9 14.5 13.4 16.3 13.4 17.7C13.4 19.1 13.8 20 14.2 20.7 " +
+        "M12 13.7V18.1 " +
+        "M17.5 12.2C17.5 15.1 17.1 17.3 16.5 19.3 " +
+        "M6.5 12.4C6.5 15.5 7.1 17.5 7.9 19.5"
 ).mapValues { (_, svg) -> path(svg) }
 
 // Brand K traced from the owner logo (design/brand/knoux-logo-owner.png),

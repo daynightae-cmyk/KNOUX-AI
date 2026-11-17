@@ -1,0 +1,130 @@
+{
+  "files": [
+    {
+      "path": "00_MASTER_EXECUTION_PROMPT.md",
+      "size_bytes": 17806,
+      "sha256": "bf2a229a24815ffa07f8e37cdc5d90328ed5e3fd60b6dc1bd8e406e31df50640"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/01_HOME_DEVICE_HUB.png",
+      "size_bytes": 2470569,
+      "sha256": "bcef615be2efa223d38ca618edc21875940f079c695944db80ce4a8fac18418c"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/02_SMART_CLEAN_FILE_REVIEW.png",
+      "size_bytes": 2553224,
+      "sha256": "a807311ef818e8c036cb7f63fb28d214fbedc52b9637254910dbd8240ca993c8"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/03_PRIVACY_RISK_DETAILS.png",
+      "size_bytes": 2632903,
+      "sha256": "5f1ed42e917881d137106400041671655b43377822f6e89aecdebcddc2b109ba"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/04_AI_RECOMMENDATION_DETAILS.png",
+      "size_bytes": 2580435,
+      "sha256": "19136c7e114d6eda92ace445d78d692afdc13a5aea9f8a3ac4bb6a1aa0d47db4"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/05_APP_DETAILS.png",
+      "size_bytes": 2553905,
+      "sha256": "138d906b95bb16f3f1e0e32737e7043f8007512604d82fc1fb3e9d5dc49b05be"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/06_BATTERY_PLAN.png",
+      "size_bytes": 2644713,
+      "sha256": "499f86f0856eb4df712673109603c910ba5964e73397510875e572aff0d5536e"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/07_ACTION_HISTORY.png",
+      "size_bytes": 2657073,
+      "sha256": "459de0e77b94427698532d679510f2cdd5aa4d6ac0de8b8e986d38b80487a1cd"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/08_LARGE_FILES.png",
+      "size_bytes": 2607346,
+      "sha256": "97164c8ee5bab9aebc3a8db44468ec372a657c8878a46c95daa6da0bc2279df1"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/09_FINAL_REVIEW_CONFIRMATION.png",
+      "size_bytes": 2574213,
+      "sha256": "e361d30221157479c8ba74aae8ec8b1ca9e902e801d67ff22ac779006889856b"
+    },
+    {
+      "path": "01_APPROVED_REFERENCE_IMAGES/10_DEEP_SCAN_RESULTS.png",
+      "size_bytes": 2699809,
+      "sha256": "b7e5787f50a40042b4bb7671c27dcbef87932dd21e67cd3bd1a2d4831ef3068d"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v2-large-files.png",
+      "size_bytes": 442137,
+      "sha256": "289a59d50ccf88381a69091745f8ed7ca4bb92affcb544528d2ee70f5eb669c2"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v2-privacy.png",
+      "size_bytes": 764187,
+      "sha256": "5379d5bf5f2a1c8d6ec170f8d9fe2af711e71aa4a6cea237cd613ff758633564"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v2-residue.png",
+      "size_bytes": 594280,
+      "sha256": "901b4d93ae25cce3d71fb7aac11a5b3db04c6706b968598c1999a5e11d26887e"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v2-storage.png",
+      "size_bytes": 583752,
+      "sha256": "f2ee000e0db74d03990645d4392b05095bc215fef33c1748d7c026b9bf9db33d"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v3-app-manager.png",
+      "size_bytes": 364091,
+      "sha256": "f407e802b15e4c58a1cf8f89a8d13dde28f86af78ed270cb9eecf2248e0357a4"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v3-deep-scan.png",
+      "size_bytes": 326277,
+      "sha256": "67ce072c9708f15d6d28934cc0acec20fba0192c834a5be7af257c0f5b3b43f3"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v4-duplicates.png",
+      "size_bytes": 478466,
+      "sha256": "0ee9ee00379c6d44b1128c73902c7dfd4e240b04637f45fff570e858ce5ddfe9"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v7-clean.png",
+      "size_bytes": 767410,
+      "sha256": "88fafc3ea08c899eeeb3958c32701646e790f35e9facc5254dab022c2fe21b0d"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v7-home.png",
+      "size_bytes": 644258,
+      "sha256": "13e4b5a5c690e56e834d9c7e73f0d9ff82e2c0d4f5c80353f2d9fa88d165b478"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v7-reports.png",
+      "size_bytes": 515090,
+      "sha256": "9f546164b2be13108170ac294d54efe95e8ab6b4a6b7d55452fa1c86310a78b4"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v7-tools.png",
+      "size_bytes": 719191,
+      "sha256": "dff753cf69e8f10450537579b3b7b8dcbf40507241e787a76da3820be1c7349d"
+    },
+    {
+      "path": "02_PREVIOUS_AGENT_RUNTIME_SHOTS/v7-universe.png",
+      "size_bytes": 756331,
+      "sha256": "567f2c9cfb0e81dcff77febdef92f2a3cfb463c17729dbadc38485efca580cdf"
+    },
+    {
+      "path": "03_SOURCE_REVIEW_NOTES.md",
+      "size_bytes": 2720,
+      "sha256": "dd95ba58f4ebbc270a16a836b44e9c0e1f5d741667c959b422adf66d464d1557"
+    },
+    {
+      "path": "README_AR_FIRST.md",
+      "size_bytes": 1974,
+      "sha256": "c6dc597b055602de024fbdb2e2d8ef720853ae23b6e42741013ee1e3de4f2198"
+    }
+  ],
+  "count": 25
+}

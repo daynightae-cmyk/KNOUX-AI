@@ -21,11 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -42,7 +44,9 @@ import kotlinx.coroutines.withContext
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.cos
 import kotlin.math.roundToInt
+import kotlin.math.sin
 
 /**
  * The Smart Device Hub — the application's home surface.
@@ -141,15 +145,8 @@ internal fun NativeStorageOverview(footprint: StorageFootprint?, modifier: Modif
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp),
         ) {
-            Box(Modifier.size(80.dp), contentAlignment = Alignment.Center) {
-                if (percent != null) {
-                    ProgressDonut(
-                        value = percent, diameter = 80, live = false,
-                        displayValue = "$percent%",
-                    )
-                } else {
-                    UnmeasuredDial()
-                }
+            Box(Modifier.size(84.dp), contentAlignment = Alignment.Center) {
+                StorageGauge(percent)
             }
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Label(Copy(R.string.home_storage_title), 13, NativePalette.muted, FontWeight.SemiBold)
@@ -201,18 +198,127 @@ private fun NativeFootprintStat(label: Copy, value: String, tint: Color, modifie
     }
 }
 
-/** An empty ring: the shape of a measurement that has not happened. */
+/**
+ * The hub's capacity instrument — a 270° observatory gauge.
+ *
+ * One quiet track with machined ticks, one measured arc in the brand's own
+ * violet→blue→cyan order, and a lit terminal where the reading stops. The arc
+ * is the real used-percent of the data partition and nothing else; before a
+ * reading exists the track is drawn dashed and the centre keeps the honest
+ * em dash. The reveal is one finite sweep when the figure first arrives —
+ * never a looping animation, and never a value the filesystem did not give.
+ */
 @Composable
-private fun UnmeasuredDial() {
-    Canvas(Modifier.size(74.dp)) {
-        drawCircle(
-            color = NativePalette.border,
-            radius = (minOf(size.width, size.height) - 6.dp.toPx()) / 2f,
-            center = Offset(size.width / 2f, size.height / 2f),
-            style = Stroke(width = 6.dp.toPx()),
-        )
+private fun StorageGauge(percent: Int?) {
+    val motion = LocalPreviewMotion.current
+    var entered by remember { mutableStateOf(!motion) }
+    LaunchedEffect(percent) { if (percent != null) entered = true }
+    val shown by androidx.compose.animation.core.animateFloatAsState(
+        if (entered && percent != null) percent / 100f else 0f,
+        tween(if (motion) 900 else 0, easing = androidx.compose.animation.core.FastOutSlowInEasing),
+        label = "capacity sweep",
+    )
+    Box(Modifier.size(84.dp), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.matchParentSize()) {
+            val w = size.width
+            val band = w * .085f
+            val inset = w * .10f
+            val radius = w / 2f - inset
+            val startAngle = 135f
+            val totalSweep = 270f
+            val arcTopLeft = Offset(inset, inset)
+            val arcSize = androidx.compose.ui.geometry.Size(w - inset * 2, w - inset * 2)
+
+            // Inner cavity: a dark well with one faint floor light, so the
+            // gauge reads as an instrument face rather than a flat ring.
+            drawCircle(
+                Brush.radialGradient(
+                    listOf(Color(0xFF101A3E), Color(0xFF0A0F26)),
+                    center = center, radius = radius,
+                ),
+                radius = radius - band * .7f,
+            )
+            drawCircle(
+                Brush.radialGradient(
+                    listOf(NativePalette.cyan.copy(alpha = .07f), Color.Transparent),
+                    center = Offset(w * .5f, w * .72f), radius = radius * .9f,
+                ),
+                radius = radius - band * .7f,
+            )
+
+            // Machined ticks: 28 marks, every seventh longer. They are chrome,
+            // not data — the same in both measured and unmeasured states.
+            for (tick in 0..27) {
+                val angle = Math.toRadians((startAngle + totalSweep * tick / 27f).toDouble())
+                val major = tick % 7 == 0
+                val outer = radius + band * .62f
+                val inner = outer - (if (major) w * .045f else w * .024f)
+                drawLine(
+                    (if (major) NativePalette.muted.copy(alpha = .5f) else NativePalette.border)
+                        .copy(alpha = if (major) .55f else .8f),
+                    Offset(w / 2f + cos(angle).toFloat() * inner, w / 2f + sin(angle).toFloat() * inner),
+                    Offset(w / 2f + cos(angle).toFloat() * outer, w / 2f + sin(angle).toFloat() * outer),
+                    strokeWidth = if (major) 1.6.dp.toPx() else 1.dp.toPx(),
+                    cap = StrokeCap.Round,
+                )
+            }
+
+            if (percent == null) {
+                // Unmeasured: a dashed track. No arc, no number, no colour
+                // that could be mistaken for a reading.
+                drawArc(
+                    NativePalette.border.copy(alpha = .8f),
+                    startAngle, totalSweep, false, arcTopLeft, arcSize,
+                    style = Stroke(band, cap = StrokeCap.Butt, pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(6.dp.toPx(), 5.dp.toPx()))),
+                )
+                return@Canvas
+            }
+
+            // Quiet full track under the measured arc.
+            drawArc(
+                NativePalette.raised, startAngle, totalSweep, false, arcTopLeft, arcSize,
+                style = Stroke(band, cap = StrokeCap.Round),
+            )
+            val sweep = totalSweep * shown
+            if (sweep > .5f) {
+                // Halo under the lit part, then the arc itself in the logo order.
+                drawArc(
+                    Brush.sweepGradient(
+                        listOf(NativePalette.violet, NativePalette.blue, NativePalette.cyan),
+                        center,
+                    ),
+                    startAngle, sweep, false, arcTopLeft, arcSize,
+                    alpha = .22f, style = Stroke(band * 2.1f, cap = StrokeCap.Round),
+                )
+                drawArc(
+                    Brush.sweepGradient(
+                        listOf(NativePalette.violet, NativePalette.blue, NativePalette.cyan),
+                        center,
+                    ),
+                    startAngle, sweep, false, arcTopLeft, arcSize,
+                    style = Stroke(band, cap = StrokeCap.Round),
+                )
+                // Lit terminal: the exact point where the reading stops.
+                val capAngle = Math.toRadians((startAngle + sweep).toDouble())
+                val capCenter = Offset(
+                    w / 2f + cos(capAngle).toFloat() * radius,
+                    w / 2f + sin(capAngle).toFloat() * radius,
+                )
+                drawCircle(NativePalette.cyan.copy(alpha = .30f), band * .95f, capCenter)
+                drawCircle(Color.White.copy(alpha = .95f), band * .34f, capCenter)
+            }
+        }
+        if (percent != null) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Label(
+                    KnouxFormat.isolate("$percent%"), 18, NativePalette.text, FontWeight.ExtraBold,
+                    align = TextAlign.Center,
+                )
+            }
+        } else {
+            Label("—", 17, NativePalette.muted, FontWeight.Bold, align = TextAlign.Center)
+        }
     }
-    Label("—", 17, NativePalette.muted, FontWeight.Bold, align = TextAlign.Center)
 }
 
 /**
@@ -247,7 +353,27 @@ internal fun NativeHubSegments(selected: HubSegment, onSelect: (HubSegment) -> U
                 Box(
                     Modifier.fillMaxWidth().height(36.dp).clip(pill)
                         .background(fill)
-                        .border(1.dp, stroke, pill),
+                        .border(1.dp, stroke, pill)
+                        .drawBehind {
+                            // The chosen segment carries the brand line under
+                            // its label — one gradient beat, not a filled tab.
+                            if (active) {
+                                drawLine(
+                                    Brush.horizontalGradient(
+                                        listOf(
+                                            NativePalette.violet.copy(alpha = .2f),
+                                            NativePalette.blue,
+                                            NativePalette.cyan,
+                                            NativePalette.violet.copy(alpha = .2f),
+                                        )
+                                    ),
+                                    Offset(size.width * .16f, size.height - 1.5.dp.toPx()),
+                                    Offset(size.width * .84f, size.height - 1.5.dp.toPx()),
+                                    strokeWidth = 2.dp.toPx(),
+                                    cap = StrokeCap.Round,
+                                )
+                            }
+                        },
                     contentAlignment = Alignment.Center,
                 ) {
                     Label(
@@ -279,6 +405,18 @@ internal fun NativeServiceTile(
     Column(
         modifier.fillMaxWidth().heightIn(min = 104.dp).clip(shape)
             .background(Brush.verticalGradient(listOf(Color(0xFF121B3B), Color(0xFF0B1128))))
+            .drawBehind {
+                // One quiet corner light in the service's own tone: the tile
+                // belongs to a family, and the tone says which member it is
+                // without painting the whole card.
+                drawRect(
+                    Brush.radialGradient(
+                        listOf(tint.copy(alpha = .085f), Color.Transparent),
+                        center = Offset(size.width * .06f, 0f),
+                        radius = size.width * .85f,
+                    )
+                )
+            }
             .drawWithContent {
                 drawContent()
                 drawLine(
@@ -302,8 +440,8 @@ internal fun NativeServiceTile(
         ) {
             ServiceIconPlate(mark, tint, size = 36.dp, iconSize = 18.dp)
             Label(
-                title, 13, NativePalette.text, FontWeight.SemiBold,
-                modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis,
+                title, 12, NativePalette.text, FontWeight.SemiBold,
+                modifier = Modifier.weight(1f), maxLines = 3, overflow = TextOverflow.Ellipsis,
             )
             Glyph(
                 Mark.NEXT, Modifier.size(13.dp).rotate(if (LocalArabic.current) 180f else 0f),
@@ -366,13 +504,34 @@ internal fun NativeRecentActivity(history: List<CleanupHistory>, modifier: Modif
                 // figures and their dates stay Latin and isolated in both
                 // languages, so one operation reads identically on both screens.
                 val formatter = remember { DateFormat.getDateInstance(DateFormat.SHORT, Locale.US) }
-                operations.forEach { operation ->
+                operations.forEachIndexed { index, operation ->
                     Row(
-                        Modifier.fillMaxWidth(),
+                        Modifier.fillMaxWidth().height(IntrinsicSize.Min),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
-                        Box(Modifier.size(5.dp).clip(RoundedCornerShape(50)).background(NativePalette.cyan))
+                        // The journal as a timeline: each real operation is a
+                        // lit node on one rail, newest at the reading edge.
+                        Column(
+                            Modifier.width(12.dp).fillMaxHeight(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Spacer(Modifier.height(5.dp))
+                            Box(
+                                Modifier.size(8.dp).clip(RoundedCornerShape(50))
+                                    .background(
+                                        Brush.radialGradient(
+                                            listOf(NativePalette.cyan, NativePalette.blue),
+                                        )
+                                    )
+                            )
+                            if (index < operations.lastIndex) {
+                                Box(
+                                    Modifier.width(1.dp).weight(1f)
+                                        .background(NativePalette.border.copy(alpha = .7f))
+                                )
+                            }
+                        }
                         Label(
                             Copy.args(
                                 R.string.reports_chart_bar,
@@ -380,7 +539,7 @@ internal fun NativeRecentActivity(history: List<CleanupHistory>, modifier: Modif
                                 formatter.format(Date(operation.completedAtMillis)),
                             ),
                             12, NativePalette.text,
-                            modifier = Modifier.weight(1f), maxLines = 2,
+                            modifier = Modifier.weight(1f).padding(vertical = 3.dp), maxLines = 2,
                         )
                     }
                 }

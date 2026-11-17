@@ -47,6 +47,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -282,16 +284,20 @@ internal fun RealDeepScanScreen(
                     Label("$measured/${frame.facets.size}", 11, Nx.cyan, FontWeight.Bold)
                 }
                 if (fogged > 0) {
+                    val fogDescription = if (arabic) "$fogged وحدات غير مقاسة" else "$fogged module(s) not measured"
                     Box(
                         Modifier
                             .clip(RoundedCornerShape(20.dp))
                             .background(Nx.amber.copy(alpha = 0.12f))
                             .border(1.dp, Nx.amber.copy(alpha = .40f), RoundedCornerShape(20.dp))
                             .padding(horizontal = 10.dp, vertical = 4.dp)
+                            .semantics { contentDescription = fogDescription }
                     ) {
-                        // The count is a Latin figure inside an RTL sentence, so it is
-                        // isolated with U+2066/U+2069 to keep the mark on the reading side.
-                        Label("\u2066$fogged\u2069 ✕", 11, Nx.amber, FontWeight.Bold)
+                        // A hollow ring, not a cross: these modules are unmeasured,
+                        // they did not fail. The count is a Latin figure inside an
+                        // RTL sentence, so it is isolated to keep the mark on the
+                        // reading side.
+                        Label("\u2066$fogged\u2069 ◌", 11, Nx.amber, FontWeight.Bold)
                     }
                 }
             }
@@ -537,7 +543,12 @@ private fun OutcomeCard(
             )
         }
         outcome.note?.let { note ->
-            Label(note, 10, Mist, FontWeight.Normal, maxLines = 3)
+            // Engine prose stays collapsed; the result surface keeps only
+            // measured figures and localized labels in both languages.
+            TechnicalDetails(
+                listOf(Copy(R.string.technical_status) to note),
+                tag = "deep-scan-outcome-note",
+            )
         }
         if (outcome.status == DeepScanStatus.UNAVAILABLE) {
             Label(

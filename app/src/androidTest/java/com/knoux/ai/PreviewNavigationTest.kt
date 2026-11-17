@@ -104,6 +104,19 @@ class PreviewNavigationTest {
         showing("privacy-score")
     }
 
+    /**
+     * PC10 turned AI Recommendations into a real on-device rule engine: the Synapse
+     * instrument lights one node per measured finding. It is no longer an unavailable
+     * placeholder, so the screen marker and the live instrument prove it instead.
+     */
+    private fun aiRecommendationsScreen() {
+        node("screen-ai-recommendations").assertExists()
+        showing("instrument-synapse")
+        check(ui.onAllNodesWithTag("design-preview").fetchSemanticsNodes().isEmpty()) {
+            "A real recommendation surface must not show a design-preview badge"
+        }
+    }
+
     /** Detail routes render a service workspace plus a scrollable detail body. */
     private fun detailScreen(page: String) {
         showing("screen-$page")
@@ -119,11 +132,17 @@ class PreviewNavigationTest {
     private fun batteryScreen() {
         node("screen-battery-diagnostics").assertExists()
         showing("battery-dial")
+        showing("instrument-pulse")
     }
 
     private fun storageScreen() {
-        node("screen-storage-breakdown").assertExists()
-        showing("storage-dial")
+        // The routed storage surface is the Identity detail screen carrying the
+        // Terrain instrument; the legacy native dial screen is no longer routed.
+        node("screen-storage").assertExists()
+        ui.waitUntil(20_000) {
+            ui.onAllNodesWithTag("instrument-terrain").fetchSemanticsNodes().isNotEmpty()
+        }
+        showing("instrument-terrain")
     }
 
     private fun appsScreen() {
@@ -134,6 +153,7 @@ class PreviewNavigationTest {
             ui.onAllNodesWithTag("apps-count").fetchSemanticsNodes().isNotEmpty()
         }
         showing("apps-count")
+        showing("instrument-constellation")
     }
 
     /** Routes a Device Tools entry to the surface it really opens. */
@@ -143,6 +163,7 @@ class PreviewNavigationTest {
             "battery-diagnostics" -> batteryScreen()
             "storage-breakdown" -> storageScreen()
             "installed-apps-review" -> appsScreen()
+            "ai-recommendations" -> aiRecommendationsScreen()
             else -> unavailableScreen()
         }
     }
